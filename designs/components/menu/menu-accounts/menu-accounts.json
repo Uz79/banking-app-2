@@ -1,0 +1,28 @@
+{
+  "name": "menu-accounts",
+  "category": "menu",
+  "description": "Accounts menu.",
+  "interactionStates": [
+    "default"
+  ],
+  "assets": {
+    "overview": "overview.png",
+    "variants": {
+      "default-default": {
+        "default": "variants/default-default/default.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": []
+}

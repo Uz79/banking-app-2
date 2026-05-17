@@ -1,0 +1,40 @@
+{
+  "name": "tab-control",
+  "category": "tab-control",
+  "description": "Tab control for switching between related panels such as RGB and HSL inputs.",
+  "interactionStates": [
+    "default",
+    "hover",
+    "pressed",
+    "focus"
+  ],
+  "assets": {
+    "overview": "variants/default-default/default.svg",
+    "variants": {
+      "default-default": {
+        "default": "variants/default-default/default.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.small",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground",
+        "separator": "mapped/light.foreground.foreground-separator"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground",
+        "separator": "mapped/dark.foreground.foreground-separator"
+      }
+    }
+  },
+  "accessibility": {
+    "role": "tablist",
+    "needsAccessibleName": true,
+    "keyboardFocusable": true
+  },
+  "notes": [
+    "Only a single default export is available for this component currently."
+  ]
+}

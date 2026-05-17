@@ -1,0 +1,40 @@
+{
+  "name": "selection-list-item",
+  "category": "list-item",
+  "description": "Selection list item variants (e.g. countries).",
+  "interactionStates": [
+    "default",
+    "hover",
+    "focus"
+  ],
+  "assets": {
+    "overview": "overview.png",
+    "variants": {
+      "grouped-bottom-country": {
+        "default": "variants/grouped-bottom-country/default.svg"
+      },
+      "grouped-mid-country": {
+        "default": "variants/grouped-mid-country/default.svg"
+      },
+      "grouped-top-country": {
+        "default": "variants/grouped-top-country/default.svg",
+        "hover": "variants/grouped-top-country/hover.svg",
+        "focus": "variants/grouped-top-country/focus.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": [
+    "Figma exports `Pressed` are stored as `focus.svg` for consistency."
+  ]
+}

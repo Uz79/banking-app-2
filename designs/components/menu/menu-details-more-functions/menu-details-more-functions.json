@@ -1,0 +1,28 @@
+{
+  "name": "menu-details-more-functions",
+  "category": "menu",
+  "description": "More functions / account details submenu.",
+  "interactionStates": [
+    "default"
+  ],
+  "assets": {
+    "overview": "overview.png",
+    "variants": {
+      "default-default": {
+        "default": "variants/default-default/default.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": []
+}

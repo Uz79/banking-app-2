@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark light">
+  <title>UZ Bank (11) – Buttons</title>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .ds-page { max-width: 56rem; margin: 0 auto; padding: var(--space-6) var(--space-4); }
+    .ds-toolbar { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; margin-bottom: var(--space-6); }
+    .ds-toolbar a { color: var(--color-fg); }
+    .ds-intro { color: var(--color-fg-secondary); font-size: var(--fs-text-md); line-height: var(--lh-text); margin-bottom: var(--space-6); max-width: 48rem; }
+    .ds-section { margin-bottom: var(--space-7); }
+    .ds-section h2 { font-size: var(--fs-h5); font-weight: var(--fw-medium); line-height: var(--lh-h5); margin: 0 0 var(--space-3); color: var(--color-fg); }
+    .ds-row { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; margin-bottom: var(--space-3); }
+    .ds-caption { font-size: var(--fs-text-sm); color: var(--color-fg-secondary); margin: 0 0 var(--space-2); }
+    .ds-note { font-size: var(--fs-text-xs); color: var(--color-fg-secondary); margin-top: var(--space-2); max-width: 40rem; }
+  </style>
+</head>
+<body class="body">
+
+<main class="ds-page">
+  <div class="ds-toolbar">
+    <a href="overview.html">← Banking overview</a>
+    <button class="uz-btn uz-btn--secondary uz-btn--sm" type="button" id="ds-theme-toggle" aria-pressed="false">Toggle theme</button>
+  </div>
+
+  <p class="ds-intro">
+    Button tokens from <code>tokens4_website-UZ.json</code> (<code>mapped/light</code> and <code>mapped/dark</code> → <code>css/tokens.css</code>).
+    Primary and tonal use solid surfaces for hover and pressed; secondary uses a 10% / 20% foreground tint on the fill (same layered intent as Figma “state layer”).
+  </p>
+
+  <section class="ds-section" aria-labelledby="ds-primary-heading">
+    <h2 id="ds-primary-heading">Primary</h2>
+    <p class="ds-caption">Default · hover pointer · pressed (click or keyboard) · static pressed class for docs</p>
+    <div class="ds-row">
+      <button type="button" class="uz-btn uz-btn--primary uz-btn--sm">Small</button>
+      <button type="button" class="uz-btn uz-btn--primary uz-btn--md">Regular</button>
+      <button type="button" class="uz-btn uz-btn--primary uz-btn--lg">Large</button>
+      <button type="button" class="uz-btn uz-btn--primary uz-btn--md uz-btn--pressed" tabindex="-1" aria-hidden="true">Pressed</button>
+    </div>
+    <div class="ds-row">
+      <button type="button" class="uz-btn uz-btn--primary uz-btn--md">
+        <span>With icon</span>
+        <svg class="uz-btn__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 5L19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <section class="ds-section" aria-labelledby="ds-secondary-heading">
+    <h2 id="ds-secondary-heading">Secondary</h2>
+    <p class="ds-caption">Transparent container, border + label at full opacity; hover / pressed tint on fill only</p>
+    <div class="ds-row">
+      <button type="button" class="uz-btn uz-btn--secondary uz-btn--sm">Small</button>
+      <button type="button" class="uz-btn uz-btn--secondary uz-btn--md">Regular</button>
+      <button type="button" class="uz-btn uz-btn--secondary uz-btn--lg">Large</button>
+      <button type="button" class="uz-btn uz-btn--secondary uz-btn--md uz-btn--pressed" tabindex="-1" aria-hidden="true">Pressed</button>
+    </div>
+    <div class="ds-row">
+      <button type="button" class="uz-btn uz-btn--secondary uz-btn--md">
+        <span>Continue</span>
+        <svg class="uz-btn__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 5L19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <section class="ds-section" aria-labelledby="ds-tonal-heading">
+    <h2 id="ds-tonal-heading">Filled tonal</h2>
+    <p class="ds-caption">Low-emphasis filled control (surface tint + contrasting label)</p>
+    <div class="ds-row">
+      <button type="button" class="uz-btn uz-btn--tonal uz-btn--sm">Small</button>
+      <button type="button" class="uz-btn uz-btn--tonal uz-btn--md">Regular</button>
+      <button type="button" class="uz-btn uz-btn--tonal uz-btn--lg">Large</button>
+      <button type="button" class="uz-btn uz-btn--tonal uz-btn--md uz-btn--pressed" tabindex="-1" aria-hidden="true">Pressed</button>
+    </div>
+  </section>
+
+  <section class="ds-section" aria-labelledby="ds-legacy-heading">
+    <h2 id="ds-legacy-heading">Shell modal (legacy class)</h2>
+    <p class="ds-caption"><code>.btn-primary</code> — legacy alias for <strong>Regular</strong> primary (<code>.uz-btn--md</code>); full width in demos</p>
+    <div class="ds-row" style="max-width: 22rem;">
+      <button type="button" class="btn-primary">Confirm</button>
+    </div>
+    <p class="ds-note">Payment flow modals use <code>uz-btn uz-btn--primary uz-btn--md uz-btn--block</code> (Figma Regular). Sizes: <code>uz-btn--sm</code> / <code>--md</code> / <code>--lg</code>.</p>
+  </section>
+</main>
+
+<script>
+(function () {
+  var btn = document.getElementById('ds-theme-toggle');
+  if (!btn) return;
+  function apply(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    try { localStorage.setItem('uzBankWebApp11Theme', t); } catch (e) {}
+    btn.setAttribute('aria-pressed', t === 'dark' ? 'true' : 'false');
+  }
+  btn.addEventListener('click', function () {
+    var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(next);
+  });
+})();
+</script>
+</body>
+</html>

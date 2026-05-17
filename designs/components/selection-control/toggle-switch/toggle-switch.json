@@ -1,0 +1,43 @@
+{
+  "name": "toggle-switch",
+  "category": "selection-control",
+  "description": "Selection control for enabling or disabling a setting.",
+  "interactionStates": [
+    "default",
+    "hover",
+    "focus"
+  ],
+  "assets": {
+    "overview": "overview.png",
+    "variants": {
+      "regular-active": {
+        "default": "variants/regular-active/default.svg",
+        "hover": "variants/regular-active/hover.svg",
+        "focus": "variants/regular-active/focus.svg"
+      },
+      "regular-inactive": {
+        "default": "variants/regular-inactive/default.svg",
+        "hover": "variants/regular-inactive/hover.svg",
+        "focus": "variants/regular-inactive/focus.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "accessibility": {
+    "needsAccessibleName": true,
+    "keyboardFocusable": true
+  },
+  "notes": [
+    "Figma exports `Pressed` are stored as `focus.svg` for consistency."
+  ]
+}

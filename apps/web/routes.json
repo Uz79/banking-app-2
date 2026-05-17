@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "E-Banking_WebApp_11 routes. Shell pages use real paths; payment flow is a modal with #pay/<step> (recipient-search | recipient | amount | schedule | summary | confirmation). Legacy payment/*.html redirect into that hash flow. Icons: assets/icons-sprite.svg and SVG use references.",
+  "entry": "overview.html",
+  "screens": [
+    { "id": "overview", "path": "overview.html", "title": "Overview" },
+    { "id": "account-details", "path": "account-details.html", "title": "Account details" },
+    { "id": "payments", "path": "payments.html", "title": "Payments" },
+    { "id": "profile", "path": "profile.html", "title": "Profile" },
+    { "id": "components", "path": "components.html", "title": "Button components" },
+    {
+      "id": "payment-recipient-search",
+      "path": "overview.html",
+      "hashRoute": "#pay/recipient-search",
+      "title": "Payment — Recipient search",
+      "note": "Type Ahead Search list; same hash on overview, payments, or account-details."
+    },
+    {
+      "id": "payment-recipient",
+      "path": "overview.html",
+      "hashRoute": "#pay/recipient",
+      "title": "Payment — Recipient details",
+      "note": "Form step after a row is chosen on recipient-search."
+    },
+    {
+      "id": "payment-amount",
+      "path": "overview.html",
+      "hashRoute": "#pay/amount",
+      "title": "Payment — Amount"
+    },
+    {
+      "id": "payment-schedule",
+      "path": "overview.html",
+      "hashRoute": "#pay/schedule",
+      "title": "Payment — Schedule"
+    },
+    {
+      "id": "payment-summary",
+      "path": "overview.html",
+      "hashRoute": "#pay/summary",
+      "title": "Payment — Summary"
+    },
+    {
+      "id": "payment-confirmation",
+      "path": "overview.html",
+      "hashRoute": "#pay/confirmation",
+      "title": "Payment — Confirmation"
+    }
+  ]
+}

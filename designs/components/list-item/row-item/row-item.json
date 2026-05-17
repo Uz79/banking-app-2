@@ -1,0 +1,37 @@
+{
+  "name": "row-item",
+  "category": "list-item",
+  "description": "Row items (e.g. bookings, headers).",
+  "interactionStates": [
+    "default",
+    "hover",
+    "focus"
+  ],
+  "assets": {
+    "overview": "overview.png",
+    "variants": {
+      "default-booking": {
+        "default": "variants/default-booking/default.svg",
+        "hover": "variants/default-booking/hover.svg",
+        "focus": "variants/default-booking/focus.svg"
+      },
+      "default-header": {
+        "default": "variants/default-header/default.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": [
+    "Figma exports `Pressed` are stored as `focus.svg` for consistency."
+  ]
+}

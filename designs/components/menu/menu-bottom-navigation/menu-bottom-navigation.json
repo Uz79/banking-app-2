@@ -1,0 +1,42 @@
+{
+  "name": "menu-bottom-navigation",
+  "category": "menu",
+  "description": "Bottom navigation menu items.",
+  "interactionStates": [
+    "default",
+    "hover",
+    "focus"
+  ],
+  "assets": {
+    "overview": "overview.png",
+    "variants": {
+      "bottom-nav-selected": {
+        "default": "variants/bottom-nav-selected/default.svg",
+        "hover": "variants/bottom-nav-selected/hover.svg",
+        "focus": "variants/bottom-nav-selected/focus.svg"
+      },
+      "bottom-nav-unselected": {
+        "default": "variants/bottom-nav-unselected/default.svg",
+        "hover": "variants/bottom-nav-unselected/hover.svg",
+        "focus": "variants/bottom-nav-unselected/focus.svg"
+      },
+      "default-default": {
+        "default": "variants/default-default/default.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": [
+    "Figma exports `Pressed` are stored as `focus.svg` for consistency."
+  ]
+}

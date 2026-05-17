@@ -1,0 +1,7 @@
+Figma Desktop MCP: use `get_metadata` with an empty `nodeId` for the current page (or a specific node id such as `253:332062`).
+
+Latest checked-in snapshot from this workflow: `design/figma-current-page-metadata.xml` (full XML tree for the page that was current when the export ran, 2026-04-27).
+
+For implementation detail beyond structure, call `get_design_context` on specific symbol or frame node ids from that XML.
+
+Keyword search in the checked-in tree: e.g. `Type Ahead Search` or frame names like `Payment Flow Recipient - mobile`. Screen manifests mirror components: **`../../../designs/screens/<screen-slug>/<screen-slug>.json`** (overview: **`../../../designs/screens/README.md`**).

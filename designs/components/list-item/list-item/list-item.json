@@ -1,0 +1,55 @@
+{
+  "name": "list-item",
+  "category": "list-item",
+  "description": "List item patterns used across lists.",
+  "interactionStates": [
+    "default",
+    "hover",
+    "focus"
+  ],
+  "assets": {
+    "overview": "overview.png",
+    "variants": {
+      "group-account": {
+        "default": "variants/group-account/default.svg"
+      },
+      "grouped-bottom-account": {
+        "default": "variants/grouped-bottom-account/default.svg"
+      },
+      "grouped-mid-account": {
+        "default": "variants/grouped-mid-account/default.svg"
+      },
+      "grouped-mid-user2": {
+        "default": "variants/grouped-mid-user2/default.svg"
+      },
+      "grouped-top-account": {
+        "default": "variants/grouped-top-account/default.svg"
+      },
+      "grouped-top-service": {
+        "default": "variants/grouped-top-service/default.svg"
+      },
+      "grouped-top-user": {
+        "default": "variants/grouped-top-user/default.svg"
+      },
+      "wealth-overview-account": {
+        "default": "variants/wealth-overview-account/default.svg",
+        "hover": "variants/wealth-overview-account/hover.svg",
+        "focus": "variants/wealth-overview-account/focus.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": [
+    "Figma exports `Pressed` are stored as `focus.svg` for consistency."
+  ]
+}

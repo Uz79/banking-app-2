@@ -1,0 +1,30 @@
+{
+  "name": "profile-overview",
+  "category": "profile",
+  "description": "Profile settings overview / tabs strip snapshot.",
+  "interactionStates": [
+    "default"
+  ],
+  "assets": {
+    "overview": "overview.png",
+    "variants": {
+      "default-default": {
+        "default": "variants/default-default/default.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": [
+    "Tab-strip export: add `variants/default-default/default.svg` when sourced from Figma (path matches other `profile-*` screens)."
+  ]
+}

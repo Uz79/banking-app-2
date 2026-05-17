@@ -1,0 +1,56 @@
+{
+  "name": "amount-field",
+  "category": "form-field",
+  "description": "Monetary amount field composed of a numeric input and currency selector.",
+  "variants": ["default", "readonly"],
+  "states": ["default", "hover", "focus", "error", "informative"],
+  "assets": {
+    "overview": "overview.png",
+    "default": {
+      "default": "default/default.svg",
+      "hover": "default/hover.svg",
+      "focus": "default/focus.svg"
+    },
+    "readonly": {}
+  },
+  "tokens": {
+    "form-field": {
+      "radius": "alias.radius.regular",
+      "padding-x": "alias.space.4",
+      "padding-y": "alias.space.2"
+    },
+    "modes": {
+      "light": {
+        "background": "mapped/light.background.background",
+        "foreground": "mapped/light.foreground.foreground",
+        "border-default": "mapped/light.border.border-secondary",
+        "border-hover": "mapped/light.border.border",
+        "border-focus": "mapped/light.border.border",
+        "border-error": "alias.color.secondary.900",
+        "border-informative": "mapped/light.border.border-secondary"
+      },
+      "dark": {
+        "background": "mapped/dark.background.background",
+        "foreground": "mapped/dark.foreground.foreground",
+        "border-default": "mapped/dark.border.border-secondary",
+        "border-hover": "mapped/dark.border.border",
+        "border-focus": "mapped/dark.border.border",
+        "border-error": "alias.color.secondary.400",
+        "border-informative": "mapped/dark.border.border-secondary"
+      }
+    },
+    "typography": {
+      "label-desktop": "responsive/desktop.typography.paragraph.sm",
+      "input-desktop": "responsive/desktop.typography.paragraph.md",
+      "label-mobile": "responsive/mobile.typography.paragraph.sm",
+      "input-mobile": "responsive/mobile.typography.paragraph.md"
+    }
+  },
+  "accessibility": {
+    "labelRequired": true,
+    "supportsErrorMessage": true,
+    "supportsHelperText": true,
+    "keyboardFocusable": true
+  }
+}
+

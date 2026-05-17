@@ -1,0 +1,33 @@
+{
+  "name": "nav-bar",
+  "category": "navigation",
+  "description": "Top navigation bar with back and close actions.",
+  "interactionStates": [
+    "default",
+    "hover",
+    "pressed",
+    "focus"
+  ],
+  "assets": {
+    "overview": "variants/default-default/default.svg",
+    "variants": {
+      "default-default": {
+        "default": "variants/default-default/default.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.small",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": [
+    "Only a single default export is available for this component currently."
+  ]
+}

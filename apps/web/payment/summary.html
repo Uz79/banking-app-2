@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opening payment…</title>
+  <script>
+    (function () {
+      var step = "summary";
+      var fallback = "../overview.html#pay/" + step;
+      try {
+        var ref = document.referrer;
+        if (ref && ref.indexOf(location.host) >= 0) {
+          var last = ref.split("/").pop().split("?")[0];
+          if (/^(overview|payments|account-details)\.html$/.test(last)) {
+            location.replace("../" + last + "#pay/" + step);
+            return;
+          }
+        }
+      } catch (e) {}
+      location.replace(fallback);
+    })();
+  </script>
+</head>
+<body>
+  <p><a href="../overview.html#pay/summary">Continue</a></p>
+</body>
+</html>

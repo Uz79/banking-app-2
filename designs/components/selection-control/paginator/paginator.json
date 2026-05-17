@@ -1,0 +1,39 @@
+{
+  "name": "paginator",
+  "category": "selection-control",
+  "description": "Compact pagination indicator for short sequences (e.g. carousels/onboarding).",
+  "interactionStates": [
+    "default",
+    "hover",
+    "focus"
+  ],
+  "assets": {
+    "overview": "overview.png",
+    "variants": {
+      "3-dots-left-active": {
+        "default": "variants/3-dots-left-active/default.svg"
+      },
+      "3-dots-mid-active": {
+        "default": "variants/3-dots-mid-active/default.svg"
+      },
+      "3-dots-right-active": {
+        "default": "variants/3-dots-right-active/default.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "accessibility": {
+    "needsAccessibleName": false,
+    "keyboardFocusable": false
+  }
+}

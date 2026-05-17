@@ -1,0 +1,23 @@
+{
+  "name": "web",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "tokens:build": "node scripts/generate-tokens-css.mjs",
+    "dev": "npm run tokens:build && vite",
+    "build": "npm run tokens:build && vite build",
+    "preview": "vite preview",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "devDependencies": {
+    "vite": "^8.0.11",
+    "storybook": "^10.3.6",
+    "@storybook/react-vite": "^10.3.6",
+    "@storybook/addon-a11y": "^10.3.6",
+    "@storybook/addon-docs": "^10.3.6",
+    "@storybook/addon-onboarding": "^10.3.6",
+    "@chromatic-com/storybook": "^5.1.2"
+  }
+}

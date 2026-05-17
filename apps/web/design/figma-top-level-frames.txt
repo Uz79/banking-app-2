@@ -1,0 +1,22 @@
+Top-level frames under canvas "E-Banking - 4 import" (id 195:79954), extracted from design/figma-current-page-metadata.xml.
+Use Figma Desktop MCP get_design_context with a specific node id for implementation detail.
+
+Run locally to refresh list:
+  grep -E '^  <frame id=' design/figma-current-page-metadata.xml | sed 's/.*name="\([^"]*\)".*/\1/' | sort -u
+Account Details - desktop
+Account Details - mobile
+Dialog Confirmation - desktop
+Dialog Confirmation - mobile
+Overview - desktop
+Overview - mobile
+Payment - desktop
+Payment - mobile
+Payment Flow Amount - desktop
+Payment Flow Amount - mobile
+Payment Flow Recipient - desktop
+Payment Flow Recipient - mobile
+Payment Flow Summary - desktop
+Payment Flow Summary - mobile
+Payment Flow Time Schedule - desktop
+Payment Flow Time Schedule - mobile
+icon24-sunrise-logo
