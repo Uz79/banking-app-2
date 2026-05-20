@@ -2,20 +2,32 @@
   "name": "text-field",
   "category": "form-field",
   "description": "Text input field for entering short textual values.",
-  "variants": ["default", "readonly"],
-  "states": ["default", "hover", "focus", "error", "informative"],
+  "interactionStates": [
+    "default",
+    "hover",
+    "focus"
+  ],
   "assets": {
     "overview": "overview.png",
-    "default": {
-      "default": "default/default.svg",
-      "hover": "default/hover.svg",
-      "focus": "default/focus.svg",
-      "error": "default/error.svg",
-      "informative": "default/informative.svg"
-    },
-    "readonly": {
-      "default": "readonly/default.svg",
-      "informative": "readonly/informative.svg"
+    "variants": {
+      "default-default": {
+        "default": "variants/default-default/default.svg",
+        "hover": "variants/default-default/hover.svg",
+        "focus": "variants/default-default/focus.svg"
+      },
+      "default-informative": {
+        "default": "variants/default-informative/default.svg"
+      },
+      "default-error": {
+        "default": "variants/default-error/default.svg"
+      },
+      "readonly-default": {
+        "default": "variants/readonly-default/default.svg"
+      },
+      "readonly-informative": {
+        "default": "variants/readonly-informative/default.svg",
+        "preview": "variants/readonly-informative/default.png"
+      }
     }
   },
   "tokens": {
@@ -60,5 +72,9 @@
   "usage": {
     "do": ["Use for short text input such as names or references."],
     "dont": ["Do not use for long multi-line text input."]
-  }
+  },
+  "notes": [
+    "Figma exports `Pressed` are stored as `focus.svg` for consistency.",
+    "Variant slugs follow `Type-Case` in kebab-case (e.g. `Type=ReadOnly`, `Case=Informative` → `readonly-informative`)."
+  ]
 }

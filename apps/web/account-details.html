@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark light">
-  <title>UZ Bank (11) – Account details</title>
+  <title>UZ Bank – Account details</title>
   <script>
     /* Boot: apply saved theme + colour-override before paint.
        The colour override stores only { bg, fg }; we derive every other
@@ -35,6 +35,7 @@
         var isDark = lum(bg) < lum(fg);
         function mix(a,b,t){ return hex(a.r+(b.r-a.r)*t, a.g+(b.g-a.g)*t, a.b+(b.b-a.b)*t); }
         function fa(a){ return 'rgba(' + fg.r + ',' + fg.g + ',' + fg.b + ',' + a + ')'; }
+        function sa(c, a){ return 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + a + ')'; }
         function ba(a){ return 'rgba(0,0,0,' + a + ')'; }
         var bgE = isDark ? 0.22 : 0.07, fgE = isDark ? 0.06 : 0.22;
 
@@ -67,7 +68,7 @@
           'color-btn-tonal-fg': o.fg,
           'color-btn-tonal-hover': mix(bg, fg, isDark ? 0.38 : 0.14),
           'color-btn-tonal-pressed': mix(bg, fg, isDark ? 0.48 : 0.22),
-          'color-overlay-scrim': ba(isDark ? 0.62 : 0.45),
+          'color-overlay-scrim': sa(isDark ? bg : fg, isDark ? 0.62 : 0.45),
           'color-nav-elevated-shadow': ba(isDark ? 0.35 : 0.06),
           'color-modal-elevated-shadow': ba(isDark ? 0.45 : 0.12),
           'color-surface-state-hover': fa(0.1),
@@ -85,130 +86,6 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="body" data-screen="account-details" data-page="account-details">
-<div id="uzbank-icon-defs" aria-hidden="true" class="uzbank-icon-defs">
-<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden;pointer-events:none">
-<symbol id="i-anchor" viewBox="0 0 24 24">
-<path d="M12 8C13.6569 8 15 6.65685 15 5C15 3.34315 13.6569 2 12 2C10.3431 2 9 3.34315 9 5C9 6.65685 10.3431 8 12 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M12 22V8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M5 12H2C2 14.6522 3.05357 17.1957 4.92893 19.0711C6.8043 20.9464 9.34784 22 12 22C14.6522 22 17.1957 20.9464 19.0711 19.0711C20.9464 17.1957 22 14.6522 22 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-arrow-left" viewBox="0 0 24 24">
-<path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-arrow-right" viewBox="0 0 24 24">
-<path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M12 5L19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-calendar" viewBox="0 0 24 24">
-<path d="M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M16 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M8 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-camera" viewBox="0 0 24 24">
-<path d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 3H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M12 17C14.2091 17 16 15.2091 16 13C16 10.7909 14.2091 9 12 9C9.79086 9 8 10.7909 8 13C8 15.2091 9.79086 17 12 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-chevron-down" viewBox="0 0 24 24">
-<path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-chevron-left" viewBox="0 0 24 24">
-<path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-chevron-right" viewBox="0 0 24 24">
-<path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-clock" viewBox="0 0 24 24">
-<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-corner-up-right" viewBox="0 0 24 24">
-<path d="M15 14L20 9L15 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M4 20V13C4 11.9391 4.42143 10.9217 5.17157 10.1716C5.92172 9.42143 6.93913 9 8 9H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-credit-card" viewBox="0 0 24 24">
-<path d="M21 4H3C1.89543 4 1 4.89543 1 6V18C1 19.1046 1.89543 20 3 20H21C22.1046 20 23 19.1046 23 18V6C23 4.89543 22.1046 4 21 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M1 10H23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-edit-2" viewBox="0 0 24 24">
-<path d="M16 3L21 8L8 21H3V16L16 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-gitlab" viewBox="0 0 24 24">
-<g clip-path="url(#i-gitlab-clip0_207_82042)">
-<path d="M22.65 14.39L12 22.13L1.35002 14.39C1.20725 14.285 1.10134 14.1375 1.04746 13.9687C0.993572 13.7998 0.99447 13.6183 1.05002 13.45L2.27002 9.66996L4.71002 2.15996C4.73369 2.09877 4.77136 2.04397 4.82002 1.99996C4.89926 1.92758 5.0027 1.88745 5.11002 1.88745C5.21734 1.88745 5.32078 1.92758 5.40002 1.99996C5.45141 2.04963 5.48927 2.11158 5.51002 2.17996L7.95002 9.66996H16.05L18.49 2.15996C18.5137 2.09877 18.5514 2.04397 18.6 1.99996C18.6793 1.92758 18.7827 1.88745 18.89 1.88745C18.9973 1.88745 19.1008 1.92758 19.18 1.99996C19.2314 2.04963 19.2693 2.11158 19.29 2.17996L21.73 9.68996L23 13.45C23.0505 13.6234 23.0438 13.8086 22.9807 13.9779C22.9177 14.1473 22.8017 14.2918 22.65 14.39Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</g>
-<defs>
-<clipPath id="i-gitlab-clip0_207_82042">
-<rect width="24" height="24" fill="white"/>
-</clipPath>
-</defs>
-</symbol>
-<symbol id="i-home" viewBox="0 0 24 24">
-<path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-life-buoy" viewBox="0 0 24 24">
-<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M4.92999 4.93005L9.16999 9.17005" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M14.83 14.83L19.07 19.07" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M14.83 9.17005L19.07 4.93005" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M14.83 9.17001L18.36 5.64001" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M4.92999 19.07L9.16999 14.83" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-more-horizontal" viewBox="0 0 24 24">
-<path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M19 13C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11C18.4477 11 18 11.4477 18 12C18 12.5523 18.4477 13 19 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M5 13C5.55228 13 6 12.5523 6 12C6 11.4477 5.55228 11 5 11C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-payments" viewBox="0 0 24 24">
-<path d="M7 22L2 17M2 17L7 12M2 17H14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M17 12L22 7M22 7L17 2M22 7H10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-plus" viewBox="0 0 24 24">
-<path d="M12 5V19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-repeat" viewBox="0 0 24 24">
-<path d="M17 1L21 5L17 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M3 11V9C3 7.93913 3.42143 6.92172 4.17157 6.17157C4.92172 5.42143 5.93913 5 7 5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M7 23L3 19L7 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M21 13V15C21 16.0609 20.5786 17.0783 19.8284 17.8284C19.0783 18.5786 18.0609 19 17 19H3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-rotate-ccw" viewBox="0 0 24 24">
-<path d="M1 4V10H7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M3.51 15C4.15839 16.8404 5.38734 18.4202 7.01166 19.5014C8.63598 20.5826 10.5677 21.1066 12.5157 20.9945C14.4637 20.8824 16.3226 20.1402 17.8121 18.8798C19.3017 17.6194 20.3413 15.909 20.7742 14.0064C21.2072 12.1038 21.0101 10.112 20.2126 8.33111C19.4152 6.55025 18.0605 5.0768 16.3528 4.13277C14.6451 3.18874 12.6769 2.82527 10.7447 3.09713C8.81245 3.36898 7.02091 4.26143 5.64 5.64001L1 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-search" viewBox="0 0 24 24">
-<circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
-<path d="M20 20L16.5 16.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-</symbol>
-<symbol id="i-shield" viewBox="0 0 24 24">
-<path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-sunrise-logo" viewBox="0 0 24 24">
-<path d="M12.001 1C9.82526 0.999814 7.69841 1.64482 5.88932 2.85344C4.08024 4.06207 2.67019 5.78002 1.83752 7.79005C1.00484 9.80009 0.786918 12.0119 1.21131 14.1458C1.63573 16.2797 2.6834 18.2397 4.22184 19.7782C5.76025 21.3166 7.72037 22.3643 9.85423 22.7887C11.9881 23.2131 14.1999 22.9952 16.2099 22.1625C18.22 21.3298 19.9379 19.9198 21.1466 18.1107C22.3552 16.3016 23.0002 14.1747 23 11.9991C22.997 9.08282 21.8372 6.28694 19.7752 4.22485C17.7131 2.16278 14.9172 1.00299 12.001 1ZM12.001 3.25853C13.4685 3.25777 14.9126 3.62674 16.2 4.3314C17.4873 5.03604 18.5764 6.05367 19.3666 7.2903C20.1569 8.52692 20.6229 9.94272 20.7215 11.407C20.8202 12.8712 20.5484 14.3368 19.9312 15.6683H4.06973C3.45251 14.3367 3.18068 12.8711 3.27942 11.4067C3.37813 9.94241 3.8442 8.52658 4.63454 7.28992C5.42493 6.05325 6.51413 5.03566 7.8016 4.33106C9.08904 3.62647 10.5333 3.25761 12.001 3.25853Z" fill="currentColor"/>
-</symbol>
-<symbol id="i-trending-up" viewBox="0 0 24 24">
-<path d="M23 6L13.5 15.5L8.5 10.5L1 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M17 6H23V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-user" viewBox="0 0 24 24">
-<path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-x-circle" viewBox="0 0 24 24">
-<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M15 9L9 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-<symbol id="i-x" viewBox="0 0 24 24">
-<path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</symbol>
-</svg>
-</div>
 <div class="app">
   <aside class="sidebar">
     <div class="sidebar__logo"><a href="overview.html">UZ Bank</a></div>
@@ -243,6 +120,7 @@
 
   <main class="main-content">
     <div class="main-content__inner">
+      <!-- ── ACCOUNT DETAILS ── -->
       <section class="view view--active view--account-details" data-view="account-details">
         <div class="view__main">
           <header class="view__nav">
@@ -274,7 +152,14 @@
               </span>
               <span class="action-button__label">Internal Transfer</span>
             </button>
-            <button class="action-button" type="button">
+            <button
+              class="action-button"
+              type="button"
+              data-more-functions-trigger
+              aria-haspopup="dialog"
+              aria-expanded="false"
+              aria-label="More functions"
+            >
               <span class="action-button__circle">
                 <svg class="action-button__icon" aria-hidden="true" focusable="false"><use href="#i-more-horizontal"/></svg>
               </span>
@@ -288,7 +173,7 @@
               <span class="section-card__title">All accounts</span>
               <span class="section-card__amount">
                 <span class="section-card__currency">CHF</span>
-                <span class="section-card__value">35'570.00</span>
+                <span class="section-card__value">35'000.00</span>
               </span>
             </div>
             <div class="carousel">
@@ -302,7 +187,7 @@
                     </div>
                     <span class="carousel__slide-amount">
                       <span class="carousel__slide-currency">CHF</span>
-                      <span class="carousel__slide-value">10\'570.00</span>
+                      <span class="carousel__slide-value">10'000.00</span>
                     </span>
                   </div>
                   <div class="carousel__slide">
@@ -344,14 +229,14 @@
             <div class="divider"></div>
 
             <div class="booking-group" data-day="today">
-              <div class="booking-group__header">
+              <header class="booking-group__header">
                 <span class="booking-group__label">Today</span>
                 <span class="booking-group__balance">
                   <span class="booking-group__balance-currency">CHF</span>
-                  <span class="booking-group__balance-value" data-day-balance="today">10'470.00</span>
+                  <span class="booking-group__balance-value" data-day-balance="today">9'900.00</span>
                 </span>
-              </div>
-              <div class="booking-row" data-static-amount="-100">
+              </header>
+              <div class="booking-row" data-mock-booking="static">
                 <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-corner-up-right"/></svg>
                 <span class="booking-row__name">Apple</span>
                 <span class="booking-row__amount">
@@ -363,34 +248,34 @@
             <div class="divider"></div>
 
             <div class="booking-group" data-day="yesterday">
-              <div class="booking-group__header">
+              <header class="booking-group__header">
                 <span class="booking-group__label">Yesterday</span>
                 <span class="booking-group__balance">
-                  <span class="booking-group__balance-currency">CHF</span>
-                  <span class="booking-group__balance-value" data-day-balance="yesterday">10'570.00</span>
+                  <span class="booking-group__balance-currency">USD</span>
+                  <span class="booking-group__balance-value" data-day-balance="yesterday">10'000.00</span>
                 </span>
-              </div>
-              <div class="booking-row">
+              </header>
+              <div class="booking-row" data-mock-booking="static">
                 <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-corner-up-right"/></svg>
                 <span class="booking-row__name">Cafe</span>
                 <span class="booking-row__amount">
-                  <span class="booking-row__currency">CHF</span>
+                  <span class="booking-row__currency">USD</span>
                   <span class="booking-row__value">-10.00</span>
                 </span>
               </div>
-              <div class="booking-row">
+              <div class="booking-row" data-mock-booking="static">
                 <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-corner-up-right"/></svg>
                 <span class="booking-row__name">Pizza</span>
                 <span class="booking-row__amount">
-                  <span class="booking-row__currency">CHF</span>
+                  <span class="booking-row__currency">USD</span>
                   <span class="booking-row__value">-320.00</span>
                 </span>
               </div>
-              <div class="booking-row">
+              <div class="booking-row" data-mock-booking="static">
                 <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-corner-up-right"/></svg>
                 <span class="booking-row__name">Railway</span>
                 <span class="booking-row__amount">
-                  <span class="booking-row__currency">CHF</span>
+                  <span class="booking-row__currency">USD</span>
                   <span class="booking-row__value">-100.00</span>
                 </span>
               </div>
@@ -411,7 +296,7 @@
       <span class="tab-bar__icon-wrap tab-bar__icon-wrap--active">
         <svg class="tab-bar__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
       </span>
-      <span class="tab-bar__label">Start</span>
+      <span class="tab-bar__label">Overview</span>
     </a>
 
     <a class="tab-bar__item" href="payments.html">
@@ -564,7 +449,7 @@
                 <span class="debit-account__name">Household</span>
                 <span class="debit-account__iban">CH35 0900 0000 2470 2920 1</span>
               </div>
-              <span class="debit-account__amount">CHF 10'570.00</span>
+              <span class="debit-account__amount">CHF 10'000.00</span>
               <svg class="debit-account__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
             </div>
           </div>
@@ -642,7 +527,7 @@
                 <span class="debit-account__name">Household</span>
                 <span class="debit-account__iban">CH35 0900 0000 2470 2920 1</span>
               </div>
-              <span class="debit-account__amount">CHF 10'570.00</span>
+              <span class="debit-account__amount">CHF 10'000.00</span>
               <svg class="debit-account__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
             </div>
           </div>
@@ -681,12 +566,769 @@
   </div>
 </div>
 
+
+
+<!-- Account information — same shell as payment flow (modal-overlay → modal-shell → modal) -->
+<div id="uz-account-information-overlay" class="modal-overlay" aria-hidden="true">
+  <div class="modal-shell">
+    <div class="modal modal--account-information">
+      <div class="modal__nav">
+        <span class="modal__title">Account information</span>
+        <button type="button" class="modal__close uz-account-information-close" aria-label="Close">
+          <svg class="modal__close-icon" role="img" aria-label="" focusable="false"><use href="#i-x"/></svg>
+        </button>
+      </div>
+      <div class="modal__body modal__body--account-information">
+        <div class="account-information__summary">
+          <!--
+            list-item / group-account (designs/components/list-item/list-item/variants/group-account).
+            Icons are inlined (not <use href="#…">) so this block renders without #uzbank-icon-defs
+            (Storybook, snippets, or any shell missing the sprite).
+          -->
+          <article class="list-item list-item--group-account account-information__summary-card" aria-label="Selected account">
+            <div class="list-item__media">
+              <svg class="list-item__icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M12 8C13.6569 8 15 6.65685 15 5C15 3.34315 13.6569 2 12 2C10.3431 2 9 3.34315 9 5C9 6.65685 10.3431 8 12 8Z"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path d="M12 22V8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path
+                  d="M5 12H2C2 14.6522 3.05357 17.1957 4.92893 19.0711C6.8043 20.9464 9.34784 22 12 22C14.6522 22 17.1957 20.9464 19.0711 19.0711C20.9464 17.1957 22 14.6522 22 12H19"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+            <div class="list-item__body account-information__summary-copy">
+              <span class="list-item__title account-information__summary-title">Savings account</span>
+              <span class="list-item__subtitle account-information__summary-iban">CH35 0900 0000 2470 2920 2</span>
+            </div>
+            <div class="list-item__end account-information__summary-amount">
+              <span class="account-information__summary-currency">USD</span>
+              <span class="account-information__summary-value">25'000.00</span>
+            </div>
+          </article>
+        </div>
+        <div class="segmented account-information__tabs" role="tablist" aria-label="Account information sections">
+          <button type="button" class="segmented__option segmented__option--active account-information__tab" role="tab" aria-selected="true" id="accountInfoTabInformation" aria-controls="accountInfoPanelInformation" data-ai-tab="information">Information</button>
+          <button type="button" class="segmented__option account-information__tab" role="tab" aria-selected="false" id="accountInfoTabConditions" aria-controls="accountInfoPanelConditions" data-ai-tab="conditions">Conditions</button>
+        </div>
+        <div class="account-information__share-row">
+          <button type="button" class="uz-btn uz-btn--tonal uz-btn--sm account-information__share uz-account-information-share">
+            <svg class="account-information__share-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2" />
+            </svg>
+            Share information
+          </button>
+        </div>
+        <div class="account-information__scroll">
+          <div class="account-information__panel account-information__panel--active" id="accountInfoPanelInformation" role="tabpanel" aria-labelledby="accountInfoTabInformation" data-ai-panel="information">
+            <div class="account-information__fields">
+              <div class="form-field form-field--readonly">
+                <span class="form-field__label">IBAN</span>
+                <div class="form-field__row">
+                  <span class="form-field__value">CH35 0900 0000 2470 2920 1</span>
+                  <button type="button" class="form-field__edit" data-copy-text="CH35 0900 0000 2470 2920 1" aria-label="Copy IBAN">
+                    <svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="form-field form-field--readonly">
+                <span class="form-field__label">QR IBAN</span>
+                <div class="form-field__row">
+                  <span class="form-field__value">CH35 0900 0000 2470 2920 2</span>
+                  <button type="button" class="form-field__edit" data-copy-text="CH35 0900 0000 2470 2920 2" aria-label="Copy QR IBAN">
+                    <svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="form-field form-field--readonly">
+                <span class="form-field__label">Account owner</span>
+                <div class="form-field__row">
+                  <span class="form-field__value">Beatrice Müller</span>
+                </div>
+              </div>
+              <div class="form-field form-field--readonly">
+                <span class="form-field__label">Product</span>
+                <div class="form-field__row">
+                  <span class="form-field__value">Private account</span>
+                </div>
+              </div>
+              <div class="form-field form-field--readonly">
+                <span class="form-field__label">Category</span>
+                <div class="form-field__row">
+                  <span class="form-field__value">Payments</span>
+                  <button type="button" class="form-field__edit" aria-label="Edit category">
+                    <svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-edit-2"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="form-field form-field--readonly">
+                <span class="form-field__label">Bank clearing number</span>
+                <div class="form-field__row">
+                  <span class="form-field__value">8401</span>
+                </div>
+              </div>
+              <div class="form-field form-field--readonly">
+                <span class="form-field__label">BIC (SWIFT)</span>
+                <div class="form-field__row">
+                  <span class="form-field__value">MIGRHZZXXX</span>
+                  <button type="button" class="form-field__edit" data-copy-text="MIGRHZZXXX" aria-label="Copy BIC">
+                    <svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="form-field form-field--readonly">
+                <span class="form-field__label">Bank</span>
+                <div class="form-field__row form-field__row--multiline">
+                  <span class="form-field__value form-field__value--multiline">
+                    <span>MIGROS Bank</span>
+                    <span>Industriestrasse 117</span>
+                    <span>CH-8304 Zürich (Wallisellen)</span>
+                  </span>
+                  <button type="button" class="form-field__edit form-field__edit--align-start" data-copy-text="MIGROS Bank&#10;Industriestrasse 117&#10;CH-8304 Zürich (Wallisellen)" aria-label="Copy bank address">
+                    <svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="account-information__panel" id="accountInfoPanelConditions" role="tabpanel" aria-labelledby="accountInfoTabConditions" hidden data-ai-panel="conditions">
+            <p class="account-information__conditions-intro">Terms and conditions for this account type.</p>
+            <p class="account-information__conditions-body">Placeholder copy — replace with legal text or a link to PDF terms from production content.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal__footer modal__footer--account-information">
+        <button type="button" class="uz-btn uz-btn--primary uz-btn--md uz-btn--block uz-account-information-confirm" id="accountInformationConfirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Share information — stacked above account information (modal-overlay → modal-shell → modal) -->
+<div id="uz-share-information-overlay" class="modal-overlay" aria-hidden="true">
+  <div class="modal-shell">
+    <div class="modal modal--share-information">
+      <div class="modal__nav">
+<span class="modal__title">Share information</span>
+        <button type="button" class="modal__close uz-share-information-close" aria-label="Close">
+          <svg class="modal__close-icon" role="img" aria-label="" focusable="false"><use href="#i-x"/></svg>
+        </button>
+      </div>
+      <div class="modal__body modal__body--share-information">
+        <div class="share-information__hero">
+        <div class="share-information__qr-wrap">
+          <svg class="share-information__qr" role="img" aria-label="QR code with account payment information" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" xmlns:xlink="http://www.w3.org/1999/xlink" width="192" height="192" viewBox="0 0 1023 1023">
+<rect width="1023" height="1023" fill="var(--color-bg)" x="0" y="0"  />
+<g  fill="var(--color-fg)">
+<g transform="translate(310,62) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(372,62) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(403,62) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(589,62) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(620,62) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(682,62) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(310,93) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(341,93) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(372,93) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(496,93) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(589,93) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(651,93) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(310,124) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(434,124) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(527,124) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(558,124) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(620,124) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(651,124) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(682,124) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(372,155) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(403,155) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(465,155) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(496,155) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(558,155) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(589,155) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(651,155) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(341,186) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(372,186) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(403,186) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(434,186) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(465,186) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(558,186) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(620,186) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(651,186) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(310,217) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(372,217) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(434,217) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(527,217) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(558,217) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(620,217) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(310,248) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(372,248) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(434,248) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(496,248) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(558,248) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(620,248) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(682,248) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(310,279) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(341,279) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(403,279) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(434,279) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(465,279) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(527,279) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(558,279) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(651,279) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(124,310) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(155,310) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(186,310) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(248,310) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(310,310) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(372,310) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(465,310) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(496,310) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(527,310) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(558,310) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(620,310) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(713,310) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(744,310) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(775,310) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(868,310) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(899,310) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(930,310) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(124,341) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(279,341) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(310,341) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(341,341) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(372,341) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(403,341) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(496,341) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(558,341) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(589,341) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(713,341) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(744,341) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(775,341) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(806,341) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(837,341) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(868,341) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(930,341) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(93,372) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(124,372) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(155,372) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(186,372) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(217,372) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(248,372) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(310,372) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(372,372) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(403,372) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(465,372) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(496,372) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(558,372) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(682,372) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(713,372) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(744,372) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(775,372) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(868,372) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(124,403) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(310,403) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(341,403) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(372,403) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(589,403) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(651,403) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(713,403) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(744,403) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(775,403) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(806,403) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(837,403) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(899,403) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(93,434) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(155,434) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(186,434) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(217,434) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(248,434) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(279,434) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(310,434) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(465,434) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(496,434) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(558,434) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(682,434) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(713,434) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(775,434) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(868,434) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(899,434) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(930,434) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(62,465) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(124,465) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(155,465) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(217,465) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(279,465) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(341,465) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(372,465) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(434,465) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(527,465) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(589,465) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(620,465) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(651,465) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(682,465) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(713,465) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(744,465) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(806,465) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(837,465) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(899,465) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(930,465) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(93,496) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(248,496) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(310,496) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(341,496) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(434,496) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(465,496) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(682,496) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(775,496) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(93,527) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(124,527) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(279,527) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(310,527) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(341,527) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(372,527) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(434,527) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(527,527) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(806,527) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(837,527) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(62,558) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(93,558) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(124,558) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(155,558) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(248,558) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(279,558) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(310,558) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(372,558) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(403,558) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(558,558) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(589,558) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(620,558) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(806,558) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(837,558) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(868,558) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(899,558) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(930,558) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(62,589) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(124,589) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(186,589) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(217,589) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(279,589) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(372,589) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(434,589) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(527,589) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(558,589) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(651,589) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(682,589) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(713,589) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(744,589) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(775,589) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(806,589) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(868,589) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(899,589) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(930,589) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(62,620) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(155,620) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(186,620) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(217,620) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(248,620) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(279,620) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(310,620) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(341,620) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(434,620) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(465,620) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(527,620) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(620,620) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(682,620) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(744,620) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(775,620) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(806,620) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(837,620) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(868,620) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(62,651) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(155,651) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(186,651) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(372,651) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(434,651) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(465,651) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(496,651) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(682,651) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(744,651) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(899,651) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(930,651) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(62,682) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(124,682) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(155,682) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(217,682) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(248,682) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(310,682) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(403,682) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(434,682) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(496,682) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(558,682) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(682,682) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(713,682) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(744,682) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(775,682) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(806,682) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(868,682) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(310,713) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(372,713) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(403,713) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(434,713) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(496,713) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(527,713) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(620,713) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(651,713) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(682,713) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(806,713) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(837,713) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(899,713) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(930,713) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(341,744) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(403,744) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(465,744) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(527,744) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(651,744) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(682,744) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(744,744) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(806,744) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(341,775) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(496,775) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(527,775) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(589,775) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(620,775) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(651,775) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(682,775) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(806,775) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(837,775) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(899,775) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(310,806) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(341,806) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(434,806) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(496,806) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(527,806) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(558,806) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(620,806) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(682,806) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(713,806) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(744,806) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(775,806) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(806,806) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(837,806) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(868,806) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(930,806) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(310,837) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(341,837) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(372,837) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(434,837) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(496,837) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(651,837) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(682,837) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(713,837) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(775,837) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(837,837) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(868,837) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(310,868) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(341,868) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(403,868) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(496,868) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(527,868) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(558,868) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(620,868) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(651,868) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(682,868) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(713,868) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(744,868) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(775,868) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(806,868) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(837,868) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(868,868) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(899,868) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(372,899) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(434,899) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(465,899) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(496,899) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(527,899) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(806,899) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(837,899) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(899,899) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(372,930) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(558,930) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(589,930) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(651,930) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(713,930) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(744,930) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+<g transform="translate(806,930) scale(5.3216666666667)"><rect width="6" height="6"/></g>
+</g><g ><g transform="translate(62,62)"  fill="var(--color-fg)"><g transform="scale(15.5)"><path d="M0,0v14h14V0H0z M12,12H2V2h10V12z"/></g></g>
+<g transform="translate(744,62)"  fill="var(--color-fg)"><g transform="scale(15.5)"><path d="M0,0v14h14V0H0z M12,12H2V2h10V12z"/></g></g>
+<g transform="translate(62,744)"  fill="var(--color-fg)"><g transform="scale(15.5)"><path d="M0,0v14h14V0H0z M12,12H2V2h10V12z"/></g></g>
+<g transform="translate(124,124)"  fill="var(--color-fg)"><g transform="scale(15.5)"><rect width="6" height="6"/></g></g>
+<g transform="translate(806,124)"  fill="var(--color-fg)"><g transform="scale(15.5)"><rect width="6" height="6"/></g></g>
+<g transform="translate(124,806)"  fill="var(--color-fg)"><g transform="scale(15.5)"><rect width="6" height="6"/></g></g></g>
+</svg>
+        </div>
+          <button type="button" class="uz-btn uz-btn--tonal uz-btn--sm share-information__share-btn uz-share-information-share">
+            <svg class="share-information__share-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <polyline
+                points="17 8 12 3 7 8"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <line
+                x1="12"
+                y1="3"
+                x2="12"
+                y2="15"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Share
+          </button>
+        </div>
+        <p class="share-information__intro">The QR code contains the following information:</p>
+        <div class="share-information__sections">
+          <section class="share-information__section-card" aria-labelledby="shareInfoOwnerHeading">
+            <h2 class="share-information__section-title" id="shareInfoOwnerHeading">Account owner</h2>
+            <div class="share-information__fields">
+              <div class="form-field form-field--readonly">
+                <span class="form-field__label">Owner address</span>
+                <div class="form-field__row form-field__row--multiline">
+                  <span class="form-field__value form-field__value--multiline">
+                    <span>Beatrice Müller</span>
+                    <span>Hauptstrasse 1</span>
+                    <span>8001 Zürich</span>
+                  </span>
+                  <button
+                    type="button"
+                    class="form-field__edit form-field__edit--align-start"
+                    data-copy-text="Beatrice Müller&#10;Hauptstrasse 1&#10;8001 Zürich"
+                    aria-label="Copy owner address"
+                  >
+                    <svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="form-field form-field--readonly">
+                <span class="form-field__label">IBAN</span>
+                <div class="form-field__row">
+                  <span class="form-field__value">CH35 0900 0000 2470 2920 1</span>
+                  <button type="button" class="form-field__edit" data-copy-text="CH35 0900 0000 2470 2920 1" aria-label="Copy IBAN">
+                    <svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="share-information__section-card" aria-labelledby="shareInfoBankHeading">
+            <h2 class="share-information__section-title" id="shareInfoBankHeading">Bank</h2>
+            <div class="share-information__fields">
+              <div class="form-field form-field--readonly">
+                <span class="form-field__label">Bank address</span>
+                <div class="form-field__row form-field__row--multiline">
+                  <span class="form-field__value form-field__value--multiline">
+                    <span>MIGROS Bank</span>
+                    <span>Industriestrasse 117</span>
+                    <span>CH-8304 Zürich (Wallisellen)</span>
+                  </span>
+                  <button
+                    type="button"
+                    class="form-field__edit form-field__edit--align-start"
+                    data-copy-text="MIGROS Bank&#10;Industriestrasse 117&#10;CH-8304 Zürich (Wallisellen)"
+                    aria-label="Copy bank address"
+                  >
+                    <svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="form-field form-field--readonly">
+                <span class="form-field__label">BIC (SWIFT)</span>
+                <div class="form-field__row">
+                  <span class="form-field__value">MIGRCHZZXXX</span>
+                  <button type="button" class="form-field__edit" data-copy-text="MIGRCHZZXXX" aria-label="Copy BIC">
+                    <svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="js/analytics.js"></script>
-<script src="js/payment-state.js"></script>
-<script src="js/data-render.js"></script>
 <script src="js/form-field-sheet.js"></script>
 <script src="js/payment-exit-confirm.js"></script>
+<script src="js/payment-state.js"></script>
 <script src="js/payment-overlay.js"></script>
 <script src="js/app-mp.js"></script>
+<script src="js/account-information.js"></script>
+<script src="js/share-information.js"></script>
+<div id="uzbank-icon-defs" aria-hidden="true" class="uzbank-icon-defs">
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden;pointer-events:none">
+<symbol id="i-anchor" viewBox="0 0 24 24">
+<path d="M12 8C13.6569 8 15 6.65685 15 5C15 3.34315 13.6569 2 12 2C10.3431 2 9 3.34315 9 5C9 6.65685 10.3431 8 12 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 22V8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5 12H2C2 14.6522 3.05357 17.1957 4.92893 19.0711C6.8043 20.9464 9.34784 22 12 22C14.6522 22 17.1957 20.9464 19.0711 19.0711C20.9464 17.1957 22 14.6522 22 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-arrow-left" viewBox="0 0 24 24">
+<path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-arrow-right" viewBox="0 0 24 24">
+<path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 5L19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-calendar" viewBox="0 0 24 24">
+<path d="M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-camera" viewBox="0 0 24 24">
+<path d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 3H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 17C14.2091 17 16 15.2091 16 13C16 10.7909 14.2091 9 12 9C9.79086 9 8 10.7909 8 13C8 15.2091 9.79086 17 12 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-chevron-down" viewBox="0 0 24 24">
+<path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-chevron-left" viewBox="0 0 24 24">
+<path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-chevron-right" viewBox="0 0 24 24">
+<path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-clock" viewBox="0 0 24 24">
+<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-corner-up-right" viewBox="0 0 24 24">
+<path d="M15 14L20 9L15 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4 20V13C4 11.9391 4.42143 10.9217 5.17157 10.1716C5.92172 9.42143 6.93913 9 8 9H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-credit-card" viewBox="0 0 24 24">
+<path d="M21 4H3C1.89543 4 1 4.89543 1 6V18C1 19.1046 1.89543 20 3 20H21C22.1046 20 23 19.1046 23 18V6C23 4.89543 22.1046 4 21 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M1 10H23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-edit-2" viewBox="0 0 24 24">
+<path d="M16 3L21 8L8 21H3V16L16 3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-eye" viewBox="0 0 24 24">
+<path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-gitlab" viewBox="0 0 24 24">
+<g clip-path="url(#i-gitlab-clip0_207_82042)">
+<path d="M22.65 14.39L12 22.13L1.35002 14.39C1.20725 14.285 1.10134 14.1375 1.04746 13.9687C0.993572 13.7998 0.99447 13.6183 1.05002 13.45L2.27002 9.66996L4.71002 2.15996C4.73369 2.09877 4.77136 2.04397 4.82002 1.99996C4.89926 1.92758 5.0027 1.88745 5.11002 1.88745C5.21734 1.88745 5.32078 1.92758 5.40002 1.99996C5.45141 2.04963 5.48927 2.11158 5.51002 2.17996L7.95002 9.66996H16.05L18.49 2.15996C18.5137 2.09877 18.5514 2.04397 18.6 1.99996C18.6793 1.92758 18.7827 1.88745 18.89 1.88745C18.9973 1.88745 19.1008 1.92758 19.18 1.99996C19.2314 2.04963 19.2693 2.11158 19.29 2.17996L21.73 9.68996L23 13.45C23.0505 13.6234 23.0438 13.8086 22.9807 13.9779C22.9177 14.1473 22.8017 14.2918 22.65 14.39Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="i-gitlab-clip0_207_82042">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+</symbol>
+<symbol id="i-home" viewBox="0 0 24 24">
+<path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-life-buoy" viewBox="0 0 24 24">
+<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4.92999 4.93005L9.16999 9.17005" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14.83 14.83L19.07 19.07" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14.83 9.17005L19.07 4.93005" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14.83 9.17001L18.36 5.64001" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4.92999 19.07L9.16999 14.83" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-more-horizontal" viewBox="0 0 24 24">
+<path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M19 13C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11C18.4477 11 18 11.4477 18 12C18 12.5523 18.4477 13 19 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5 13C5.55228 13 6 12.5523 6 12C6 11.4477 5.55228 11 5 11C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-payments" viewBox="0 0 24 24">
+<path d="M7 22L2 17M2 17L7 12M2 17H14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17 12L22 7M22 7L17 2M22 7H10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-plus" viewBox="0 0 24 24">
+<path d="M12 5V19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-repeat" viewBox="0 0 24 24">
+<path d="M17 1L21 5L17 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3 11V9C3 7.93913 3.42143 6.92172 4.17157 6.17157C4.92172 5.42143 5.93913 5 7 5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7 23L3 19L7 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M21 13V15C21 16.0609 20.5786 17.0783 19.8284 17.8284C19.0783 18.5786 18.0609 19 17 19H3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-rotate-ccw" viewBox="0 0 24 24">
+<path d="M1 4V10H7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3.51 15C4.15839 16.8404 5.38734 18.4202 7.01166 19.5014C8.63598 20.5826 10.5677 21.1066 12.5157 20.9945C14.4637 20.8824 16.3226 20.1402 17.8121 18.8798C19.3017 17.6194 20.3413 15.909 20.7742 14.0064C21.2072 12.1038 21.0101 10.112 20.2126 8.33111C19.4152 6.55025 18.0605 5.0768 16.3528 4.13277C14.6451 3.18874 12.6769 2.82527 10.7447 3.09713C8.81245 3.36898 7.02091 4.26143 5.64 5.64001L1 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-search" viewBox="0 0 24 24">
+<circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+<path d="M20 20L16.5 16.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+</symbol>
+<symbol id="i-shield" viewBox="0 0 24 24">
+<path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-sunrise-logo" viewBox="0 0 24 24">
+<path d="M12.001 1C9.82526 0.999814 7.69841 1.64482 5.88932 2.85344C4.08024 4.06207 2.67019 5.78002 1.83752 7.79005C1.00484 9.80009 0.786918 12.0119 1.21131 14.1458C1.63573 16.2797 2.6834 18.2397 4.22184 19.7782C5.76025 21.3166 7.72037 22.3643 9.85423 22.7887C11.9881 23.2131 14.1999 22.9952 16.2099 22.1625C18.22 21.3298 19.9379 19.9198 21.1466 18.1107C22.3552 16.3016 23.0002 14.1747 23 11.9991C22.997 9.08282 21.8372 6.28694 19.7752 4.22485C17.7131 2.16278 14.9172 1.00299 12.001 1ZM12.001 3.25853C13.4685 3.25777 14.9126 3.62674 16.2 4.3314C17.4873 5.03604 18.5764 6.05367 19.3666 7.2903C20.1569 8.52692 20.6229 9.94272 20.7215 11.407C20.8202 12.8712 20.5484 14.3368 19.9312 15.6683H4.06973C3.45251 14.3367 3.18068 12.8711 3.27942 11.4067C3.37813 9.94241 3.8442 8.52658 4.63454 7.28992C5.42493 6.05325 6.51413 5.03566 7.8016 4.33106C9.08904 3.62647 10.5333 3.25761 12.001 3.25853Z" fill="currentColor"/>
+</symbol>
+<symbol id="i-trash" viewBox="0 0 24 24">
+<path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-trending-up" viewBox="0 0 24 24">
+<path d="M23 6L13.5 15.5L8.5 10.5L1 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17 6H23V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-user" viewBox="0 0 24 24">
+<path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-x-circle" viewBox="0 0 24 24">
+<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15 9L9 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-x" viewBox="0 0 24 24">
+<path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+</svg>
+</div>
 </body>
 </html>

@@ -17,8 +17,8 @@
  *
  * Conventions:
  *   - Dynamic rows carry data-source="state" so they can be located + removed
- *   - Other static content (Yesterday group, dummy Apple/Cafe rows) is
- *     untouched — those represent historical mock data
+   *   - Static mock rows ([data-mock-booking="static"]) stay in HTML; only
+   *     day headers and [data-source="state"] rows are updated
  */
 (function () {
   'use strict';

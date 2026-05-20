@@ -111,7 +111,7 @@
    *   - Alpha-derived tokens (separator, disabled, hover) are FG at fixed
    *     alpha — they auto-adapt to whatever surface they sit on.
    *   - Buttons swap the BG/FG roles (filled primary inverts).
-   *   - Scrims stay black at theme-tuned alphas.
+   *   - Scrims use brand colour (FG on light shells, BG on dark) at theme-tuned alphas.
    * ────────────────────────────────────────────────────────────────── */
 
   function deriveTokens(bgHex, fgHex) {
@@ -129,7 +129,9 @@
       );
     }
     function fgAlpha(a) { return 'rgba(' + fg.r + ', ' + fg.g + ', ' + fg.b + ', ' + a + ')'; }
+    function rgbAlpha(c, a) { return 'rgba(' + c.r + ', ' + c.g + ', ' + c.b + ', ' + a + ')'; }
     function blackAlpha(a) { return 'rgba(0, 0, 0, ' + a + ')'; }
+    var scrimRgb = isDark ? bg : fg;
 
     var bgElev = isDark ? 0.22 : 0.07;
     var fgElev = isDark ? 0.06 : 0.22;
@@ -178,8 +180,8 @@
       'color-btn-tonal-hover':  mix(bg, fg, isDark ? 0.38 : 0.14),
       'color-btn-tonal-pressed': mix(bg, fg, isDark ? 0.48 : 0.22),
 
-      // Elevation — black scrim/shadow at theme-tuned alphas
-      'color-overlay-scrim':         blackAlpha(isDark ? 0.62 : 0.45),
+      // Elevation — brand-tinted scrim; neutral shadows
+      'color-overlay-scrim':         rgbAlpha(scrimRgb, isDark ? 0.62 : 0.45),
       'color-nav-elevated-shadow':   blackAlpha(isDark ? 0.35 : 0.06),
       'color-modal-elevated-shadow': blackAlpha(isDark ? 0.45 : 0.12),
 
@@ -582,30 +584,28 @@
 
     // Saved cards
     savedThemes.forEach(function (t) {
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'cc-theme-card' + (isSelectedTheme(t) ? ' cc-theme-card--selected' : '');
-      btn.setAttribute('role', 'listitem');
-      btn.setAttribute('aria-pressed', isSelectedTheme(t) ? 'true' : 'false');
+      var card = document.createElement('div');
+      card.className = 'cc-theme-card' + (isSelectedTheme(t) ? ' cc-theme-card--selected' : '');
+      card.setAttribute('role', 'listitem');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-pressed', isSelectedTheme(t) ? 'true' : 'false');
 
       var fgCircle = '<span class="cc-theme-card__swatch cc-theme-card__swatch--fg" style="background:' + t.fg + '"></span>';
       var bgCircle = '<span class="cc-theme-card__swatch cc-theme-card__swatch--bg" style="background:' + t.bg + '"></span>';
 
-      btn.innerHTML =
+      card.innerHTML =
         '<span class="cc-theme-card__header">' +
           '<span class="cc-theme-card__title">' + escapeHtml(t.name) + '</span>' +
           '<span class="cc-theme-card__actions">' +
             '<button type="button" class="cc-theme-card__trash" aria-label="Delete ' + escapeAttr(t.name) + '" data-theme-trash="' + escapeAttr(t.id) + '">' +
-              '<svg class="cc-theme-card__trash-icon" aria-hidden="true" focusable="false"><use href=\"#i-trash\"/></svg>' +
+              '<svg class="cc-theme-card__trash-icon" aria-hidden="true" focusable="false"><use href="#i-trash"/></svg>' +
             '</button>' +
           '</span>' +
         '</span>' +
         '<span class="cc-theme-card__row">' + fgCircle + '<span class="cc-theme-card__row-label">Foreground</span></span>' +
         '<span class="cc-theme-card__row">' + bgCircle + '<span class="cc-theme-card__row-label">Background</span></span>';
 
-      btn.addEventListener('click', function (ev) {
-        // Ignore clicks on the nested trash button
-        if (ev.target && ev.target.closest && ev.target.closest('.cc-theme-card__trash')) return;
+      function applySavedTheme() {
         bgHex = t.bg;
         fgHex = t.fg;
         bgHexInput.value = bgHex;
@@ -618,9 +618,21 @@
           window.UZBankApplyTheme(shellThemeFromPair(bgHex, fgHex));
         }
         renderSavedThemes();
+      }
+
+      card.addEventListener('click', function (ev) {
+        if (ev.target && ev.target.closest && ev.target.closest('.cc-theme-card__trash')) return;
+        applySavedTheme();
       });
 
-      savedGrid.appendChild(btn);
+      card.addEventListener('keydown', function (ev) {
+        if (ev.key !== 'Enter' && ev.key !== ' ') return;
+        if (ev.target && ev.target.closest && ev.target.closest('.cc-theme-card__trash')) return;
+        ev.preventDefault();
+        applySavedTheme();
+      });
+
+      savedGrid.appendChild(card);
     });
 
     // Trash handlers (event delegation)

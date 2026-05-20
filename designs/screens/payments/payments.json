@@ -9,10 +9,10 @@
     "overview": "overview.png",
     "variants": {
       "desktop-default": {
-        "default": "variants/desktop-default/default.png"
+        "default": "variants/desktop-default/default.svg"
       },
       "mobile-default": {
-        "default": "variants/mobile-default/default.png"
+        "default": "variants/mobile-default/default.svg"
       }
     }
   },
@@ -27,5 +27,11 @@
       }
     }
   },
-  "notes": []
+  "notes": [
+    "Figma exports: 'Payment - desktop' → variants/desktop-default/; 'Payment - mobile' → variants/mobile-default/. Each variant folder also has default.png next to default.svg.",
+    "Mobile stack: Pending (one card, two timed rows + 'Show all' inside), Recurring payments card, Most recent recipients card.",
+    "Desktop: pending in main column; recurring + recipients stacked in sidebar column.",
+    "Figma Main Content stack gap: mobile space/4 (16dp) → apps/web --space-3; desktop column space/6 (32dp) → --space-5.",
+    "Implementation stacks sidebar below pending under 1024px (body[data-screen=payments] flex column + visible .view__sidebar)."
+  ]
 }

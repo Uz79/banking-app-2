@@ -143,6 +143,9 @@
     function fa(a) {
       return 'rgba(' + fg.r + ',' + fg.g + ',' + fg.b + ',' + a + ')';
     }
+    function sa(c, a) {
+      return 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + a + ')';
+    }
     function ba(a) {
       return 'rgba(0,0,0,' + a + ')';
     }
@@ -177,7 +180,7 @@
       'color-btn-tonal-fg': fgHex,
       'color-btn-tonal-hover': mix(bg, fg, isDark ? 0.38 : 0.14),
       'color-btn-tonal-pressed': mix(bg, fg, isDark ? 0.48 : 0.22),
-      'color-overlay-scrim': ba(isDark ? 0.62 : 0.45),
+      'color-overlay-scrim': sa(isDark ? bg : fg, isDark ? 0.62 : 0.45),
       'color-nav-elevated-shadow': ba(isDark ? 0.35 : 0.06),
       'color-modal-elevated-shadow': ba(isDark ? 0.45 : 0.12),
       'color-surface-state-hover': fa(0.1),
@@ -446,6 +449,36 @@
         btn.textContent = 'Reset ✓';
         btn.disabled = true;
         setTimeout(function () { btn.textContent = prev; btn.disabled = false; }, 1200);
+      }
+    });
+
+    document.addEventListener('uz:more-functions-action', function (e) {
+      var d = e.detail || {};
+      var action = d.action;
+      if (!action) return;
+      var prefix = '';
+      try {
+        if ((window.location.pathname || '').replace(/\\/g, '/').indexOf('/payment/') !== -1) {
+          prefix = '../';
+        }
+      } catch (err1) {}
+      function go(page) {
+        window.location.href = prefix + page;
+      }
+      if (action === 'internal-account-transfer') {
+        go('payments.html');
+        return;
+      }
+      if (action === 'change-category') {
+        go('overview.html');
+        return;
+      }
+      if (action === 'show-account-information') {
+        if (typeof window.UZBankOpenAccountInformationOverlay === 'function') {
+          if (window.UZBankOpenAccountInformationOverlay()) return;
+        }
+        go('account-details.html#account-information');
+        return;
       }
     });
   });

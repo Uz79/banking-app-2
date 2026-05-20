@@ -2,6 +2,8 @@
 
 Cards for adding, displaying, selecting, and deleting custom color themes (foreground/background pairs).
 
+Sibling under `card/`: **`section-card/`** (dashboard section cards on Overview / Payments / Account details).
+
 ## Variants
 
 - `add-theme`

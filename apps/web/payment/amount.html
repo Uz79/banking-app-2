@@ -12,7 +12,7 @@
         var ref = document.referrer;
         if (ref && ref.indexOf(location.host) >= 0) {
           var last = ref.split("/").pop().split("?")[0];
-          if (/^(overview|payments|account-details)\.html$/.test(last)) {
+          if (/^(overview|payments|account-details|account-information)\.html$/.test(last)) {
             location.replace("../" + last + "#pay/" + step);
             return;
           }

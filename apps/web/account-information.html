@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark light">
+  <title>UZ Bank – Account information</title>
+  <script>
+    (function () {
+      try {
+        var path = window.location.pathname;
+        var q = window.location.search || '';
+        var lower = path.toLowerCase();
+        var idx = lower.lastIndexOf('account-information.html');
+        if (idx >= 0) {
+          location.replace(path.slice(0, idx) + 'account-details.html' + q + '#account-information');
+        } else {
+          location.replace('account-details.html#account-information');
+        }
+      } catch (e) {
+        location.replace('account-details.html#account-information');
+      }
+    })();
+  </script>
+</head>
+<body class="body">
+  <p><a href="account-details.html#account-information">Open account details</a></p>
+</body>
+</html>

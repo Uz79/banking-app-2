@@ -104,7 +104,7 @@ export const TabBarOverviewActive = {
         <span class="tab-bar__icon-wrap tab-bar__icon-wrap--active">
           <svg class="tab-bar__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
         </span>
-        <span class="tab-bar__label">Start</span>
+        <span class="tab-bar__label">Overview</span>
       </a>
       <a class="tab-bar__item" href="#">
         <span class="tab-bar__icon-wrap">
@@ -130,7 +130,7 @@ export const TabBarPaymentsActive = {
         <span class="tab-bar__icon-wrap">
           <svg class="tab-bar__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
         </span>
-        <span class="tab-bar__label">Start</span>
+        <span class="tab-bar__label">Overview</span>
       </a>
       <a class="tab-bar__item tab-bar__item--active" href="#" aria-current="page">
         <span class="tab-bar__icon-wrap tab-bar__icon-wrap--active">

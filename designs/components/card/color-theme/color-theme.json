@@ -30,6 +30,7 @@
     }
   },
   "notes": [
-    "This component is used in Profile settings to manage saved themes."
+    "This component is used in Profile settings to manage saved themes.",
+    "Sibling component: card/section-card (dashboard section cards)."
   ]
 }

@@ -1,0 +1,153 @@
+<!-- Account information — same shell as payment flow (modal-overlay → modal-shell → modal) -->
+<div id="uz-account-information-overlay" class="modal-overlay" aria-hidden="true">
+  <div class="modal-shell">
+    <div class="modal modal--account-information">
+      <div class="modal__nav">
+        <span class="modal__title">Account information</span>
+        <button type="button" class="modal__close uz-account-information-close" aria-label="Close">
+          <svg class="modal__close-icon" role="img" aria-label="" focusable="false"><use href="#i-x"/></svg>
+        </button>
+      </div>
+      <div class="modal__body modal__body--account-information">
+        <div class="account-information__summary">
+          <!--
+            list-item / group-account (designs/components/list-item/list-item/variants/group-account).
+            Icons are inlined (not <use href="#…">) so this block renders without #uzbank-icon-defs
+            (Storybook, snippets, or any shell missing the sprite).
+          -->
+          <article class="list-item list-item--group-account account-information__summary-card" aria-label="Selected account">
+            <div class="list-item__media">
+              <svg class="list-item__icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M12 8C13.6569 8 15 6.65685 15 5C15 3.34315 13.6569 2 12 2C10.3431 2 9 3.34315 9 5C9 6.65685 10.3431 8 12 8Z"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path d="M12 22V8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path
+                  d="M5 12H2C2 14.6522 3.05357 17.1957 4.92893 19.0711C6.8043 20.9464 9.34784 22 12 22C14.6522 22 17.1957 20.9464 19.0711 19.0711C20.9464 17.1957 22 14.6522 22 12H19"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+            <div class="list-item__body account-information__summary-copy">
+              <span class="list-item__title account-information__summary-title">Savings account</span>
+              <span class="list-item__subtitle account-information__summary-iban">CH35 0900 0000 2470 2920 2</span>
+            </div>
+            <div class="list-item__end account-information__summary-amount">
+              <span class="account-information__summary-currency">USD</span>
+              <span class="account-information__summary-value">25'000.00</span>
+            </div>
+          </article>
+        </div>
+        <div class="segmented account-information__tabs" role="tablist" aria-label="Account information sections">
+          <button type="button" class="segmented__option segmented__option--active account-information__tab" role="tab" aria-selected="true" id="accountInfoTabInformation" aria-controls="accountInfoPanelInformation" data-ai-tab="information">Information</button>
+          <button type="button" class="segmented__option account-information__tab" role="tab" aria-selected="false" id="accountInfoTabConditions" aria-controls="accountInfoPanelConditions" data-ai-tab="conditions">Conditions</button>
+        </div>
+        <div class="account-information__share-row">
+          <button type="button" class="uz-btn uz-btn--tonal uz-btn--sm account-information__share uz-account-information-share">
+            <svg class="account-information__share-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2" />
+            </svg>
+            Share information
+          </button>
+        </div>
+        <div class="account-information__scroll">
+          <div class="account-information__panel account-information__panel--active" id="accountInfoPanelInformation" role="tabpanel" aria-labelledby="accountInfoTabInformation" data-ai-panel="information">
+            <div class="account-information__fields">
+              <div class="form-field form-field--readonly">
+                <span class="form-field__label">IBAN</span>
+                <div class="form-field__row">
+                  <span class="form-field__value">CH35 0900 0000 2470 2920 1</span>
+                  <button type="button" class="form-field__edit" data-copy-text="CH35 0900 0000 2470 2920 1" aria-label="Copy IBAN">
+                    <svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="form-field form-field--readonly">
+                <span class="form-field__label">QR IBAN</span>
+                <div class="form-field__row">
+                  <span class="form-field__value">CH35 0900 0000 2470 2920 2</span>
+                  <button type="button" class="form-field__edit" data-copy-text="CH35 0900 0000 2470 2920 2" aria-label="Copy QR IBAN">
+                    <svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="form-field form-field--readonly">
+                <span class="form-field__label">Account owner</span>
+                <div class="form-field__row">
+                  <span class="form-field__value">Beatrice Müller</span>
+                </div>
+              </div>
+              <div class="form-field form-field--readonly">
+                <span class="form-field__label">Product</span>
+                <div class="form-field__row">
+                  <span class="form-field__value">Private account</span>
+                </div>
+              </div>
+              <div class="form-field form-field--readonly">
+                <span class="form-field__label">Category</span>
+                <div class="form-field__row">
+                  <span class="form-field__value">Payments</span>
+                  <button type="button" class="form-field__edit" aria-label="Edit category">
+                    <svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-edit-2"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="form-field form-field--readonly">
+                <span class="form-field__label">Bank clearing number</span>
+                <div class="form-field__row">
+                  <span class="form-field__value">8401</span>
+                </div>
+              </div>
+              <div class="form-field form-field--readonly">
+                <span class="form-field__label">BIC (SWIFT)</span>
+                <div class="form-field__row">
+                  <span class="form-field__value">MIGRHZZXXX</span>
+                  <button type="button" class="form-field__edit" data-copy-text="MIGRHZZXXX" aria-label="Copy BIC">
+                    <svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="form-field form-field--readonly">
+                <span class="form-field__label">Bank</span>
+                <div class="form-field__row form-field__row--multiline">
+                  <span class="form-field__value form-field__value--multiline">
+                    <span>MIGROS Bank</span>
+                    <span>Industriestrasse 117</span>
+                    <span>CH-8304 Zürich (Wallisellen)</span>
+                  </span>
+                  <button type="button" class="form-field__edit form-field__edit--align-start" data-copy-text="MIGROS Bank&#10;Industriestrasse 117&#10;CH-8304 Zürich (Wallisellen)" aria-label="Copy bank address">
+                    <svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="account-information__panel" id="accountInfoPanelConditions" role="tabpanel" aria-labelledby="accountInfoTabConditions" hidden data-ai-panel="conditions">
+            <p class="account-information__conditions-intro">Terms and conditions for this account type.</p>
+            <p class="account-information__conditions-body">Placeholder copy — replace with legal text or a link to PDF terms from production content.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal__footer modal__footer--account-information">
+        <button type="button" class="uz-btn uz-btn--primary uz-btn--md uz-btn--block uz-account-information-confirm" id="accountInformationConfirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
