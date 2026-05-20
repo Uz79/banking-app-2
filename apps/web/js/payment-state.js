@@ -33,18 +33,17 @@
   // It stays fixed for the entire session: new payments add to today's
   // running ledger but do NOT change this displayed balance (only tomorrow,
   // hypothetically, would today's outflows show up here).
-  // Math: yesterday started at 11'000; the 3 yesterday bookings sum to 430
-  // (Cafe -10, Pizza -320, Railway -100), so end-of-yesterday = 10'570.
-  var INITIAL_HOUSEHOLD = 10570.00;
+  // Registered Household balance = end of yesterday (start of today) in CHF.
+  // Yesterday mock outflows (USD) sum to 430; 10'430 − 430 = 10'000 USD header
+  // on the Yesterday group. Today opens at CHF 10'000; Apple −100 → Today
+  // header CHF 9'900 (see account-details bookings card / Figma).
+  var INITIAL_HOUSEHOLD = 10000.00;
 
-  // The "Yesterday" header in the bookings list shows this same number
-  // (end-of-yesterday balance, not the start). Constant for the prototype.
-  var YESTERDAY_BALANCE = 10570.00;
+  // End-of-yesterday balance shown in the Yesterday group header (USD in UI).
+  var YESTERDAY_BALANCE = 10000.00;
 
-  // Static (non-state, in-HTML) outflows that have already happened today
-  // before the user opened the app. Currently just one Apple booking of
-  // -100 CHF in the Today group on account-details. Used to compute the
-  // initial Today header balance: 10'570 − 100 = 10'470.
+  // Static mock outflow in HTML Today group (Apple −100 CHF) before any
+  // payments the user commits in-session.
   var STATIC_TODAY_OUTFLOW = 100.00;
 
   // Fixed sibling account balances (not editable in this prototype).
@@ -136,6 +135,14 @@
       country: 'CH'
     }
   ]);
+
+  try {
+    if (typeof window !== 'undefined') {
+      window.__UZ_CANONICAL_RECIPIENT_ROWS__ = RECIPIENTS.map(function (r) {
+        return Object.assign({}, r);
+      });
+    }
+  } catch (_) {}
 
   /* ── Persistence ─────────────────────────────────────────────────── */
 

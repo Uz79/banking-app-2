@@ -1,14 +1,18 @@
 /**
- * Design-system menus (menu-countries / menu-accounts) for payment modal pickers
- * (Recipient, Amount, Time Schedule, Summary steps; refs under ../../../designs/components/menu/).
+ * Design-system menus (menu-countries / menu-accounts / menu-details-more-functions)
+ * for payment modal pickers and main-view contextual actions (refs under ../../../designs/components/menu/).
  * - All <select class="form-field__select"> (select fields)
  * - Amount field currency (.amount-input__currency)
  * - Debit account (.debit-account)
+ * - Main view “More functions” ([data-more-functions-trigger] on Overview / Account details)
  *
- * Uses <dialog> + ::backdrop (primary @ 20%). Closes when payment overlay dismisses.
+ * Uses <dialog> + ::backdrop (`--color-overlay-scrim`, same as modals). Backdrop and bottom sheet animate together on open (~0.45s);
+ * close exits in ~0.28s ease-in before `dialog.close()`.
+ * Esc uses the `cancel` event (preventDefault + animated close). Reduces to instant close when
+ * `prefers-reduced-motion: reduce`.
  *
  * Layout: ≥1280px — anchored pop-up: width matches trigger, opens below or above from
- * available space, slides up into place. <1280px — bottom sheet with same slide-up motion.
+ * available space, slides into place. <1280px — bottom sheet spanning the padded dialog width.
  */
 (function () {
   var ACCOUNTS = [
@@ -52,6 +56,16 @@
     { code: 'USD', label: 'US dollar (USD)' }
   ];
 
+  /**
+   * designs/components/menu/menu-details-more-functions
+   * + designs/screens/flows/main-view-contextual-menu-navigation-flow.png (journey reference).
+   */
+  var MORE_FUNCTIONS_ITEMS = [
+    { icon: 'i-repeat', label: 'Internal account transfer', action: 'internal-account-transfer' },
+    { icon: 'i-edit-2', label: 'Change category', action: 'change-category' },
+    { icon: 'i-eye', label: 'Show account information', action: 'show-account-information' }
+  ];
+
   var dialog;
   var listEl;
   var headingSrEl;
@@ -64,6 +78,11 @@
   var sheetAnchor = null;
   var sheetLayoutListenersInstalled = false;
   var sheetScrollParent = null;
+  var sheetAnimatingClose = false;
+  /** Fallback if `animationend` does not fire (mirrors payment-overlay closeModal). */
+  var sheetCloseFallbackTimer = null;
+  /** Sync list `overflow-y` when viewport height/max-height changes. */
+  var formSheetOverflowListenersBound = false;
 
   var LAYOUT_DESKTOP_MQ = '(min-width: 1280px)';
   var SHEET_VIEWPORT_MARGIN = 8;
@@ -92,6 +111,61 @@
     previewWrapEl.hidden = true;
   }
 
+  function clearSheetCloseTimers() {
+    if (sheetCloseFallbackTimer !== null) {
+      clearTimeout(sheetCloseFallbackTimer);
+      sheetCloseFallbackTimer = null;
+    }
+  }
+
+  /** Escape uses `cancel`; must preventDefault until close animation finishes (`closeSheet`). */
+  function prefersReducedMotion() {
+    try {
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    } catch (_e) {
+      return false;
+    }
+  }
+
+  function closeSheet() {
+    if (!dialog || !dialog.open || sheetAnimatingClose) return;
+    clearSheetCloseTimers();
+    if (prefersReducedMotion()) {
+      dialog.classList.remove('form-sheet--closing');
+      dialog.close();
+      return;
+    }
+    var panel = dialog.querySelector('.form-sheet__panel');
+    if (!panel) {
+      dialog.close();
+      return;
+    }
+
+    sheetAnimatingClose = true;
+    dialog.classList.add('form-sheet--closing');
+
+    var finalized = false;
+    function finalize() {
+      if (finalized) return;
+      finalized = true;
+      clearSheetCloseTimers();
+      panel.removeEventListener('animationend', onPanelAnimEnd);
+      sheetAnimatingClose = false;
+      dialog.classList.remove('form-sheet--closing');
+      dialog.close();
+    }
+
+    function onPanelAnimEnd(e) {
+      if (e.target !== panel) return;
+      var n = String(e.animationName || '');
+      if (n.indexOf('form-sheet-panel-out') === -1) return;
+      finalize();
+    }
+
+    panel.addEventListener('animationend', onPanelAnimEnd);
+    sheetCloseFallbackTimer = window.setTimeout(finalize, 420);
+  }
+
   function ensureDialog() {
     if (dialog) return dialog;
     dialog = document.createElement('dialog');
@@ -114,7 +188,7 @@
       '<p class="form-sheet__heading-display-desktop"></p>' +
       '</div>' +
       '<div class="form-sheet__preview-wrap" hidden></div>' +
-      '<div id="form-sheet-list" class="form-sheet__list" role="listbox"></div>' +
+      '<div id="form-sheet-list" class="form-sheet__list" role="listbox" data-fs-scroll="off"></div>' +
       '</div>';
     document.body.appendChild(dialog);
     headingSrEl = dialog.querySelector('#form-sheet-heading');
@@ -127,18 +201,29 @@
       navCloseEl.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        dialog.close();
+        closeSheet();
       });
     }
+    dialog.addEventListener('cancel', function (e) {
+      e.preventDefault();
+      closeSheet();
+    });
     dialog.addEventListener('click', function (e) {
-      if (e.target === dialog) dialog.close();
+      if (e.target === dialog) closeSheet();
     });
     dialog.addEventListener('close', function () {
+      clearSheetCloseTimers();
+      sheetAnimatingClose = false;
+      dialog.classList.remove('form-sheet--closing');
       uninstallSheetLayoutListeners();
       clearAnchoredSheetLayout();
       sheetAnchor = null;
+      uninstallFormSheetOverflowListeners();
       if (listEl) listEl.innerHTML = '';
       clearPreview();
+      document.querySelectorAll('[data-more-functions-trigger][aria-expanded="true"]').forEach(function (el) {
+        el.setAttribute('aria-expanded', 'false');
+      });
       if (prevFocus && typeof prevFocus.focus === 'function') {
         try {
           prevFocus.focus();
@@ -212,6 +297,38 @@
 
   function onSheetLayoutExternalEvent() {
     positionFormSheet();
+    onFormSheetOverflowExternalEvent();
+  }
+
+  function syncFormSheetListOverflow() {
+    if (!listEl || !dialog || !dialog.open) return;
+    var fudgePixels = 2;
+    listEl.dataset.fsScroll =
+      listEl.scrollHeight > listEl.clientHeight + fudgePixels ? 'on' : 'off';
+  }
+
+  function onFormSheetOverflowExternalEvent() {
+    window.requestAnimationFrame(syncFormSheetListOverflow);
+  }
+
+  function installFormSheetOverflowListeners() {
+    if (formSheetOverflowListenersBound) return;
+    formSheetOverflowListenersBound = true;
+    window.addEventListener('resize', onFormSheetOverflowExternalEvent);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', onFormSheetOverflowExternalEvent);
+      window.visualViewport.addEventListener('scroll', onFormSheetOverflowExternalEvent);
+    }
+  }
+
+  function uninstallFormSheetOverflowListeners() {
+    if (!formSheetOverflowListenersBound) return;
+    formSheetOverflowListenersBound = false;
+    window.removeEventListener('resize', onFormSheetOverflowExternalEvent);
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', onFormSheetOverflowExternalEvent);
+      window.visualViewport.removeEventListener('scroll', onFormSheetOverflowExternalEvent);
+    }
   }
 
   function installSheetLayoutListeners() {
@@ -246,6 +363,9 @@
 
   function openDialog(titleText, anchorEl, sheetFlags) {
     ensureDialog();
+    clearSheetCloseTimers();
+    sheetAnimatingClose = false;
+    dialog.classList.remove('form-sheet--closing');
     sheetFlags = sheetFlags || {};
     sheetAnchor = anchorEl && anchorEl.nodeType === 1 ? anchorEl : null;
     prevFocus = document.activeElement;
@@ -256,13 +376,18 @@
     window.requestAnimationFrame(function () {
       window.requestAnimationFrame(function () {
         positionFormSheet();
+        installFormSheetOverflowListeners();
         if (dialog.getAttribute('data-form-sheet-anchored') === 'true') {
           installSheetLayoutListeners();
         } else if (sheetLayoutListenersInstalled) {
           uninstallSheetLayoutListeners();
         }
-        var first = listEl.querySelector('button');
-        if (first) first.focus();
+        /* One extra frame so max-height/layout from positionFormSheet is committed before comparing scroll metrics. */
+        window.requestAnimationFrame(function () {
+          syncFormSheetListOverflow();
+          var first = listEl.querySelector('button');
+          if (first) first.focus();
+        });
       });
     });
   }
@@ -303,7 +428,7 @@
         selectEl.value = opt.value;
         selectEl.dispatchEvent(new Event('input', { bubbles: true }));
         selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-        dialog.close();
+        closeSheet();
       });
       listEl.appendChild(btn);
     }
@@ -360,13 +485,108 @@
             stampDebitAccount(row, acc);
           });
         }
-        dialog.close();
+        closeSheet();
       });
       listEl.appendChild(btn);
     });
     /* No preview strip — same account appears as row 1; strip duplicated content and mismatched fills on #i-home. */
     clearPreview();
     openDialog('Debit account', cardEl, { sheetType: 'account' });
+  }
+
+  function openMoreFunctionsSheet(triggerBtn) {
+    if (!customMenusEnabled() || !triggerBtn) return;
+    var hostView =
+      triggerBtn.closest &&
+      triggerBtn.closest('.view--overview, .view--account-details');
+    var sourceView = hostView && hostView.dataset ? hostView.dataset.view || '' : '';
+
+    ensureDialog();
+    listEl.innerHTML = '';
+    MORE_FUNCTIONS_ITEMS.forEach(function (item) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'form-sheet__row form-sheet__row--more-function';
+      btn.setAttribute('role', 'option');
+      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('class', 'form-sheet__more-icon');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.setAttribute('focusable', 'false');
+      var use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+      use.setAttribute('href', '#' + item.icon);
+      svg.appendChild(use);
+      var lab = document.createElement('span');
+      lab.className = 'form-sheet__more-label';
+      lab.textContent = item.label;
+      btn.appendChild(svg);
+      btn.appendChild(lab);
+      btn.addEventListener('click', function () {
+        closeSheet();
+        try {
+          document.dispatchEvent(
+            new CustomEvent('uz:more-functions-action', {
+              bubbles: true,
+              detail: { action: item.action, sourceView: sourceView }
+            })
+          );
+        } catch (err) { /* ignore */ }
+      });
+      listEl.appendChild(btn);
+    });
+    clearPreview();
+    /* Anchor to the whole control — .action-button__circle is ~icon-sized and makes the
+       desktop anchored sheet far too narrow (“More functions” unreadable). */
+    var anchor = triggerBtn;
+    triggerBtn.setAttribute('aria-expanded', 'true');
+    openDialog('More functions', anchor, { sheetType: 'more-functions' });
+  }
+
+  function moreFunctionsTriggerFromTarget(target) {
+    return target && target.closest && target.closest('[data-more-functions-trigger]');
+  }
+
+  function shouldOpenMoreFunctionsSheet(trigger) {
+    if (!trigger) return false;
+    var modal = getModal();
+    if (modal && modal.contains(trigger)) return false;
+    var view =
+      trigger.closest &&
+      trigger.closest('.view--overview.view--active, .view--account-details.view--active');
+    return !!view;
+  }
+
+  function bindMoreFunctionsSheet() {
+    if (!customMenusEnabled()) return;
+    if (document.documentElement.dataset.uzMoreFunctionsSheetBound) return;
+    document.documentElement.dataset.uzMoreFunctionsSheetBound = '1';
+
+    document.addEventListener(
+      'click',
+      function (e) {
+        var trig = moreFunctionsTriggerFromTarget(e.target);
+        if (!trig || !shouldOpenMoreFunctionsSheet(trig)) return;
+        e.preventDefault();
+        e.stopPropagation();
+        openMoreFunctionsSheet(trig);
+      },
+      false
+    );
+
+    document.addEventListener(
+      'keydown',
+      function (e) {
+        var trig =
+          document.activeElement &&
+          document.activeElement.closest &&
+          document.activeElement.closest('[data-more-functions-trigger]');
+        if (!trig || !shouldOpenMoreFunctionsSheet(trig)) return;
+        var k = e.key;
+        if (k !== 'Enter' && k !== ' ' && k !== 'ArrowDown') return;
+        e.preventDefault();
+        openMoreFunctionsSheet(trig);
+      },
+      true
+    );
   }
 
   function readActiveCurrencyCode(modal) {
@@ -405,7 +625,7 @@
             detail: { currency: c.code }
           })
         );
-        dialog.close();
+        closeSheet();
       });
       listEl.appendChild(btn);
     });
@@ -511,7 +731,7 @@
   }
 
   function closeSheetIfOpen() {
-    if (dialog && dialog.open) dialog.close();
+    if (dialog && dialog.open) closeSheet();
   }
 
   function onPaymentOverlayClassChange(modal) {
@@ -535,6 +755,8 @@
       mo.observe(modal, { attributes: true, attributeFilter: ['class'] });
     }
   }
+
+  bindMoreFunctionsSheet();
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

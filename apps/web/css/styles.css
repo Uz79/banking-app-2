@@ -430,8 +430,15 @@
 
 /* ── Section card ─────────────────────────────────────── */
 
+/* Stack gap — Figma Main Content / Modules: mobile space/4 (16dp), desktop space/6 (32dp). */
 .section-card {
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-3);
+}
+
+@media (min-width: 1024px) {
+  .section-card {
+    margin-bottom: var(--space-5);
+  }
 }
 
 .section-card__header {
@@ -480,10 +487,35 @@
 
 .section-card__date {
   display: block;
-  font-size: var(--fs-text-xs);
+  font-size: var(--fs-text-sm);
+  font-weight: var(--fw-regular);
   line-height: var(--lh-text);
-  color: var(--color-fg-secondary);
+  color: var(--color-fg-label);
   padding: var(--space-2) var(--space-3) 0;
+}
+
+/* ── Payments landing (designs/screens/payments) ─────────────────────────────────
+ * Below tablet grid breakpoint, recurring + recipients live in .view__sidebar but
+ * must still stack below the main column (sidebar is hidden by default globally).
+ * Figma Payment - mobile Main Content: gap space/4 (16dp) between section cards. */
+
+@media (max-width: 1023px) {
+  .body[data-screen='payments'] .view--active.view--payments {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .body[data-screen='payments'] .view--active.view--payments > .view__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    width: 100%;
+  }
+
+  .body[data-screen='payments'] .view--active.view--payments .section-card {
+    margin-bottom: 0;
+  }
 }
 
 /* ── Product item ─────────────────────────────────────── */
@@ -584,7 +616,7 @@
 .list-item__title {
   display: block;
   font-size: var(--fs-text-sm);
-  font-weight: var(--fw-medium);
+  font-weight: var(--fw-regular);
   line-height: var(--lh-text);
   color: var(--color-fg);
 }
@@ -593,12 +625,12 @@
   display: block;
   font-size: var(--fs-text-xs);
   line-height: var(--lh-text);
-  color: var(--color-fg-secondary);
+  color: var(--color-fg-label);
 }
 
 .list-item__amount {
   display: flex;
-  gap: 0.375rem;
+  gap: var(--space-2);
   align-items: baseline;
   flex-shrink: 0;
 }
@@ -606,7 +638,7 @@
 .list-item__currency {
   font-size: var(--fs-text-xs);
   line-height: var(--lh-text);
-  color: var(--color-fg-secondary);
+  color: var(--color-fg-label);
 }
 
 .list-item__value {
@@ -616,10 +648,76 @@
   color: var(--color-fg);
 }
 
+/* Row-item pattern (Figma Row Item / default-booking): title + currency + amount, all regular. */
+.section-card__body .list-item:not(:has(.list-item__chevron)):not(:has(.list-item__subtitle))
+  .list-item__value {
+  font-weight: var(--fw-regular);
+}
+
 .list-item__chevron {
   width: 1.25rem;
   height: 1.25rem;
   flex-shrink: 0;
+}
+
+/* group-account — designs/components/list-item/list-item/variants/group-account (Figma 442:9603) */
+.list-item--group-account {
+  align-items: flex-start;
+  padding-block: var(--space-3); /* space/4 — 16px vertical only */
+  padding-inline: 0;
+  gap: 0;
+  min-height: 3.5rem; /* 56dp */
+  box-sizing: border-box;
+  border-radius: var(--radius-regular);
+}
+
+.list-item--group-account .list-item__media {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-left: var(--space-3); /* Left Side — 16px inset */
+  margin-right: var(--space-3); /* space/4 — 16px icon to text */
+}
+
+.list-item--group-account .list-item__body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1); /* space/2 — 8px title to subtitle */
+}
+
+.list-item--group-account .list-item__title {
+  font-weight: var(--fw-regular);
+}
+
+.list-item--group-account .list-item__end {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: var(--space-1); /* 8px currency to amount */
+  padding-left: var(--space-1); /* Right Side — 8px */
+  padding-right: var(--space-3); /* Right Side — 16px */
+}
+
+.list-item--group-account .list-item__icon {
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--color-btn-primary-bg);
+}
+
+/* Non-interactive group-account (e.g. account-information summary). */
+.list-item--group-account.list-item--static {
+  cursor: default;
+}
+
+.list-item--group-account.list-item--static:hover,
+.list-item--group-account.list-item--static:active {
+  background-color: transparent;
 }
 
 /* ── Divider ──────────────────────────────────────────── */
@@ -882,14 +980,14 @@
 .bookings-card__pending-label {
   flex: 1;
   font-size: var(--fs-text-sm);
-  font-weight: var(--fw-medium);
+  font-weight: var(--fw-regular);
   line-height: var(--lh-text);
   color: var(--color-fg);
 }
 
 .bookings-card__pending-amount {
   display: flex;
-  gap: 0.375rem;
+  gap: var(--space-2);
   align-items: baseline;
   flex-shrink: 0;
 }
@@ -897,14 +995,19 @@
 .bookings-card__pending-currency {
   font-size: var(--fs-text-xs);
   line-height: var(--lh-text);
-  color: var(--color-fg-secondary);
+  color: var(--color-fg-label);
 }
 
 .bookings-card__pending-value {
   font-size: var(--fs-text-sm);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-regular);
   line-height: var(--lh-text);
   color: var(--color-fg);
+}
+
+.booking-group {
+  display: flex;
+  flex-direction: column;
 }
 
 .booking-group__header {
@@ -916,37 +1019,40 @@
 }
 
 .booking-group__label {
-  display: block;
-  font-size: var(--fs-text-xs);
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--fs-text-sm);
+  font-weight: var(--fw-regular);
   line-height: var(--lh-text);
-  color: var(--color-fg-secondary);
+  color: var(--color-fg-label);
 }
 
-/* End-of-day balance for that booking group, right-aligned next to the
-   day label. Same visual weight as a section-card amount. */
+/* Day header row (Figma Row Item / default-header): label + balance both secondary. */
 .booking-group__balance {
   display: inline-flex;
   align-items: baseline;
-  gap: 0.375rem;
+  gap: var(--space-2);
   flex-shrink: 0;
 }
 
 .booking-group__balance-currency {
   font-size: var(--fs-text-xs);
   line-height: var(--lh-text);
-  color: var(--color-fg-secondary);
+  color: var(--color-fg-label);
 }
 
 .booking-group__balance-value {
   font-size: var(--fs-text-sm);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-regular);
   line-height: var(--lh-text);
-  color: var(--color-fg);
+  color: var(--color-fg-label);
 }
 
 .booking-row {
   display: flex;
   align-items: center;
+  min-height: 2.5rem;
   padding: var(--space-2) var(--space-3);
   gap: var(--space-3);
   cursor: pointer;
@@ -970,27 +1076,30 @@
 
 .booking-row__name {
   flex: 1;
+  min-width: 0;
   font-size: var(--fs-text-sm);
+  font-weight: var(--fw-regular);
   line-height: var(--lh-text);
   color: var(--color-fg);
 }
 
 .booking-row__amount {
   display: flex;
-  gap: 0.375rem;
+  gap: var(--space-2);
   align-items: baseline;
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 .booking-row__currency {
   font-size: var(--fs-text-xs);
   line-height: var(--lh-text);
-  color: var(--color-fg-secondary);
+  color: var(--color-fg-label);
 }
 
 .booking-row__value {
   font-size: var(--fs-text-sm);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-regular);
   line-height: var(--lh-text);
   color: var(--color-fg);
 }
@@ -1622,6 +1731,38 @@
 .form-field__calendar-icon {
   width: 1.25rem;
   height: 1.25rem;
+}
+
+/* Readonly label + value rows (designs/components/form-field/text-field/variants/readonly-default) */
+.form-field--readonly {
+  gap: 0.25rem; /* 4px — label band to value row in 88dp frame */
+}
+
+.form-field--readonly .form-field__value {
+  font-weight: var(--fw-regular);
+}
+
+.form-field--readonly .form-field__row {
+  padding-bottom: 0;
+}
+
+.form-field__row--multiline {
+  align-items: flex-start;
+}
+
+.form-field__value--multiline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  white-space: normal;
+}
+
+.form-field__value--multiline > span {
+  display: block;
+}
+
+.form-field__edit--align-start {
+  align-self: flex-start;
 }
 
 /* Bordered text control (Figma Input Field): chrome on wrap so trailing clear sits inside stroke */
@@ -2392,6 +2533,7 @@
 .amount-input__clear-icon,
 .debit-account__icon,
 .form-sheet__account-icon,
+.form-sheet__more-icon,
 .form-sheet__preview-icon,
 .debit-account__chevron,
 .modal__back-icon,
@@ -2441,6 +2583,7 @@
 .amount-input__clear-icon > use,
 .debit-account__icon > use,
 .form-sheet__account-icon > use,
+.form-sheet__more-icon > use,
 .form-sheet__preview-icon > use,
 .debit-account__chevron > use,
 .modal__back-icon > use,
@@ -2636,9 +2779,10 @@ a.list-item:focus-visible {
   text-decoration: none;
 }
 
-a.view__nav-btn.view__back {
+a.view__nav-btn {
   text-decoration: none;
   color: inherit;
+  box-sizing: border-box;
 }
 
 .confirmation-page-wrap {
@@ -2990,6 +3134,390 @@ a.btn-primary {
 }
 
 /* ============================================================================
+ * Account information — designs/screens/account-information
+ * Hosted in #uz-account-information-overlay (same stacking + shell as payment).
+ *
+ * Icons: summary + “Share information” use inlined SVG paths so they render even when
+ * `#uzbank-icon-defs` is absent (Storybook/isolated HTML). Row actions still use
+ * `<use href="#i-copy">` and require the sprite on full app pages.
+ * ============================================================================ */
+
+#uz-account-information-overlay.modal-overlay--active {
+  z-index: 101;
+}
+
+/* Reuse `.modal-overlay` flex/padding/max-width alongside payment; body + scroll regions */
+/* Reuse payment modal horizontal rhythm (footer uses var(--space-3)). */
+.modal-overlay .modal.modal--account-information .modal__body.modal__body--account-information {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: var(--space-2) var(--space-3);
+  gap: var(--space-3); /* Figma Section / Content — space/4 (16px) between blocks */
+  box-sizing: border-box;
+}
+
+.modal--account-information .account-information__tabs {
+  flex-shrink: 0;
+  padding-inline: 0;
+  padding-top: 0;
+  margin-bottom: 0;
+}
+
+.modal--account-information .account-information__summary,
+.view--account-information .account-information__summary {
+  flex-shrink: 0;
+  margin-bottom: 0;
+}
+
+.account-information__summary-card.list-item--group-account {
+  margin: 0;
+  cursor: default;
+  /* Match designs/components/list-item group-account stroke */
+  border: 0.0625rem solid color-mix(in srgb, var(--color-btn-primary-bg) 20%, transparent);
+  background-color: var(--color-bg);
+}
+
+.account-information__summary-card.list-item--group-account:hover,
+.account-information__summary-card.list-item--group-account:active {
+  background-color: var(--color-bg);
+}
+
+@supports not (border: 1px solid color-mix(in srgb, red 20%, transparent)) {
+  .account-information__summary-card.list-item--group-account {
+    border-color: rgba(0, 21, 126, 0.2);
+  }
+}
+
+.account-information__summary-value {
+  font-weight: var(--fw-bold);
+}
+
+.modal--account-information .account-information__share-row,
+.view--account-information .account-information__share-row {
+  flex-shrink: 0;
+  margin-bottom: 0;
+  padding-block: var(--space-2); /* Figma Function Bar — space/3 (12px) */
+}
+
+.account-information__share-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* Inactive tab label is regular; active stays medium (segmented default). */
+.account-information__tabs .segmented__option:not(.segmented__option--active) {
+  font-weight: var(--fw-regular);
+}
+
+@media (max-width: 1279px) {
+  .modal--account-information .modal__back {
+    display: none;
+  }
+
+  .view--account-information .view__nav .view__nav-btn--leading.view__back {
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+/* Do not negate parent padding inside modal — list rows + dividers share same inset as Confirm. */
+.modal--account-information .account-information__scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-inline: 0;
+  padding-inline: 0;
+}
+
+.view--account-information .view__main.account-information {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1 1 auto;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  gap: var(--space-3);
+  box-sizing: border-box;
+}
+
+.account-information__tabs {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.account-information__scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  margin-inline: 0;
+  padding-inline: 0;
+}
+
+.account-information__panel[hidden] {
+  display: none !important;
+}
+
+.account-information__panel {
+  padding-bottom: var(--space-4);
+}
+
+/* Detail rows — form-field readonly (88dp field + 16dp between fields per Figma Section). */
+.account-information__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3); /* Figma Section — space/4 between each TextField */
+}
+
+.account-information__fields .form-field--readonly {
+  --form-field-readonly-height: 5.5rem;
+  --form-field-readonly-row-height: 2.5rem;
+  --form-field-readonly-tail: 1.25rem;
+
+  min-height: var(--form-field-readonly-height);
+  gap: 0.25rem; /* Figma TextField — space/1 (4px) label to value row */
+  padding-bottom: var(--form-field-readonly-tail);
+  box-sizing: border-box;
+}
+
+.account-information__fields .form-field--readonly:has(.form-field__row--multiline) {
+  min-height: auto;
+}
+
+.account-information__fields .form-field--readonly .form-field__label {
+  flex: 0 0 auto;
+  min-height: 1.5rem; /* 24dp label band */
+  display: flex;
+  align-items: flex-end;
+}
+
+.account-information__fields .form-field--readonly .form-field__row {
+  flex: 0 0 var(--form-field-readonly-row-height);
+  height: var(--form-field-readonly-row-height);
+  min-height: var(--form-field-readonly-row-height);
+  max-height: var(--form-field-readonly-row-height);
+  align-items: center;
+  gap: var(--space-3); /* Figma Input Text — space/4 value to icon */
+  padding: 0;
+  margin: 0;
+  border-bottom: 0.0625rem solid var(--color-separator);
+  box-sizing: border-box;
+}
+
+.account-information__fields .form-field--readonly .form-field__row--multiline {
+  flex: 0 1 auto;
+  height: auto;
+  max-height: none;
+  min-height: var(--form-field-readonly-row-height);
+  align-items: flex-start;
+  padding-block: 0.25rem var(--space-3); /* Figma multiline — pt 4px, pb 16px */
+}
+
+.account-information__fields .form-field--readonly .form-field__edit {
+  width: 2rem;
+  height: 2rem;
+  padding: 0.25rem; /* Figma icon-only — 4px pad, 24px glyph */
+  margin: 0;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.account-information__fields .form-field--readonly .form-field__row--multiline .form-field__edit {
+  height: 2rem;
+  align-self: flex-start;
+}
+
+.account-information__conditions-intro {
+  margin: 0 0 var(--space-3);
+  font-size: var(--fs-text-md);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+}
+
+.account-information__conditions-body {
+  margin: 0;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.account-information__footer {
+  flex-shrink: 0;
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-2);
+  margin-top: auto;
+  background: linear-gradient(to top, var(--color-bg) 85%, transparent);
+}
+
+/* ============================================================================
+ * Share information — designs/screens/share-information
+ * Stacked above #uz-account-information-overlay (z-index 102).
+ * ============================================================================ */
+
+#uz-share-information-overlay.modal-overlay--active {
+  z-index: 102;
+}
+
+.modal-overlay .modal.modal--share-information .modal__body.modal__body--share-information {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: var(--space-2) var(--space-3);
+  gap: var(--space-3);
+  box-sizing: border-box;
+}
+
+.share-information__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.share-information__qr-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 12rem;
+  height: 12rem;
+  padding: 0;
+  border: 0.0625rem solid var(--color-separator);
+  border-radius: var(--radius-md, 0.5rem);
+  background-color: var(--color-bg);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.share-information__qr {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.share-information__share-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+.share-information__intro {
+  margin: 0;
+  flex-shrink: 0;
+  font-size: var(--fs-text-md);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+}
+
+.share-information__sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+}
+
+.share-information__section-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md, 0.5rem);
+  border: 0.0625rem solid color-mix(in srgb, var(--color-btn-primary-bg) 20%, transparent);
+  background-color: var(--color-bg-secondary);
+  box-sizing: border-box;
+}
+
+@supports not (border: 1px solid color-mix(in srgb, red 20%, transparent)) {
+  .share-information__section-card {
+    border-color: rgba(0, 21, 126, 0.2);
+  }
+}
+
+.share-information__section-title {
+  margin: 0;
+  font-size: var(--fs-text-md);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+}
+
+.share-information__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.share-information__fields .form-field--readonly {
+  --form-field-readonly-height: 5.5rem;
+  --form-field-readonly-row-height: 2.5rem;
+  --form-field-readonly-tail: 1.25rem;
+
+  min-height: var(--form-field-readonly-height);
+  gap: 0.25rem;
+  padding-bottom: var(--form-field-readonly-tail);
+  box-sizing: border-box;
+}
+
+.share-information__fields .form-field--readonly:has(.form-field__row--multiline) {
+  min-height: auto;
+}
+
+.share-information__fields .form-field--readonly .form-field__label {
+  flex: 0 0 auto;
+  min-height: 1.5rem;
+  display: flex;
+  align-items: flex-end;
+}
+
+.share-information__fields .form-field--readonly .form-field__row {
+  flex: 0 0 var(--form-field-readonly-row-height);
+  height: var(--form-field-readonly-row-height);
+  min-height: var(--form-field-readonly-row-height);
+  max-height: var(--form-field-readonly-row-height);
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0;
+  margin: 0;
+  border-bottom: 0.0625rem solid var(--color-separator);
+  box-sizing: border-box;
+}
+
+.share-information__fields .form-field--readonly .form-field__row--multiline {
+  flex: 0 1 auto;
+  height: auto;
+  max-height: none;
+  min-height: var(--form-field-readonly-row-height);
+  align-items: flex-start;
+  padding-block: 0.25rem var(--space-3);
+}
+
+.share-information__fields .form-field--readonly .form-field__edit {
+  width: 2rem;
+  height: 2rem;
+  padding: 0.25rem;
+  margin: 0;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.share-information__fields .form-field--readonly .form-field__row--multiline .form-field__edit {
+  height: 2rem;
+  align-self: flex-start;
+}
+
+@media (max-width: 1279px) {
+  .modal--share-information .modal__back {
+    display: none;
+  }
+}
+
+/* ============================================================================
  * Contrast checker (embedded in Profile)
  *
  * Ported from /Users/uz-macbookpro-m4/TOKENS/colour-contrast-checker_04 with
@@ -3057,18 +3585,19 @@ a.btn-primary {
   width: 100%;
 }
 
-/* Result row */
+/* Result row: always two horizontal columns — preview+ration | WCAG badges (badges wrap) */
 .cc-section--result {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-9);
-  flex-wrap: wrap;
 }
 
 .cc-result-left {
   display: flex;
   align-items: flex-end;
   gap: var(--space-5);
+  min-width: 0;
 }
 
 .cc-preview-box {
@@ -3106,12 +3635,17 @@ a.btn-primary {
   color: var(--color-fg);
 }
 
-.cc-result-right { flex-shrink: 0; }
+.cc-result-right {
+  min-width: 0;
+  justify-self: stretch;
+}
 
 .cc-badge-stack {
   display: flex;
-  gap: var(--space-4);
   flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .cc-badge-labeled {
@@ -3245,6 +3779,10 @@ a.btn-primary {
   font-size: var(--fs-text-sm);
   font-weight: var(--fw-medium);
   line-height: var(--lh-text);
+}
+
+.cc-theme-card__actions {
+  flex: 0 0 auto;
 }
 
 .cc-theme-card__trash {
@@ -3500,12 +4038,11 @@ a.btn-primary {
   color: var(--color-fg);
 }
 
-/* Mobile: stack everything */
+/* Mobile: keep result row as two columns; stack colour inputs below */
 @media (max-width: 48rem) {
   .cc-section--result {
-    flex-direction: column;
-    align-items: flex-start;
     gap: var(--space-5);
+    align-items: start;
   }
   .cc-result-left {
     gap: var(--space-4);
@@ -3574,15 +4111,27 @@ dialog.form-sheet[open] {
   box-shadow: none;
   outline: none;
   box-sizing: border-box;
+  /* Visible overflow so the sliding panel isn't clipped below the viewport while translating up —
+     hiding it made the slide read as a tiny twitch (almost all frames were clipped). Panel still clips its own rounding. */
+  overflow: visible;
+  overscroll-behavior: contain;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: stretch;
+  --form-sheet-slide-depth: calc(100vh + 1rem + env(safe-area-inset-bottom, 0px));
+}
+
+@supports (height: 100dvh) {
+  dialog.form-sheet[open] {
+    --form-sheet-slide-depth: calc(100dvh + 1rem + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 dialog.form-sheet::backdrop {
-  background: color-mix(in srgb, var(--color-btn-primary-bg) 20%, transparent);
-  animation: form-sheet-backdrop-in 0.36s ease-out forwards;
+  background: var(--color-overlay-scrim);
+  /* Match payment `.modal-shell` timing (see openModalVisual / modal-shell transitions). */
+  animation: form-sheet-backdrop-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @keyframes form-sheet-backdrop-in {
@@ -3595,9 +4144,13 @@ dialog.form-sheet::backdrop {
   }
 }
 
-@supports not (background: color-mix(in srgb, red 20%, transparent)) {
-  dialog.form-sheet::backdrop {
-    background: rgba(0, 21, 126, 0.2);
+@keyframes form-sheet-backdrop-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
   }
 }
 
@@ -3610,28 +4163,51 @@ dialog.form-sheet::backdrop {
   width: 100%;
   max-width: 26.25rem; /* 420px — components/menu/menu-countries / menu-accounts (desktop) */
   max-height: min(70vh, 32rem);
-  overflow: auto;
+  /* Clip the sliding panel; scroll lives on .form-sheet__list so short lists don’t show a
+     sheet-level scrollbar (and transform+overflow:auto doesn’t flicker a track on open). */
+  overflow: hidden;
   padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.25rem);
   /* Full radius: sheet sits in 4dp padded dialog */
   border-radius: var(--radius-regular);
   background-color: var(--color-bg);
   color: var(--color-fg);
-  box-shadow: 0 0.25rem 1.5rem rgba(0, 21, 126, 0.12);
+  box-shadow: 0 0.25rem 1.5rem var(--color-modal-elevated-shadow);
 }
 
 dialog.form-sheet[open] .form-sheet__panel {
-  animation: form-sheet-panel-in 0.36s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  /* `%` translates resolve from the panel box and can shrink to ~0 during the first frames;
+     `--form-sheet-slide-depth` slides from fully below the fold (viewport-based). Same curve + duration as backdrop. */
+  animation: form-sheet-panel-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes form-sheet-panel-in {
   from {
-    opacity: 0;
-    transform: translateY(calc(100% + 0.5rem));
+    transform: translate3d(0, var(--form-sheet-slide-depth), 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Dismiss — mirror payment modal-sheet exit (`modal-shell--closing`: ease-in, downward). */
+dialog.form-sheet.form-sheet--closing[open]::backdrop {
+  animation: form-sheet-backdrop-out 0.28s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+dialog.form-sheet.form-sheet--closing[open] .form-sheet__panel {
+  animation: form-sheet-panel-out 0.28s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes form-sheet-panel-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, var(--form-sheet-slide-depth), 0);
   }
 }
 
@@ -3655,6 +4231,11 @@ dialog.form-sheet[open] .form-sheet__panel {
     box-sizing: border-box;
   }
 
+  dialog.form-sheet[data-form-sheet-type="more-functions"][data-form-sheet-anchored="true"] .form-sheet__panel {
+    width: max(var(--form-sheet-panel-width), 17.5rem);
+    max-width: min(26.25rem, calc(100vw - 2rem));
+  }
+
   dialog.form-sheet[data-form-sheet-placement="below"] .form-sheet__panel {
     top: var(--form-sheet-panel-top);
     bottom: auto;
@@ -3666,19 +4247,33 @@ dialog.form-sheet[open] .form-sheet__panel {
   }
 
   dialog.form-sheet[data-form-sheet-anchored="true"][open] .form-sheet__panel {
-    animation: form-sheet-panel-in-anchored 0.34s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+    animation: form-sheet-panel-in-anchored 0.25s ease-out both;
+  }
+
+  dialog.form-sheet.form-sheet--closing[open][data-form-sheet-anchored='true'] .form-sheet__panel {
+    animation: form-sheet-panel-out-anchored 0.25s ease-in forwards;
   }
 }
 
 @keyframes form-sheet-panel-in-anchored {
   from {
-    opacity: 0;
     transform: translateY(1rem);
   }
 
   to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes form-sheet-panel-out-anchored {
+  from {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(1rem);
   }
 }
 
@@ -3700,6 +4295,17 @@ dialog.form-sheet[open] .form-sheet__panel {
   dialog.form-sheet::backdrop {
     animation: none;
     opacity: 1;
+  }
+
+  dialog.form-sheet.form-sheet--closing[open] .form-sheet__panel,
+  dialog.form-sheet.form-sheet--closing[open]::backdrop {
+    animation: none;
+  }
+
+  @media (min-width: 1280px) {
+    dialog.form-sheet.form-sheet--closing[open][data-form-sheet-anchored='true'] .form-sheet__panel {
+      animation: none;
+    }
   }
 }
 
@@ -3891,6 +4497,7 @@ dialog.form-sheet[open] .form-sheet__panel {
   dialog.form-sheet[data-form-sheet-type="select"] .form-sheet__masthead-desktop,
   dialog.form-sheet[data-form-sheet-type="country"] .form-sheet__masthead-desktop,
   dialog.form-sheet[data-form-sheet-type="account"] .form-sheet__masthead-desktop,
+  dialog.form-sheet[data-form-sheet-type="more-functions"] .form-sheet__masthead-desktop,
   dialog.form-sheet[data-form-sheet-type="generic"] .form-sheet__masthead-desktop {
     padding-top: 0;
   }
@@ -3900,6 +4507,19 @@ dialog.form-sheet[open] .form-sheet__panel {
   display: flex;
   flex-direction: column;
   padding: 0;
+  /* Do not stretch to fill leftover flex space — growth + max-height rounding makes `overflow:auto`
+     think the list overflows and draws a scrollbar for short menus. Only grow when scrolling is needed. */
+  flex-grow: 0;
+  flex-shrink: 1;
+  flex-basis: auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.form-sheet__list[data-fs-scroll='off'] {
+  overflow-y: hidden;
 }
 
 .form-sheet__row {
@@ -3928,18 +4548,29 @@ dialog.form-sheet[open] .form-sheet__panel {
   font-weight: var(--fw-regular);
 }
 
+.form-sheet__row--more-function {
+  gap: var(--space-3);
+  min-height: 2.75rem;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--fs-text-md);
+  font-weight: var(--fw-regular);
+}
+
+.form-sheet__more-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.form-sheet__more-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+}
+
 .form-sheet__row--account {
   align-items: flex-start;
   gap: var(--space-3);
   padding: var(--space-3);
-}
-
-.form-sheet__row--account:not(:last-child) {
-  border-bottom-color: rgba(0, 21, 126, 0.2);
-}
-
-html[data-theme="dark"] .form-sheet__row--account:not(:last-child) {
-  border-bottom-color: rgba(255, 255, 255, 0.15);
 }
 
 .form-sheet__row:hover {
@@ -4040,18 +4671,8 @@ dialog.basic-dialog-payment-exit:not([open]) {
 }
 
 dialog.basic-dialog-payment-exit::backdrop {
-  background: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  background: var(--color-overlay-scrim);
   animation: form-sheet-backdrop-in 0.24s ease-out forwards;
-}
-
-@supports not (background: color-mix(in srgb, red 20%, transparent)) {
-  dialog.basic-dialog-payment-exit::backdrop {
-    background: rgba(255, 255, 255, 0.75);
-  }
-}
-
-html[data-theme='dark'] dialog.basic-dialog-payment-exit::backdrop {
-  background: rgba(0, 0, 0, 0.6);
 }
 
 .basic-dialog-payment-exit__surface {

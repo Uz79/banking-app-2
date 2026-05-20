@@ -105,6 +105,19 @@ function mappedColor(map, dottedPath) {
   return resolveTokenString(node?.value);
 }
 
+function hexToRgb(hex) {
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if (!m) return null;
+  return { r: parseInt(m[1], 16), g: parseInt(m[2], 16), b: parseInt(m[3], 16) };
+}
+
+/** Brand-tinted overlay scrim (Figma) — primary on light, page bg on dark. */
+function overlayScrimRgba(hex, alpha) {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return `rgba(0, 0, 0, ${alpha})`;
+  return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
+}
+
 function themeBlock(map, mode) {
   const isLight = mode === "light";
   const bg = mappedColor(map, "background.background");
@@ -150,7 +163,10 @@ function themeBlock(map, mode) {
     : resolveTokenString("{color.neutral.white-10pc}");
   const iconCircleFill = isLight ? "var(--color-fg)" : resolveTokenString("{color.neutral.white}");
 
-  const overlayScrim = isLight ? "rgba(0, 0, 0, 0.45)" : "rgba(0, 0, 0, 0.62)";
+  const overlayScrim = overlayScrimRgba(
+    isLight ? btnPrimaryBg : bg,
+    isLight ? 0.45 : 0.62
+  );
   const navElevatedShadow = isLight
     ? "rgba(0, 0, 0, 0.06)"
     : "rgba(0, 0, 0, 0.35)";

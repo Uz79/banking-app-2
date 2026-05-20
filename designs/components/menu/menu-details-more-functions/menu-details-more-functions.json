@@ -1,7 +1,7 @@
 {
   "name": "menu-details-more-functions",
   "category": "menu",
-  "description": "More functions / account details submenu.",
+  "description": "Contextual “More functions” menu from Overview / Account details action row (bottom sheet mobile, anchored dialog desktop).",
   "interactionStates": [
     "default"
   ],
@@ -11,6 +11,34 @@
       "default-default": {
         "default": "variants/default-default/default.svg"
       }
+    }
+  },
+  "flowDocumentation": "../../../screens/flows/main-view-contextual-menu-navigation-flow.png",
+  "menuItems": [
+    {
+      "id": "internal-account-transfer",
+      "label": "Internal account transfer",
+      "icon": "i-repeat"
+    },
+    {
+      "id": "change-category",
+      "label": "Change category",
+      "icon": "i-edit-2"
+    },
+    {
+      "id": "show-account-information",
+      "label": "Show account information",
+      "icon": "i-eye"
+    }
+  ],
+  "implementation": {
+    "trigger": "[data-more-functions-trigger]",
+    "sheetTitle": "More functions",
+    "dialogPattern": "dialog.form-sheet[data-form-sheet-type=\"more-functions\"]",
+    "selectionEvent": "uz:more-functions-action",
+    "eventDetail": {
+      "action": "internal-account-transfer | change-category | show-account-information",
+      "sourceView": "overview | account-details"
     }
   },
   "tokens": {
@@ -24,5 +52,8 @@
       }
     }
   },
-  "notes": []
+  "notes": [
+    "Row actions are handled in apps/web/js/app.js (SPA) and apps/web/js/app-mp.js (standalone HTML); extend there for real navigation.",
+    "Sprite symbol i-eye added for the last row (apps/web/assets/icons-sprite.svg)."
+  ]
 }

@@ -4,6 +4,7 @@ from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
+BOOT_SCRIPT = (Path(__file__).resolve().parent / "boot-inline-theme.html").read_text(encoding="utf-8")
 INDEX = ROOT / "spa-source.html"
 if not INDEX.exists():
     INDEX = ROOT / "index.html"
@@ -26,15 +27,33 @@ def sl(a: int, b: int) -> str:
     return "".join(lines[a - 1 : b])
 
 
-THEME = """  <script>
-    (function () {
-      try {
-        var t = localStorage.getItem('uzBankWebApp11Theme');
-        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
-      } catch (e) {}
-    })();
-  </script>
-"""
+def extract_view(marker: str) -> str:
+    """Slice one top-level view section from spa-source by its banner comment."""
+    start = next(i for i, line in enumerate(lines) if marker in line)
+    section_start = next(i for i in range(start, len(lines)) if "<section" in lines[i])
+    depth = 0
+    for i in range(section_start, len(lines)):
+        depth += lines[i].count("<section")
+        depth -= lines[i].count("</section>")
+        if depth == 0:
+            return "".join(lines[start : i + 1])
+    raise ValueError(f"Unclosed view section for {marker!r}")
+
+
+def extract_payment_modal() -> str:
+    """Payment modal + confirmation overlay block from spa-source."""
+    marker = "<!-- ===== PAYMENT FLOW MODAL"
+    start = next(i for i, line in enumerate(lines) if marker in line)
+    div_start = next(
+        i for i in range(start, len(lines)) if '<div class="modal-overlay">' in lines[i]
+    )
+    depth = 0
+    for i in range(div_start, len(lines)):
+        depth += lines[i].count("<div")
+        depth -= lines[i].count("</div>")
+        if depth == 0:
+            return "".join(lines[start : i + 1])
+    raise ValueError("Unclosed payment modal block")
 
 
 def sidebar(active: str, prefix: str = "") -> str:
@@ -82,14 +101,17 @@ def tabbar(active: str, prefix: str = "") -> str:
 """
 
     return f"""  <nav class="tab-bar">
-{item('overview', 'overview.html', 'icon24-home.svg', 'Start')}
+{item('overview', 'overview.html', 'icon24-home.svg', 'Overview')}
 {item('payments', 'payments.html', 'icon24-payments.svg', 'Payments')}
 {item('profile', 'profile.html', 'icon24-user.svg', 'Profile')}
   </nav>
 """
 
 
-MODAL_HTML = sl(566, 771)
+MODAL_HTML = extract_payment_modal()
+
+ACCOUNT_INFORMATION_OVERLAY = (ROOT / "partials" / "account-information-overlay.html").read_text(encoding="utf-8")
+SHARE_INFORMATION_OVERLAY = (ROOT / "partials" / "share-information-overlay.html").read_text(encoding="utf-8")
 
 
 def sprite_embed() -> str:
@@ -109,17 +131,36 @@ def shell(
     main_inner: str,
     prefix: str = "",
     include_payment_modal: bool = False,
+    profile_page: bool = False,
+    extra_body_scripts: str = "",
+    overlay_after_modal: str = "",
 ) -> str:
     modal_block = f"\n{MODAL_HTML}\n" if include_payment_modal else ""
     pay_js = (
         (
             f'<script src="{prefix}js/form-field-sheet.js"></script>\n'
             f'<script src="{prefix}js/payment-exit-confirm.js"></script>\n'
+            f'<script src="{prefix}js/payment-state.js"></script>\n'
             f'<script src="{prefix}js/payment-overlay.js"></script>\n'
         )
         if include_payment_modal
         else ""
     )
+    if profile_page:
+        body_js = (
+            f'<script src="{prefix}js/analytics.js"></script>\n'
+            f'<script src="{prefix}js/payment-state.js"></script>\n'
+            f'<script src="{prefix}js/data-render.js"></script>\n'
+            f'<script src="{prefix}js/app-mp.js"></script>\n'
+            f'<script src="{prefix}js/contrast-checker.js"></script>\n'
+            f'<script src="{prefix}js/profile-settings.js"></script>\n'
+        )
+    else:
+        body_js = (
+            f'<script src="{prefix}js/analytics.js"></script>\n'
+            + pay_js
+            + f'<script src="{prefix}js/app-mp.js"></script>\n'
+        )
     return f"""<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
@@ -127,7 +168,7 @@ def shell(
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark light">
   <title>{title}</title>
-{THEME}
+{BOOT_SCRIPT}
   <link rel="stylesheet" href="{prefix}css/tokens.css">
   <link rel="stylesheet" href="{prefix}css/styles.css">
 </head>
@@ -140,9 +181,7 @@ def shell(
     </div>
   </main>
 {tabbar(active_nav, prefix)}
-</div>{modal_block}<script src="{prefix}js/analytics.js"></script>
-{pay_js}<script src="{prefix}js/app-mp.js"></script>
-{sprite_embed()}</body>
+</div>{modal_block}\n{overlay_after_modal}\n{body_js}{extra_body_scripts}{sprite_embed()}</body>
 </html>
 """
 
@@ -163,7 +202,7 @@ def pay_redirect_page(step: str) -> str:
         var ref = document.referrer;
         if (ref && ref.indexOf(location.host) >= 0) {{
           var last = ref.split("/").pop().split("?")[0];
-          if (/^(overview|payments|account-details)\\.html$/.test(last)) {{
+          if (/^(overview|payments|account-details|account-information)\\.html$/.test(last)) {{
             location.replace("../" + last + "#pay/" + step);
             return;
           }}
@@ -219,11 +258,11 @@ def account_back_link(html: str) -> str:
     )
 
 
-# --- Slice sections from SPA ---
-overview_sec = sl(59, 213)
-account_sec = sl(216, 379)
-payments_sec = sl(382, 517)
-profile_sec = sl(521, 537)
+# --- Slice sections from SPA (marker comments — resilient to line shifts) ---
+overview_sec = extract_view("<!-- ── OVERVIEW ── -->")
+account_sec = extract_view("<!-- ── ACCOUNT DETAILS ── -->")
+payments_sec = extract_view("<!-- ── PAYMENTS ── -->")
+profile_sec = extract_view("<!-- ── PROFILE ── -->")
 
 # SPA hid inactive views with CSS; each standalone page must show its single view.
 account_sec = account_sec.replace(
@@ -268,6 +307,11 @@ account_sec = account_back_link(account_sec)
         account_sec,
         "",
         include_payment_modal=True,
+        overlay_after_modal="\n" + ACCOUNT_INFORMATION_OVERLAY.strip() + "\n" + SHARE_INFORMATION_OVERLAY.strip() + "\n",
+        extra_body_scripts=(
+            '<script src="js/account-information.js"></script>\n'
+            '<script src="js/share-information.js"></script>\n'
+        ),
     ),
     encoding="utf-8",
 )
@@ -292,7 +336,42 @@ account_sec = account_back_link(account_sec)
         profile_sec,
         "",
         include_payment_modal=False,
+        profile_page=True,
     ),
+    encoding="utf-8",
+)
+
+(ROOT / "account-information.html").write_text(
+    """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark light">
+  <title>UZ Bank – Account information</title>
+  <script>
+    (function () {
+      try {
+        var path = window.location.pathname;
+        var q = window.location.search || '';
+        var lower = path.toLowerCase();
+        var idx = lower.lastIndexOf('account-information.html');
+        if (idx >= 0) {
+          location.replace(path.slice(0, idx) + 'account-details.html' + q + '#account-information');
+        } else {
+          location.replace('account-details.html#account-information');
+        }
+      } catch (e) {
+        location.replace('account-details.html#account-information');
+      }
+    })();
+  </script>
+</head>
+<body class="body">
+  <p><a href="account-details.html#account-information">Open account details</a></p>
+</body>
+</html>
+""",
     encoding="utf-8",
 )
 

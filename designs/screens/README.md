@@ -17,6 +17,7 @@ Variant folders encode **breakpoint / context**. Common values:
 | Variant slug       | Typical use                         |
 |--------------------|-------------------------------------|
 | `desktop-default`  | Desktop export                      |
+| `desktop-full-screen` | Second desktop frame (e.g. full-width comp; optional) |
 | `mobile-default`   | Mobile export                       |
 | `default-default`  | Single-size vector / one-off raster |
 
@@ -30,7 +31,8 @@ The **`category`** field in JSON groups screens logically: **`shell`**, **`payme
 |--------|-------|
 | `overview` | Home / dashboard |
 | `account-details` | Account surface |
-| `account-information` | Account information disclosure (desktop / mobile) |
+| `account-information` | Account information disclosure (`desktop-default`, `desktop-full-screen`, `mobile-default`) |
+| `share-information` | Share information screen (`desktop-default`, `desktop-full-screen`, `mobile-default`) |
 | `payments` | Payments landing |
 | `payment-flow-*` | Multi-step payment flow steps |
 | `dialog-basic`, `dialog-confirmation` | Dialog patterns |

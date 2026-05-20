@@ -394,4 +394,28 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  document.addEventListener('uz:more-functions-action', function (e) {
+    var d = e.detail || {};
+    var action = d.action;
+    if (!action) return;
+    if (action === 'internal-account-transfer') {
+      navigateTo('payments');
+      return;
+    }
+    if (action === 'change-category') {
+      navigateTo('overview');
+      return;
+    }
+    if (action === 'show-account-information') {
+      var aiPrefix = '';
+      try {
+        if ((window.location.pathname || '').replace(/\\/g, '/').indexOf('/payment/') !== -1) {
+          aiPrefix = '../';
+        }
+      } catch (_e) {}
+      window.location.href = aiPrefix + 'account-details.html#account-information';
+      return;
+    }
+  });
+
 });

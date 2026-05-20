@@ -1,0 +1,53 @@
+{
+  "name": "section-card",
+  "category": "card",
+  "description": "Section header plus bordered body card (`.section-card` in the web app).",
+  "interactionStates": [
+    "default"
+  ],
+  "assets": {
+    "overview": "overview.png",
+    "variants": {
+      "accounts-investment": {
+        "default": "variants/accounts-investment/default.svg"
+      },
+      "bookings": {
+        "default": "variants/bookings/default.svg"
+      },
+      "offers": {
+        "default": "variants/offers/default.svg"
+      },
+      "other-products": {
+        "default": "variants/other-products/default.svg"
+      },
+      "pending-payments": {
+        "default": "variants/pending-payments/default.svg"
+      },
+      "recipients": {
+        "default": "variants/recipients/default.svg"
+      },
+      "recurring-payments": {
+        "default": "variants/recurring-payments/default.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": [
+    "Figma component set 'Card' — export filenames map to variant folders (see section-card.md). Each variant folder also has default.png.",
+    "Stack gap between section cards (Main Content / Modules): mobile Figma space/4 (16dp) = --space-3; desktop space/6 (32dp) = --space-5. Header-to-body inside a card: space/1 (4dp).",
+    "Implementation: apps/web/css/styles.css (.section-card, .section-card__header, .section-card__body).",
+    "accounts-investment / other-products: Overview main column; offers: Overview sidebar.",
+    "pending-payments: Payments main column; recurring-payments / recipients: Payments sidebar.",
+    "bookings: Account details bookings surface."
+  ]
+}

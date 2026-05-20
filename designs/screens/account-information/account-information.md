@@ -4,8 +4,11 @@ Account information overlay / disclosure (desktop vs mobile layout).
 
 ## Variants
 
-- `desktop-default` — Desktop vector (`default.svg`).
-- `mobile-default` — Mobile vector (`default.svg`).
+- `desktop-default` — Desktop export at modal / ~640px width (`default.svg`, `default.png`).
+- `desktop-full-screen` — Desktop full-screen frame (`default.svg`, `default.png`).
+- `mobile-default` — Mobile (`default.svg`, `default.png`).
+
+Legacy Figma export titles (`Account Information - desktop 640 width.*`, etc.) map into these folders; only **`default.svg` / `default.png`** names are kept in repo.
 
 ## States
 

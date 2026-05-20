@@ -203,7 +203,7 @@ export const Overview = {
           <span class="tab-bar__icon-wrap tab-bar__icon-wrap--active">
             <svg class="tab-bar__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
           </span>
-          <span class="tab-bar__label">Start</span>
+          <span class="tab-bar__label">Overview</span>
         </a>
         <a class="tab-bar__item" href="#">
           <span class="tab-bar__icon-wrap">
@@ -301,9 +301,7 @@ export const Payments = {
                   <span class="section-card__date">28.05.2026</span>
                   <div class="list-item">
                     <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg>
-                    <div class="list-item__content">
-                      <span class="list-item__title">Rent</span>
-                    </div>
+                    <div class="list-item__content"><span class="list-item__title">Rent</span></div>
                     <span class="list-item__amount">
                       <span class="list-item__currency">CHF</span>
                       <span class="list-item__value">2'050.00</span>
@@ -313,9 +311,7 @@ export const Payments = {
                   <span class="section-card__date">29.04.2026</span>
                   <div class="list-item">
                     <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg>
-                    <div class="list-item__content">
-                      <span class="list-item__title">Healthcare</span>
-                    </div>
+                    <div class="list-item__content"><span class="list-item__title">Healthcare</span></div>
                     <span class="list-item__amount">
                       <span class="list-item__currency">CHF</span>
                       <span class="list-item__value">420.00</span>
@@ -393,7 +389,7 @@ export const Payments = {
           <span class="tab-bar__icon-wrap">
             <svg class="tab-bar__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
           </span>
-          <span class="tab-bar__label">Start</span>
+          <span class="tab-bar__label">Overview</span>
         </a>
         <a class="tab-bar__item tab-bar__item--active" href="#" aria-current="page">
           <span class="tab-bar__icon-wrap tab-bar__icon-wrap--active">

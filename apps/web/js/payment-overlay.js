@@ -5,6 +5,9 @@
  *
  * Hash segments: #pay/recipient-search | recipient | amount | schedule | summary | confirmation
  * (Screen manifests live under ../../../designs/screens/payment-flow-* — e.g. Type Ahead Search, Time Schedule.)
+ *
+ * Depends on js/payment-state.js (window.UZBankPayState.getRecipients) being loaded before this script
+ * on every page that includes the payment modal.
  */
 document.addEventListener('DOMContentLoaded', function () {
   var modalOverlay = document.querySelector('.modal-overlay');
@@ -70,7 +73,9 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function $step(name) {
-    return document.querySelector('.modal__step[data-step="' + name + '"]');
+    var sel = '.modal__step[data-step="' + name + '"]';
+    var scoped = modalOverlay.querySelector(sel);
+    return scoped || document.querySelector(sel);
   }
 
   function syncAmountCurrencyDisplay() {
@@ -208,7 +213,46 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function normalizeIban(s) {
-    return String(s || '').replace(/\s+/g, '').toLowerCase();
+    return String(s || '')
+      .replace(/[\s\u00a0\u202f]+/g, '')
+      .toLowerCase();
+  }
+
+  function alnumKey(s) {
+    return String(s || '')
+      .replace(/[^a-z0-9]/gi, '')
+      .toLowerCase();
+  }
+
+  /** Visible + logical trim for `<input type="search">` (strip ZW chars / BOM). */
+  function normalizeRecipientSearchInput(s) {
+    return String(s || '')
+      .replace(/[\u200b\u200c\u200d\ufeff\u00ad]/g, '')
+      .trim();
+  }
+
+  /** Whitespace-only is treated as empty (avoids wiping SSR rows). */
+  function recipientSearchWasTyped(query) {
+    return /\S/.test(normalizeRecipientSearchInput(query));
+  }
+
+  /** PayState first, preload catalog optional, canonical export fallback. */
+  function recipientCatalogRows() {
+    try {
+      if (window.UZBankPayState && typeof window.UZBankPayState.getRecipients === 'function') {
+        var pr = window.UZBankPayState.getRecipients();
+        if (Array.isArray(pr) && pr.length > 0) return pr.slice();
+      }
+    } catch (_e) {}
+    try {
+      var c = window.UZ_BANK_RECIPIENT_CATALOG;
+      if (Array.isArray(c) && c.length > 0) return c.slice();
+    } catch (_e2) {}
+    try {
+      var canon = window.__UZ_CANONICAL_RECIPIENT_ROWS__;
+      if (Array.isArray(canon) && canon.length > 0) return canon.slice();
+    } catch (_e3) {}
+    return [];
   }
 
   function iconHrefForRecipient(r) {
@@ -217,16 +261,24 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function filterRecipients(query) {
-    var q = String(query || '').trim().toLowerCase();
-    var all = (window.UZBankPayState && window.UZBankPayState.getRecipients)
-      ? window.UZBankPayState.getRecipients()
-      : [];
-    if (!q) return all.slice();
+    var raw = normalizeRecipientSearchInput(query);
+    var all = recipientCatalogRows();
+    if (!recipientSearchWasTyped(query)) return all.slice();
+    var q = raw.toLowerCase();
+    var needle = alnumKey(q);
+    if (!needle) return all.slice();
     return all.filter(function (r) {
       var name = (r.name || '').toLowerCase();
       var iban = normalizeIban(r.iban);
-      var needle = q.replace(/\s+/g, '');
-      return name.indexOf(q) >= 0 || iban.indexOf(needle) >= 0;
+      var ibanFlat = alnumKey(r.iban);
+      var bank = (r.bank || '').toLowerCase();
+      var country = (r.country || '').toLowerCase();
+      var rid = (r.id || '').toLowerCase();
+      if (name.indexOf(q) >= 0) return true;
+      if (country.indexOf(q) >= 0) return true;
+      if (bank.indexOf(q) >= 0) return true;
+      if (rid.indexOf(q) >= 0) return true;
+      return iban.indexOf(needle) >= 0 || ibanFlat.indexOf(needle) >= 0;
     });
   }
 
@@ -237,7 +289,18 @@ document.addEventListener('DOMContentLoaded', function () {
     var empty = step.querySelector('.recipient-search__empty');
     var input = recipientSearchInput();
     if (!list) return;
-    var rows = filterRecipients(input ? input.value : '');
+    var qRaw = input ? input.value : '';
+    var rows = [];
+    try {
+      rows = filterRecipients(qRaw);
+    } catch (_paintFilterErr) {
+      rows = recipientCatalogRows();
+    }
+    var hasTyped = recipientSearchWasTyped(qRaw);
+    if (rows.length === 0 && !hasTyped && list.querySelector('.recipient-search__result[data-recipient-id]')) {
+      if (empty) empty.classList.add('recipient-search__empty--hidden');
+      return;
+    }
     list.innerHTML = '';
     rows.forEach(function (r) {
       var btn = document.createElement('button');
@@ -251,7 +314,9 @@ document.addEventListener('DOMContentLoaded', function () {
       icon.setAttribute('aria-hidden', 'true');
       icon.setAttribute('focusable', 'false');
       var use = document.createElementNS(svgNs, 'use');
-      use.setAttribute('href', iconHrefForRecipient(r));
+      var ih = iconHrefForRecipient(r);
+      use.setAttribute('href', ih);
+      use.setAttributeNS('http://www.w3.org/1999/xlink', 'href', ih);
       icon.appendChild(use);
       var body = document.createElement('span');
       body.className = 'recipient-search__result-body';
@@ -268,6 +333,7 @@ document.addEventListener('DOMContentLoaded', function () {
       chev.setAttribute('aria-hidden', 'true');
       var uc = document.createElementNS(svgNs, 'use');
       uc.setAttribute('href', '#i-chevron-right');
+      uc.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#i-chevron-right');
       chev.appendChild(uc);
       btn.appendChild(icon);
       btn.appendChild(body);
@@ -275,7 +341,7 @@ document.addEventListener('DOMContentLoaded', function () {
       list.appendChild(btn);
     });
     if (empty) {
-      if (rows.length === 0) empty.classList.remove('recipient-search__empty--hidden');
+      if (rows.length === 0 && hasTyped) empty.classList.remove('recipient-search__empty--hidden');
       else empty.classList.add('recipient-search__empty--hidden');
     }
   }
@@ -427,7 +493,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!step) return;
     e.preventDefault();
     var rid = row.getAttribute('data-recipient-id');
-    var all = (window.UZBankPayState && window.UZBankPayState.getRecipients) ? window.UZBankPayState.getRecipients() : [];
+    var all = recipientCatalogRows();
     var found = null;
     for (var i = 0; i < all.length; i++) {
       if (all[i].id === rid) { found = all[i]; break; }
@@ -680,6 +746,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if (stepName === 'recipient-search') {
       paintRecipientSearchList();
       syncRecipientSearchClearVisibility();
+      requestAnimationFrame(function () {
+        paintRecipientSearchList();
+        syncRecipientSearchClearVisibility();
+      });
     } else if (stepName === 'recipient') {
       paintRecipientStep();
       syncRecipientDetailClears($step('recipient'));
@@ -829,6 +899,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
   window.addEventListener('popstate', syncRouteFromLocation);
   window.addEventListener('hashchange', syncRouteFromLocation);
+
+  window.addEventListener('pageshow', function (ev) {
+    if (!ev.persisted) return;
+    if (!modalOverlay.classList.contains('modal-overlay--active')) return;
+    if (parsePaySegment() !== 'recipient-search') return;
+    requestAnimationFrame(function () {
+      paintRecipientSearchList();
+      syncRecipientSearchClearVisibility();
+    });
+  });
 
   syncRouteFromLocation();
 });
