@@ -179,6 +179,14 @@
     if (!rootEl || rootEl.dataset.uzAccountInformationBound) return;
     rootEl.dataset.uzAccountInformationBound = '1';
 
+    var scrollChromeRoot =
+      rootEl.querySelector('.modal.modal--account-information') || rootEl;
+    var scrollChrome =
+      window.UZBankScrollEdgeChrome &&
+      window.UZBankScrollEdgeChrome.bind(scrollChromeRoot, {
+        footer: '.modal__footer--account-information, .account-information__footer'
+      });
+
     var tabs = rootEl.querySelectorAll('.account-information__tabs [data-ai-tab]');
     var panels = rootEl.querySelectorAll('[data-ai-panel]');
 
@@ -194,6 +202,7 @@
         if (active) panel.removeAttribute('hidden');
         else panel.setAttribute('hidden', '');
       });
+      if (scrollChrome) scrollChrome.update();
     }
 
     tabs.forEach(function (tab) {

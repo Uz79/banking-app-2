@@ -8,6 +8,7 @@ const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "../../..");
 const tokensDir = path.join(repoRoot, "designs/tokens");
 const outFile = path.join(repoRoot, "apps/web/css/tokens.css");
+const typographyOutFile = path.join(repoRoot, "apps/web/css/typography.css");
 
 const readJson = (p) => JSON.parse(fs.readFileSync(p, "utf8"));
 
@@ -70,31 +71,275 @@ function fontWeight(key) {
   return 400;
 }
 
-function typographyVars(src) {
-  const t = src.typography;
+function fontMetrics() {
+  const m = get(brand, "font-metrics.profile-pro");
   return {
-    hero: t.hero.fontSize.value,
-    h1: t.h1.fontSize.value,
-    h2: t.h2.fontSize.value,
-    h3: t.h3.fontSize.value,
-    h4: t.h4.fontSize.value,
-    h5: t.h5.fontSize.value,
-    h6: t.h6.fontSize.value,
-    textLg: t.paragraph.lg.fontSize.value,
-    textMd: t.paragraph.md.fontSize.value,
-    textSm: t.paragraph.sm.fontSize.value,
-    textXs: t.paragraph["x-sm"].fontSize.value,
-    caption: t.caption.fontSize.value,
-    lhHero: t.hero.lineHeight.value,
-    lhH1: t.h1.lineHeight.value,
-    lhH2: t.h2.lineHeight.value,
-    lhH3: t.h3.lineHeight.value,
-    lhH4: t.h4.lineHeight.value,
-    lhH5: t.h5.lineHeight.value,
-    lhH6: t.h6.lineHeight.value,
-    lhText: t.paragraph.md.lineHeight.value,
-    lhCaption: t.caption.lineHeight.value,
+    unitsPerEm: Number(resolveTokenString(tokenValue(m?.["units-per-em"]))),
+    capHeight: Number(resolveTokenString(tokenValue(m?.["cap-height"]))),
+    typoAscender: Number(resolveTokenString(tokenValue(m?.["typo-ascender"]))),
+    typoDescender: Number(resolveTokenString(tokenValue(m?.["typo-descender"]))),
   };
+}
+
+/** Figma leading trim: cap height → alphabetic baseline within a line box. */
+function leadingTrimPx(fontSize, lineHeight, metrics) {
+  const fs = Number(fontSize);
+  const lh = Number(lineHeight);
+  if (!metrics.unitsPerEm || !fs || !lh) {
+    return { trimTop: 0, trimBottom: 0 };
+  }
+  const scale = fs / metrics.unitsPerEm;
+  const capPx = metrics.capHeight * scale;
+  const ascPx = metrics.typoAscender * scale;
+  const descPx = metrics.typoDescender * scale;
+  const lineBox = fs * lh;
+  const halfLeading = (lineBox - fs) / 2;
+  return {
+    trimTop: halfLeading + (ascPx - capPx),
+    trimBottom: halfLeading + descPx,
+  };
+}
+
+function trimPx(value) {
+  return `${Number(value).toFixed(3).replace(/\.?0+$/, "")}px`;
+}
+
+function isLeadingTrimEnabled(node) {
+  const v = node?.leadingTrim?.value;
+  return v === true || v === "true";
+}
+
+function fontWeightKey(node) {
+  const raw = resolveTokenString(tokenValue(node?.fontWeight));
+  const r = String(raw || "").toLowerCase();
+  if (r.includes("bold")) return "bold";
+  if (r.includes("medium")) return "medium";
+  return "regular";
+}
+
+function styleTypography(node, metrics) {
+  const fs = node.fontSize.value;
+  const lh = node.lineHeight.value;
+  const { trimTop, trimBottom } = leadingTrimPx(fs, lh, metrics);
+  return {
+    fontSize: fs,
+    lineHeight: lh,
+    paragraphSpacing: node.paragraphSpacing?.value,
+    trimTop,
+    trimBottom,
+    leadingTrim: isLeadingTrimEnabled(node),
+    fontWeightKey: fontWeightKey(node),
+  };
+}
+
+function typographyVars(src, metrics) {
+  const t = src.typography;
+  const hero = styleTypography(t.hero, metrics);
+  const h1 = styleTypography(t.h1, metrics);
+  const h2 = styleTypography(t.h2, metrics);
+  const h3 = styleTypography(t.h3, metrics);
+  const h4 = styleTypography(t.h4, metrics);
+  const h5 = styleTypography(t.h5, metrics);
+  const h6 = styleTypography(t.h6, metrics);
+  const textLg = styleTypography(t.paragraph.lg, metrics);
+  const textMd = styleTypography(t.paragraph.md, metrics);
+  const textSm = styleTypography(t.paragraph.sm, metrics);
+  const textXs = styleTypography(t.paragraph["x-sm"], metrics);
+  const caption = styleTypography(t.caption, metrics);
+
+  return {
+    hero,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    textLg,
+    textMd,
+    textSm,
+    textXs,
+    caption,
+    lhHero: hero.lineHeight,
+    lhH1: h1.lineHeight,
+    lhH2: h2.lineHeight,
+    lhH3: h3.lineHeight,
+    lhH4: h4.lineHeight,
+    lhH5: h5.lineHeight,
+    lhH6: h6.lineHeight,
+    lhText: textMd.lineHeight,
+    lhCaption: caption.lineHeight,
+  };
+}
+
+function typographyTrimCss(vars) {
+  const entries = [
+    ["hero", vars.hero],
+    ["h1", vars.h1],
+    ["h2", vars.h2],
+    ["h3", vars.h3],
+    ["h4", vars.h4],
+    ["h5", vars.h5],
+    ["h6", vars.h6],
+    ["text-lg", vars.textLg],
+    ["text-md", vars.textMd],
+    ["text-sm", vars.textSm],
+    ["text-xs", vars.textXs],
+    ["caption", vars.caption],
+  ];
+
+  return entries
+    .map(
+      ([name, style]) => `  --trim-top-${name}: ${trimPx(style.trimTop)};
+  --trim-bottom-${name}: ${trimPx(style.trimBottom)};
+  --ps-${name}: ${pxToRem(style.paragraphSpacing)};`
+    )
+    .join("\n");
+}
+
+function typographySizeCss(vars, breakpoint) {
+  if (breakpoint === "mobile") {
+    return `  --fs-hero: ${pxToRem(vars.hero.fontSize)};
+  --fs-h1: ${pxToRem(vars.h1.fontSize)};
+  --fs-h2: ${pxToRem(vars.h2.fontSize)};
+  --fs-h3: ${pxToRem(vars.h3.fontSize)};
+  --fs-h4: ${pxToRem(vars.h4.fontSize)};
+  --fs-h5: ${pxToRem(vars.h5.fontSize)};
+  --fs-h6: ${pxToRem(vars.h6.fontSize)};
+  --fs-text-lg: ${pxToRem(vars.textLg.fontSize)};
+  --fs-text-md: ${pxToRem(vars.textMd.fontSize)};
+  --fs-text-sm: ${pxToRem(vars.textSm.fontSize)};
+  --fs-text-xs: ${pxToRem(vars.textXs.fontSize)};
+  --fs-caption: ${pxToRem(vars.caption.fontSize)};`;
+  }
+
+  return `  --fs-hero: ${pxToRem(vars.hero.fontSize)};
+  --fs-h1: ${pxToRem(vars.h1.fontSize)};
+  --fs-h2: ${pxToRem(vars.h2.fontSize)};
+  --fs-h3: ${pxToRem(vars.h3.fontSize)};
+  --fs-h4: ${pxToRem(vars.h4.fontSize)};
+  --fs-h5: ${pxToRem(vars.h5.fontSize)};
+  --fs-h6: ${pxToRem(vars.h6.fontSize)};
+  --fs-text-lg: ${pxToRem(vars.textLg.fontSize)};`;
+}
+
+const TYPE_STYLE_DEFS = [
+  { className: "hero", key: "hero", fsVar: "--fs-hero", lhVar: "--lh-hero", trimKey: "hero" },
+  { className: "h1", key: "h1", fsVar: "--fs-h1", lhVar: "--lh-h1", trimKey: "h1" },
+  { className: "h2", key: "h2", fsVar: "--fs-h2", lhVar: "--lh-h2", trimKey: "h2" },
+  { className: "h3", key: "h3", fsVar: "--fs-h3", lhVar: "--lh-h3", trimKey: "h3" },
+  { className: "h4", key: "h4", fsVar: "--fs-h4", lhVar: "--lh-h4", trimKey: "h4" },
+  { className: "h5", key: "h5", fsVar: "--fs-h5", lhVar: "--lh-h5", trimKey: "h5" },
+  { className: "h6", key: "h6", fsVar: "--fs-h6", lhVar: "--lh-h6", trimKey: "h6" },
+  {
+    className: "lg",
+    key: "textLg",
+    fsVar: "--fs-text-lg",
+    lhVar: "--lh-text",
+    trimKey: "text-lg",
+  },
+  {
+    className: "md",
+    key: "textMd",
+    fsVar: "--fs-text-md",
+    lhVar: "--lh-text",
+    trimKey: "text-md",
+  },
+  {
+    className: "sm",
+    key: "textSm",
+    fsVar: "--fs-text-sm",
+    lhVar: "--lh-text",
+    trimKey: "text-sm",
+  },
+  {
+    className: "xs",
+    key: "textXs",
+    fsVar: "--fs-text-xs",
+    lhVar: "--lh-text",
+    trimKey: "text-xs",
+  },
+  {
+    className: "caption",
+    key: "caption",
+    fsVar: "--fs-caption",
+    lhVar: "--lh-caption",
+    trimKey: "caption",
+  },
+];
+
+function typographyClassesCss(vars) {
+  const typeRules = TYPE_STYLE_DEFS.map(({ className, key, fsVar, lhVar, trimKey }) => {
+    const style = vars[key];
+    const trimVars =
+      style.leadingTrim
+        ? `\n  --text-trim-top: var(--trim-top-${trimKey});\n  --text-trim-bottom: var(--trim-bottom-${trimKey});`
+        : "";
+    return `.type-${className} {
+  font-family: var(--font-family);
+  font-size: var(${fsVar});
+  font-weight: var(--fw-${style.fontWeightKey});
+  line-height: var(${lhVar});${trimVars}
+}`;
+  }).join("\n\n");
+
+  const trimStyles = TYPE_STYLE_DEFS.filter(({ key }) => vars[key].leadingTrim)
+    .map(({ className }) => `.type-${className}.type-trim`)
+    .join(",\n");
+
+  return `/* Generated from designs/tokens/* — bundled semantic text styles */
+
+${typeRules}
+
+.type-medium {
+  font-weight: var(--fw-medium);
+}
+
+.type-bold {
+  font-weight: var(--fw-bold);
+}
+
+/* Leading trim — apply with .type-trim on styles where leadingTrim is true in tokens */
+.type-trim {
+  display: block;
+  margin-block-start: calc(-1 * var(--text-trim-top, 0px));
+  margin-block-end: calc(-1 * var(--text-trim-bottom, 0px));
+}
+
+${trimStyles} {
+  display: block;
+  margin-block-start: calc(-1 * var(--text-trim-top));
+  margin-block-end: calc(-1 * var(--text-trim-bottom));
+}
+
+/* Stacked trimmed lines — .type-stack-tight + .type-trim; row gap via trim-aware margins */
+.type-stack-tight {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.type-stack-tight > .type-sm.type-trim:first-child {
+  margin-block-end: 0;
+}
+
+.type-stack-tight > .type-sm.type-trim + .type-xs.type-trim {
+  margin-block-start: calc(
+    var(--text-row-gap) - var(--trim-bottom-text-sm) - var(--trim-top-text-xs)
+  );
+}
+
+/* Horizontal amount pairs — never block-level trim margins */
+.list-item__amount .type-trim,
+.list-item__currency.type-trim,
+.list-item__value.type-trim,
+.list-item--group-account .list-item__end .type-trim {
+  display: inline;
+  margin-block: 0;
+}
+
+/* Margin-based trim only — text-box-trim caused inconsistent stack/row layout in modals and carousels. */
+`;
 }
 
 /** Read mapped color token by path e.g. 'background.background', 'border.border-secondary'. */
@@ -237,8 +482,9 @@ function themeBlock(map, mode) {
 `;
 }
 
-const mob = typographyVars(mobile);
-const desk = typographyVars(desktop);
+const metrics = fontMetrics();
+const mob = typographyVars(mobile, metrics);
+const desk = typographyVars(desktop, metrics);
 
 const css = `@font-face {
   font-family: 'Profile Pro';
@@ -269,7 +515,6 @@ const css = `@font-face {
   --modal-payment-max-width: 640px;
   --confirmation-dialog-max-width: 640px;
 
-  --section-card-header-height: 1.5rem;
   --section-card-header-padding-x: var(--space-3);
   --section-card-header-gap-to-body: 0.25rem;
 
@@ -295,18 +540,7 @@ const css = `@font-face {
   --fw-medium: ${fontWeight("medium")};
   --fw-bold: ${fontWeight("bold")};
 
-  --fs-hero: ${pxToRem(mob.hero)};
-  --fs-h1: ${pxToRem(mob.h1)};
-  --fs-h2: ${pxToRem(mob.h2)};
-  --fs-h3: ${pxToRem(mob.h3)};
-  --fs-h4: ${pxToRem(mob.h4)};
-  --fs-h5: ${pxToRem(mob.h5)};
-  --fs-h6: ${pxToRem(mob.h6)};
-  --fs-text-lg: ${pxToRem(mob.textLg)};
-  --fs-text-md: ${pxToRem(mob.textMd)};
-  --fs-text-sm: ${pxToRem(mob.textSm)};
-  --fs-text-xs: ${pxToRem(mob.textXs)};
-  --fs-caption: ${pxToRem(mob.caption)};
+${typographySizeCss(mob, "mobile")}
 
   --lh-hero: ${mob.lhHero};
   --lh-h1: ${mob.lhH1};
@@ -317,6 +551,12 @@ const css = `@font-face {
   --lh-h6: ${mob.lhH6};
   --lh-text: ${mob.lhText};
   --lh-caption: ${mob.lhCaption};
+
+  /* Leading trim — Profile Pro cap → baseline (computed from brand font-metrics) */
+${typographyTrimCss(mob)}
+
+  /* Tight row gap for stacked trimmed labels — Figma space/2 (8dp) */
+  --text-row-gap: var(--space-1);
 
   --btn-pad-y-sm: 0;
   --btn-pad-x-sm: var(--space-2);
@@ -341,17 +581,24 @@ ${themeBlock(dark, "dark")}
 
 @media (min-width: 1280px) {
   :root {
-    --fs-hero: ${pxToRem(desk.hero)};
-    --fs-h1: ${pxToRem(desk.h1)};
-    --fs-h2: ${pxToRem(desk.h2)};
-    --fs-h3: ${pxToRem(desk.h3)};
-    --fs-h4: ${pxToRem(desk.h4)};
-    --fs-h5: ${pxToRem(desk.h5)};
-    --fs-h6: ${pxToRem(desk.h6)};
-    --fs-text-lg: ${pxToRem(desk.textLg)};
+${typographySizeCss(desk, "desktop")}
+
+    --lh-hero: ${desk.lhHero};
+    --lh-h1: ${desk.lhH1};
+    --lh-h2: ${desk.lhH2};
+    --lh-h3: ${desk.lhH3};
+    --lh-h4: ${desk.lhH4};
+    --lh-h5: ${desk.lhH5};
+    --lh-h6: ${desk.lhH6};
+    --lh-text: ${desk.lhText};
+    --lh-caption: ${desk.lhCaption};
+
+${typographyTrimCss(desk)}
   }
 }
 `;
 
 fs.writeFileSync(outFile, css, "utf8");
+fs.writeFileSync(typographyOutFile, typographyClassesCss(mob), "utf8");
 console.log(`Wrote ${outFile}`);
+console.log(`Wrote ${typographyOutFile}`);

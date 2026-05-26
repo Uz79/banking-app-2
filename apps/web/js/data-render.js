@@ -43,7 +43,7 @@
     });
 
     // account-details.html: first carousel slide is Household
-    var firstSlide = document.querySelector('.carousel__slides .carousel__slide:first-child .carousel__slide-value');
+    var firstSlide = document.querySelector('.carousel__slides .carousel__slide:first-child .list-item__value');
     if (firstSlide) firstSlide.textContent = formatted;
 
     // Payment modal: every .debit-account__amount across the inlined modal__step blocks

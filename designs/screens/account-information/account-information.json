@@ -16,6 +16,9 @@
       },
       "mobile-default": {
         "default": "variants/mobile-default/default.svg"
+      },
+      "mobile-content-indication": {
+        "default": "variants/mobile-content-indication/default.svg"
       }
     }
   },
@@ -31,7 +34,8 @@
     }
   },
   "notes": [
-    "Each variant folder also carries `default.png` (raster export) next to vector `default.svg`.",
+    "Each variant folder also carries `default.png` (raster export) next to vector `default.svg` when exported.",
+    "Figma: 'Account Information - Content Indication Effect - mobile' → variants/mobile-content-indication/.",
     "`desktop-default` matches the in-app disclosure width (~640); `desktop-full-screen` is the wide desktop comp.",
     "Mobile layout (Figma `452:89826`): content padding space/4 × space/3 (16×12px); section stack gap space/4 (16px) between summary, tabs, share bar, and each readonly TextField; each TextField min-height 88dp."
   ]

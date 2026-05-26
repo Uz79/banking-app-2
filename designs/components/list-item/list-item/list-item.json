@@ -13,6 +13,9 @@
       "group-account": {
         "default": "variants/group-account/default.svg"
       },
+      "group-credit-card": {
+        "default": "variants/group-credit-card/default.png"
+      },
       "grouped-bottom-account": {
         "default": "variants/grouped-bottom-account/default.svg"
       },
@@ -50,6 +53,8 @@
     }
   },
   "notes": [
-    "Figma exports `Pressed` are stored as `focus.svg` for consistency."
+    "Figma exports `Pressed` are stored as `focus.svg` / `focus.png` for consistency.",
+    "Each variant folder holds `default.svg` + `default.png` when exported; add hover/focus when the component set includes those states.",
+    "Do not leave `Type=\u2026` exports at `list-item/` root \u2014 use `variants/<type-kebab>-<case-kebab>/`."
   ]
 }

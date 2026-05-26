@@ -226,5 +226,23 @@
       "value": "{size.16}",
       "type": "borderRadius"
     }
+  },
+  "trim": {
+    "cap-height": {
+      "value": "{font-metrics.profile-pro.cap-height}",
+      "type": "other"
+    },
+    "baseline": {
+      "value": "{font-metrics.profile-pro.typo-descender}",
+      "type": "other"
+    },
+    "primary-trim-top": {
+      "value": "{trim.cap-height}",
+      "type": "other"
+    },
+    "primary-trim-bottom": {
+      "value": "{trim.baseline}",
+      "type": "other"
+    }
   }
 }

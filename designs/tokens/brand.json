@@ -208,5 +208,25 @@
       "value": "Bold",
       "type": "fontWeights"
     }
+  },
+  "font-metrics": {
+    "profile-pro": {
+      "units-per-em": {
+        "value": "1000",
+        "type": "other"
+      },
+      "cap-height": {
+        "value": "602",
+        "type": "other"
+      },
+      "typo-ascender": {
+        "value": "785",
+        "type": "other"
+      },
+      "typo-descender": {
+        "value": "215",
+        "type": "other"
+      }
+    }
   }
 }
