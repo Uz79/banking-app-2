@@ -14,8 +14,33 @@
   background-color: var(--color-bg-secondary);
 }
 
+/* Main view vertical rhythm — Figma space/4 mobile (16dp = 1rem), space/5 desktop (32dp). */
+:root {
+  --view-stack-gap: var(--space-3); /* 16dp */
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --view-stack-gap: var(--space-5);
+  }
+}
+
+/* Block page scroll while any flow overlay is open (payment, account information, share). */
+html:has(body.body--payment-open) {
+  overflow: hidden;
+}
+
 .body--payment-open {
   overflow: hidden;
+}
+
+.body--payment-open .app {
+  overflow: hidden;
+}
+
+.body--payment-open .main-content {
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 /* ── Layout ───────────────────────────────────────────── */
@@ -31,7 +56,7 @@
 
 .sidebar {
   display: none;
-  width: 13.75rem;
+  width: 16rem;
   flex-shrink: 0;
   flex-direction: column;
   background-color: var(--color-bg-sidebar);
@@ -163,6 +188,13 @@
   min-width: min(60rem, 100%);
 }
 
+/* Account details: content column capped at 960dp (60rem), same as default main-content__inner. */
+.body[data-screen="account-details"] .main-content__inner {
+  max-width: 60rem;
+  width: 100%;
+  margin-inline: auto;
+}
+
 /* ── Page title ───────────────────────────────────────── */
 
 .page-title {
@@ -183,7 +215,7 @@
   padding: var(--space-3);
   position: relative;
   flex-shrink: 0;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--view-stack-gap);
 }
 
 .view__nav-title,
@@ -239,6 +271,31 @@
 .view__nav-btn-icon {
   width: 1.5rem;
   height: 1.5rem;
+}
+
+/* Main scroll views: sticky page title; flush horizontal edges when pinned to scroll top */
+.body[data-screen="overview"] .view__nav[data-scroll-edge-nav],
+.body[data-screen="payments"] .view__nav[data-scroll-edge-nav],
+.body[data-screen="account-details"] .view__nav[data-scroll-edge-nav] {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--color-bg-secondary);
+  transition: box-shadow 0.15s ease, margin 0.15s ease, padding 0.15s ease;
+  margin-bottom: var(--view-stack-gap);
+}
+
+/* Account details: nav spans full width of the 960dp column (overview/payments bleed, always on). */
+.body[data-screen="account-details"] .view__nav[data-scroll-edge-nav] {
+  margin-inline: calc(-1 * var(--space-4));
+  padding-inline: var(--space-4);
+  box-sizing: border-box;
+}
+
+.body[data-screen="overview"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
+.body[data-screen="payments"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after {
+  margin-inline: calc(-1 * var(--space-4));
+  padding-inline: var(--space-4);
 }
 
 /* ── Views ─────────────────────────────────────────────── */
@@ -348,7 +405,7 @@
   display: flex;
   justify-content: center;
   gap: var(--space-6);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--view-stack-gap);
 }
 
 .action-button {
@@ -430,25 +487,16 @@
 
 /* ── Section card ─────────────────────────────────────── */
 
-/* Stack gap — Figma Main Content / Modules: mobile space/4 (16dp), desktop space/6 (32dp). */
+/* Stack gap — Figma Main Content / Modules: mobile space/4 (16dp), desktop space/5 (32dp). */
 .section-card {
-  margin-bottom: var(--space-3);
-}
-
-@media (min-width: 1024px) {
-  .section-card {
-    margin-bottom: var(--space-5);
-  }
+  margin-bottom: var(--view-stack-gap);
 }
 
 .section-card__header {
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
-  /* Row item / default-header (designs/.../row-item): 24px hug, vertically centred.
-     Min-height matches token; avoid fixed height so scaled type is not clipped. */
   align-items: center;
-  min-height: var(--section-card-header-height, 1.5rem);
   padding: 0 var(--section-card-header-padding-x, var(--space-3));
   margin-bottom: var(--section-card-header-gap-to-body, 0.25rem);
 }
@@ -500,16 +548,41 @@
  * Figma Payment - mobile Main Content: gap space/4 (16dp) between section cards. */
 
 @media (max-width: 1023px) {
+  .body[data-screen='overview'] .view--active.view--overview,
   .body[data-screen='payments'] .view--active.view--payments {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--view-stack-gap);
+  }
+
+  /* Cards live in .view__main — gap here (not only on .view) for 16dp between section cards. */
+  .body[data-screen='overview'] .view--active.view--overview > .view__main,
+  .body[data-screen='payments'] .view--active.view--payments > .view__main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--view-stack-gap);
+  }
+
+  .body[data-screen='overview'] .view--active.view--overview .view__nav,
+  .body[data-screen='overview'] .view--active.view--overview .action-buttons,
+  .body[data-screen='overview'] .view--active.view--overview .section-card,
+  .body[data-screen='payments'] .view--active.view--payments .view__nav,
+  .body[data-screen='payments'] .view--active.view--payments .action-buttons,
+  .body[data-screen='payments'] .view--active.view--payments .section-card,
+  .body[data-screen='overview'] .view__nav[data-scroll-edge-nav],
+  .body[data-screen='payments'] .view__nav[data-scroll-edge-nav] {
+    margin-bottom: 0;
+  }
+
+  .body[data-screen='overview'] .view--active.view--overview .action-buttons,
+  .body[data-screen='payments'] .view--active.view--payments .action-buttons {
+    margin-bottom: 0;
   }
 
   .body[data-screen='payments'] .view--active.view--payments > .view__sidebar {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--view-stack-gap);
     width: 100%;
   }
 
@@ -546,6 +619,7 @@
 
 .product-item__info {
   flex: 1;
+  min-width: 0;
 }
 
 .product-item__name {
@@ -611,20 +685,26 @@
 
 .list-item__content {
   flex: 1;
+  min-width: 0;
+}
+
+.list-item__content.type-stack-tight,
+.list-item__body.type-stack-tight,
+.product-item__info.type-stack-tight,
+.debit-account__info.type-stack-tight,
+.form-sheet__account-info.type-stack-tight {
+  flex: 1;
+  min-width: 0;
+  justify-content: center;
 }
 
 .list-item__title {
   display: block;
-  font-size: var(--fs-text-sm);
-  font-weight: var(--fw-regular);
-  line-height: var(--lh-text);
   color: var(--color-fg);
 }
 
 .list-item__subtitle {
   display: block;
-  font-size: var(--fs-text-xs);
-  line-height: var(--lh-text);
   color: var(--color-fg-label);
 }
 
@@ -636,15 +716,10 @@
 }
 
 .list-item__currency {
-  font-size: var(--fs-text-xs);
-  line-height: var(--lh-text);
   color: var(--color-fg-label);
 }
 
 .list-item__value {
-  font-size: var(--fs-text-sm);
-  font-weight: var(--fw-bold);
-  line-height: var(--lh-text);
   color: var(--color-fg);
 }
 
@@ -660,36 +735,46 @@
   flex-shrink: 0;
 }
 
-/* group-account — designs/components/list-item/list-item/variants/group-account (Figma 442:9603) */
+/* group-account — designs/components/list-item/list-item/variants/group-account (Figma 442:9603)
+ * Hug height: padding-block + content (icon / text-stack / amount). No fixed row height. */
 .list-item--group-account {
-  align-items: flex-start;
-  padding-block: var(--space-3); /* space/4 — 16px vertical only */
+  align-items: center;
+  padding-block: var(--space-3); /* 16dp vertical inset */
   padding-inline: 0;
   gap: 0;
-  min-height: 3.5rem; /* 56dp */
+  width: 100%;
   box-sizing: border-box;
   border-radius: var(--radius-regular);
+  background-color: var(--color-bg);
+  border: 0.0625rem solid color-mix(in srgb, var(--color-btn-primary-bg) 20%, transparent);
+}
+
+@supports not (border: 1px solid color-mix(in srgb, red 20%, transparent)) {
+  .list-item--group-account {
+    border-color: rgba(0, 21, 126, 0.2);
+  }
 }
 
 .list-item--group-account .list-item__media {
   flex-shrink: 0;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   padding-left: var(--space-3); /* Left Side — 16px inset */
-  margin-right: var(--space-3); /* space/4 — 16px icon to text */
+  margin-right: var(--space-3); /* 16px icon to text */
 }
 
 .list-item--group-account .list-item__body {
   flex: 1 1 auto;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1); /* space/2 — 8px title to subtitle */
 }
 
 .list-item--group-account .list-item__title {
-  font-weight: var(--fw-regular);
+  color: var(--color-fg);
+}
+
+.list-item--group-account .list-item__subtitle {
+  color: var(--color-fg-label);
 }
 
 .list-item--group-account .list-item__end {
@@ -717,7 +802,8 @@
 
 .list-item--group-account.list-item--static:hover,
 .list-item--group-account.list-item--static:active {
-  background-color: transparent;
+  background-color: var(--color-bg);
+  border-color: color-mix(in srgb, var(--color-btn-primary-bg) 20%, transparent);
 }
 
 /* ── Divider ──────────────────────────────────────────── */
@@ -796,90 +882,14 @@
   gap: var(--space-3);
 }
 
+/* Slide is a carousel viewport slot; account row is list-item--group-account */
 .carousel__slide {
   min-width: 100%;
-  background-color: var(--color-bg);
-  border-radius: var(--radius-regular);
-  border: 0.0625rem solid var(--color-separator);
-  padding: var(--space-3);
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  position: relative;
-  isolation: isolate;
-  cursor: pointer;
-}
-
-/* State layer: keep base fill so rgba overlays composite like .product-item */
-.carousel__slide::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background-color: var(--color-surface-state-hover);
-  opacity: 0;
-  transition: opacity 0.15s ease, background-color 0.15s ease;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.carousel__slide:hover::after {
-  opacity: 1;
-}
-
-.carousel__slide:active::after {
-  background-color: var(--color-surface-state-pressed);
-  opacity: 1;
-}
-
-.carousel__slide > * {
-  position: relative;
-  z-index: 1;
-}
-
-.carousel__slide-icon {
-  width: 1.5rem;
-  height: 1.5rem;
   flex-shrink: 0;
 }
 
-.carousel__slide-info {
-  flex: 1;
-}
-
-.carousel__slide-name {
-  display: block;
-  font-size: var(--fs-text-sm);
-  font-weight: var(--fw-medium);
-  line-height: var(--lh-text);
-  color: var(--color-fg);
-}
-
-.carousel__slide-iban {
-  display: block;
-  font-size: var(--fs-text-xs);
-  line-height: var(--lh-text);
-  color: var(--color-fg-secondary);
-}
-
-.carousel__slide-amount {
-  display: flex;
-  gap: 0.375rem;
-  align-items: baseline;
-  flex-shrink: 0;
-}
-
-.carousel__slide-currency {
-  font-size: var(--fs-text-xs);
-  line-height: var(--lh-text);
-  color: var(--color-fg-secondary);
-}
-
-.carousel__slide-value {
-  font-size: var(--fs-text-sm);
-  font-weight: var(--fw-bold);
-  line-height: var(--lh-text);
-  color: var(--color-fg);
+.carousel__slide .list-item--group-account {
+  width: 100%;
 }
 
 .carousel__pagination {
@@ -1052,7 +1062,6 @@
 .booking-row {
   display: flex;
   align-items: center;
-  min-height: 2.5rem;
   padding: var(--space-2) var(--space-3);
   gap: var(--space-3);
   cursor: pointer;
@@ -1136,8 +1145,9 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-4);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  /* Scroll only inside modal steps / [data-scroll-edge] — not the overlay host. */
+  overflow: hidden;
+  overscroll-behavior: contain;
   /* Dim the underlying app; payment UI sits in .modal-shell (640dp) */
   background-color: var(--color-overlay-scrim);
 }
@@ -1191,13 +1201,45 @@
   max-height: min(90vh, calc(100dvh - 2 * var(--space-4)));
 }
 
+/* Desktop flow sheets — alias.radius.regular (8px): payment-flow-*, account-information desktop-default */
+@media (min-width: 1280px) {
+  .modal-shell:has(> .modal--payment-flow),
+  .modal-shell:has(> .modal--account-information),
+  .modal-shell:has(> .modal--share-information) {
+    border-radius: var(--radius-regular);
+    overflow: hidden;
+    box-shadow: 0 0.5rem 2rem var(--color-modal-elevated-shadow);
+  }
+
+  .modal-shell:has(> .modal--payment-flow) > .modal,
+  .modal-shell:has(> .modal--account-information) > .modal,
+  .modal-shell:has(> .modal--share-information) > .modal {
+    border-radius: var(--radius-regular);
+    overflow: hidden;
+    box-shadow: none;
+  }
+
+  .modal--payment-flow .modal__nav,
+  .modal--account-information .modal__nav,
+  .modal--share-information .modal__nav {
+    border-top-left-radius: var(--radius-regular);
+    border-top-right-radius: var(--radius-regular);
+  }
+
+  .modal--payment-flow .modal__footer,
+  .modal--account-information .modal__footer--account-information,
+  .modal--share-information .modal__footer {
+    border-bottom-left-radius: var(--radius-regular);
+    border-bottom-right-radius: var(--radius-regular);
+  }
+}
+
 /* Mobile / tablet: payment flow is full-viewport — no outer padding, no card radius. */
 @media (max-width: 1279px) {
   .modal-overlay {
     padding: 0;
     align-items: stretch;
     justify-content: flex-start;
-    overflow-y: hidden;
   }
 
   .modal-shell {
@@ -1355,6 +1397,8 @@
   bottom: 0;
   min-width: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -1406,6 +1450,73 @@
   flex-shrink: 0;
 }
 
+/* ==========================================================================
+ * Content indication — scroll edge shadows (global)
+ * designs/screens/*/variants/mobile-content-indication
+ * ========================================================================== */
+
+.modal--payment-flow,
+.modal--account-information,
+.modal--share-information {
+  overflow: hidden;
+  border-radius: var(--radius-regular);
+}
+
+.modal--payment-flow .modal__nav,
+.modal--payment-flow .modal__footer,
+.modal--account-information .modal__nav,
+.modal--account-information .modal__footer--account-information,
+.modal--share-information .modal__nav,
+.modal--share-information .modal__footer,
+.view--account-information .view__nav,
+.view--account-information .account-information__footer {
+  position: sticky;
+  z-index: 2;
+  flex-shrink: 0;
+  background-color: var(--color-bg);
+  transition: box-shadow 0.15s ease;
+}
+
+.modal--payment-flow .modal__nav,
+.modal--account-information .modal__nav,
+.modal--share-information .modal__nav,
+.view--account-information .view__nav {
+  top: 0;
+}
+
+.modal--payment-flow .modal__footer,
+.modal--account-information .modal__footer--account-information,
+.modal--share-information .modal__footer,
+.view--account-information .account-information__footer {
+  bottom: 0;
+}
+
+.modal__nav.is-scroll-edge--after,
+.view__nav.is-scroll-edge--after,
+[data-scroll-edge-nav].is-scroll-edge--after {
+  box-shadow: 0 0.125rem 1rem color-mix(in srgb, var(--color-btn-primary-bg) 10%, transparent);
+}
+
+.modal__footer.is-scroll-edge--before,
+.account-information__footer.is-scroll-edge--before,
+[data-scroll-edge-footer].is-scroll-edge--before {
+  box-shadow: 0 -0.125rem 1rem color-mix(in srgb, var(--color-btn-primary-bg) 10%, transparent);
+}
+
+@supports not (color: color-mix(in srgb, red 10%, transparent)) {
+  .modal__nav.is-scroll-edge--after,
+  .view__nav.is-scroll-edge--after,
+  [data-scroll-edge-nav].is-scroll-edge--after {
+    box-shadow: 0 0.125rem 1rem rgba(0, 21, 126, 0.1);
+  }
+
+  .modal__footer.is-scroll-edge--before,
+  .account-information__footer.is-scroll-edge--before,
+  [data-scroll-edge-footer].is-scroll-edge--before {
+    box-shadow: 0 -0.125rem 1rem rgba(0, 21, 126, 0.1);
+  }
+}
+
 /* Recipient search: fill modal body height; scroll list so search + heading stay visible. */
 .modal__step[data-step="recipient-search"] {
   display: flex;
@@ -1446,7 +1557,6 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  min-height: 2.5rem;
   padding: var(--space-1) var(--space-2);
   border: none;
   border-radius: var(--radius-small);
@@ -2521,7 +2631,6 @@
 .list-item__icon,
 .list-item__chevron,
 .show-all-btn__icon,
-.carousel__slide-icon,
 .carousel__arrow-icon,
 .booking-row__icon,
 .bookings-card__pending-icon,
@@ -2559,9 +2668,10 @@
 
 .sidebar__logout-icon {
   display: block;
-  color: var(--color-btn-primary-fg);
+  flex-shrink: 0;
   fill: none;
   overflow: visible;
+  color: var(--color-btn-primary-fg);
 }
 
 .sidebar__nav-icon > use,
@@ -2571,7 +2681,6 @@
 .list-item__icon > use,
 .list-item__chevron > use,
 .show-all-btn__icon > use,
-.carousel__slide-icon > use,
 .carousel__arrow-icon > use,
 .booking-row__icon > use,
 .bookings-card__pending-icon > use,
@@ -2612,9 +2721,8 @@
   border: 0;
 }
 
-/* ── Tablet-wide dashboard (no nav sidebar): 1024–1279px ─────────────────
-   Nav sidebar stays off until 1280px, but Overview/Payments keep a 2-column
-   main + aside grid and the main wrapper never exceeds 960px. */
+/* ── Tablet-wide dashboard: 1024–1279px ─────────────────
+   Tab bar for app nav; 2-column content grid (designs/screens/payments desktop-default). */
 @media (min-width: 1024px) and (max-width: 1279px) {
   .body[data-screen="overview"] .main-content__inner,
   .body[data-screen="payments"] .main-content__inner {
@@ -2628,13 +2736,40 @@
   .view--active.view--payments {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: var(--space-5);
+    gap: var(--view-stack-gap);
     align-items: start;
+  }
+
+  .view--active.view--overview .view__nav,
+  .view--active.view--payments .view__nav,
+  .body[data-screen="overview"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="payments"] .view__nav[data-scroll-edge-nav],
+  .view--active.view--overview .action-buttons,
+  .view--active.view--payments .action-buttons,
+  .view--active.view--overview .section-card,
+  .view--active.view--payments .section-card {
+    margin-bottom: 0;
   }
 
   .view--active.view--overview > .view__sidebar,
   .view--active.view--payments > .view__sidebar {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: var(--view-stack-gap);
+    width: 100%;
+    min-width: 0;
+  }
+
+  .view--active.view--overview > .view__main,
+  .view--active.view--payments > .view__main {
+    display: contents;
+  }
+
+  .view--active.view--overview .view__nav,
+  .view--active.view--payments .view__nav,
+  .view--active.view--overview .action-buttons,
+  .view--active.view--payments .action-buttons {
+    grid-column: 1 / -1;
   }
 }
 
@@ -2688,35 +2823,52 @@
     margin-inline: auto;
   }
 
+  .body[data-screen="account-details"] .view__nav[data-scroll-edge-nav] {
+    margin-inline: calc(-1 * var(--space-5));
+    padding-inline: var(--space-5);
+  }
+
+  .body[data-screen="overview"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
+  .body[data-screen="payments"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after {
+    margin-inline: calc(-1 * var(--space-5));
+    padding-inline: var(--space-5);
+  }
+
   .view--active.view--overview,
   .view--active.view--payments {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: var(--space-5);
+    gap: var(--view-stack-gap);
     align-items: start;
   }
 
-  .view__sidebar {
-    display: block;
+  .body[data-screen="overview"] .view--active.view--overview .view__nav,
+  .body[data-screen="payments"] .view--active.view--payments .view__nav,
+  .body[data-screen="overview"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="payments"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="overview"] .view--active.view--overview .action-buttons,
+  .body[data-screen="payments"] .view--active.view--payments .action-buttons,
+  .body[data-screen="overview"] .view--active.view--overview .section-card,
+  .body[data-screen="payments"] .view--active.view--payments .section-card {
+    margin-bottom: 0;
+  }
+
+  .body[data-screen="overview"] .view--active.view--overview > .view__sidebar,
+  .body[data-screen="payments"] .view--active.view--payments > .view__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--view-stack-gap);
+    width: 100%;
+    min-width: 0;
   }
 
   .action-buttons {
     gap: var(--space-7);
   }
-}
 
-/* Three columns when the main flex region is wide enough (≥ 1200px). */
-@container main (min-width: 1200px) {
-  .body[data-screen="overview"] .view--active.view--overview,
-  .body[data-screen="payments"] .view--active.view--payments {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--space-5);
-  }
-
+  /* 2-column shell: flatten main wrapper; keep view__sidebar as stacked rail. */
   .body[data-screen="overview"] .view--active.view--overview > .view__main,
-  .body[data-screen="payments"] .view--active.view--payments > .view__main,
-  .body[data-screen="overview"] .view--active.view--overview > .view__sidebar,
-  .body[data-screen="payments"] .view--active.view--payments > .view__sidebar {
+  .body[data-screen="payments"] .view--active.view--payments > .view__main {
     display: contents;
   }
 
@@ -2725,6 +2877,26 @@
   .body[data-screen="overview"] .view--active.view--overview .action-buttons,
   .body[data-screen="payments"] .view--active.view--payments .action-buttons {
     grid-column: 1 / -1;
+  }
+}
+
+/* Overview only: three content columns when main region is wide (≥ 1200px). */
+@media (min-width: calc(1200px + 16rem)) {
+  @container main (min-width: 1200px) {
+    .body[data-screen="overview"] .view--active.view--overview {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--view-stack-gap);
+    }
+
+    .body[data-screen="overview"] .view--active.view--overview > .view__main,
+    .body[data-screen="overview"] .view--active.view--overview > .view__sidebar {
+      display: contents;
+    }
+
+    .body[data-screen="overview"] .view--active.view--overview .view__nav,
+    .body[data-screen="overview"] .view--active.view--overview .action-buttons {
+      grid-column: 1 / -1;
+    }
   }
 }
 
@@ -3146,21 +3318,26 @@ a.btn-primary {
   z-index: 101;
 }
 
-/* Reuse `.modal-overlay` flex/padding/max-width alongside payment; body + scroll regions */
-/* Reuse payment modal horizontal rhythm (footer uses var(--space-3)). */
 .modal-overlay .modal.modal--account-information .modal__body.modal__body--account-information {
   flex: 1 1 auto;
   min-height: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  padding: var(--space-2) var(--space-3);
+  padding: 0;
+  gap: 0;
+  box-sizing: border-box;
+}
+
+.account-information__scroll-inner {
+  display: flex;
+  flex-direction: column;
   gap: var(--space-3); /* Figma Section / Content — space/4 (16px) between blocks */
+  padding: var(--space-2) var(--space-3);
   box-sizing: border-box;
 }
 
 .modal--account-information .account-information__tabs {
-  flex-shrink: 0;
   padding-inline: 0;
   padding-top: 0;
   margin-bottom: 0;
@@ -3168,31 +3345,11 @@ a.btn-primary {
 
 .modal--account-information .account-information__summary,
 .view--account-information .account-information__summary {
-  flex-shrink: 0;
   margin-bottom: 0;
 }
 
 .account-information__summary-card.list-item--group-account {
   margin: 0;
-  cursor: default;
-  /* Match designs/components/list-item group-account stroke */
-  border: 0.0625rem solid color-mix(in srgb, var(--color-btn-primary-bg) 20%, transparent);
-  background-color: var(--color-bg);
-}
-
-.account-information__summary-card.list-item--group-account:hover,
-.account-information__summary-card.list-item--group-account:active {
-  background-color: var(--color-bg);
-}
-
-@supports not (border: 1px solid color-mix(in srgb, red 20%, transparent)) {
-  .account-information__summary-card.list-item--group-account {
-    border-color: rgba(0, 21, 126, 0.2);
-  }
-}
-
-.account-information__summary-value {
-  font-weight: var(--fw-bold);
 }
 
 .modal--account-information .account-information__share-row,
@@ -3224,12 +3381,24 @@ a.btn-primary {
   }
 }
 
-/* Do not negate parent padding inside modal — list rows + dividers share same inset as Confirm. */
 .modal--account-information .account-information__scroll {
   flex: 1 1 auto;
   min-height: 0;
   margin-inline: 0;
   padding-inline: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.view--account-information {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
+.view--account-information .view__nav {
+  margin-bottom: 0;
 }
 
 .view--account-information .view__main.account-information {
@@ -3238,9 +3407,15 @@ a.btn-primary {
   min-height: 0;
   flex: 1 1 auto;
   width: 100%;
-  padding: var(--space-2) var(--space-3);
-  gap: var(--space-3);
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
   box-sizing: border-box;
+}
+
+.view--account-information .account-information__footer {
+  padding: var(--space-3);
+  margin-top: 0;
 }
 
 .account-information__tabs {
@@ -3254,6 +3429,7 @@ a.btn-primary {
   overflow-y: auto;
   margin-inline: 0;
   padding-inline: 0;
+  -webkit-overflow-scrolling: touch;
 }
 
 .account-information__panel[hidden] {
@@ -3271,33 +3447,23 @@ a.btn-primary {
   gap: var(--space-3); /* Figma Section — space/4 between each TextField */
 }
 
+/* Hug height: label line-height + gap + value row (line-height + icon). No fixed field frame. */
 .account-information__fields .form-field--readonly {
-  --form-field-readonly-height: 5.5rem;
-  --form-field-readonly-row-height: 2.5rem;
-  --form-field-readonly-tail: 1.25rem;
-
-  min-height: var(--form-field-readonly-height);
   gap: 0.25rem; /* Figma TextField — space/1 (4px) label to value row */
-  padding-bottom: var(--form-field-readonly-tail);
   box-sizing: border-box;
-}
-
-.account-information__fields .form-field--readonly:has(.form-field__row--multiline) {
-  min-height: auto;
 }
 
 .account-information__fields .form-field--readonly .form-field__label {
   flex: 0 0 auto;
-  min-height: 1.5rem; /* 24dp label band */
-  display: flex;
-  align-items: flex-end;
+  display: block;
 }
 
 .account-information__fields .form-field--readonly .form-field__row {
-  flex: 0 0 var(--form-field-readonly-row-height);
-  height: var(--form-field-readonly-row-height);
-  min-height: var(--form-field-readonly-row-height);
-  max-height: var(--form-field-readonly-row-height);
+  display: flex;
+  flex: 0 0 auto;
+  height: auto;
+  min-height: 2.5rem;
+  max-height: none;
   align-items: center;
   gap: var(--space-3); /* Figma Input Text — space/4 value to icon */
   padding: 0;
@@ -3307,10 +3473,6 @@ a.btn-primary {
 }
 
 .account-information__fields .form-field--readonly .form-field__row--multiline {
-  flex: 0 1 auto;
-  height: auto;
-  max-height: none;
-  min-height: var(--form-field-readonly-row-height);
   align-items: flex-start;
   padding-block: 0.25rem var(--space-3); /* Figma multiline — pt 4px, pb 16px */
 }
@@ -3346,10 +3508,6 @@ a.btn-primary {
 
 .account-information__footer {
   flex-shrink: 0;
-  padding-top: var(--space-4);
-  padding-bottom: var(--space-2);
-  margin-top: auto;
-  background: linear-gradient(to top, var(--color-bg) 85%, transparent);
 }
 
 /* ============================================================================
@@ -3361,15 +3519,20 @@ a.btn-primary {
   z-index: 102;
 }
 
-.modal-overlay .modal.modal--share-information .modal__body.modal__body--share-information {
+/* Share modal: not payment steps — static body + inner scroll (avoids clipped content bleed-through). */
+.modal--share-information > .modal__body.modal__body--share-information {
+  position: static;
   flex: 1 1 auto;
   min-height: 0;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
   overflow-y: auto;
   padding: var(--space-2) var(--space-3);
   gap: var(--space-3);
+  background-color: var(--color-bg);
   box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
 }
 
 .share-information__hero {
@@ -3380,24 +3543,22 @@ a.btn-primary {
   flex-shrink: 0;
 }
 
-.share-information__qr-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 12rem;
-  height: 12rem;
-  padding: 0;
-  border: 0.0625rem solid var(--color-separator);
-  border-radius: var(--radius-md, 0.5rem);
-  background-color: var(--color-bg);
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
+/* Vector QR — 192×192 (12rem), no border; bordered cards are section-card only (designs/screens/share-information). */
 .share-information__qr {
   display: block;
-  width: 100%;
-  height: 100%;
+  width: 12rem;
+  height: 12rem;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  background-color: var(--color-fg);
+  mask-image: url('../assets/share-information-qr.svg');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-image: url('../assets/share-information-qr.svg');
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
 }
 
 .share-information__share-icon {
@@ -3427,7 +3588,7 @@ a.btn-primary {
   flex-direction: column;
   gap: var(--space-3);
   padding: var(--space-3);
-  border-radius: var(--radius-md, 0.5rem);
+  border-radius: var(--radius-regular);
   border: 0.0625rem solid color-mix(in srgb, var(--color-btn-primary-bg) 20%, transparent);
   background-color: var(--color-bg-secondary);
   box-sizing: border-box;
@@ -3454,32 +3615,21 @@ a.btn-primary {
 }
 
 .share-information__fields .form-field--readonly {
-  --form-field-readonly-height: 5.5rem;
-  --form-field-readonly-row-height: 2.5rem;
-  --form-field-readonly-tail: 1.25rem;
-
-  min-height: var(--form-field-readonly-height);
   gap: 0.25rem;
-  padding-bottom: var(--form-field-readonly-tail);
   box-sizing: border-box;
-}
-
-.share-information__fields .form-field--readonly:has(.form-field__row--multiline) {
-  min-height: auto;
 }
 
 .share-information__fields .form-field--readonly .form-field__label {
   flex: 0 0 auto;
-  min-height: 1.5rem;
-  display: flex;
-  align-items: flex-end;
+  display: block;
 }
 
 .share-information__fields .form-field--readonly .form-field__row {
-  flex: 0 0 var(--form-field-readonly-row-height);
-  height: var(--form-field-readonly-row-height);
-  min-height: var(--form-field-readonly-row-height);
-  max-height: var(--form-field-readonly-row-height);
+  display: flex;
+  flex: 0 0 auto;
+  height: auto;
+  min-height: 2.5rem;
+  max-height: none;
   align-items: center;
   gap: var(--space-3);
   padding: 0;
@@ -3489,10 +3639,6 @@ a.btn-primary {
 }
 
 .share-information__fields .form-field--readonly .form-field__row--multiline {
-  flex: 0 1 auto;
-  height: auto;
-  max-height: none;
-  min-height: var(--form-field-readonly-row-height);
   align-items: flex-start;
   padding-block: 0.25rem var(--space-3);
 }
@@ -3509,12 +3655,6 @@ a.btn-primary {
 .share-information__fields .form-field--readonly .form-field__row--multiline .form-field__edit {
   height: 2rem;
   align-self: flex-start;
-}
-
-@media (max-width: 1279px) {
-  .modal--share-information .modal__back {
-    display: none;
-  }
 }
 
 /* ============================================================================
@@ -4335,7 +4475,6 @@ dialog.form-sheet.form-sheet--closing[open] .form-sheet__panel {
   display: none;
   align-items: center;
   gap: var(--space-2);
-  min-height: 3.375rem;
   padding: var(--space-2) var(--space-3) var(--space-2);
   flex-shrink: 0;
 }
@@ -4530,7 +4669,7 @@ dialog.form-sheet.form-sheet--closing[open] .form-sheet__panel {
   border: none;
   background: none;
   font-family: var(--font-family);
-  line-height: 1.4;
+  line-height: var(--lh-text);
   color: var(--color-fg);
   text-align: left;
   cursor: pointer;
@@ -4542,7 +4681,6 @@ dialog.form-sheet.form-sheet--closing[open] .form-sheet__panel {
 }
 
 .form-sheet__row--country {
-  min-height: 2.5rem;
   padding: var(--space-1) var(--space-3);
   font-size: var(--fs-text-md);
   font-weight: var(--fw-regular);
@@ -4550,7 +4688,6 @@ dialog.form-sheet.form-sheet--closing[open] .form-sheet__panel {
 
 .form-sheet__row--more-function {
   gap: var(--space-3);
-  min-height: 2.75rem;
   padding: var(--space-2) var(--space-3);
   font-size: var(--fs-text-md);
   font-weight: var(--fw-regular);
@@ -4595,22 +4732,20 @@ dialog.form-sheet.form-sheet--closing[open] .form-sheet__panel {
 .form-sheet__account-info {
   flex: 1 1 auto;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-1);
 }
 
 .form-sheet__account-name {
+  display: block;
   font-size: var(--fs-text-sm);
   font-weight: var(--fw-regular);
-  line-height: 1.4;
+  line-height: var(--lh-text);
   color: var(--color-fg);
 }
 
 .form-sheet__account-iban {
+  display: block;
   font-size: var(--fs-text-xs);
-  line-height: 1.4;
+  line-height: var(--lh-text);
   color: var(--color-fg-secondary);
 }
 
@@ -4627,7 +4762,7 @@ dialog.form-sheet.form-sheet--closing[open] .form-sheet__panel {
 .form-sheet__account-currency {
   font-size: var(--fs-text-xs);
   font-weight: var(--fw-regular);
-  line-height: 1.4;
+  line-height: var(--lh-text);
   color: var(--color-fg-secondary);
   padding-bottom: 0.0625rem;
 }
@@ -4635,7 +4770,7 @@ dialog.form-sheet.form-sheet--closing[open] .form-sheet__panel {
 .form-sheet__account-value {
   font-size: var(--fs-text-sm);
   font-weight: var(--fw-bold);
-  line-height: 1.4;
+  line-height: var(--lh-text);
   color: var(--color-fg);
   text-align: right;
 }

@@ -9,13 +9,15 @@
         </button>
       </div>
       <div class="modal__body modal__body--account-information">
+        <div class="account-information__scroll" data-ai-scroll>
+          <div class="account-information__scroll-inner">
         <div class="account-information__summary">
           <!--
             list-item / group-account (designs/components/list-item/list-item/variants/group-account).
             Icons are inlined (not <use href="#…">) so this block renders without #uzbank-icon-defs
             (Storybook, snippets, or any shell missing the sprite).
           -->
-          <article class="list-item list-item--group-account account-information__summary-card" aria-label="Selected account">
+          <article class="list-item list-item--group-account list-item--static account-information__summary-card" aria-label="Savings account">
             <div class="list-item__media">
               <svg class="list-item__icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <path
@@ -37,13 +39,13 @@
                 />
               </svg>
             </div>
-            <div class="list-item__body account-information__summary-copy">
-              <span class="list-item__title account-information__summary-title">Savings account</span>
-              <span class="list-item__subtitle account-information__summary-iban">CH35 0900 0000 2470 2920 2</span>
+            <div class="list-item__body type-stack-tight">
+              <span class="list-item__title type-sm type-trim">Savings account</span>
+              <span class="list-item__subtitle type-xs type-trim">CH35 0900 0000 2470 2920 2</span>
             </div>
-            <div class="list-item__end account-information__summary-amount">
-              <span class="account-information__summary-currency">USD</span>
-              <span class="account-information__summary-value">25'000.00</span>
+            <div class="list-item__end">
+              <span class="list-item__currency">USD</span>
+              <span class="list-item__value">25'000.00</span>
             </div>
           </article>
         </div>
@@ -67,7 +69,6 @@
             Share information
           </button>
         </div>
-        <div class="account-information__scroll">
           <div class="account-information__panel account-information__panel--active" id="accountInfoPanelInformation" role="tabpanel" aria-labelledby="accountInfoTabInformation" data-ai-panel="information">
             <div class="account-information__fields">
               <div class="form-field form-field--readonly">
@@ -118,8 +119,8 @@
               <div class="form-field form-field--readonly">
                 <span class="form-field__label">BIC (SWIFT)</span>
                 <div class="form-field__row">
-                  <span class="form-field__value">MIGRHZZXXX</span>
-                  <button type="button" class="form-field__edit" data-copy-text="MIGRHZZXXX" aria-label="Copy BIC">
+                  <span class="form-field__value">MIGRCHZZXXX</span>
+                  <button type="button" class="form-field__edit" data-copy-text="MIGRCHZZXXX" aria-label="Copy BIC">
                     <svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg>
                   </button>
                 </div>
@@ -127,12 +128,8 @@
               <div class="form-field form-field--readonly">
                 <span class="form-field__label">Bank</span>
                 <div class="form-field__row form-field__row--multiline">
-                  <span class="form-field__value form-field__value--multiline">
-                    <span>MIGROS Bank</span>
-                    <span>Industriestrasse 117</span>
-                    <span>CH-8304 Zürich (Wallisellen)</span>
-                  </span>
-                  <button type="button" class="form-field__edit form-field__edit--align-start" data-copy-text="MIGROS Bank&#10;Industriestrasse 117&#10;CH-8304 Zürich (Wallisellen)" aria-label="Copy bank address">
+                  <span class="form-field__value form-field__value--multiline">MIGROS Bank, Industriestrasse 117, CH-8304 Zürich (Wallisellen)</span>
+                  <button type="button" class="form-field__edit form-field__edit--align-start" data-copy-text="MIGROS Bank, Industriestrasse 117, CH-8304 Zürich (Wallisellen)" aria-label="Copy bank address">
                     <svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg>
                   </button>
                 </div>
@@ -142,6 +139,7 @@
           <div class="account-information__panel" id="accountInfoPanelConditions" role="tabpanel" aria-labelledby="accountInfoTabConditions" hidden data-ai-panel="conditions">
             <p class="account-information__conditions-intro">Terms and conditions for this account type.</p>
             <p class="account-information__conditions-body">Placeholder copy — replace with legal text or a link to PDF terms from production content.</p>
+          </div>
           </div>
         </div>
       </div>

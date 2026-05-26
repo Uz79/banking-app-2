@@ -481,5 +481,24 @@
         return;
       }
     });
+
+    function bindMainScrollChrome() {
+      var screen = document.body.getAttribute('data-screen');
+      if (screen !== 'overview' && screen !== 'payments' && screen !== 'account-details') return;
+
+      var mainContent = document.querySelector('.main-content');
+      var view = document.querySelector('.view--active');
+      if (!mainContent || !view || !window.UZBankScrollEdgeChrome) return;
+      if (!view.querySelector('[data-scroll-edge-nav]')) return;
+
+      window.UZBankScrollEdgeChrome.bind(view, {
+        nav: '[data-scroll-edge-nav]',
+        getScrollEl: function () {
+          return mainContent;
+        }
+      });
+    }
+
+    bindMainScrollChrome();
   });
 })(typeof window !== 'undefined' ? window : this);

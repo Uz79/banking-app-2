@@ -27,7 +27,6 @@
   --modal-payment-max-width: 640px;
   --confirmation-dialog-max-width: 640px;
 
-  --section-card-header-height: 1.5rem;
   --section-card-header-padding-x: var(--space-3);
   --section-card-header-gap-to-body: 0.25rem;
 
@@ -76,6 +75,47 @@
   --lh-text: 1.5;
   --lh-caption: 1.4;
 
+  /* Leading trim — Profile Pro cap → baseline (computed from brand font-metrics) */
+  --trim-top-hero: 11.712px;
+  --trim-bottom-hero: 13.76px;
+  --ps-hero: 2rem;
+  --trim-top-h1: 10.248px;
+  --trim-bottom-h1: 12.04px;
+  --ps-h1: 1.75rem;
+  --trim-top-h2: 8.784px;
+  --trim-bottom-h2: 10.32px;
+  --ps-h2: 1.5rem;
+  --trim-top-h3: 9.32px;
+  --trim-bottom-h3: 10.6px;
+  --ps-h3: 1.25rem;
+  --trim-top-h4: 8.256px;
+  --trim-bottom-h4: 9.28px;
+  --ps-h4: 1rem;
+  --trim-top-h5: 7.924px;
+  --trim-bottom-h5: 8.82px;
+  --ps-h5: 0.875rem;
+  --trim-top-h6: 7.392px;
+  --trim-bottom-h6: 8.16px;
+  --ps-h6: 0.75rem;
+  --trim-top-text-lg: 7.794px;
+  --trim-bottom-text-lg: 8.37px;
+  --ps-text-lg: 1.125rem;
+  --trim-top-text-md: 6.928px;
+  --trim-bottom-text-md: 7.44px;
+  --ps-text-md: 1rem;
+  --trim-top-text-sm: 6.062px;
+  --trim-bottom-text-sm: 6.51px;
+  --ps-text-sm: 0.875rem;
+  --trim-top-text-xs: 5.196px;
+  --trim-bottom-text-xs: 5.58px;
+  --ps-text-xs: 0.75rem;
+  --trim-top-caption: 4.596px;
+  --trim-bottom-caption: 4.98px;
+  --ps-caption: 0.5rem;
+
+  /* Tight row gap for stacked trimmed labels — Figma space/2 (8dp) */
+  --text-row-gap: var(--space-1);
+
   --btn-pad-y-sm: 0;
   --btn-pad-x-sm: var(--space-2);
   --btn-pad-y-md: var(--space-2);
@@ -122,7 +162,6 @@ html[data-theme="light"] {
   --color-btn-tonal-pressed: #C6CBE2;
 
   --color-icon-circle-fill: var(--color-fg);
-  /* Modal/menu scrim — brand primary @ 45% (Figma overlay), not neutral black */
   --color-overlay-scrim: rgba(0, 21, 126, 0.45);
   --color-nav-elevated-shadow: rgba(0, 0, 0, 0.06);
   --color-modal-elevated-shadow: rgba(0, 0, 0, 0.12);
@@ -172,7 +211,6 @@ html[data-theme="dark"] {
   --color-btn-tonal-pressed: #1C2F8C;
 
   --color-icon-circle-fill: #FFFFFF;
-  /* Dark shell — scrim from page background (brand fill) @ 62% */
   --color-overlay-scrim: rgba(0, 21, 126, 0.62);
   --color-nav-elevated-shadow: rgba(0, 0, 0, 0.35);
   --color-modal-elevated-shadow: rgba(0, 0, 0, 0.45);
@@ -191,13 +229,60 @@ html[data-theme="dark"] {
 
 @media (min-width: 1280px) {
   :root {
-    --fs-hero: 7rem;
-    --fs-h1: 6rem;
-    --fs-h2: 5rem;
-    --fs-h3: 4rem;
-    --fs-h4: 3rem;
-    --fs-h5: 2.5rem;
-    --fs-h6: 2rem;
-    --fs-text-lg: 1.25rem;
+  --fs-hero: 7rem;
+  --fs-h1: 6rem;
+  --fs-h2: 5rem;
+  --fs-h3: 4rem;
+  --fs-h4: 3rem;
+  --fs-h5: 2.5rem;
+  --fs-h6: 2rem;
+  --fs-text-lg: 1.25rem;
+
+    --lh-hero: 1;
+    --lh-h1: 1;
+    --lh-h2: 1;
+    --lh-h3: 1.1;
+    --lh-h4: 1.15;
+    --lh-h5: 1.2;
+    --lh-h6: 1.25;
+    --lh-text: 1.5;
+    --lh-caption: 1.4;
+
+  --trim-top-hero: 20.496px;
+  --trim-bottom-hero: 24.08px;
+  --ps-hero: 3rem;
+  --trim-top-h1: 17.568px;
+  --trim-bottom-h1: 20.64px;
+  --ps-h1: 2.5rem;
+  --trim-top-h2: 14.64px;
+  --trim-bottom-h2: 17.2px;
+  --ps-h2: 2rem;
+  --trim-top-h3: 14.912px;
+  --trim-bottom-h3: 16.96px;
+  --ps-h3: 1.75rem;
+  --trim-top-h4: 12.384px;
+  --trim-bottom-h4: 13.92px;
+  --ps-h4: 1.5rem;
+  --trim-top-h5: 11.32px;
+  --trim-bottom-h5: 12.6px;
+  --ps-h5: 1.25rem;
+  --trim-top-h6: 9.856px;
+  --trim-bottom-h6: 10.88px;
+  --ps-h6: 1rem;
+  --trim-top-text-lg: 8.66px;
+  --trim-bottom-text-lg: 9.3px;
+  --ps-text-lg: 1.25rem;
+  --trim-top-text-md: 6.928px;
+  --trim-bottom-text-md: 7.44px;
+  --ps-text-md: 1rem;
+  --trim-top-text-sm: 6.062px;
+  --trim-bottom-text-sm: 6.51px;
+  --ps-text-sm: 0.875rem;
+  --trim-top-text-xs: 5.196px;
+  --trim-bottom-text-xs: 5.58px;
+  --ps-text-xs: 0.75rem;
+  --trim-top-caption: 4.596px;
+  --trim-bottom-caption: 4.98px;
+  --ps-caption: 0.5rem;
   }
 }

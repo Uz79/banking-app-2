@@ -24,6 +24,27 @@ document.addEventListener('DOMContentLoaded', function () {
   var modalConfirmBtn = modalFooter ? modalFooter.querySelector('[data-payment-confirm]') : null;
   var confirmationOverlay = document.querySelector('.confirmation-overlay');
 
+  var paymentScrollChrome =
+    modalCard && window.UZBankScrollEdgeChrome
+      ? window.UZBankScrollEdgeChrome.bind(modalCard, {
+          getScrollEl: function (root) {
+            var active = root.querySelector('.modal__step--active');
+            if (!active) return null;
+            if (active.getAttribute('data-step') === 'recipient-search') {
+              return active.querySelector('.recipient-search__list') || active;
+            }
+            return active;
+          }
+        })
+      : null;
+
+  function refreshPaymentScrollChrome() {
+    if (!paymentScrollChrome) return;
+    requestAnimationFrame(function () {
+      paymentScrollChrome.update();
+    });
+  }
+
   var STEPS = ['recipient-search', 'recipient', 'amount', 'schedule', 'summary'];
   var STEP_TITLES = {
     'recipient-search': 'Type Ahead Search',
@@ -631,6 +652,7 @@ document.addEventListener('DOMContentLoaded', function () {
           modalShell.classList.remove('modal-shell--no-transition');
           modalShell.offsetHeight;
           modalShell.classList.remove('modal-shell--offscreen');
+          refreshPaymentScrollChrome();
         });
       });
     }
@@ -749,6 +771,7 @@ document.addEventListener('DOMContentLoaded', function () {
       requestAnimationFrame(function () {
         paintRecipientSearchList();
         syncRecipientSearchClearVisibility();
+        refreshPaymentScrollChrome();
       });
     } else if (stepName === 'recipient') {
       paintRecipientStep();
@@ -756,6 +779,8 @@ document.addEventListener('DOMContentLoaded', function () {
     } else if (stepName === 'amount') paintAmountStep();
     else if (stepName === 'schedule') paintScheduleStep();
     else if (stepName === 'summary') paintSummaryStep();
+
+    refreshPaymentScrollChrome();
   }
 
   function showConfirmationVisual() {

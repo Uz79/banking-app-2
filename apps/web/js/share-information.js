@@ -211,7 +211,7 @@
       closeShareInformationOverlay();
     }
 
-    rootEl.querySelectorAll('.uz-share-information-back,.uz-share-information-close').forEach(function (btn) {
+    rootEl.querySelectorAll('.uz-share-information-close').forEach(function (btn) {
       btn.addEventListener('click', function (e) {
         e.preventDefault();
         dismissViaHistory();

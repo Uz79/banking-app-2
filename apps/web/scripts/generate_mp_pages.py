@@ -141,6 +141,8 @@ def shell(
             f'<script src="{prefix}js/form-field-sheet.js"></script>\n'
             f'<script src="{prefix}js/payment-exit-confirm.js"></script>\n'
             f'<script src="{prefix}js/payment-state.js"></script>\n'
+            f'<script src="{prefix}js/data-render.js"></script>\n'
+            f'<script src="{prefix}js/scroll-edge-chrome.js"></script>\n'
             f'<script src="{prefix}js/payment-overlay.js"></script>\n'
         )
         if include_payment_modal
@@ -170,6 +172,7 @@ def shell(
   <title>{title}</title>
 {BOOT_SCRIPT}
   <link rel="stylesheet" href="{prefix}css/tokens.css">
+  <link rel="stylesheet" href="{prefix}css/typography.css">
   <link rel="stylesheet" href="{prefix}css/styles.css">
 </head>
 <body class="body" data-screen="{screen}" data-page="{screen}">

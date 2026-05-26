@@ -2,7 +2,7 @@
  * E-Banking WebApp 11 — payment state
  *
  * Single source of truth for everything the payment flow + dashboard
- * shares: 8 recipients, the running list of booked payments (max 4, FIFO),
+ * shares: 8 recipients, the running list of booked payments (max 5, FIFO),
  * and the live Household account balance.
  *
  * Persistence:
@@ -26,7 +26,7 @@
   'use strict';
 
   var STORAGE_KEY  = 'uzBankWebApp11PaymentState';
-  var MAX_BOOKINGS = 4;
+  var MAX_BOOKINGS = 5;
 
   // Household account in CHF — this is the *registered* end-of-yesterday
   // balance, the "settled" number shown in the account list everywhere.

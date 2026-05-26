@@ -14,6 +14,7 @@
     })();
   </script>
   <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/typography.css">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="body">
@@ -191,7 +192,7 @@
       <!-- ── OVERVIEW ── -->
       <section class="view view--active view--overview" data-view="overview">
         <div class="view__main">
-          <header class="view__nav">
+          <header class="view__nav" data-scroll-edge-nav>
             <button type="button" class="view__nav-btn view__nav-btn--leading view__nav-btn--hidden" aria-hidden="true" tabindex="-1">
               <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
             </button>
@@ -234,9 +235,9 @@
             <div class="section-card__body">
               <div class="product-item" data-account="household">
                 <svg class="product-item__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
-                <div class="product-item__info">
-                  <span class="product-item__name">Household</span>
-                  <span class="product-item__iban">CH35 0900 0000 2470 2920 1</span>
+                <div class="product-item__info type-stack-tight">
+                  <span class="product-item__name type-sm type-trim">Household</span>
+                  <span class="product-item__iban type-xs type-trim">CH35 0900 0000 2470 2920 1</span>
                 </div>
                 <span class="product-item__amount">
                   <span class="product-item__currency">CHF</span>
@@ -246,9 +247,9 @@
               <div class="divider"></div>
               <div class="product-item" data-account="savings">
                 <svg class="product-item__icon" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg>
-                <div class="product-item__info">
-                  <span class="product-item__name">Savings account</span>
-                  <span class="product-item__iban">CH35 0900 0000 2470 2920 2</span>
+                <div class="product-item__info type-stack-tight">
+                  <span class="product-item__name type-sm type-trim">Savings account</span>
+                  <span class="product-item__iban type-xs type-trim">CH35 0900 0000 2470 2920 2</span>
                 </div>
                 <span class="product-item__amount">
                   <span class="product-item__currency">CHF</span>
@@ -258,9 +259,9 @@
               <div class="divider"></div>
               <div class="product-item">
                 <svg class="product-item__icon" aria-hidden="true" focusable="false"><use href="#i-life-buoy"/></svg>
-                <div class="product-item__info">
-                  <span class="product-item__name">Deposit</span>
-                  <span class="product-item__iban">123,456,78</span>
+                <div class="product-item__info type-stack-tight">
+                  <span class="product-item__name type-sm type-trim">Deposit</span>
+                  <span class="product-item__iban type-xs type-trim">123,456,78</span>
                 </div>
                 <span class="product-item__amount">
                   <span class="product-item__currency">CHF</span>
@@ -270,9 +271,9 @@
               <div class="divider"></div>
               <div class="product-item">
                 <svg class="product-item__icon" aria-hidden="true" focusable="false"><use href="#i-anchor"/></svg>
-                <div class="product-item__info">
-                  <span class="product-item__name">Retirement savings 3a</span>
-                  <span class="product-item__iban">7740205-08</span>
+                <div class="product-item__info type-stack-tight">
+                  <span class="product-item__name type-sm type-trim">Retirement savings 3a</span>
+                  <span class="product-item__iban type-xs type-trim">7740205-08</span>
                 </div>
                 <span class="product-item__amount">
                   <span class="product-item__currency">CHF</span>
@@ -290,13 +291,13 @@
             <div class="section-card__body">
               <div class="list-item">
                 <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-credit-card"/></svg>
-                <div class="list-item__content">
-                  <span class="list-item__title">VISA Gold</span>
-                  <span class="list-item__subtitle">available CHF 4'700.00</span>
+                <div class="list-item__content type-stack-tight">
+                  <span class="list-item__title type-sm type-trim">VISA Gold</span>
+                  <span class="list-item__subtitle type-xs type-trim">available CHF 4'700.00</span>
                 </div>
                 <span class="list-item__amount">
-                  <span class="list-item__currency">Limit CHF</span>
-                  <span class="list-item__value">5'000.00</span>
+                  <span class="list-item__currency type-xs">Limit CHF</span>
+                  <span class="list-item__value type-sm type-bold">5'000.00</span>
                 </span>
               </div>
             </div>
@@ -312,27 +313,27 @@
             <div class="section-card__body">
               <div class="list-item">
                 <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg>
-                <div class="list-item__content">
-                  <span class="list-item__title">Accounts</span>
-                  <span class="list-item__subtitle">Private &amp; saving accounts</span>
+                <div class="list-item__content type-stack-tight">
+                  <span class="list-item__title type-sm type-trim">Accounts</span>
+                  <span class="list-item__subtitle type-xs type-trim">Private &amp; saving accounts</span>
                 </div>
                 <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
               </div>
               <div class="divider"></div>
               <div class="list-item">
                 <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-credit-card"/></svg>
-                <div class="list-item__content">
-                  <span class="list-item__title">Cards</span>
-                  <span class="list-item__subtitle">Order NEW cards, monitor</span>
+                <div class="list-item__content type-stack-tight">
+                  <span class="list-item__title type-sm type-trim">Cards</span>
+                  <span class="list-item__subtitle type-xs type-trim">Order NEW cards, monitor</span>
                 </div>
                 <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
               </div>
               <div class="divider"></div>
               <div class="list-item">
                 <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-trending-up"/></svg>
-                <div class="list-item__content">
-                  <span class="list-item__title">Investment</span>
-                  <span class="list-item__subtitle">Fonds, trading, asset management</span>
+                <div class="list-item__content type-stack-tight">
+                  <span class="list-item__title type-sm type-trim">Investment</span>
+                  <span class="list-item__subtitle type-xs type-trim">Fonds, trading, asset management</span>
                 </div>
                 <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
               </div>
@@ -348,7 +349,7 @@
       <!-- ── ACCOUNT DETAILS ── -->
       <section class="view view--account-details" data-view="account-details">
         <div class="view__main">
-          <header class="view__nav">
+          <header class="view__nav" data-scroll-edge-nav>
             <button type="button" class="view__nav-btn view__nav-btn--leading view__back" aria-label="Back">
               <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
             </button>
@@ -405,26 +406,34 @@
               <div class="carousel__track">
                 <div class="carousel__slides">
                   <div class="carousel__slide">
-                    <svg class="carousel__slide-icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
-                    <div class="carousel__slide-info">
-                      <span class="carousel__slide-name">Household</span>
-                      <span class="carousel__slide-iban">CH35 0900 0000 2470 2920 1</span>
-                    </div>
-                    <span class="carousel__slide-amount">
-                      <span class="carousel__slide-currency">CHF</span>
-                      <span class="carousel__slide-value">10'000.00</span>
-                    </span>
+                    <article class="list-item list-item--group-account" aria-label="Household account">
+                      <div class="list-item__media">
+                        <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
+                      </div>
+                      <div class="list-item__body type-stack-tight">
+                        <span class="list-item__title type-sm type-trim">Household</span>
+                        <span class="list-item__subtitle type-xs type-trim">CH35 0900 0000 2470 2920 1</span>
+                      </div>
+                      <div class="list-item__end">
+                        <span class="list-item__currency type-xs">CHF</span>
+                        <span class="list-item__value type-sm type-bold">10'000.00</span>
+                      </div>
+                    </article>
                   </div>
                   <div class="carousel__slide">
-                    <svg class="carousel__slide-icon" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg>
-                    <div class="carousel__slide-info">
-                      <span class="carousel__slide-name">Savings account</span>
-                      <span class="carousel__slide-iban">CH35 0900 0000 2470 2920 2</span>
-                    </div>
-                    <span class="carousel__slide-amount">
-                      <span class="carousel__slide-currency">CHF</span>
-                      <span class="carousel__slide-value">25'000.00</span>
-                    </span>
+                    <article class="list-item list-item--group-account" aria-label="Savings account">
+                      <div class="list-item__media">
+                        <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg>
+                      </div>
+                      <div class="list-item__body type-stack-tight">
+                        <span class="list-item__title type-sm type-trim">Savings account</span>
+                        <span class="list-item__subtitle type-xs type-trim">CH35 0900 0000 2470 2920 2</span>
+                      </div>
+                      <div class="list-item__end">
+                        <span class="list-item__currency type-xs">CHF</span>
+                        <span class="list-item__value type-sm type-bold">25'000.00</span>
+                      </div>
+                    </article>
                   </div>
                 </div>
               </div>
@@ -517,7 +526,7 @@
       <!-- ── PAYMENTS ── -->
       <section class="view view--payments" data-view="payments">
         <div class="view__main">
-          <header class="view__nav">
+          <header class="view__nav" data-scroll-edge-nav>
             <button type="button" class="view__nav-btn view__nav-btn--leading view__nav-btn--hidden" aria-hidden="true" tabindex="-1">
               <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
             </button>
@@ -557,24 +566,24 @@
               <span class="section-card__date">28.05.2026</span>
               <div class="list-item">
                 <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg>
-                <div class="list-item__content">
-                  <span class="list-item__title">Rent</span>
+                <div class="list-item__content type-stack-tight">
+                  <span class="list-item__title type-sm type-trim">Rent</span>
                 </div>
                 <span class="list-item__amount">
-                  <span class="list-item__currency">CHF</span>
-                  <span class="list-item__value">2'050.00</span>
+                  <span class="list-item__currency type-xs">CHF</span>
+                  <span class="list-item__value type-sm type-bold">2'050.00</span>
                 </span>
               </div>
               <div class="divider"></div>
               <span class="section-card__date">29.04.2026</span>
               <div class="list-item">
                 <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg>
-                <div class="list-item__content">
-                  <span class="list-item__title">Healthcare</span>
+                <div class="list-item__content type-stack-tight">
+                  <span class="list-item__title type-sm type-trim">Healthcare</span>
                 </div>
                 <span class="list-item__amount">
-                  <span class="list-item__currency">CHF</span>
-                  <span class="list-item__value">420.00</span>
+                  <span class="list-item__currency type-xs">CHF</span>
+                  <span class="list-item__value type-sm type-bold">420.00</span>
                 </span>
               </div>
               <div class="divider"></div>
@@ -595,24 +604,24 @@
             <div class="section-card__body">
               <div class="list-item">
                 <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-rotate-ccw"/></svg>
-                <div class="list-item__content">
-                  <span class="list-item__title">Rent</span>
+                <div class="list-item__content type-stack-tight">
+                  <span class="list-item__title type-sm type-trim">Rent</span>
                 </div>
                 <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
               </div>
               <div class="divider"></div>
               <div class="list-item">
                 <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-rotate-ccw"/></svg>
-                <div class="list-item__content">
-                  <span class="list-item__title">Fonds Investment</span>
+                <div class="list-item__content type-stack-tight">
+                  <span class="list-item__title type-sm type-trim">Fonds Investment</span>
                 </div>
                 <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
               </div>
               <div class="divider"></div>
               <div class="list-item">
                 <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-rotate-ccw"/></svg>
-                <div class="list-item__content">
-                  <span class="list-item__title">Allowance</span>
+                <div class="list-item__content type-stack-tight">
+                  <span class="list-item__title type-sm type-trim">Allowance</span>
                 </div>
                 <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
               </div>
@@ -626,25 +635,25 @@
             <div class="section-card__body">
               <div class="list-item">
                 <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-user"/></svg>
-                <div class="list-item__content">
-                  <span class="list-item__title">Anna Müller</span>
+                <div class="list-item__content type-stack-tight">
+                  <span class="list-item__title type-sm type-trim">Anna Müller</span>
                 </div>
                 <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
               </div>
               <div class="divider"></div>
               <div class="list-item">
                 <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-sunrise-logo"/></svg>
-                <div class="list-item__content">
-                  <span class="list-item__title">Sunrise</span>
+                <div class="list-item__content type-stack-tight">
+                  <span class="list-item__title type-sm type-trim">Sunrise</span>
                 </div>
                 <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
               </div>
               <div class="divider"></div>
               <div class="list-item">
                 <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-user"/></svg>
-                <div class="list-item__content">
-                  <span class="list-item__title">Hans Meyer</span>
-                  <span class="list-item__subtitle">Rent</span>
+                <div class="list-item__content type-stack-tight">
+                  <span class="list-item__title type-sm type-trim">Hans Meyer</span>
+                  <span class="list-item__subtitle type-xs type-trim">Rent</span>
                 </div>
                 <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
               </div>
@@ -1054,7 +1063,7 @@
 <!-- ===== PAYMENT FLOW MODAL (640dp column over dimmed app) ===== -->
 <div class="modal-overlay">
   <div class="modal-shell">
-    <div class="modal">
+    <div class="modal modal--payment-flow">
     <div class="modal__nav">
       <button class="modal__back modal__back--hidden" type="button">
         <svg class="modal__back-icon" role="img" aria-label="Back" focusable="false"><use href="#i-arrow-left"/></svg>
@@ -1180,9 +1189,9 @@
             <span class="form-field__label">Debit account</span>
             <div class="debit-account">
               <svg class="debit-account__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
-              <div class="debit-account__info">
-                <span class="debit-account__name">Household</span>
-                <span class="debit-account__iban">CH35 0900 0000 2470 2920 1</span>
+              <div class="debit-account__info type-stack-tight">
+                <span class="debit-account__name type-sm type-trim">Household</span>
+                <span class="debit-account__iban type-xs type-trim">CH35 0900 0000 2470 2920 1</span>
               </div>
               <span class="debit-account__amount">CHF 10'000.00</span>
               <svg class="debit-account__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
@@ -1258,9 +1267,9 @@
             <span class="form-field__label">Debit account</span>
             <div class="debit-account">
               <svg class="debit-account__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
-              <div class="debit-account__info">
-                <span class="debit-account__name">Household</span>
-                <span class="debit-account__iban">CH35 0900 0000 2470 2920 1</span>
+              <div class="debit-account__info type-stack-tight">
+                <span class="debit-account__name type-sm type-trim">Household</span>
+                <span class="debit-account__iban type-xs type-trim">CH35 0900 0000 2470 2920 1</span>
               </div>
               <span class="debit-account__amount">CHF 10'000.00</span>
               <svg class="debit-account__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>

@@ -31,7 +31,7 @@ The **`category`** field in JSON groups screens logically: **`shell`**, **`payme
 |--------|-------|
 | `overview` | Home / dashboard |
 | `account-details` | Account surface |
-| `account-information` | Account information disclosure (`desktop-default`, `desktop-full-screen`, `mobile-default`) |
+| `account-information` | Account information disclosure (`desktop-default`, `desktop-full-screen`, `mobile-default`, `mobile-content-indication`) |
 | `share-information` | Share information screen (`desktop-default`, `desktop-full-screen`, `mobile-default`) |
 | `payments` | Payments landing |
 | `payment-flow-*` | Multi-step payment flow steps |
@@ -53,4 +53,11 @@ The **`category`** field in JSON groups screens logically: **`shell`**, **`payme
 
 Route pattern: **`#pay/<segment>`** — see **`apps/web/js/payment-overlay.js`**.
 
-Legacy Title Case filenames (“Payment Flow … - mobile”) have been relocated into **`variants/`**; each screen **`*.md`** describes the mapping.
+Legacy Title Case filenames (“Payment Flow … - mobile”, “Screen Overview - desktop”, etc.) belong in **`variants/<slug>/default.svg`** — never at `designs/screens/` root. Each screen **`*.md`** describes the Figma → folder mapping.
+
+| Loose export (root) | Target |
+|---------------------|--------|
+| `Screen Overview - desktop` | `overview/variants/desktop-default/` |
+| `Payment - desktop` / `Payment - mobile` | `payments/variants/desktop-default/` / `mobile-default/` |
+| `Account Details - *` | `account-details/variants/` |
+| `Account Information - *` | `account-information/variants/` (use `mobile-content-indication` for Content Indication Effect frames) |
