@@ -282,6 +282,33 @@
     dispatchChange();
   }
 
+  /**
+   * Update an existing booking in-place (used by the edit flow so
+   * re-submitting a pending payment replaces it rather than duplicating it).
+   * Only the fields provided in `updates` are overwritten.
+   */
+  function updatePayment(id, updates) {
+    if (!id || !updates) return;
+    var idx = -1;
+    for (var i = 0; i < state.bookings.length; i++) {
+      if (state.bookings[i].id === id) { idx = i; break; }
+    }
+    if (idx < 0) return; // booking not found — no-op
+    var existing = state.bookings[idx];
+    state.bookings[idx] = {
+      id:            existing.id,
+      recipientName: (updates.recipient && updates.recipient.name)
+                       ? updates.recipient.name
+                       : existing.recipientName,
+      currency:      updates.currency  || existing.currency,
+      amount:        (typeof updates.amount === 'number' && updates.amount > 0)
+                       ? updates.amount
+                       : existing.amount,
+      dateISO:       updates.dateISO   || existing.dateISO
+    };
+    dispatchChange();
+  }
+
   function reset() {
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
     state = defaultState();
@@ -291,13 +318,14 @@
   /* ── Public surface ──────────────────────────────────────────────── */
 
   window.UZBankPayState = {
-    STORAGE_KEY:        STORAGE_KEY,
-    MAX_BOOKINGS:       MAX_BOOKINGS,
-    getRecipients:      getRecipients,
+    STORAGE_KEY:         STORAGE_KEY,
+    MAX_BOOKINGS:        MAX_BOOKINGS,
+    getRecipients:       getRecipients,
     pickRandomRecipient: pickRandomRecipient,
-    getState:           getState,
-    commitPayment:      commitPayment,
-    reset:              reset,
-    formatMoney:        formatMoney
+    getState:            getState,
+    commitPayment:       commitPayment,
+    updatePayment:       updatePayment,
+    reset:               reset,
+    formatMoney:         formatMoney
   };
 })();

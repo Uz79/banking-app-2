@@ -345,16 +345,104 @@
       return carouselSlides.children.length;
     }
 
+    var SLIDE_ACCOUNTS = ['household', 'savings', 'deposit'];
+    window.__UZ_ACTIVE_ACCOUNT__ = SLIDE_ACCOUNTS[0];
+
+    // On overview: store which account was tapped before navigating away
+    document.querySelectorAll('.product-item[data-account]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        sessionStorage.setItem('uz_target_account', el.getAttribute('data-account'));
+      });
+    });
+
+    // On account-details: jump to the correct slide based on stored account
+    var targetAccount = sessionStorage.getItem('uz_target_account');
+    if (targetAccount) {
+      sessionStorage.removeItem('uz_target_account');
+      var idx = SLIDE_ACCOUNTS.indexOf(targetAccount);
+      if (idx > 0) currentSlide = idx;
+    }
+
     function updateCarousel() {
       if (!carouselSlides) return;
-      carouselSlides.style.transform =
-        'translateX(calc(-' + (currentSlide * 100) + '% - ' + currentSlide + 'rem))';
+      var totalSlides = carouselSlides.children.length;
+      var isMid = currentSlide > 0 && currentSlide < totalSlides - 1;
+
+      // Toggle .carousel--mid so CSS sets the correct slide width
+      var carouselEl = carouselSlides.closest('.carousel');
+      if (carouselEl) carouselEl.classList.toggle('carousel--mid', isMid);
+
+      // Compute slide dimensions from known CSS values (not getBoundingClientRect, which
+      // returns mid-transition values and would give wrong translate targets)
+      var trackEl = carouselSlides.parentElement; // .carousel__track
+      var trackWidth = trackEl ? trackEl.getBoundingClientRect().width : 0;
+      var gapPx = parseFloat(getComputedStyle(carouselSlides).columnGap) || 0;
+      var isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+      var peekPx = isDesktop ? 5 * (parseFloat(getComputedStyle(document.documentElement).fontSize) || 16) : 0;
+      // target slide width matches the CSS rule that will be applied after class toggle
+      var slideWidth = isDesktop
+        ? (isMid ? trackWidth - 2 * peekPx - 2 * gapPx : trackWidth - peekPx)
+        : trackWidth;
+
+      var totalFlexWidth = totalSlides * slideWidth + (totalSlides - 1) * gapPx;
+
+      var translatePx;
+      if (currentSlide === 0) {
+        // First: flush left; right peek appears from slide being narrower than track
+        translatePx = 0;
+      } else if (currentSlide === totalSlides - 1) {
+        // Last: flush right so slide fills to the right edge, left peek appears naturally
+        translatePx = Math.max(0, totalFlexWidth - trackWidth);
+      } else {
+        // Mid: on desktop show peekPx of each neighbour; on mobile full-width (no peek)
+        if (peekPx > 0) {
+          // Desktop: offset so prev slide shows peekPx on the left
+          var prevSlideEnd = (currentSlide - 1) * (slideWidth + gapPx) + slideWidth;
+          translatePx = prevSlideEnd - peekPx;
+        } else {
+          // Mobile: natural position — current slide fills the full track
+          translatePx = currentSlide * (slideWidth + gapPx);
+        }
+      }
+
+      carouselSlides.style.transform = 'translateX(-' + translatePx + 'px)';
 
       carouselDots.forEach(function (dot, i) {
         if (i === currentSlide) {
           dot.classList.add('carousel__dot--active');
         } else {
           dot.classList.remove('carousel__dot--active');
+        }
+      });
+
+      // Swap which account's bookings are visible
+      var activeAccount = SLIDE_ACCOUNTS[currentSlide] || SLIDE_ACCOUNTS[0];
+      document.querySelectorAll('[data-account-bookings]').forEach(function (el) {
+        el.hidden = el.getAttribute('data-account-bookings') !== activeAccount;
+      });
+      window.__UZ_ACTIVE_ACCOUNT__ = activeAccount;
+
+      // Sync section header account type from slide data attributes
+      var slides = carouselSlides ? carouselSlides.children : [];
+      var activeSlide = slides[currentSlide];
+      if (activeSlide) {
+        var accountTypeLabel = document.querySelector('.section-card__account-type-label');
+        var accountTypeCurrency = document.querySelector('.section-card__account-type-currency');
+        if (accountTypeLabel) accountTypeLabel.textContent = activeSlide.getAttribute('data-account-type') || '';
+        if (accountTypeCurrency) accountTypeCurrency.textContent = activeSlide.getAttribute('data-account-currency') || 'CHF';
+      }
+    }
+
+    // Clicking a clipped neighbouring slide navigates to it
+    if (carouselSlides) {
+      carouselSlides.addEventListener('click', function (e) {
+        var clickedSlide = e.target.closest('.carousel__slide');
+        if (!clickedSlide) return;
+        var slides = Array.prototype.slice.call(carouselSlides.children);
+        var clickedIndex = slides.indexOf(clickedSlide);
+        if (clickedIndex !== -1 && clickedIndex !== currentSlide) {
+          currentSlide = clickedIndex;
+          updateCarousel();
         }
       });
     }
@@ -405,6 +493,12 @@
         touchDeltaX = 0;
       });
     }
+
+    // Sync carousel position and bookings on initial load
+    updateCarousel();
+
+    // Recalculate pixel-based translate on resize
+    window.addEventListener('resize', updateCarousel);
 
     document.addEventListener('click', function (e) {
       var toggle = e.target.closest('.toggle');

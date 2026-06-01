@@ -1,0 +1,33 @@
+{
+  "name": "chip",
+  "category": "control",
+  "description": "Pill-shaped status/selection chip with optional leading/trailing icons.",
+  "interactionStates": [
+    "default"
+  ],
+  "assets": {
+    "variants": {
+      "regular-primary": {
+        "default": "variants/regular-primary/default.svg"
+      },
+      "small-primary": {
+        "default": "variants/small-primary/default.svg"
+      }
+    }
+  },
+  "tokens": {
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": [
+    "Primary chip uses token mapping for primary button colors (apps/web/css/tokens.css: --color-btn-primary-bg/fg).",
+    "Web implementation should live in apps/web/css/styles.css as `.chip` utilities."
+  ]
+}
+
