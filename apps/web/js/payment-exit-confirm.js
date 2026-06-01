@@ -49,11 +49,20 @@
   }
 
   /**
-   * @param {function(): void} exitFn called only when user chooses Discard.
+   * @param {function(): void} exitFn  called only when user chooses Discard.
+   * @param {{ title?: string, message?: string, leaveLabel?: string }} [opts]
+   *   Optional copy overrides — used for edit-mode ("Discard changes?" etc.)
    */
-  function prompt(exitFn) {
+  function prompt(exitFn, opts) {
     pendingFn = typeof exitFn === 'function' ? exitFn : null;
     ensureDialog();
+    var o = opts || {};
+    dialog.querySelector('#basic-dialog-payment-exit-title').textContent =
+      o.title   || 'Discard payment?';
+    dialog.querySelector('#basic-dialog-payment-exit-msg').textContent =
+      o.message || 'You have not finished this payment. If you exit now your entries will not be submitted.';
+    dialog.querySelector('[data-payment-exit-leave]').textContent =
+      o.leaveLabel || 'Discard';
     dialog.showModal();
   }
 

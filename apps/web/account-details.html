@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark light">
-  <title>UZ Bank – Account details</title>
+  <title>UZ Bank – Details of an Account</title>
   <script>
     /* Boot: apply saved theme + colour-override before paint.
        The colour override stores only { bg, fg }; we derive every other
@@ -128,7 +128,7 @@
             <a class="view__nav-btn view__nav-btn--leading view__back" href="overview.html" aria-label="Back">
               <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
             </a>
-            <h1 class="page-title view__nav-title">Account details</h1>
+            <h1 class="page-title view__nav-title">Details of an Account</h1>
             <button type="button" class="view__nav-btn view__nav-btn--trailing view__nav-btn--hidden" aria-hidden="true" tabindex="-1">
               <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>
             </button>
@@ -171,16 +171,16 @@
           <!-- Accounts carousel -->
           <div class="section-card">
             <div class="section-card__header">
-              <span class="section-card__title">All accounts</span>
-              <span class="section-card__amount">
-                <span class="section-card__currency">CHF</span>
-                <span class="section-card__value">35'000.00</span>
+              <span class="section-card__title">Product</span>
+              <span class="section-card__account-type" id="uz-carousel-account-type">
+                <span class="section-card__account-type-currency">CHF</span>
+                <span class="section-card__account-type-label">Private account</span>
               </span>
             </div>
             <div class="carousel">
               <div class="carousel__track">
                 <div class="carousel__slides">
-                  <div class="carousel__slide">
+                  <div class="carousel__slide" data-account-key="household" data-account-type="Private account" data-account-currency="CHF">
                     <article class="list-item list-item--group-account" aria-label="Household account">
                       <div class="list-item__media">
                         <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
@@ -195,10 +195,10 @@
                       </div>
                     </article>
                   </div>
-                  <div class="carousel__slide">
+                  <div class="carousel__slide" data-account-key="savings" data-account-type="Savings account" data-account-currency="CHF">
                     <article class="list-item list-item--group-account" aria-label="Savings account">
                       <div class="list-item__media">
-                        <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg>
+                        <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-anchor"/></svg>
                       </div>
                       <div class="list-item__body type-stack-tight">
                         <span class="list-item__title type-sm type-trim">Savings account</span>
@@ -210,6 +210,21 @@
                       </div>
                     </article>
                   </div>
+                  <div class="carousel__slide" data-account-key="deposit" data-account-type="Deposit account" data-account-currency="CHF">
+                    <article class="list-item list-item--group-account" aria-label="Deposit account">
+                      <div class="list-item__media">
+                        <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-life-buoy"/></svg>
+                      </div>
+                      <div class="list-item__body type-stack-tight">
+                        <span class="list-item__title type-sm type-trim">Deposit</span>
+                        <span class="list-item__subtitle type-xs type-trim">123,456.78</span>
+                      </div>
+                      <div class="list-item__end">
+                        <span class="list-item__currency type-xs">CHF</span>
+                        <span class="list-item__value type-sm type-bold">20'000.00</span>
+                      </div>
+                    </article>
+                  </div>
                 </div>
               </div>
               <div class="carousel__pagination">
@@ -217,6 +232,7 @@
                   <svg class="carousel__arrow-icon" role="img" aria-label="Previous" focusable="false"><use href="#i-chevron-left"/></svg>
                 </button>
                 <span class="carousel__dot carousel__dot--active"></span>
+                <span class="carousel__dot"></span>
                 <span class="carousel__dot"></span>
                 <button class="carousel__arrow" type="button">
                   <svg class="carousel__arrow-icon" role="img" aria-label="Next" focusable="false"><use href="#i-chevron-right"/></svg>
@@ -227,6 +243,9 @@
 
           <!-- Bookings -->
           <div class="bookings-card">
+
+            <!-- ── Household account bookings (slide 0) ── -->
+            <div class="bookings-card__account" data-account-bookings="household">
             <div class="bookings-card__pending">
               <svg class="bookings-card__pending-icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
               <span class="bookings-card__pending-label">Pending payments until 31.05.2026</span>
@@ -260,7 +279,7 @@
               <header class="booking-group__header">
                 <span class="booking-group__label">Yesterday</span>
                 <span class="booking-group__balance">
-                  <span class="booking-group__balance-currency">USD</span>
+                  <span class="booking-group__balance-currency">CHF</span>
                   <span class="booking-group__balance-value" data-day-balance="yesterday">10'000.00</span>
                 </span>
               </header>
@@ -268,15 +287,15 @@
                 <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-corner-up-right"/></svg>
                 <span class="booking-row__name">Cafe</span>
                 <span class="booking-row__amount">
-                  <span class="booking-row__currency">USD</span>
+                  <span class="booking-row__currency">CHF</span>
                   <span class="booking-row__value">-10.00</span>
                 </span>
               </div>
               <div class="booking-row" data-mock-booking="static">
-                <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-corner-up-right"/></svg>
+                <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-repeat"/></svg>
                 <span class="booking-row__name">Pizza</span>
                 <span class="booking-row__amount">
-                  <span class="booking-row__currency">USD</span>
+                  <span class="booking-row__currency">CHF</span>
                   <span class="booking-row__value">-320.00</span>
                 </span>
               </div>
@@ -284,7 +303,7 @@
                 <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-corner-up-right"/></svg>
                 <span class="booking-row__name">Railway</span>
                 <span class="booking-row__amount">
-                  <span class="booking-row__currency">USD</span>
+                  <span class="booking-row__currency">CHF</span>
                   <span class="booking-row__value">-100.00</span>
                 </span>
               </div>
@@ -294,6 +313,141 @@
               <span>Show all bookings</span>
               <svg class="show-all-btn__icon uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
             </button>
+            </div><!-- /bookings-card__account[household] -->
+
+            <!-- ── Savings account bookings (slide 1) ── -->
+            <div class="bookings-card__account" data-account-bookings="savings" hidden>
+            <div class="booking-group" data-day="today">
+              <header class="booking-group__header">
+                <span class="booking-group__label">Today</span>
+                <span class="booking-group__balance">
+                  <span class="booking-group__balance-currency">CHF</span>
+                  <span class="booking-group__balance-value">25'320.00</span>
+                </span>
+              </header>
+              <div class="booking-row" data-mock-booking="static">
+                <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-download"/></svg>
+                <span class="booking-row__name">Salary</span>
+                <span class="booking-row__amount">
+                  <span class="booking-row__currency">CHF</span>
+                  <span class="booking-row__value">+5'000.00</span>
+                </span>
+              </div>
+            </div>
+            <div class="divider"></div>
+
+            <div class="booking-group" data-day="yesterday">
+              <header class="booking-group__header">
+                <span class="booking-group__label">Yesterday</span>
+                <span class="booking-group__balance">
+                  <span class="booking-group__balance-currency">CHF</span>
+                  <span class="booking-group__balance-value">20'320.00</span>
+                </span>
+              </header>
+              <div class="booking-row" data-mock-booking="static">
+                <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-corner-up-right"/></svg>
+                <span class="booking-row__name">Rent</span>
+                <span class="booking-row__amount">
+                  <span class="booking-row__currency">CHF</span>
+                  <span class="booking-row__value">-1'800.00</span>
+                </span>
+              </div>
+              <div class="booking-row" data-mock-booking="static">
+                <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-repeat"/></svg>
+                <span class="booking-row__name">Transfer to Household</span>
+                <span class="booking-row__amount">
+                  <span class="booking-row__currency">CHF</span>
+                  <span class="booking-row__value">-320.00</span>
+                </span>
+              </div>
+            </div>
+            <div class="divider"></div>
+
+            <div class="booking-group" data-day="2-days-ago">
+              <header class="booking-group__header">
+                <span class="booking-group__label">27.05.2026</span>
+                <span class="booking-group__balance">
+                  <span class="booking-group__balance-currency">CHF</span>
+                  <span class="booking-group__balance-value">22'440.00</span>
+                </span>
+              </header>
+              <div class="booking-row" data-mock-booking="static">
+                <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-corner-up-right"/></svg>
+                <span class="booking-row__name">Health Insurance</span>
+                <span class="booking-row__amount">
+                  <span class="booking-row__currency">CHF</span>
+                  <span class="booking-row__value">-380.00</span>
+                </span>
+              </div>
+              <div class="booking-row" data-mock-booking="static">
+                <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-corner-up-right"/></svg>
+                <span class="booking-row__name">Internet &amp; Phone</span>
+                <span class="booking-row__amount">
+                  <span class="booking-row__currency">CHF</span>
+                  <span class="booking-row__value">-60.00</span>
+                </span>
+              </div>
+            </div>
+
+            <button class="show-all-btn uz-btn uz-btn--tonal uz-btn--sm" type="button">
+              <span>Show all bookings</span>
+              <svg class="show-all-btn__icon uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
+            </button>
+            </div><!-- /bookings-card__account[savings] -->
+
+            <!-- ── Deposit account bookings (slide 2) ── -->
+            <div class="bookings-card__account" data-account-bookings="deposit" hidden>
+            <div class="booking-group" data-day="today">
+              <header class="booking-group__header">
+                <span class="booking-group__label">Today</span>
+                <span class="booking-group__balance">
+                  <span class="booking-group__balance-currency">CHF</span>
+                  <span class="booking-group__balance-value">20'000.00</span>
+                </span>
+              </header>
+              <div class="booking-row" data-mock-booking="static">
+                <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-trending-up"/></svg>
+                <span class="booking-row__name">Interest credit</span>
+                <span class="booking-row__amount">
+                  <span class="booking-row__currency">CHF</span>
+                  <span class="booking-row__value">+125.00</span>
+                </span>
+              </div>
+            </div>
+            <div class="divider"></div>
+
+            <div class="booking-group" data-day="last-month">
+              <header class="booking-group__header">
+                <span class="booking-group__label">01.05.2026</span>
+                <span class="booking-group__balance">
+                  <span class="booking-group__balance-currency">CHF</span>
+                  <span class="booking-group__balance-value">19'875.00</span>
+                </span>
+              </header>
+              <div class="booking-row" data-mock-booking="static">
+                <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-repeat"/></svg>
+                <span class="booking-row__name">Deposit top-up</span>
+                <span class="booking-row__amount">
+                  <span class="booking-row__currency">CHF</span>
+                  <span class="booking-row__value">+5'000.00</span>
+                </span>
+              </div>
+              <div class="booking-row" data-mock-booking="static">
+                <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-trending-up"/></svg>
+                <span class="booking-row__name">Interest credit</span>
+                <span class="booking-row__amount">
+                  <span class="booking-row__currency">CHF</span>
+                  <span class="booking-row__value">+120.00</span>
+                </span>
+              </div>
+            </div>
+
+            <button class="show-all-btn uz-btn uz-btn--tonal uz-btn--sm" type="button">
+              <span>Show all bookings</span>
+              <svg class="show-all-btn__icon uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
+            </button>
+            </div><!-- /bookings-card__account[deposit] -->
+
           </div>
         </div>
       </section>
@@ -728,6 +882,149 @@
     </div>
   </div>
 </div>
+<!-- Payment details overlay (designs/screens/payment-details) -->
+<div id="uz-payment-details-overlay" class="modal-overlay" aria-hidden="true">
+  <div class="modal-shell modal-shell--offscreen modal-shell--no-transition">
+    <div class="modal modal--payment-details pd--domestic">
+
+      <!-- Nav -->
+      <div class="modal__nav">
+        <span class="modal__title" id="uz-pd-title">Domestic Payment</span>
+        <button type="button" class="modal__close uz-pd-close" aria-label="Close payment details">
+          <svg class="modal__close-icon" role="img" aria-label="" focusable="false"><use href="#i-x"/></svg>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal__body">
+        <div class="payment-details" id="uz-payment-details">
+
+          <!-- Amount hero -->
+          <div class="payment-details__amount-hero">
+            <div class="payment-details__amount-row">
+              <span class="payment-details__amount-value" id="uz-pd-amount">-100.00</span>
+              <span class="payment-details__amount-currency" id="uz-pd-currency">CHF</span>
+              <button class="payment-details__edit-btn pd-domestic-only" type="button" aria-label="Edit amount" data-pd-edit="amount">
+                <svg class="payment-details__edit-icon" aria-hidden="true" focusable="false"><use href="#i-edit-2"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Domestic: "To" section -->
+          <div class="payment-details__to pd-domestic-only">
+            <span class="payment-details__to-label">to</span>
+            <div class="payment-details__to-body">
+              <span class="payment-details__to-value" id="uz-pd-to-value">Apple<br>Rennweg 43<br>8001 Zürich</span>
+              <button class="payment-details__edit-btn payment-details__edit-btn--to pd-pending-only" type="button" aria-label="Edit recipient" data-pd-edit="recipient">
+                <svg class="payment-details__edit-icon" aria-hidden="true" focusable="false"><use href="#i-edit-2"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Internal: from + to account rows -->
+          <div class="payment-details__accounts pd-internal-only">
+            <span class="payment-details__account-label">from</span>
+            <div class="payment-details__account-item" id="uz-pd-debit">
+              <svg id="uz-pd-debit-icon" class="payment-details__account-icon" aria-hidden="true" focusable="false"><use href="#i-anchor"/></svg>
+              <div class="payment-details__account-info">
+                <span class="payment-details__account-name"    id="uz-pd-debit-name">Savings account</span>
+                <span class="payment-details__account-iban"    id="uz-pd-debit-iban">CH35 0900 0000 2470 2920 2</span>
+              </div>
+              <span class="payment-details__account-balance" id="uz-pd-debit-balance">
+                <span class="payment-details__account-balance-currency" id="uz-pd-debit-balance-currency">CHF</span>
+                <span class="payment-details__account-balance-value"    id="uz-pd-debit-balance-value">25'000.00</span>
+              </span>
+            </div>
+
+            <span class="payment-details__account-label">to</span>
+            <div class="payment-details__account-item" id="uz-pd-credit">
+              <svg id="uz-pd-credit-icon" class="payment-details__account-icon" aria-hidden="true" focusable="false"><use href="#i-scissors"/></svg>
+              <div class="payment-details__account-info">
+                <span class="payment-details__account-name"    id="uz-pd-credit-name">Private account</span>
+                <span class="payment-details__account-iban"    id="uz-pd-credit-iban">CH35 0900 0000 2470 2920 1</span>
+              </div>
+              <span class="payment-details__account-balance" id="uz-pd-credit-balance">
+                <span class="payment-details__account-balance-currency" id="uz-pd-credit-balance-currency">CHF</span>
+                <span class="payment-details__account-balance-value"    id="uz-pd-credit-balance-value">10'000.00</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Divider: internal transfer only (domestic uses its own rule inside function bar) -->
+          <div class="payment-details__rule pd-internal-only"></div>
+
+          <!-- Function bar: domestic payments only, buttons visible when pending -->
+          <div class="payment-details__function-bar pd-domestic-only">
+            <div class="payment-details__function-bar__rule"></div>
+            <div class="payment-details__function-bar__actions pd-pending-only">
+              <button class="payment-details__fn-btn" type="button" aria-label="Edit payment" data-pd-edit="amount">
+                <svg class="payment-details__fn-icon" aria-hidden="true" focusable="false"><use href="#i-edit-2"/></svg>
+                <span class="payment-details__fn-label">Edit</span>
+              </button>
+              <button class="payment-details__fn-btn" type="button" aria-label="Delete payment">
+                <svg class="payment-details__fn-icon" aria-hidden="true" focusable="false"><use href="#i-trash-2"/></svg>
+                <span class="payment-details__fn-label">Delete</span>
+              </button>
+              <button class="payment-details__fn-btn" type="button" aria-label="Copy payment">
+                <svg class="payment-details__fn-icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg>
+                <span class="payment-details__fn-label">Copy</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Status / Booking confirmation / Signed -->
+          <div class="payment-details__info-rows">
+            <div class="payment-details__info-row">
+              <span class="payment-details__info-label">Status</span>
+              <span class="chip chip--sm" id="uz-pd-status-chip">
+                <svg id="uz-pd-status-icon" class="chip__icon" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg>
+                <span class="chip__label" id="uz-pd-status-text">Pending</span>
+              </span>
+            </div>
+            <div class="payment-details__info-row">
+              <span class="payment-details__info-label">Booking confirmation</span>
+              <button class="payment-details__download" type="button" aria-label="Download booking confirmation">
+                <svg class="payment-details__download-icon" aria-hidden="true" focusable="false"><use href="#i-download"/></svg>
+                <span>Download</span>
+              </button>
+            </div>
+            <div class="payment-details__info-row">
+              <span class="payment-details__info-label">Signed</span>
+              <span class="payment-details__info-value">Yes</span>
+            </div>
+          </div>
+
+          <!-- Further options expander (designs/components/expander/variants/regular) -->
+          <button class="expander" type="button" aria-expanded="false" id="uz-pd-further-toggle">
+            <span class="expander__leading">
+              <svg class="expander__leading-icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+            </span>
+            <span class="expander__content">
+              <span class="expander__title">Further options</span>
+            </span>
+            <svg class="expander__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+          </button>
+
+          <!-- Further options content -->
+          <div class="payment-details__further-content" id="uz-pd-further-content" hidden>
+            <div class="payment-details__message-row">
+              <span class="payment-details__info-label">Message</span>
+              <span class="payment-details__info-value" id="uz-pd-message-value"></span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal__footer">
+        <button class="uz-btn uz-btn--primary uz-btn--md uz-btn--block uz-pd-confirm" type="button">Confirm</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <!-- Share information — stacked above account information (modal-overlay → modal-shell → modal) -->
 <div id="uz-share-information-overlay" class="modal-overlay" aria-hidden="true">
   <div class="modal-shell">
@@ -860,6 +1157,7 @@
 <script src="js/app-mp.js"></script>
 <script src="js/account-information.js"></script>
 <script src="js/share-information.js"></script>
+<script src="js/payment-details.js"></script>
 <div id="uzbank-icon-defs" aria-hidden="true" class="uzbank-icon-defs">
 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden;pointer-events:none">
 <symbol id="i-anchor" viewBox="0 0 24 24">
@@ -875,6 +1173,14 @@
 <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M12 5L19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </symbol>
+<symbol id="i-check" viewBox="0 0 24 24">
+<path d="M20 6L9 17L4 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-download" viewBox="0 0 24 24">
+<path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7 10L12 15L17 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 15V3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
 <symbol id="i-calendar" viewBox="0 0 24 24">
 <path d="M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M16 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -886,7 +1192,7 @@
 <path d="M12 17C14.2091 17 16 15.2091 16 13C16 10.7909 14.2091 9 12 9C9.79086 9 8 10.7909 8 13C8 15.2091 9.79086 17 12 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </symbol>
 <symbol id="i-chevron-down" viewBox="0 0 24 24">
-<path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6 9L12 15L18 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </symbol>
 <symbol id="i-chevron-left" viewBox="0 0 24 24">
 <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -895,12 +1201,18 @@
 <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </symbol>
 <symbol id="i-clock" viewBox="0 0 24 24">
-<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 6V12L16 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </symbol>
 <symbol id="i-copy" viewBox="0 0 24 24">
 <rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2" fill="none"/>
 <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-trash-2" viewBox="0 0 24 24">
+<path d="M3 6H5H21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 11V17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14 11V17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </symbol>
 <symbol id="i-corner-up-right" viewBox="0 0 24 24">
 <path d="M15 14L20 9L15 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -989,6 +1301,13 @@
 <symbol id="i-x" viewBox="0 0 24 24">
 <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-scissors" viewBox="0 0 24 24">
+<circle cx="6" cy="6" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="20" y1="4" x2="8.12" y2="15.88" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="14.47" y1="14.48" x2="20" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="8.12" y1="8.12" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </symbol>
 </svg>
 </div>

@@ -59,6 +59,11 @@ document.addEventListener('DOMContentLoaded', function () {
   var paymentFlowClosing = false;
   /** Avoid pushing history while applying popstate/hash sync */
   var syncingRoute = false;
+  /** Set to a booking ID when the flow was opened via an edit button;
+   *  null for brand-new payments. Controls commit vs. update on execute. */
+  var editingBookingId  = null;
+  /** The original static DOM row to hide after a static-mock edit is committed. */
+  var editingStaticRow  = null;
 
   /* ── DATA WIRING (added in _10) ─────────────────────────────────────
    * Each modal__step block is templated HTML. We track the "live" payment
@@ -662,6 +667,8 @@ document.addEventListener('DOMContentLoaded', function () {
     paymentFlowClosing = false;
     currentStep = 0;
     prevStepIndexForTransition = null;
+    editingBookingId = null;
+    editingStaticRow = null;
     showStep();
     modalOverlay.classList.remove('modal-overlay--active');
     document.body.classList.remove('body--payment-open');
@@ -799,6 +806,28 @@ document.addEventListener('DOMContentLoaded', function () {
     try {
       if (!seg) {
         if (modalOverlay.classList.contains('modal-overlay--active')) {
+          // The user navigated back out of the payment flow (back button /
+          // hash cleared). If we have something worth protecting (edit mode
+          // or a recipient already chosen), intercept: restore the hash so
+          // the URL stays inside the flow, then ask the user what to do.
+          var worthProtecting = !!(editingBookingId || editingStaticRow || live.recipient);
+          if (worthProtecting && !paymentFlowClosing &&
+              typeof window.UZBankPaymentExitPrompt === 'function') {
+            // Restore the hash so the browser URL reflects that we're still
+            // inside the flow while the dialog is open.
+            var restoreSeg = STEPS[currentStep] || STEPS[0];
+            syncingRoute = true;
+            history.pushState({ uzBankPay: true, segment: restoreSeg }, '',
+              location.pathname + location.search + '#pay/' + restoreSeg);
+            syncingRoute = false;
+            promptExitFlow(function () {
+              paymentFlowClosing = false;
+              hideConfirmationVisual();
+              replaceCleanUrl();
+              finishClose();
+            });
+            return;
+          }
           paymentFlowClosing = false;
           hideConfirmationVisual();
           finishClose();
@@ -819,12 +848,65 @@ document.addEventListener('DOMContentLoaded', function () {
       var idx = STEPS.indexOf(seg);
       if (idx < 0) return;
 
+      // ── Edit context from payment-details overlay ──────────────────
+      // When the user taps "Edit amount" or "Edit recipient" in the
+      // payment-details sheet, payment-details.js writes this context
+      // before setting the hash. Consume it here to pre-seed live.*
+      // so the flow opens pre-populated instead of with defaults.
+      var editCtx = window.__UZ_PD_EDIT_CONTEXT__;
+      if (editCtx) {
+        delete window.__UZ_PD_EDIT_CONTEXT__;
+        editingBookingId = editCtx.bookingId  || null;
+        editingStaticRow = editCtx.staticRow  || null;
+
+        // Amount — parse just in case it was stored as a string
+        var ctxAmount = typeof editCtx.amount === 'number'
+          ? editCtx.amount
+          : parseFloat(String(editCtx.amount).replace(/[^0-9.]/g, '')) || DEFAULT_AMOUNT;
+        live.amount   = ctxAmount > 0 ? ctxAmount : DEFAULT_AMOUNT;
+        live.currency = editCtx.currency || DEFAULT_CURRENCY;
+
+        // Recipient — use the full catalog record if available; otherwise
+        // synthesise a minimal object so paintRecipientStep / paintAmountStep
+        // can display the name without crashing.
+        if (editCtx.recipient) {
+          live.recipient = editCtx.recipient;
+        } else if (editCtx.recipientName) {
+          // Last-resort: look up by name ourselves
+          var ctxCatalog = recipientCatalogRows();
+          var ctxNeedle  = editCtx.recipientName.toLowerCase().trim();
+          var ctxFound   = null;
+          for (var ci = 0; ci < ctxCatalog.length; ci++) {
+            if ((ctxCatalog[ci].name || '').toLowerCase().trim() === ctxNeedle) {
+              ctxFound = ctxCatalog[ci]; break;
+            }
+          }
+          live.recipient = ctxFound || {
+            id: 'custom', name: editCtx.recipientName,
+            iban: '', bank: '', street: '', city: '', country: 'CH'
+          };
+        }
+      }
+      // ──────────────────────────────────────────────────────────────
+
       hideConfirmationVisual();
       openModalVisual();
       currentStep = idx;
       prevStepIndexForTransition = null;
       showStep();
       notifyScreen();
+
+      // When the flow opens directly at the amount step (e.g. via the
+      // "Edit amount" button in the payment-details overlay), put focus
+      // on the amount input and select all so the user can type immediately.
+      if (seg === 'amount') {
+        window.setTimeout(function () {
+          var stepEl = $step('amount');
+          if (!stepEl) return;
+          var amtInput = stepEl.querySelector('.amount-input__value');
+          if (amtInput) { amtInput.focus({ preventScroll: true }); if (amtInput.select) amtInput.select(); }
+        }, 60);
+      }
     } finally {
       syncingRoute = false;
     }
@@ -845,15 +927,29 @@ document.addEventListener('DOMContentLoaded', function () {
       pushPayUrl(STEPS[currentStep]);
       showStep();
     } else {
-      // Last step is summary → "Execute" commits the booking, debits the
-      // Household balance, then we show the confirmation overlay.
-      if (window.UZBankPayState && window.UZBankPayState.commitPayment && live.recipient) {
-        window.UZBankPayState.commitPayment({
+      // Last step is summary → "Execute":
+      //   • Editing an existing booking → update it in-place (no duplicate)
+      //   • New payment → commit as a fresh booking
+      if (live.recipient) {
+        var payData = {
           recipient: live.recipient,
-          amount: live.amount,
-          currency: live.currency,
-          dateISO: new Date().toISOString()
-        });
+          amount:    live.amount,
+          currency:  live.currency,
+          dateISO:   new Date().toISOString()
+        };
+        if (editingBookingId && window.UZBankPayState && window.UZBankPayState.updatePayment) {
+          window.UZBankPayState.updatePayment(editingBookingId, payData);
+        } else if (window.UZBankPayState && window.UZBankPayState.commitPayment) {
+          window.UZBankPayState.commitPayment(payData);
+          // If this was a static-mock edit, hide the original hardcoded row now
+          // that a real dynamic entry has replaced it.
+          if (editingStaticRow) {
+            editingStaticRow.setAttribute('hidden', '');
+            editingStaticRow.setAttribute('data-replaced', 'true');
+          }
+        }
+        editingBookingId = null;
+        editingStaticRow = null;
       }
       pushPayUrl('confirmation');
       showConfirmationVisual();
@@ -866,6 +962,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!payBtn) return;
     e.preventDefault();
     live.recipient = null;
+    editingBookingId = null; // always a fresh payment from the pay button
     resetPaymentDefaults();
     currentStep = 0;
     prevStepIndexForTransition = null;
@@ -898,6 +995,23 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  /** Show the exit-confirmation dialog with copy appropriate for the current
+   *  mode (new payment vs. editing an existing one), then call exitFn only
+   *  if the user chooses to leave. Falls back to immediate exit when the
+   *  dialog helper is not available (e.g. script load order issue). */
+  function promptExitFlow(exitFn) {
+    if (typeof window.UZBankPaymentExitPrompt !== 'function') {
+      exitFn();
+      return;
+    }
+    var isEdit = !!(editingBookingId || editingStaticRow);
+    window.UZBankPaymentExitPrompt(exitFn, isEdit ? {
+      title:      'Discard changes?',
+      message:    'Your pending edits will not be saved if you exit now.',
+      leaveLabel: 'Discard'
+    } : undefined);
+  }
+
   if (modalClose) {
     modalClose.addEventListener('click', function (e) {
       e.preventDefault();
@@ -905,11 +1019,7 @@ document.addEventListener('DOMContentLoaded', function () {
         hideConfirmationVisual();
         closeModal();
       }
-      if (typeof window.UZBankPaymentExitPrompt === 'function') {
-        window.UZBankPaymentExitPrompt(runExitFromFlow);
-      } else {
-        runExitFromFlow();
-      }
+      promptExitFlow(runExitFromFlow);
     });
   }
 
