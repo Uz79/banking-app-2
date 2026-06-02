@@ -11,7 +11,7 @@
  */
 
 export default {
-  title: 'Components/Confirmation',
+  title: 'Components/Dialog',
   parameters: {
     docs: {
       description: {

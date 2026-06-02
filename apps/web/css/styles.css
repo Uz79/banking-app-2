@@ -897,6 +897,8 @@ html:has(body.body--payment-open) {
 .product-item__info.type-stack-tight,
 .debit-account__info.type-stack-tight,
 .form-sheet__account-info.type-stack-tight {
+  /* typography.css owns display/flex-direction/gap (cap-height trim system — gap: 0 + margin math).
+     This rule only adds sizing/positioning within the parent flex container. */
   flex: 1;
   min-width: 0;
   justify-content: center;
@@ -990,6 +992,19 @@ html:has(body.body--payment-open) {
   gap: var(--space-1); /* 8px currency to amount */
   padding-left: var(--space-1); /* Right Side — 8px */
   padding-right: var(--space-3); /* Right Side — 16px */
+}
+
+.list-item--group-account .list-item__currency {
+  font-size: var(--fs-text-xs);
+  line-height: var(--lh-text);
+  color: var(--color-fg-label);
+}
+
+.list-item--group-account .list-item__value {
+  font-size: var(--fs-text-sm);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
 }
 
 .list-item--group-account .list-item__icon {
@@ -2263,8 +2278,8 @@ html:has(body.body--payment-open) {
   display: flex;
   min-height: 2.5rem;
   border: none;
-  border-radius: var(--radius-small);
-  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-regular);
+  padding: var(--space-2) var(--space-4);
   align-items: center;
   background-color: var(--color-input-surface);
   box-shadow: inset 0 0 0 var(--input-stroke-px, 1px) var(--color-input-stroke);
@@ -2291,7 +2306,7 @@ html:has(body.body--payment-open) {
   align-items: center;
   gap: 0.25rem;
   font-size: var(--fs-text-md);
-  font-weight: var(--fw-medium);
+  font-weight: var(--fw-regular); /* reference: currency label is regular, not medium */
   line-height: var(--lh-text);
   color: var(--color-fg);
   cursor: pointer;
@@ -2304,8 +2319,10 @@ html:has(body.body--payment-open) {
 }
 
 .amount-input__chevron {
-  width: 1rem;
-  height: 1rem;
+  /* icon24 — 24×24dp fixed, never fluid */
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
 }
 
 .amount-input__value {
@@ -2365,10 +2382,19 @@ html:has(body.body--payment-open) {
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2);
+  background: none;
   border: 0.0625rem solid var(--color-fg);
   border-radius: var(--radius-regular);
   cursor: pointer;
   transition: background-color 0.15s ease;
+}
+
+button.debit-account {
+  width: 100%;
+  font-family: inherit;
+  text-align: left;
+  color: inherit;
+  appearance: none;
 }
 
 .debit-account:hover {
@@ -2387,7 +2413,10 @@ html:has(body.body--payment-open) {
 
 .debit-account__info {
   flex: 1;
+  min-width: 0;
 }
+
+/* .debit-account__info layout is fully handled by the shared type-stack-tight rule */
 
 .debit-account__name {
   display: block;
@@ -2405,16 +2434,40 @@ html:has(body.body--payment-open) {
 }
 
 .debit-account__amount {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.debit-account__amount-currency {
+  font-size: var(--fs-text-xs);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.debit-account__amount-value {
   font-size: var(--fs-text-sm);
   font-weight: var(--fw-bold);
   line-height: var(--lh-text);
   color: var(--color-fg);
-  flex-shrink: 0;
 }
 
 .debit-account__chevron {
-  width: 1.25rem;
-  height: 1.25rem;
+  /* icon24 — 24×24dp, matches Figma "Right Side > icon24". Fixed, never fluid. */
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+}
+
+/* Right column: Figma "Right Side" — flex column, content right-aligned, 4dp gap
+   between the money-amount row and the 24dp chevron icon. */
+.debit-account__end {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem; /* 4dp — Figma spec between amount and icon24 */
   flex-shrink: 0;
 }
 
@@ -2840,6 +2893,12 @@ html:has(body.body--payment-open) {
   line-height: var(--lh-text);
   color: var(--color-fg);
   margin-bottom: var(--space-4);
+}
+
+/* IAT: immediate execution copy (no date line) — match payment footer spacing above CTA */
+#uz-iat-overlay .confirmation-dialog .confirmation-dialog__footer {
+  margin-bottom: var(--space-4);
+  font-size: var(--fs-text-md);
 }
 
 /* ── Icons: central sprite + <use>. currentColor for stroke; default SVG fill
@@ -3683,10 +3742,18 @@ a.btn-primary {
   gap: var(--space-3); /* Figma Section — space/4 between each TextField */
 }
 
-/* Hug height: label line-height + gap + value row (line-height + icon). No fixed field frame. */
+/* Each readonly row is an 88dp frame: label band + value row + separator at bottom. */
 .account-information__fields .form-field--readonly {
+  display: grid;
+  grid-template-rows: auto 1fr;
   gap: 0.25rem; /* Figma TextField — space/1 (4px) label to value row */
+  min-height: 5.5rem; /* 88dp — designs/screens/account-information */
   box-sizing: border-box;
+}
+
+.account-information__fields .form-field--readonly:has(.form-field__row--multiline) {
+  min-height: auto;
+  grid-template-rows: auto auto;
 }
 
 .account-information__fields .form-field--readonly .form-field__label {
@@ -3696,11 +3763,11 @@ a.btn-primary {
 
 .account-information__fields .form-field--readonly .form-field__row {
   display: flex;
-  flex: 0 0 auto;
+  align-self: stretch;
+  align-items: center;
   height: auto;
   min-height: 2.5rem;
   max-height: none;
-  align-items: center;
   gap: var(--space-3); /* Figma Input Text — space/4 value to icon */
   padding: 0;
   margin: 0;
@@ -3851,8 +3918,16 @@ a.btn-primary {
 }
 
 .share-information__fields .form-field--readonly {
+  display: grid;
+  grid-template-rows: auto 1fr;
   gap: 0.25rem;
+  min-height: 5.5rem;
   box-sizing: border-box;
+}
+
+.share-information__fields .form-field--readonly:has(.form-field__row--multiline) {
+  min-height: auto;
+  grid-template-rows: auto auto;
 }
 
 .share-information__fields .form-field--readonly .form-field__label {
@@ -3862,11 +3937,11 @@ a.btn-primary {
 
 .share-information__fields .form-field--readonly .form-field__row {
   display: flex;
-  flex: 0 0 auto;
+  align-self: stretch;
+  align-items: center;
   height: auto;
   min-height: 2.5rem;
   max-height: none;
-  align-items: center;
   gap: var(--space-3);
   padding: 0;
   margin: 0;
@@ -5478,5 +5553,60 @@ dialog.basic-dialog-payment-exit::backdrop {
 /* booking-row: cursor pointer to signal tappability */
 .booking-row {
   cursor: pointer;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   INTERNAL ACCOUNT TRANSFER FLOW
+   designs/screens/internal-account-transfer
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Amount + currency input wrap (legacy — use .amount-input) ── */
+
+/* ── Intro text ───────────────────────────────────────────────── */
+
+.iat-intro {
+  font-size: var(--fs-text-sm);
+  color: var(--color-fg-secondary);
+  margin: 0;
+}
+
+/* ── Schedule step ────────────────────────────────────────────── */
+
+.iat-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) 0;
+  border-bottom: 0.0625rem solid var(--color-separator);
+}
+
+.iat-toggle-row__label {
+  font-size: var(--fs-text-md);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+}
+
+/* Segmented that spans full width (different from theme segmented) */
+.segmented--full {
+  width: 100%;
+  margin-bottom: var(--space-3);
+}
+
+/* debit-account as full-width control inside IAT forms */
+.modal--iat-flow .form .debit-account,
+.modal--payment-flow .form .debit-account {
+  width: 100%;
+}
+
+/* ── body scroll lock when IAT open ──────────────────────────── */
+
+body.body--iat-open {
+  overflow: hidden;
+}
+
+/* ── IAT overlay positions itself correctly ───────────────────── */
+
+#uz-iat-overlay .modal-shell {
+  position: relative;
 }
 

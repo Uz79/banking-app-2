@@ -1,0 +1,34 @@
+{
+  "name": "account-details",
+  "category": "shell",
+  "description": "Account details shell screen.",
+  "interactionStates": [
+    "default"
+  ],
+  "assets": {
+    "overview": "overview.png",
+    "variants": {
+      "desktop-default": {
+        "default": "variants/desktop-default/default.svg"
+      },
+      "mobile-default": {
+        "default": "variants/mobile-default/default.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": [
+    "Figma exports: 'Account Details - desktop' → variants/desktop-default/; 'Account Details - mobile' → variants/mobile-default/. Each variant folder also has default.png.",
+    "Bookings block uses card/section-card variant bookings."
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "name": "color-theme",
+  "category": "card",
+  "description": "Cards for saving and selecting custom color themes (foreground/background pairs).",
+  "interactionStates": [
+    "default",
+    "selected"
+  ],
+  "assets": {
+    "overview": "variants/add-theme/default.svg",
+    "variants": {
+      "add-theme": {
+        "default": "variants/add-theme/default.svg"
+      },
+      "saved-custom-theme": {
+        "default": "variants/saved-custom-theme/default.svg",
+        "selected": "variants/saved-custom-theme/selected.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": [
+    "This component is used in Profile settings to manage saved themes.",
+    "Sibling component: card/section-card (dashboard section cards)."
+  ]
+}

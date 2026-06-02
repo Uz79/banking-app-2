@@ -1,5 +1,5 @@
 export default {
-  title: 'Components/Forms',
+  title: 'Components/Form field',
 };
 
 // ─── Form Field: text input ───────────────────────────────────────────────────
@@ -43,8 +43,8 @@ export const FormFieldTextInputEmpty = {
 export const FormFieldReadOnly = {
   name: 'Form Field — read-only value + edit',
   render: () => `
-    <div style="padding:1rem;max-width:28rem;">
-      <div class="form-field">
+    <div style="padding:1rem;max-width:28rem;display:flex;flex-direction:column;gap:var(--space-3);">
+      <div class="form-field form-field--readonly">
         <span class="form-field__label">IBAN</span>
         <div class="form-field__row">
           <span class="form-field__value">CH35 0900 0000 2560 0696 0</span>
@@ -60,8 +60,8 @@ export const FormFieldReadOnly = {
 export const FormFieldReadOnlyNoEdit = {
   name: 'Form Field — read-only value (no edit)',
   render: () => `
-    <div style="padding:1rem;max-width:28rem;">
-      <div class="form-field">
+    <div style="padding:1rem;max-width:28rem;display:flex;flex-direction:column;gap:var(--space-3);">
+      <div class="form-field form-field--readonly">
         <span class="form-field__label">Bank Name</span>
         <div class="form-field__row">
           <span class="form-field__value">UBS</span>
@@ -172,8 +172,13 @@ export const DebitAccount = {
             <span class="debit-account__name">Household</span>
             <span class="debit-account__iban">CH35 0900 0000 2470 2920 1</span>
           </div>
-          <span class="debit-account__amount">CHF 10'570.00</span>
-          <svg class="debit-account__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+          <div class="debit-account__end">
+            <span class="debit-account__amount">
+              <span class="debit-account__amount-currency">CHF</span>
+              <span class="debit-account__amount-value">10'570.00</span>
+            </span>
+            <svg class="debit-account__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+          </div>
         </div>
       </div>
     </div>
@@ -356,6 +361,66 @@ export const RecipientForm = {
   `,
 };
 
+// ─── Internal Account Transfer — Amount & recipient (step 1) ────────────────
+
+export const IATAmountRecipientForm = {
+  name: 'IAT Form — Amount & recipient step',
+  render: () => `
+    <div style="padding:1rem;max-width:28rem;">
+      <div class="form">
+        <p class="iat-intro">I want to transfer internally</p>
+        <div class="form-field">
+          <span class="form-field__label">Amount</span>
+          <div class="amount-input">
+            <span class="amount-input__currency">
+              <span>CHF</span>
+              <svg class="amount-input__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+            </span>
+            <input class="amount-input__value" type="text" value="500.00" />
+            <button type="button" class="amount-input__clear amount-input__clear--hidden" aria-label="Clear amount">
+              <svg class="amount-input__clear-icon" aria-hidden="true" focusable="false"><use href="#i-x-circle"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="form-field">
+          <span class="form-field__label">from</span>
+          <div class="debit-account">
+            <svg class="debit-account__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
+            <div class="debit-account__info">
+              <span class="debit-account__name">Household</span>
+              <span class="debit-account__iban">CH35 0900 0000 2470 2920 1</span>
+            </div>
+            <div class="debit-account__end">
+              <span class="debit-account__amount">
+                <span class="debit-account__amount-currency">CHF</span>
+                <span class="debit-account__amount-value">10'000.00</span>
+              </span>
+              <svg class="debit-account__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="form-field">
+          <span class="form-field__label">to</span>
+          <div class="debit-account">
+            <svg class="debit-account__icon" aria-hidden="true" focusable="false"><use href="#i-anchor"/></svg>
+            <div class="debit-account__info">
+              <span class="debit-account__name">Savings Account</span>
+              <span class="debit-account__iban">CH35 0900 0000 2470 2920 2</span>
+            </div>
+            <div class="debit-account__end">
+              <span class="debit-account__amount">
+                <span class="debit-account__amount-currency">CHF</span>
+                <span class="debit-account__amount-value">25'000.00</span>
+              </span>
+              <svg class="debit-account__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `,
+};
+
 // ─── Amount Form (step 2) ─────────────────────────────────────────────────────
 
 export const AmountForm = {
@@ -393,8 +458,13 @@ export const AmountForm = {
               <span class="debit-account__name">Household</span>
               <span class="debit-account__iban">CH35 0900 0000 2470 2920 1</span>
             </div>
-            <span class="debit-account__amount">CHF 10'570.00</span>
-            <svg class="debit-account__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+            <div class="debit-account__end">
+              <span class="debit-account__amount">
+                <span class="debit-account__amount-currency">CHF</span>
+                <span class="debit-account__amount-value">10'570.00</span>
+              </span>
+              <svg class="debit-account__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+            </div>
           </div>
         </div>
       </div>
@@ -483,8 +553,13 @@ export const SummaryForm = {
               <span class="debit-account__name">Household</span>
               <span class="debit-account__iban">CH35 0900 0000 2470 2920 1</span>
             </div>
-            <span class="debit-account__amount">CHF 10'570.00</span>
-            <svg class="debit-account__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+            <div class="debit-account__end">
+              <span class="debit-account__amount">
+                <span class="debit-account__amount-currency">CHF</span>
+                <span class="debit-account__amount-value">10'570.00</span>
+              </span>
+              <svg class="debit-account__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+            </div>
           </div>
         </div>
       </div>

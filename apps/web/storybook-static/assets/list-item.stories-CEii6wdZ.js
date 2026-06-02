@@ -1,0 +1,89 @@
+import{n as e}from"./chunk-DnJy8xQt.js";var t,n;e((()=>{t={id:`components-list-item-list-item-design-export`,title:`Components/List Item/List Item`,tags:[`!autodocs`],parameters:{layout:`padded`,docs:{disable:!0}}},n={name:`Design export`,render:()=>`
+    <style>
+      .de-wrap { padding: 1rem; }
+      .de-desc { margin: 0 0 1rem; color: var(--color-fg-secondary); font-size: 0.875rem; }
+      .de-variant { margin: 1rem 0 0.5rem; font-size: 0.95rem; }
+      .de-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; align-items: start; }
+      .de-item { margin: 0; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid var(--color-separator); background: var(--color-bg); }
+      .de-img { width: 100%; height: auto; display: block; }
+      .de-cap { margin-top: 0.5rem; font-size: 0.875rem; color: var(--color-fg-secondary); }
+    </style>
+    <div class="de-wrap">
+      <p class="de-desc">List item patterns used across lists.</p>
+<h4 class="de-variant">grouped-mid-account</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/list-item/variants/grouped-mid-account/default.svg" alt="grouped-mid-account / default" loading="lazy" />
+  <figcaption class="de-cap">grouped-mid-account / default</figcaption>
+</figure>
+</div>
+<h4 class="de-variant">grouped-bottom-account</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/list-item/variants/grouped-bottom-account/default.svg" alt="grouped-bottom-account / default" loading="lazy" />
+  <figcaption class="de-cap">grouped-bottom-account / default</figcaption>
+</figure>
+</div>
+<h4 class="de-variant">grouped-top-account</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/list-item/variants/grouped-top-account/default.svg" alt="grouped-top-account / default" loading="lazy" />
+  <figcaption class="de-cap">grouped-top-account / default</figcaption>
+</figure>
+</div>
+<h4 class="de-variant">grouped-top-service</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/list-item/variants/grouped-top-service/default.svg" alt="grouped-top-service / default" loading="lazy" />
+  <figcaption class="de-cap">grouped-top-service / default</figcaption>
+</figure>
+</div>
+<h4 class="de-variant">grouped-mid-user2</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/list-item/variants/grouped-mid-user2/default.svg" alt="grouped-mid-user2 / default" loading="lazy" />
+  <figcaption class="de-cap">grouped-mid-user2 / default</figcaption>
+</figure>
+</div>
+<h4 class="de-variant">grouped-top-user</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/list-item/variants/grouped-top-user/default.svg" alt="grouped-top-user / default" loading="lazy" />
+  <figcaption class="de-cap">grouped-top-user / default</figcaption>
+</figure>
+</div>
+<h4 class="de-variant">group-account</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/list-item/variants/group-account/default.svg" alt="group-account / default" loading="lazy" />
+  <figcaption class="de-cap">group-account / default</figcaption>
+</figure>
+</div>
+<h4 class="de-variant">wealth-overview-account</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/list-item/variants/wealth-overview-account/focus.svg" alt="wealth-overview-account / focus" loading="lazy" />
+  <figcaption class="de-cap">wealth-overview-account / focus</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/list-item/variants/wealth-overview-account/default.svg" alt="wealth-overview-account / default" loading="lazy" />
+  <figcaption class="de-cap">wealth-overview-account / default</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/list-item/variants/wealth-overview-account/hover.svg" alt="wealth-overview-account / hover" loading="lazy" />
+  <figcaption class="de-cap">wealth-overview-account / hover</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/list-item/variants/wealth-overview-account/pressed.svg" alt="wealth-overview-account / pressed" loading="lazy" />
+  <figcaption class="de-cap">wealth-overview-account / pressed</figcaption>
+</figure>
+</div>
+<h4 class="de-variant">group-credit-card</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/list-item/variants/group-credit-card/default.svg" alt="group-credit-card / default" loading="lazy" />
+  <figcaption class="de-cap">group-credit-card / default</figcaption>
+</figure>
+</div>
+    </div>
+  `}}))();export{n as DesignExport,t as default};
