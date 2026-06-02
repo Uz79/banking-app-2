@@ -1,0 +1,30 @@
+{
+  "name": "flow-screens",
+  "category": "composite",
+  "description": "Composite raster of payment flow screens on desktop.",
+  "interactionStates": [
+    "default"
+  ],
+  "assets": {
+    "overview": "overview.png",
+    "variants": {
+      "desktop-default": {
+        "default": "variants/desktop-default/default.png"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": [
+    "Add `variants/desktop-default/default.png` when the composite export is available (manifest path reserved)."
+  ]
+}

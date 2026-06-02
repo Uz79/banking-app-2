@@ -1,5 +1,5 @@
 export default {
-  title: 'Components/Buttons',
+  title: 'Components/Button',
 };
 
 // ─── Configurable Button (uses Controls panel) ────────────────────────────────

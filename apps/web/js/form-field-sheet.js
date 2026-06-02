@@ -92,8 +92,21 @@
     return typeof HTMLDialogElement !== 'undefined';
   }
 
-  function getModal() {
+  function getPaymentModal() {
+    var overlays = document.querySelectorAll('.modal-overlay');
+    for (var i = 0; i < overlays.length; i++) {
+      if (overlays[i].id === 'uz-iat-overlay') continue;
+      if (overlays[i].querySelector('.modal--payment-flow')) return overlays[i];
+    }
     return document.querySelector('.modal-overlay');
+  }
+
+  function getIatOverlay() {
+    return document.getElementById('uz-iat-overlay');
+  }
+
+  function getModal() {
+    return getPaymentModal();
   }
 
   function setSheetTitle(text) {
@@ -447,15 +460,51 @@
     if (name) name.textContent = acc.name;
     var iban = el.querySelector('.debit-account__iban');
     if (iban) iban.textContent = acc.iban;
+    var cur = el.querySelector('.debit-account__amount-currency');
+    var val = el.querySelector('.debit-account__amount-value');
+    if (cur && val) {
+      cur.textContent = acc.sheetCur;
+      val.textContent = acc.sheetVal;
+      return;
+    }
     var amt = el.querySelector('.debit-account__amount');
     if (amt) amt.textContent = acc.amount;
   }
 
   function openDebitSheet(cardEl) {
     if (!customMenusEnabled() || !cardEl) return;
+    openAccountPickerSheet(cardEl, {
+      title: 'Debit account',
+      accounts: ACCOUNTS,
+      onSelect: function (acc) {
+        var modal = getModal();
+        if (modal) {
+          modal.querySelectorAll('.debit-account').forEach(function (row) {
+            stampDebitAccount(row, acc);
+          });
+        }
+      }
+    });
+  }
+
+  /**
+   * Generic account picker (menu-accounts pattern).
+   * @param {HTMLElement} anchorEl
+   * @param {{ title?: string, accounts?: Array, excludeKey?: string, onSelect?: function }} options
+   * Accounts may include optional `key` for IAT filtering.
+   */
+  function openAccountPickerSheet(anchorEl, options) {
+    if (!customMenusEnabled() || !anchorEl) return;
+    options = options || {};
+    var accounts = options.accounts || ACCOUNTS;
+    var title = options.title || 'Select account';
+    var excludeKey = options.excludeKey || null;
+    var onSelect = typeof options.onSelect === 'function' ? options.onSelect : null;
+
     ensureDialog();
     listEl.innerHTML = '';
-    ACCOUNTS.forEach(function (acc) {
+    accounts.forEach(function (acc) {
+      if (excludeKey && acc.key === excludeKey) return;
       var btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'form-sheet__row form-sheet__row--account';
@@ -479,19 +528,13 @@
         acc.sheetVal +
         '</span></span>';
       btn.addEventListener('click', function () {
-        var modal = getModal();
-        if (modal) {
-          modal.querySelectorAll('.debit-account').forEach(function (row) {
-            stampDebitAccount(row, acc);
-          });
-        }
+        if (onSelect) onSelect(acc);
         closeSheet();
       });
       listEl.appendChild(btn);
     });
-    /* No preview strip — same account appears as row 1; strip duplicated content and mismatched fills on #i-home. */
     clearPreview();
-    openDialog('Debit account', cardEl, { sheetType: 'account' });
+    openDialog(title, anchorEl, { sheetType: 'account' });
   }
 
   function openMoreFunctionsSheet(triggerBtn) {
@@ -589,27 +632,15 @@
     );
   }
 
-  function readActiveCurrencyCode(modal) {
-    var amountStep = modal.querySelector('.modal__step[data-step="amount"]');
-    if (!amountStep) return 'CHF';
-    var cur = amountStep.querySelector('.amount-input__currency span');
-    if (!cur || !cur.textContent) return 'CHF';
-    var t = cur.textContent.trim();
-    return t.split(/\s+/)[0] || 'CHF';
-  }
-
-  function stampCurrencyInModal(modal, code) {
-    if (!modal) return;
-    modal.querySelectorAll('.amount-input__currency span').forEach(function (sp) {
-      sp.textContent = code;
-    });
-  }
-
-  function openCurrencySheet(modal) {
-    if (!customMenusEnabled() || !modal) return;
+  function openCurrencySheet(root) {
+    if (!customMenusEnabled() || !root) return;
     ensureDialog();
     listEl.innerHTML = '';
-    var current = readActiveCurrencyCode(modal);
+    var current = 'CHF';
+    var curEl = root.querySelector('.amount-input__currency span');
+    if (curEl && curEl.textContent) {
+      current = curEl.textContent.trim().split(/\s+/)[0] || 'CHF';
+    }
     CURRENCIES.forEach(function (c) {
       var btn = document.createElement('button');
       btn.type = 'button';
@@ -618,8 +649,10 @@
       btn.setAttribute('aria-selected', c.code === current ? 'true' : 'false');
       btn.textContent = c.label;
       btn.addEventListener('click', function () {
-        stampCurrencyInModal(modal, c.code);
-        modal.dispatchEvent(
+        root.querySelectorAll('.amount-input__currency span').forEach(function (sp) {
+          sp.textContent = c.code;
+        });
+        root.dispatchEvent(
           new CustomEvent('uz:payment-currency-change', {
             bubbles: true,
             detail: { currency: c.code }
@@ -630,8 +663,8 @@
       listEl.appendChild(btn);
     });
     clearPreview();
-    var amountRow = modal.querySelector('.modal__step[data-step="amount"] .amount-input');
-    openDialog('Currency', amountRow || modal.querySelector('.amount-input__currency'), {
+    var amountRow = root.querySelector('.amount-input');
+    openDialog('Currency', amountRow || root.querySelector('.amount-input__currency'), {
       sheetType: 'currency'
     });
   }
@@ -693,8 +726,18 @@
     modal.querySelectorAll('select.form-field__select').forEach(bindSelectNativeBlock);
   }
 
-  function bindAmountCurrencyPicker(modal) {
-    var cur = modal.querySelector('.modal__step[data-step="amount"] .amount-input__currency');
+  function closeSheetIfOpen() {
+    if (dialog && dialog.open) closeSheet();
+  }
+
+  function onPaymentOverlayClassChange(modal) {
+    if (modal.classList.contains('modal-overlay--active')) return;
+    closeSheetIfOpen();
+  }
+
+  function bindAmountCurrencyPicker(root) {
+    if (!root) return;
+    var cur = root.querySelector('.amount-input__currency');
     if (!cur || !customMenusEnabled() || cur.dataset.uzCurrencySheet) return;
     cur.dataset.uzCurrencySheet = '1';
     cur.setAttribute('role', 'button');
@@ -705,58 +748,56 @@
       var k = e.key;
       if (k === 'Enter' || k === ' ' || k === 'ArrowDown') {
         e.preventDefault();
-        openCurrencySheet(modal);
+        openCurrencySheet(root);
       }
     });
   }
 
-  function onModalClick(e) {
+  function onOverlayClick(e) {
     if (!customMenusEnabled()) return;
-    var modal = getModal();
-    if (!modal) return;
+    var root = e.currentTarget;
 
-    var currency = e.target.closest && e.target.closest('.modal__step[data-step="amount"] .amount-input__currency');
-    if (currency && modal.contains(currency)) {
+    var currency = e.target.closest && e.target.closest('.amount-input__currency');
+    if (currency && root.contains(currency)) {
       e.preventDefault();
       e.stopPropagation();
-      openCurrencySheet(modal);
+      openCurrencySheet(root);
       return;
     }
 
     var card = e.target.closest && e.target.closest('.debit-account');
-    if (!card || !modal.contains(card)) return;
+    if (!card || !root.contains(card)) return;
+    if (root.id === 'uz-iat-overlay') return;
     e.preventDefault();
     e.stopPropagation();
     openDebitSheet(card);
   }
 
-  function closeSheetIfOpen() {
-    if (dialog && dialog.open) closeSheet();
-  }
-
-  function onPaymentOverlayClassChange(modal) {
-    if (modal.classList.contains('modal-overlay--active')) return;
-    closeSheetIfOpen();
-  }
-
-  function init() {
-    var modal = getModal();
-    if (!modal) return;
-
-    refreshSelectTriggers(modal);
-    bindAllSelectNativeBlocks(modal);
-    bindAmountCurrencyPicker(modal);
-    modal.addEventListener('click', onModalClick);
+  function initOverlay(root) {
+    if (!root) return;
+    refreshSelectTriggers(root);
+    bindAllSelectNativeBlocks(root);
+    bindAmountCurrencyPicker(root);
+    root.addEventListener('click', onOverlayClick);
 
     if (typeof MutationObserver !== 'undefined') {
       var mo = new MutationObserver(function () {
-        onPaymentOverlayClassChange(modal);
+        onPaymentOverlayClassChange(root);
       });
-      mo.observe(modal, { attributes: true, attributeFilter: ['class'] });
+      mo.observe(root, { attributes: true, attributeFilter: ['class'] });
     }
   }
 
+  function init() {
+    initOverlay(getPaymentModal());
+    initOverlay(getIatOverlay());
+  }
+
   bindMoreFunctionsSheet();
+
+  window.UZBankFormSheet = {
+    openAccountPickerSheet: openAccountPickerSheet
+  };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

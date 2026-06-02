@@ -1,5 +1,5 @@
 export default {
-  title: 'Components/Cards & Lists',
+  title: 'Components/Card',
 };
 
 // ─── Configurable Product Item (uses Controls panel) ─────────────────────────
@@ -194,6 +194,27 @@ export const CardOtherProducts = {
 };
 
 // ─── List Item ────────────────────────────────────────────────────────────────
+
+export const ListItemGroupAccount = {
+  name: 'List Item — group account',
+  render: () => `
+    <div style="padding:1rem;max-width:28rem;">
+      <article class="list-item list-item--group-account list-item--static" aria-label="Savings account">
+        <div class="list-item__media">
+          <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-anchor"/></svg>
+        </div>
+        <div class="list-item__body type-stack-tight">
+          <span class="list-item__title type-sm type-trim">Savings account</span>
+          <span class="list-item__subtitle type-xs type-trim">CH35 0900 0000 2470 2920 2</span>
+        </div>
+        <div class="list-item__end">
+          <span class="list-item__currency type-xs">CHF</span>
+          <span class="list-item__value type-sm type-bold">25'000.00</span>
+        </div>
+      </article>
+    </div>
+  `,
+};
 
 export const ListItemWithAmount = {
   name: 'List Item — with amount (credit card)',

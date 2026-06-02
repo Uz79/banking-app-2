@@ -1,5 +1,5 @@
 export default {
-  title: 'Components/Navigation',
+  title: 'Components/Menu',
 };
 
 // ─── Sidebar ──────────────────────────────────────────────────────────────────

@@ -560,7 +560,11 @@
         window.location.href = prefix + page;
       }
       if (action === 'internal-account-transfer') {
-        go('payments.html');
+        if (typeof window.__UZ_IAT_OPEN === 'function') {
+          window.__UZ_IAT_OPEN();
+        } else {
+          go('payments.html');
+        }
         return;
       }
       if (action === 'change-category') {

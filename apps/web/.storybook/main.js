@@ -6,7 +6,10 @@ const config = {
     name: '@storybook/html-vite',
     options: {},
   },
-  staticDirs: ['../assets'],
+  staticDirs: [
+    '../assets',
+    { from: '../../../designs', to: '/designs' },
+  ],
 };
 
 export default config;

@@ -1,0 +1,42 @@
+{
+  "name": "internal-account-transfer",
+  "category": "flow",
+  "description": "Internal account transfer payment flow — 4 mobile screens covering amount & recipient selection, time schedule, summary, and confirmation dialog.",
+  "interactionStates": [
+    "default"
+  ],
+  "assets": {
+    "variants": {
+      "iat-amount-recipient": {
+        "mobile-default": "variants/iat-amount-recipient/mobile-default/default.svg"
+      },
+      "iat-time-schedule": {
+        "mobile-default": "variants/iat-time-schedule/mobile-default/default.svg"
+      },
+      "iat-summary": {
+        "mobile-default": "variants/iat-summary/mobile-default/default.svg"
+      },
+      "iat-confirmation-dialog": {
+        "mobile-default": "variants/iat-confirmation-dialog/mobile-default/default.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": [
+    "Figma page: https://www.figma.com/design/IKZcKBuZfweNRvRI0Ji6X3/Des-Sys-Test?node-id=697-93014",
+    "Flow diagram: designs/flows/internal-account-transfer-flow.png",
+    "Exports normalised to variants/<variant>/mobile-default/default.svg + default.png.",
+    "Reuses the debit-account component (border: 1px solid var(--color-fg)) for from/to account cards.",
+    "Segmented control (Single / Recurring execution) and toggle (Immediately) appear on the time-schedule screen."
+  ]
+}

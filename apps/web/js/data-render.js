@@ -46,10 +46,20 @@
     var firstSlide = document.querySelector('.carousel__slides .carousel__slide:first-child .list-item__value');
     if (firstSlide) firstSlide.textContent = formatted;
 
-    // Payment modal: every .debit-account__amount across the inlined modal__step blocks
-    document.querySelectorAll('.debit-account__amount').forEach(function (el) {
-      el.textContent = 'CHF ' + formatted;
-    });
+    // Payment modal: debit-account rows (not IAT — those are painted by iat-overlay.js)
+    var paymentRoot = document.querySelector('.modal-overlay:not(#uz-iat-overlay) .modal--payment-flow');
+    if (paymentRoot) {
+      paymentRoot.querySelectorAll('.debit-account__amount').forEach(function (el) {
+        var cur = el.querySelector('.debit-account__amount-currency');
+        var val = el.querySelector('.debit-account__amount-value');
+        if (cur && val) {
+          cur.textContent = 'CHF';
+          val.textContent = formatted;
+          return;
+        }
+        el.textContent = 'CHF ' + formatted;
+      });
+    }
   }
 
   /* ── Account-sum headers ─────────────────────────────────────────
@@ -75,42 +85,41 @@
 
   /* ── Bookings list (Today group on account-details) ─────────────── */
 
-  function findGroupByDay(day) {
-    return document.querySelector('.booking-group[data-day="' + day + '"]');
-  }
-
   function buildBookingRow(b) {
     var row = document.createElement('div');
     row.className = 'booking-row';
     row.setAttribute('data-source', 'state');
     row.setAttribute('data-booking-id', b.id);
+    var iconId = b.icon || 'i-corner-up-right';
+    var isCredit = b.direction === 'in';
+    var sign = isCredit ? '+' : '-';
     row.innerHTML =
-      '<svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-corner-up-right"/></svg>' +
+      '<svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#' + escapeHtml(iconId) + '"/></svg>' +
       '<span class="booking-row__name">' + escapeHtml(b.recipientName) + '</span>' +
       '<span class="booking-row__amount">' +
         '<span class="booking-row__currency">' + escapeHtml(b.currency) + '</span>' +
-        '<span class="booking-row__value">-' + fmt(b.amount) + '</span>' +
+        '<span class="booking-row__value">' + sign + fmt(b.amount) + '</span>' +
       '</span>';
     return row;
   }
 
-  function renderBookings(state) {
-    var group = findGroupByDay('today');
+  function renderBookingsForAccount(state, accountKey) {
+    var panel = document.querySelector('[data-account-bookings="' + accountKey + '"]');
+    if (!panel) return;
+    var group = panel.querySelector('.booking-group[data-day="today"]');
     if (!group) return;
 
-    // Remove only previously-injected rows; never touch static mock rows
     group.querySelectorAll('[data-source="state"]').forEach(function (n) { n.remove(); });
 
-    if (!state.bookings || state.bookings.length === 0) return;
+    var accountBookings = (state.bookings || []).filter(function (b) {
+      return (b.accountKey || 'household') === accountKey;
+    });
+    if (accountBookings.length === 0) return;
 
     var header = group.querySelector('.booking-group__header');
-
-    // Newest first: state.bookings is chronological (oldest → newest). Iterate
-    // from the end (newest) and chain each insert after the previous so we
-    // don't keep reusing header.nextSibling (that would reverse order).
     var insertAfter = header || group.firstChild;
-    for (var i = state.bookings.length - 1; i >= 0; i--) {
-      var row = buildBookingRow(state.bookings[i]);
+    for (var i = accountBookings.length - 1; i >= 0; i--) {
+      var row = buildBookingRow(accountBookings[i]);
       if (insertAfter && insertAfter.parentNode) {
         insertAfter.parentNode.insertBefore(row, insertAfter.nextSibling);
         insertAfter = row;
@@ -119,6 +128,12 @@
         insertAfter = row;
       }
     }
+  }
+
+  function renderBookings(state) {
+    ['household', 'savings', 'deposit'].forEach(function (accountKey) {
+      renderBookingsForAccount(state, accountKey);
+    });
   }
 
   /* ── Day-end balance shown in each booking-group header ─────────── */

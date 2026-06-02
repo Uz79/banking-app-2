@@ -240,6 +240,99 @@
     return null;
   }
 
+  /* ── Dynamic IAT booking lookup ──────────────────────────────── */
+
+  function getStateBooking(id) {
+    if (!window.UZBankPayState || !id) return null;
+    var bookings = window.UZBankPayState.getState().bookings;
+    for (var i = 0; i < bookings.length; i++) {
+      if (bookings[i].id === id) return bookings[i];
+    }
+    return null;
+  }
+
+  function iatAccountSnapshot(key) {
+    var accounts = window.__UZ_IAT_ACCOUNTS__;
+    if (!accounts || !key || !accounts[key]) return null;
+    var acc = accounts[key];
+    return {
+      name: acc.name,
+      iban: acc.iban,
+      balance: (acc.currency || 'CHF') + ' ' + (acc.balance || ''),
+      icon: acc.icon || '#i-anchor'
+    };
+  }
+
+  function isIatBooking(booking) {
+    if (!booking) return false;
+    if (booking.kind === 'iat') return true;
+    return String(booking.id || '').indexOf('iat_') === 0;
+  }
+
+  function findIatAccountKeyByName(accounts, label) {
+    if (!accounts || !label) return null;
+    var needle = label.toLowerCase().trim();
+    var keys = Object.keys(accounts);
+    for (var i = 0; i < keys.length; i++) {
+      var key = keys[i];
+      if ((accounts[key].name || '').toLowerCase().trim() === needle) return key;
+    }
+    return null;
+  }
+
+  function inferIatKeys(booking) {
+    if (booking.fromKey && booking.toKey) {
+      return { fromKey: booking.fromKey, toKey: booking.toKey };
+    }
+
+    var accounts = window.__UZ_IAT_ACCOUNTS__;
+    if (!accounts || !isIatBooking(booking)) return null;
+
+    var recipient = booking.recipientName || '';
+    if (/^Transfer to /i.test(recipient)) {
+      var toKey = findIatAccountKeyByName(accounts, recipient.replace(/^Transfer to /i, '').trim());
+      var fromKey = booking.accountKey;
+      if (fromKey && toKey) return { fromKey: fromKey, toKey: toKey };
+    }
+    if (/^Transfer from /i.test(recipient)) {
+      var fromKeyIn = findIatAccountKeyByName(accounts, recipient.replace(/^Transfer from /i, '').trim());
+      var toKeyIn = booking.accountKey;
+      if (fromKeyIn && toKeyIn) return { fromKey: fromKeyIn, toKey: toKeyIn };
+    }
+    return null;
+  }
+
+  function buildDataFromStateBooking(booking, row) {
+    if (!booking) return null;
+
+    if (isIatBooking(booking)) {
+      var keys = inferIatKeys(booking);
+      if (!keys) return null;
+
+      var debit = iatAccountSnapshot(keys.fromKey);
+      var credit = iatAccountSnapshot(keys.toKey);
+      if (!debit || !credit) return null;
+
+      var fmt = window.UZBankPayState && window.UZBankPayState.formatMoney
+        ? window.UZBankPayState.formatMoney
+        : function (n) { return String(n); };
+      var sign = booking.direction === 'in' ? '+' : '-';
+
+      return {
+        type: 'internal',
+        title: 'Internal Account Transfer',
+        amount: sign + fmt(booking.amount),
+        currency: booking.currency || 'CHF',
+        debit: debit,
+        credit: credit,
+        status: 'executed',
+        message: null
+      };
+    }
+
+    return null;
+  }
+
   /* ── Open / close ─────────────────────────────────────────────── */
 
   function openOverlay(data) {
@@ -437,6 +530,10 @@
     // the static BOOKING_MAP, even if the recipient name happens to match a key
     // (e.g. a dynamically-committed "Apple" payment after editing the mock row).
     var data = currentBookingId ? null : getBookingMap()[name];
+
+    if (!data && currentBookingId) {
+      data = buildDataFromStateBooking(getStateBooking(currentBookingId), row);
+    }
 
     if (!data) {
       // Fallback: dynamic booking row (added by data-render.js after a payment)

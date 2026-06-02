@@ -228,13 +228,22 @@
       overviewAccountsTotal:        state.household + OVERVIEW_OTHER_TOTAL,
       accountDetailsAccountsTotal:  state.household + ACCOUNT_DETAILS_OTHER_TOTAL,
       bookings: state.bookings.map(function (b) {
-        return {
+        var row = {
           id: b.id,
           recipientName: b.recipientName,
           currency: b.currency,
           amount: b.amount,
-          dateISO: b.dateISO
+          dateISO: b.dateISO,
+          accountKey: b.accountKey || 'household',
+          icon: b.icon || 'i-corner-up-right',
+          direction: b.direction || 'out'
         };
+        if (b.kind) row.kind = b.kind;
+        if (b.fromKey) row.fromKey = b.fromKey;
+        if (b.toKey) row.toKey = b.toKey;
+        if (b.fromName) row.fromName = b.fromName;
+        if (b.toName) row.toName = b.toName;
+        return row;
       })
     };
   }
@@ -268,7 +277,10 @@
       recipientName: payment.recipient && payment.recipient.name ? payment.recipient.name : 'Unknown',
       currency: payment.currency || 'CHF',
       amount: payment.amount,
-      dateISO: payment.dateISO || new Date().toISOString()
+      dateISO: payment.dateISO || new Date().toISOString(),
+      accountKey: 'household',
+      icon: 'i-corner-up-right',
+      direction: 'out'
     };
 
     state.bookings.push(booking);
@@ -279,6 +291,55 @@
     // The Household amount shown in the account list represents the
     // "registered" end-of-yesterday balance and stays fixed for the
     // session. Today's running balance is derived in getState() instead.
+    dispatchChange();
+  }
+
+  /**
+   * Record an internal account transfer in the bookings ledger (debit + credit rows).
+   */
+  function commitInternalTransfer(transfer) {
+    if (!transfer || typeof transfer.amount !== 'number' || transfer.amount <= 0) return;
+    if (!transfer.fromKey || !transfer.toKey || transfer.fromKey === transfer.toKey) return;
+
+    var ts = transfer.dateISO || new Date().toISOString();
+    var suffix = Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+
+    state.bookings.push({
+      id: 'iat_out_' + suffix,
+      recipientName: 'Transfer to ' + (transfer.toName || 'Account'),
+      currency: transfer.currency || 'CHF',
+      amount: transfer.amount,
+      dateISO: ts,
+      accountKey: transfer.fromKey,
+      icon: 'i-repeat',
+      direction: 'out',
+      kind: 'iat',
+      fromKey: transfer.fromKey,
+      toKey: transfer.toKey,
+      fromName: transfer.fromName,
+      toName: transfer.toName
+    });
+
+    state.bookings.push({
+      id: 'iat_in_' + suffix,
+      recipientName: 'Transfer from ' + (transfer.fromName || 'Account'),
+      currency: transfer.currency || 'CHF',
+      amount: transfer.amount,
+      dateISO: ts,
+      accountKey: transfer.toKey,
+      icon: 'i-download',
+      direction: 'in',
+      kind: 'iat',
+      fromKey: transfer.fromKey,
+      toKey: transfer.toKey,
+      fromName: transfer.fromName,
+      toName: transfer.toName
+    });
+
+    var cap = MAX_BOOKINGS * 4;
+    if (state.bookings.length > cap) {
+      state.bookings.splice(0, state.bookings.length - cap);
+    }
     dispatchChange();
   }
 
@@ -324,6 +385,7 @@
     pickRandomRecipient: pickRandomRecipient,
     getState:            getState,
     commitPayment:       commitPayment,
+    commitInternalTransfer: commitInternalTransfer,
     updatePayment:       updatePayment,
     reset:               reset,
     formatMoney:         formatMoney

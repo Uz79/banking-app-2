@@ -46,6 +46,41 @@
     } catch (_e) {}
   }
 
+  /** Sync summary list-item from the active carousel slide (group-account pattern). */
+  function paintAccountInformationSummary() {
+    document.querySelectorAll('[data-ai-summary-card]').forEach(function (card) {
+      var key = window.__UZ_ACTIVE_ACCOUNT__ || 'household';
+      var slide =
+        document.querySelector('.carousel__slide[data-account-key="' + key + '"]') ||
+        document.querySelector('.carousel__slide');
+      if (!slide) return;
+
+      var srcTitle = slide.querySelector('.list-item__title');
+      var srcIban = slide.querySelector('.list-item__subtitle');
+      var srcCurrency = slide.querySelector('.list-item__currency');
+      var srcBalance = slide.querySelector('.list-item__value');
+      var srcIcon = slide.querySelector('.list-item__icon use');
+
+      var dstTitle = card.querySelector('[data-ai-summary-title]');
+      var dstIban = card.querySelector('[data-ai-summary-iban]');
+      var dstCurrency = card.querySelector('[data-ai-summary-currency]');
+      var dstBalance = card.querySelector('[data-ai-summary-balance]');
+      var dstIcon = card.querySelector('[data-ai-summary-icon]');
+
+      if (dstTitle && srcTitle) dstTitle.textContent = srcTitle.textContent;
+      if (dstIban && srcIban) dstIban.textContent = srcIban.textContent;
+      if (dstCurrency && srcCurrency) dstCurrency.textContent = srcCurrency.textContent;
+      if (dstBalance && srcBalance) dstBalance.textContent = srcBalance.textContent;
+      if (dstIcon && srcIcon) {
+        var href = srcIcon.getAttribute('href');
+        if (href) dstIcon.setAttribute('href', href);
+      }
+      if (srcTitle && srcTitle.textContent) {
+        card.setAttribute('aria-label', srcTitle.textContent + ' account');
+      }
+    });
+  }
+
   /** Same choreography as payment-overlay.openModalVisual(), scoped to the AI overlay. */
   function openAccountInformationVisual() {
     var ov = getOverlay();
@@ -64,6 +99,7 @@
     ov.classList.add('modal-overlay--active');
     ov.removeAttribute('aria-hidden');
     syncDocumentScrollLock();
+    paintAccountInformationSummary();
 
     if (!shell) return;
 
@@ -266,6 +302,7 @@
     });
 
     setTab('information');
+    paintAccountInformationSummary();
   }
 
   document.addEventListener('DOMContentLoaded', function () {

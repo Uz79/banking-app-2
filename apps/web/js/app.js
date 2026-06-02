@@ -399,7 +399,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var action = d.action;
     if (!action) return;
     if (action === 'internal-account-transfer') {
-      navigateTo('payments');
+      if (typeof window.__UZ_IAT_OPEN === 'function') {
+        window.__UZ_IAT_OPEN();
+      }
       return;
     }
     if (action === 'change-category') {
