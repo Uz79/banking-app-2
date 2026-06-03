@@ -4,7 +4,7 @@
 
 export default {
   id: "pages-payment-flow-time-schedule-design-export",
-  title: "Pages/Payment Flow/Time Schedule",
+  title: "Reference/Pages/Payment Flow/Time Schedule",
   tags: ['!autodocs'],
   parameters: {
     layout: "fullscreen",

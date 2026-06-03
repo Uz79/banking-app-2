@@ -1,5 +1,5 @@
 export default {
-  title: 'Components/Tab control',
+  title: 'Live/Components/Tab control',
 };
 
 /** Matches `.cc-tab-control` / `.cc-tab` / `.cc-tab-body` from `styles.css` (contrast checker). */

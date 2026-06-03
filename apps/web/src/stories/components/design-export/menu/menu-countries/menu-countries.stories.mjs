@@ -4,7 +4,7 @@
 
 export default {
   id: "components-menu-menu-countries-design-export",
-  title: "Components/Menu/Menu Countries",
+  title: "Reference/Components/Menu/Menu Countries",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

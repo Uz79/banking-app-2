@@ -4,7 +4,7 @@
 
 export default {
   id: "pages-account-information-design-export",
-  title: "Pages/Account Information",
+  title: "Reference/Pages/Account Information",
   tags: ['!autodocs'],
   parameters: {
     layout: "fullscreen",

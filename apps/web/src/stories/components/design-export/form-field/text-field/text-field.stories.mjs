@@ -4,7 +4,7 @@
 
 export default {
   id: "components-form-field-text-field-design-export",
-  title: "Components/Form Field/Text Field",
+  title: "Reference/Components/Form Field/Text Field",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

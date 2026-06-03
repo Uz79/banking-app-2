@@ -4,7 +4,7 @@
 
 export default {
   id: "components-button-standard-button-design-export",
-  title: "Components/Button/Standard Button",
+  title: "Reference/Components/Button/Standard Button",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

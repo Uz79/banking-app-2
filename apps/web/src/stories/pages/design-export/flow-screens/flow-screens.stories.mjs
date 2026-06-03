@@ -4,7 +4,7 @@
 
 export default {
   id: "pages-flow-screens-design-export",
-  title: "Pages/Flows/Flow Screens",
+  title: "Reference/Pages/Flows/Flow Screens",
   tags: ['!autodocs'],
   parameters: {
     layout: "fullscreen",

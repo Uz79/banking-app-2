@@ -4,7 +4,7 @@
 
 export default {
   id: "components-selection-control-toggle-switch-design-export",
-  title: "Components/Selection Control/Toggle Switch",
+  title: "Reference/Components/Selection Control/Toggle Switch",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

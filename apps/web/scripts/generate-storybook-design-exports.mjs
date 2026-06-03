@@ -81,21 +81,21 @@ function titleCase(s) {
 
 function storyTitleFromRelDir(relDir) {
   const segments = relDir.split('/').filter(Boolean);
-  return ['Components', ...segments.map(titleCase)].join('/');
+  return ['Reference', 'Components', ...segments.map(titleCase)].join('/');
 }
 
 /** Storybook title path mirroring designs/screens/<slug> with logical grouping. */
 function storyTitleFromScreenSlug(slug) {
-  if (slug === 'flow-screens') return 'Pages/Flows/Flow Screens';
-  if (slug === 'internal-account-transfer') return 'Pages/Flows/Internal Account Transfer';
+  if (slug === 'flow-screens') return 'Reference/Pages/Flows/Flow Screens';
+  if (slug === 'internal-account-transfer') return 'Reference/Pages/Flows/Internal Account Transfer';
 
   for (const [prefix, group] of SCREEN_PREFIX_GROUPS) {
     if (slug.startsWith(prefix)) {
-      return `Pages/${group}/${titleCase(slug.slice(prefix.length))}`;
+      return `Reference/Pages/${group}/${titleCase(slug.slice(prefix.length))}`;
     }
   }
 
-  return `Pages/${titleCase(slug)}`;
+  return `Reference/Pages/${titleCase(slug)}`;
 }
 
 function collectComponentJsonFiles() {

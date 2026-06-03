@@ -30,6 +30,62 @@ button, input, select, textarea {
   font-size: inherit;
 }
 
+/* ── Interactive surface (Figma state layer — Tier A) ─────────────────────
+   Container: stable --uz-surface-bg. Hover/pressed: ::before tint at 10% / 20%
+   (--color-surface-state-*), composited on top — not a flat background swap. */
+
+.uz-interactive-surface,
+.product-item,
+.list-item:not(.list-item--static),
+.booking-row {
+  --uz-surface-bg: transparent;
+  position: relative;
+  isolation: isolate;
+  background-color: var(--uz-surface-bg);
+}
+
+.list-item--group-account:not(.list-item--static) {
+  --uz-surface-bg: var(--color-bg);
+}
+
+.uz-interactive-surface::before,
+.product-item::before,
+.list-item:not(.list-item--static)::before,
+.booking-row::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--color-surface-state-hover);
+  opacity: 0;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.uz-interactive-surface:hover::before,
+.product-item:hover::before,
+.list-item:not(.list-item--static):hover::before,
+.booking-row:hover::before {
+  opacity: 1;
+}
+
+.uz-interactive-surface:active::before,
+.product-item:active::before,
+.list-item:not(.list-item--static):active::before,
+.booking-row:active::before {
+  background-color: var(--color-surface-state-pressed);
+  opacity: 1;
+}
+
+.uz-interactive-surface > *,
+.product-item > *,
+.list-item:not(.list-item--static) > *,
+.booking-row > * {
+  position: relative;
+  z-index: 1;
+}
+
 .body {
   font-family: var(--font-family);
   color: var(--color-fg);
@@ -640,7 +696,6 @@ html:has(body.body--payment-open) {
   gap: var(--space-3);
   cursor: pointer;
   border-radius: var(--radius-small);
-  transition: background-color 0.15s ease;
 }
 
 /* ── Design system: chip (designs/components/chip) ───────────────────────── */
@@ -807,14 +862,6 @@ html:has(body.body--payment-open) {
   display: none;
 }
 
-.product-item:hover {
-  background-color: var(--color-surface-state-hover);
-}
-
-.product-item:active {
-  background-color: var(--color-surface-state-pressed);
-}
-
 .product-item__icon {
   width: 1.5rem;
   height: 1.5rem;
@@ -870,15 +917,6 @@ html:has(body.body--payment-open) {
   gap: var(--space-3);
   cursor: pointer;
   border-radius: var(--radius-small);
-  transition: background-color 0.15s ease;
-}
-
-.list-item:hover {
-  background-color: var(--color-surface-state-hover);
-}
-
-.list-item:active {
-  background-color: var(--color-surface-state-pressed);
 }
 
 .list-item__icon {
@@ -951,7 +989,6 @@ html:has(body.body--payment-open) {
   width: 100%;
   box-sizing: border-box;
   border-radius: var(--radius-regular);
-  background-color: var(--color-bg);
   border: 0.0625rem solid color-mix(in srgb, var(--color-btn-primary-bg) 20%, transparent);
 }
 
@@ -1017,6 +1054,11 @@ html:has(body.body--payment-open) {
 /* Non-interactive group-account (e.g. account-information summary). */
 .list-item--group-account.list-item--static {
   cursor: default;
+  background-color: var(--color-bg);
+}
+
+.list-item--group-account.list-item--static::before {
+  display: none;
 }
 
 .list-item--group-account.list-item--static:hover,
@@ -1303,15 +1345,6 @@ html:has(body.body--payment-open) {
   gap: var(--space-3);
   cursor: pointer;
   border-radius: var(--radius-small);
-  transition: background-color 0.15s ease;
-}
-
-.booking-row:hover {
-  background-color: var(--color-surface-state-hover);
-}
-
-.booking-row:active {
-  background-color: var(--color-surface-state-pressed);
 }
 
 .booking-row__icon {

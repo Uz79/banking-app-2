@@ -4,7 +4,7 @@
 
 export default {
   id: "components-card-color-theme-design-export",
-  title: "Components/Card/Color Theme",
+  title: "Reference/Components/Card/Color Theme",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

@@ -4,7 +4,7 @@
 
 export default {
   id: "components-selection-control-radio-button-design-export",
-  title: "Components/Selection Control/Radio Button",
+  title: "Reference/Components/Selection Control/Radio Button",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

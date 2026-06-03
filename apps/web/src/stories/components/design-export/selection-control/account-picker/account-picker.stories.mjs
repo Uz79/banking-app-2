@@ -4,7 +4,7 @@
 
 export default {
   id: "components-selection-control-account-picker-design-export",
-  title: "Components/Selection Control/Account Picker",
+  title: "Reference/Components/Selection Control/Account Picker",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

@@ -4,7 +4,7 @@
 
 export default {
   id: "components-form-field-select-field-design-export",
-  title: "Components/Form Field/Select Field",
+  title: "Reference/Components/Form Field/Select Field",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

@@ -4,7 +4,7 @@
 
 export default {
   id: "components-chip-design-export",
-  title: "Components/Chip",
+  title: "Reference/Components/Chip",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

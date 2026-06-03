@@ -4,7 +4,7 @@
 
 export default {
   id: "pages-profile-overview-design-export",
-  title: "Pages/Profile/Overview",
+  title: "Reference/Pages/Profile/Overview",
   tags: ['!autodocs'],
   parameters: {
     layout: "fullscreen",

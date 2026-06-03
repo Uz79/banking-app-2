@@ -4,7 +4,7 @@
 
 export default {
   id: "pages-dialog-confirmation-design-export",
-  title: "Pages/Dialog/Confirmation",
+  title: "Reference/Pages/Dialog/Confirmation",
   tags: ['!autodocs'],
   parameters: {
     layout: "fullscreen",

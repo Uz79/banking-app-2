@@ -4,7 +4,7 @@
 
 export default {
   id: "components-selection-control-checkbox-design-export",
-  title: "Components/Selection Control/Checkbox",
+  title: "Reference/Components/Selection Control/Checkbox",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

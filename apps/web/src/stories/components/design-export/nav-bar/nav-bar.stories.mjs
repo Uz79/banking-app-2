@@ -4,7 +4,7 @@
 
 export default {
   id: "components-nav-bar-design-export",
-  title: "Components/Nav Bar",
+  title: "Reference/Components/Nav Bar",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

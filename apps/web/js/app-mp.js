@@ -325,7 +325,15 @@
 
   global.UZBankApplyTheme = applyTheme;
 
-  document.addEventListener('DOMContentLoaded', function () {
+  function onDocumentReady(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn);
+    } else {
+      fn();
+    }
+  }
+
+  onDocumentReady(function () {
     function getTheme() {
       var t = document.documentElement.getAttribute('data-theme');
       return t === 'light' || t === 'dark' ? t : 'dark';
