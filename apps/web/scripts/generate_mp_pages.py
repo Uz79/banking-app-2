@@ -5,6 +5,7 @@ import re
 
 ROOT = Path(__file__).resolve().parents[1]
 BOOT_SCRIPT = (Path(__file__).resolve().parent / "boot-inline-theme.html").read_text(encoding="utf-8")
+MAZE_SNIPPET = (Path(__file__).resolve().parent / "maze-universal-snippet.html").read_text(encoding="utf-8")
 INDEX = ROOT / "spa-source.html"
 if not INDEX.exists():
     INDEX = ROOT / "index.html"
@@ -166,7 +167,7 @@ def shell(
     return f"""<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
+{MAZE_SNIPPET}  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark light">
   <title>{title}</title>

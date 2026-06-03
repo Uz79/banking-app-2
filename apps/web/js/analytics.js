@@ -82,4 +82,7 @@
   } else {
     emitScreen();
   }
+
+  /* Hash-only steps (#pay/…, #iat/…) do not reload the page; emit virtual screens for tools that listen. */
+  window.addEventListener('hashchange', emitScreen);
 })();
