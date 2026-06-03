@@ -1,8 +1,8 @@
 /**
  * UZ Bank WebApp 05 — analytics / instrumentation shim for UX tools (e.g. Maze,
- * Hotjar, GA4). Uses page paths plus optional hash routes (#pay/…) for modal flows.
+ * Hotjar, GA4). Uses page paths plus optional hash routes (#pay/…, #payment-details/…) for modal flows.
  *
- * Screen IDs combine body data-screen with optional hash routes (e.g. overview#pay/recipient).
+ * Screen IDs combine body data-screen with optional hash routes (e.g. account-details/payment-details/domestic/lena-fischer).
  *
  * Integrators can listen for CustomEvents on document:
  *   uzbank:screen   detail: { screenId, path, title }

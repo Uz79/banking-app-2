@@ -13,6 +13,11 @@
  *   navigating to #pay/<step>. payment-overlay.js reads that context on
  *   open to pre-populate live.amount / live.recipient instead of defaults.
  *
+ * URL sync (Maze / analytics):
+ *   Opens push #payment-details/<type>/<booking-id>, e.g.
+ *   #payment-details/domestic/lena-fischer or #payment-details/domestic/apple;
+ *   closing clears the hash. Back/forward syncs overlay visibility via hashchange.
+ *
  * Public surface: none — fully self-contained IIFE.
  */
 (function () {
@@ -205,8 +210,9 @@
   var isClosing = false;
   var pendingEditStep = null;
   var currentPaymentData = null; /* snapshot of the last openOverlay() call */
-  var currentBookingId   = null; /* data-booking-id of the tapped row, or null for static mocks */
-  var currentRow         = null; /* the actual .booking-row DOM node that was tapped */
+  var currentBookingId       = null; /* data-booking-id of the tapped row, or null for static mocks */
+  var currentBookingRouteId  = null; /* slug/id used in #payment-details/<type>/<id> */
+  var currentRow             = null; /* the actual .booking-row DOM node that was tapped */
 
   /* ── Balance string helpers ──────────────────────────────────── */
 
@@ -333,9 +339,143 @@
     return null;
   }
 
+  /* ── Booking route id (Maze / analytics) ─────────────────────── */
+
+  function slugifyRouteId(value) {
+    return String(value || '')
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9_-]+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  /**
+   * Stable, human-readable id for the hash segment after type.
+   * Prefers recipient catalog ids (lena-fischer), then static mock keys (apple),
+   * then dynamic booking ids (bk_… / iat_…).
+   */
+  function resolveBookingRouteId(row, bookingId) {
+    var nameEl = row && row.querySelector('.booking-row__name');
+    var displayName = nameEl ? nameEl.textContent.trim() : '';
+
+    if (bookingId) {
+      var recipient = findRecipientByName(displayName);
+      if (recipient && recipient.id) return recipient.id;
+      return bookingId;
+    }
+
+    if (displayName) {
+      var mapKey = displayName.toLowerCase();
+      if (getBookingMap()[mapKey]) return slugifyRouteId(mapKey);
+      return slugifyRouteId(displayName);
+    }
+
+    return 'unknown';
+  }
+
+  /* ── URL sync (#payment-details/<type>/<booking-id>) ─────────── */
+
+  function parsePaymentDetailsRoute() {
+    var h = location.hash || '';
+    var full = h.match(/^#payment-details\/(domestic|internal)\/([^/?#]+)$/);
+    if (full) {
+      return { type: full[1], bookingId: decodeURIComponent(full[2]) };
+    }
+    var legacy = h.match(/^#payment-details\/(domestic|internal)$/);
+    if (legacy) return { type: legacy[1], bookingId: null };
+    return null;
+  }
+
+  function paymentDetailsHash(type, bookingId) {
+    var segment = type === 'internal' ? 'internal' : 'domestic';
+    return '#payment-details/' + segment + '/' + encodeURIComponent(bookingId);
+  }
+
+  function pushPaymentDetailsUrl(type, bookingId) {
+    if (!bookingId) return;
+    var url = location.pathname + location.search + paymentDetailsHash(type, bookingId);
+    try {
+      history.pushState(
+        { uzPaymentDetails: true, type: type, bookingId: bookingId },
+        '',
+        url
+      );
+    } catch (_e) {
+      location.hash = paymentDetailsHash(type, bookingId).slice(1);
+    }
+    notifyScreen();
+  }
+
+  function clearPaymentDetailsRouteIfStale() {
+    try {
+      if (!parsePaymentDetailsRoute()) return;
+      var path = window.location.pathname + window.location.search;
+      history.replaceState(history.state || null, '', path);
+      notifyScreen();
+    } catch (_e) {}
+  }
+
+  function notifyScreen() {
+    if (window.UZBankAnalytics && typeof window.UZBankAnalytics.screen === 'function') {
+      window.UZBankAnalytics.screen();
+    }
+  }
+
+  function isOtherFlowOpen() {
+    var overlays = document.querySelectorAll('.modal-overlay');
+    for (var i = 0; i < overlays.length; i++) {
+      var el = overlays[i];
+      if (el === overlay) continue;
+      if (el.classList.contains('modal-overlay--active')) return true;
+    }
+    return false;
+  }
+
+  /** Keep overlay DOM in sync with `location.hash` (and coexist with `#pay/*`). */
+  function applyPaymentDetailsRoute() {
+    if (!overlay) return;
+
+    var h = location.hash || '';
+
+    if (/^#pay\//.test(h) || /^#iat\//.test(h)) {
+      if (overlay.classList.contains('modal-overlay--active') && !isClosing) {
+        closeOverlay(true);
+      }
+      return;
+    }
+
+    if (/^#account-information$/.test(h) || /^#share-information$/.test(h)) {
+      if (overlay.classList.contains('modal-overlay--active') && !isClosing) {
+        closeOverlay(true);
+      }
+      return;
+    }
+
+    var route = parsePaymentDetailsRoute();
+    if (route) {
+      if (isOtherFlowOpen()) return;
+      if (currentPaymentData && currentBookingRouteId) {
+        var wantType = route.type === 'internal' ? 'internal' : 'domestic';
+        var dataType = currentPaymentData.type === 'internal' ? 'internal' : 'domestic';
+        var idMatches = !route.bookingId || route.bookingId === currentBookingRouteId;
+        if (wantType === dataType && idMatches && !overlay.classList.contains('modal-overlay--active')) {
+          openOverlay(currentPaymentData, { skipRoute: true });
+        }
+      }
+      return;
+    }
+
+    if (overlay.classList.contains('modal-overlay--active') && !isClosing && !pendingEditStep) {
+      closeOverlay(true);
+    }
+  }
+
   /* ── Open / close ─────────────────────────────────────────────── */
 
-  function openOverlay(data) {
+  function openOverlay(data, opts) {
+    opts = opts || {};
     isClosing = false;
     currentPaymentData = data; // remember for edit-context export
 
@@ -404,11 +544,22 @@
         shell.classList.remove('modal-shell--offscreen');
       });
     });
+
+    if (!opts.skipRoute && currentBookingRouteId) {
+      var pdType = data.type === 'internal' ? 'internal' : 'domestic';
+      var expected = paymentDetailsHash(pdType, currentBookingRouteId);
+      if ((location.hash || '') !== expected) {
+        pushPaymentDetailsUrl(pdType, currentBookingRouteId);
+      } else {
+        notifyScreen();
+      }
+    }
   }
 
-  function closeOverlay() {
+  function closeOverlay(fromRoute) {
+    fromRoute = fromRoute === true;
     if (isClosing || !overlay.classList.contains('modal-overlay--active')) {
-      finishClose(); return;
+      finishClose(fromRoute); return;
     }
     isClosing = true;
 
@@ -423,7 +574,7 @@
         if (resolved) return;
         resolved = true;
         shell.removeEventListener('transitionend', onTransitionEnd);
-        finishClose();
+        finishClose(fromRoute);
       }
       shell.addEventListener('transitionend', onTransitionEnd);
       // Fallback in case transitionend doesn't fire
@@ -431,15 +582,16 @@
         if (resolved) return;
         resolved = true;
         shell.removeEventListener('transitionend', onTransitionEnd);
-        finishClose();
+        finishClose(fromRoute);
       }, 300);
     } else {
       isClosing = false;
-      finishClose();
+      finishClose(fromRoute);
     }
   }
 
-  function finishClose() {
+  function finishClose(fromRoute) {
+    fromRoute = fromRoute === true;
     isClosing = false;
     overlay.classList.remove('modal-overlay--active');
     overlay.setAttribute('aria-hidden', 'true');
@@ -481,8 +633,13 @@
       window.setTimeout(function () {
         location.hash = '#pay/' + step;
       }, 0);
+    } else if (!fromRoute) {
+      clearPaymentDetailsRouteIfStale();
     }
   }
+
+  window.addEventListener('hashchange', applyPaymentDetailsRoute);
+  window.addEventListener('popstate', applyPaymentDetailsRoute);
 
   /* ── Expander toggle ─────────────────────────────────────────── */
 
@@ -525,6 +682,7 @@
     // (or hide this static row after a new booking is committed)
     currentRow       = row;
     currentBookingId = row.getAttribute('data-booking-id') || null;
+    currentBookingRouteId = resolveBookingRouteId(row, currentBookingId);
 
     // Dynamic rows (data-booking-id present) always use live DOM values — never
     // the static BOOKING_MAP, even if the recipient name happens to match a key
