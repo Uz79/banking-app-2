@@ -1,0 +1,86 @@
+{
+  "name": "text-field",
+  "category": "form-field",
+  "description": "Text input field for entering short textual values.",
+  "interactionStates": [
+    "default",
+    "hover",
+    "focus"
+  ],
+  "assets": {
+    "variants": {
+      "default-default": {
+        "focus": "variants/default-default/focus.svg",
+        "default": "variants/default-default/default.svg",
+        "hover": "variants/default-default/hover.svg"
+      },
+      "readonly-multiple-text-rows": {
+        "default": "variants/readonly-multiple-text-rows/default.svg"
+      },
+      "readonly-informative": {
+        "default": "variants/readonly-informative/default.svg"
+      },
+      "default-error": {
+        "default": "variants/default-error/default.svg"
+      },
+      "default-informative": {
+        "default": "variants/default-informative/default.svg"
+      },
+      "readonly-default": {
+        "default": "variants/readonly-default/default.svg"
+      }
+    },
+    "overview": "overview.png"
+  },
+  "tokens": {
+    "form-field": {
+      "radius": "alias.radius.regular",
+      "padding-x": "alias.space.4",
+      "padding-y": "alias.space.2"
+    },
+    "modes": {
+      "light": {
+        "background": "mapped/light.background.background",
+        "foreground": "mapped/light.foreground.foreground",
+        "border-default": "mapped/light.border.border-secondary",
+        "border-hover": "mapped/light.border.border",
+        "border-focus": "mapped/light.border.border",
+        "border-error": "alias.color.secondary.900",
+        "border-informative": "mapped/light.border.border-secondary"
+      },
+      "dark": {
+        "background": "mapped/dark.background.background",
+        "foreground": "mapped/dark.foreground.foreground",
+        "border-default": "mapped/dark.border.border-secondary",
+        "border-hover": "mapped/dark.border.border",
+        "border-focus": "mapped/dark.border.border",
+        "border-error": "alias.color.secondary.400",
+        "border-informative": "mapped/dark.border.border-secondary"
+      }
+    },
+    "typography": {
+      "label-desktop": "responsive/desktop.typography.paragraph.sm",
+      "input-desktop": "responsive/desktop.typography.paragraph.md",
+      "label-mobile": "responsive/mobile.typography.paragraph.sm",
+      "input-mobile": "responsive/mobile.typography.paragraph.md"
+    }
+  },
+  "accessibility": {
+    "labelRequired": true,
+    "supportsErrorMessage": true,
+    "supportsHelperText": true,
+    "keyboardFocusable": true
+  },
+  "usage": {
+    "do": [
+      "Use for short text input such as names or references."
+    ],
+    "dont": [
+      "Do not use for long multi-line text input."
+    ]
+  },
+  "notes": [
+    "Figma exports `Pressed` are stored as `focus.svg` for consistency.",
+    "Variant slugs follow `Type-Case` in kebab-case (e.g. `Type=ReadOnly`, `Case=Informative` \u2192 `readonly-informative`)."
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "name": "expander",
+  "category": "control",
+  "description": "Expandable row trigger with leading icon container and chevron.",
+  "interactionStates": [
+    "default",
+    "hover",
+    "pressed"
+  ],
+  "assets": {
+    "variants": {
+      "regular-expanded": {
+        "default": "variants/regular-expanded/default.svg"
+      },
+      "regular-collapsed": {
+        "default": "variants/regular-collapsed/default.svg",
+        "hover": "variants/regular-collapsed/hover.svg",
+        "pressed": "variants/regular-collapsed/pressed.svg"
+      },
+      "regular": {
+        "default": "variants/regular/default.svg",
+        "hover": "variants/regular/hover.svg",
+        "pressed": "variants/regular/pressed.svg"
+      }
+    }
+  },
+  "tokens": {
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": [
+    "Leading icon container uses primary tint: 5% default \u2192 10% hover \u2192 20% pressed.",
+    "Web implementation should live in apps/web/css/styles.css as `.expander` utilities."
+  ]
+}

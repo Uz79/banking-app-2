@@ -1,0 +1,28 @@
+{
+  "name": "payment-flow-type-ahead-search-inactive",
+  "category": "payment",
+  "description": "Payment flow step: type-ahead search inactive / empty.",
+  "interactionStates": [
+    "default"
+  ],
+  "assets": {
+    "overview": "overview.png",
+    "variants": {
+      "mobile-default": {
+        "default": "variants/mobile-default/default.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": []
+}
