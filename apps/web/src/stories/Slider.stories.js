@@ -1,5 +1,5 @@
 export default {
-  title: 'Components/Slider',
+  title: 'Live/Components/Slider',
 };
 
 /** Range control using `.cc-color-slider` + `.cc-slider-row` from `styles.css`. */

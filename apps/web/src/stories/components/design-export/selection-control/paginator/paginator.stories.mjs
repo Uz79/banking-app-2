@@ -4,7 +4,7 @@
 
 export default {
   id: "components-selection-control-paginator-design-export",
-  title: "Components/Selection Control/Paginator",
+  title: "Reference/Components/Selection Control/Paginator",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

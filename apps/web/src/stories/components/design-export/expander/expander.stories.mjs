@@ -4,7 +4,7 @@
 
 export default {
   id: "components-expander-design-export",
-  title: "Components/Expander",
+  title: "Reference/Components/Expander",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

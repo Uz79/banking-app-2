@@ -4,7 +4,7 @@
 
 export default {
   id: "components-tab-control-design-export",
-  title: "Components/Tab Control",
+  title: "Reference/Components/Tab Control",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

@@ -26,6 +26,10 @@ const SPRITE = `<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width
 <symbol id="i-calendar" viewBox="0 0 24 24"><path d="M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 <symbol id="i-rotate-ccw" viewBox="0 0 24 24"><path d="M1 4V10H7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.51 15C4.15839 16.8404 5.38734 18.4202 7.01166 19.5014C8.63598 20.5826 10.5677 21.1066 12.5157 20.9945C14.4637 20.8824 16.3226 20.1402 17.8121 18.8798C19.3017 17.6194 20.3413 15.909 20.7742 14.0064C21.2072 12.1038 21.0101 10.112 20.2126 8.33111C19.4152 6.55025 18.0605 5.0768 16.3528 4.13277C14.6451 3.18874 12.6769 2.82527 10.7447 3.09713C8.81245 3.36898 7.02091 4.26143 5.64 5.64001L1 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 <symbol id="i-life-buoy" viewBox="0 0 24 24"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.93 4.93L9.17 9.17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.83 14.83L19.07 19.07" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.83 9.17L19.07 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.93 19.07L9.17 14.83" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-scissors" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="2"/><path d="M20 4L8.12 15.88" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.47 14.48L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.12 8.12L12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 <symbol id="i-sunrise-logo" viewBox="0 0 24 24"><path d="M12.001 1C9.82526 0.999814 7.69841 1.64482 5.88932 2.85344C4.08024 4.06207 2.67019 5.78002 1.83752 7.79005C1.00484 9.80009 0.786918 12.0119 1.21131 14.1458C1.63573 16.2797 2.6834 18.2397 4.22184 19.7782C5.76025 21.3166 7.72037 22.3643 9.85423 22.7887C11.9881 23.2131 14.1999 22.9952 16.2099 22.1625C18.22 21.3298 19.9379 19.9198 21.1466 18.1107C22.3552 16.3016 23.0002 14.1747 23 11.9991C22.997 9.08282 21.8372 6.28694 19.7752 4.22485C17.7131 2.16278 14.9172 1.00299 12.001 1ZM12.001 3.25853C13.4685 3.25777 14.9126 3.62674 16.2 4.3314C17.4873 5.03604 18.5764 6.05367 19.3666 7.2903C20.1569 8.52692 20.6229 9.94272 20.7215 11.407C20.8202 12.8712 20.5484 14.3368 19.9312 15.6683H4.06973C3.45251 14.3367 3.18068 12.8711 3.27942 11.4067C3.37813 9.94241 3.8442 8.52658 4.63454 7.28992C5.42493 6.05325 6.51413 5.03566 7.8016 4.33106C9.08904 3.62647 10.5333 3.25761 12.001 3.25853Z" fill="currentColor"/></symbol>
 </svg>`;
 
@@ -66,37 +70,10 @@ const preview = {
     options: {
       storySort: {
         order: [
-          'Pages',
-          [
-            'Overview',
-            'Payments',
-            'Account Details',
-            'Account Information',
-            'Payment Details',
-            'Share Information',
-            'Payment Flow',
-            'Profile',
-            'Dialog',
-            'Flows',
-          ],
-          'Components',
-          [
-            'Action bar',
-            'Button',
-            'Card',
-            'Carousel',
-            'Chip',
-            'Dialog',
-            'Expander',
-            'Form field',
-            'Illustration',
-            'List item',
-            'Menu',
-            'Nav bar',
-            'Selection control',
-            'Slider',
-            'Tab control',
-          ],
+          'Live',
+          ['Pages', 'Components'],
+          'Reference',
+          ['Pages', 'Components'],
         ],
         method: 'alphabetical',
       },

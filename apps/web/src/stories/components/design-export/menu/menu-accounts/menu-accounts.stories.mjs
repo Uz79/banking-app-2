@@ -4,7 +4,7 @@
 
 export default {
   id: "components-menu-menu-accounts-design-export",
-  title: "Components/Menu/Menu Accounts",
+  title: "Reference/Components/Menu/Menu Accounts",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

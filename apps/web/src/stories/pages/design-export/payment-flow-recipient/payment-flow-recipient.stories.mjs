@@ -4,7 +4,7 @@
 
 export default {
   id: "pages-payment-flow-recipient-design-export",
-  title: "Pages/Payment Flow/Recipient",
+  title: "Reference/Pages/Payment Flow/Recipient",
   tags: ['!autodocs'],
   parameters: {
     layout: "fullscreen",

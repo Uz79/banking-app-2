@@ -1,12 +1,12 @@
 export default {
-  title: 'Pages/Payment Flow/Type Ahead Search Active',
+  title: 'Live/Pages/Payment Flow/Type Ahead Search Active',
   parameters: {
     layout: 'fullscreen',
   },
 };
 
-export const Implementation = {
-  name: 'Implementation',
+export const StaticShell = {
+  name: 'Static shell (no scripts)',
   parameters: { layout: 'fullscreen' },
   render: () => `
     <div class="modal-overlay modal-overlay--active" style="position:relative;min-height:600px;">

@@ -4,7 +4,7 @@
 
 export default {
   id: "components-selection-control-segmented-control-design-export",
-  title: "Components/Selection Control/Segmented Control",
+  title: "Reference/Components/Selection Control/Segmented Control",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

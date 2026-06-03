@@ -4,7 +4,7 @@
 
 export default {
   id: "pages-profile-persona-design-export",
-  title: "Pages/Profile/Persona",
+  title: "Reference/Pages/Profile/Persona",
   tags: ['!autodocs'],
   parameters: {
     layout: "fullscreen",

@@ -4,7 +4,7 @@
 
 export default {
   id: "components-menu-menu-bottom-navigation-design-export",
-  title: "Components/Menu/Menu Bottom Navigation",
+  title: "Reference/Components/Menu/Menu Bottom Navigation",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

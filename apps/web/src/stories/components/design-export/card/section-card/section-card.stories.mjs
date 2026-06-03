@@ -4,7 +4,7 @@
 
 export default {
   id: "components-card-section-card-design-export",
-  title: "Components/Card/Section Card",
+  title: "Reference/Components/Card/Section Card",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

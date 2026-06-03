@@ -4,7 +4,7 @@
 
 export default {
   id: "components-button-circular-button-design-export",
-  title: "Components/Button/Circular Button",
+  title: "Reference/Components/Button/Circular Button",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

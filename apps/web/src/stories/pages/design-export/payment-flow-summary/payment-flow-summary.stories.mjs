@@ -4,7 +4,7 @@
 
 export default {
   id: "pages-payment-flow-summary-design-export",
-  title: "Pages/Payment Flow/Summary",
+  title: "Reference/Pages/Payment Flow/Summary",
   tags: ['!autodocs'],
   parameters: {
     layout: "fullscreen",

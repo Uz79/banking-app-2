@@ -4,7 +4,7 @@
 
 export default {
   id: "components-slider-design-export",
-  title: "Components/Slider",
+  title: "Reference/Components/Slider",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

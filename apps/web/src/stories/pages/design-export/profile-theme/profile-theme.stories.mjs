@@ -4,7 +4,7 @@
 
 export default {
   id: "pages-profile-theme-design-export",
-  title: "Pages/Profile/Theme",
+  title: "Reference/Pages/Profile/Theme",
   tags: ['!autodocs'],
   parameters: {
     layout: "fullscreen",

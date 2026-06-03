@@ -155,6 +155,14 @@
     renderDayBalances(state);
   }
 
-  document.addEventListener('DOMContentLoaded', renderAll);
+  function onDocumentReady(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn);
+    } else {
+      fn();
+    }
+  }
+
+  onDocumentReady(renderAll);
   document.addEventListener('uzbank:state-changed', renderAll);
 })();

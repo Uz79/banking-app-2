@@ -4,7 +4,7 @@
 
 export default {
   id: "components-carousel-design-export",
-  title: "Components/Carousel",
+  title: "Reference/Components/Carousel",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

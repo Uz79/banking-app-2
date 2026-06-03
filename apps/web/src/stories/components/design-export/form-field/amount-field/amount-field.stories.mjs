@@ -4,7 +4,7 @@
 
 export default {
   id: "components-form-field-amount-field-design-export",
-  title: "Components/Form Field/Amount Field",
+  title: "Reference/Components/Form Field/Amount Field",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

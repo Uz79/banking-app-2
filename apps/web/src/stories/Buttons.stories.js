@@ -1,5 +1,5 @@
 export default {
-  title: 'Components/Button',
+  title: 'Live/Components/Button',
 };
 
 // ─── Configurable Button (uses Controls panel) ────────────────────────────────

@@ -4,7 +4,7 @@
 
 export default {
   id: "pages-internal-account-transfer-design-export",
-  title: "Pages/Flows/Internal Account Transfer",
+  title: "Reference/Pages/Flows/Internal Account Transfer",
   tags: ['!autodocs'],
   parameters: {
     layout: "fullscreen",

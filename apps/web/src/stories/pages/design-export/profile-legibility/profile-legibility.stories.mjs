@@ -4,7 +4,7 @@
 
 export default {
   id: "pages-profile-legibility-design-export",
-  title: "Pages/Profile/Legibility",
+  title: "Reference/Pages/Profile/Legibility",
   tags: ['!autodocs'],
   parameters: {
     layout: "fullscreen",
