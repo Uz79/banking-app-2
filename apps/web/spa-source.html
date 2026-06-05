@@ -215,7 +215,7 @@
               </span>
               <span class="action-button__label">Pay</span>
             </button>
-            <button class="action-button" type="button">
+            <button class="action-button" type="button" data-action="iat">
               <span class="action-button__circle">
                 <svg class="action-button__icon" aria-hidden="true" focusable="false"><use href="#i-repeat"/></svg>
               </span>
@@ -549,7 +549,7 @@
               </span>
               <span class="action-button__label">Pay</span>
             </button>
-            <button class="action-button" type="button">
+            <button class="action-button" type="button" data-action="iat">
               <span class="action-button__circle">
                 <svg class="action-button__icon" aria-hidden="true" focusable="false"><use href="#i-repeat"/></svg>
               </span>
@@ -665,21 +665,14 @@
       <!-- ── PROFILE ── -->
       <section class="view view--profile" data-view="profile">
         <div class="view__main">
-          <header class="view__nav">
-            <button type="button" class="view__nav-btn view__nav-btn--leading view__nav-btn--hidden" aria-hidden="true" tabindex="-1">
-              <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
-            </button>
-            <h1 class="page-title view__nav-title">Profile</h1>
-            <button type="button" class="view__nav-btn view__nav-btn--trailing view__nav-btn--hidden" aria-hidden="true" tabindex="-1">
-              <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>
-            </button>
-          </header>
-          <section class="profile-settings" id="profileSettings" aria-label="Design system settings">
+          <header class="view__nav view__nav--profile-tabs" data-scroll-edge-nav>
             <div class="profile-topic-tabs segmented" role="tablist" aria-label="Profile settings topic">
               <button type="button" class="segmented__option segmented__option--active profile-topic-tabs__option" role="tab" aria-selected="true" aria-controls="profilePanelTheme" id="profileTabTheme" data-profile-tab="theme">Theme</button>
               <button type="button" class="segmented__option profile-topic-tabs__option" role="tab" aria-selected="false" aria-controls="profilePanelLegibility" id="profileTabLegibility" data-profile-tab="legibility">Legibility</button>
               <button type="button" class="segmented__option profile-topic-tabs__option" role="tab" aria-selected="false" aria-controls="profilePanelPersona" id="profileTabPersona" data-profile-tab="persona">Persona</button>
             </div>
+          </header>
+          <section class="profile-settings" id="profileSettings" aria-label="Design system settings">
 
             <div class="profile-panel profile-panel--active" id="profilePanelTheme" role="tabpanel" aria-labelledby="profileTabTheme" data-profile-panel="theme">
               <!-- Colour-contrast checker — wired to the global theme via js/contrast-checker.js -->
@@ -1298,8 +1291,8 @@
 
   <div class="confirmation-overlay">
     <div class="confirmation-dialog">
-      <div class="confirmation-dialog__icon">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <div class="confirmation-dialog__icon" aria-hidden="true">
+        <svg class="confirmation-dialog__icon-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2"/>
           <path d="M15 24L21 30L33 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>

@@ -562,6 +562,7 @@
       finishClose(fromRoute); return;
     }
     isClosing = true;
+    overlay.classList.add('modal-overlay--closing');
 
     if (shell) {
       shell.classList.remove('modal-shell--offscreen', 'modal-shell--no-transition');

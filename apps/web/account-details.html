@@ -745,8 +745,8 @@
 
   <div class="confirmation-overlay">
     <div class="confirmation-dialog">
-      <div class="confirmation-dialog__icon">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <div class="confirmation-dialog__icon" aria-hidden="true">
+        <svg class="confirmation-dialog__icon-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2"/>
           <path d="M15 24L21 30L33 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -1215,8 +1215,8 @@
   <!-- Confirmation dialog — same shell as domestic payment flow -->
   <div class="confirmation-overlay" id="uz-iat-confirmation" aria-hidden="true">
     <div class="confirmation-dialog">
-      <div class="confirmation-dialog__icon">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <div class="confirmation-dialog__icon" aria-hidden="true">
+        <svg class="confirmation-dialog__icon-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2"/>
           <path d="M15 24L21 30L33 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -1358,6 +1358,7 @@
   </div>
 </div>
 
+<script src="js/document-ready.js"></script>
 <script src="js/analytics.js"></script>
 <script src="js/form-field-sheet.js"></script>
 <script src="js/payment-exit-confirm.js"></script>

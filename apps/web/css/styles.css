@@ -130,6 +130,31 @@ html:has(body.body--payment-open) {
   align-items: stretch;
 }
 
+/* ── Mobile / tablet shell (tab bar, no sidebar) ─────────────────────────────
+   Lock viewport height so .main-content scrolls internally — required for
+   position:sticky on .view__nav[data-scroll-edge-nav] (same as desktop). */
+@media (max-width: 1279px) {
+  html,
+  body.body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .app {
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 100dvh;
+    overflow: hidden;
+  }
+
+  .main-content {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 /* ── Sidebar ──────────────────────────────────────────── */
 
 .sidebar {
@@ -354,7 +379,8 @@ html:has(body.body--payment-open) {
 /* Main scroll views: sticky page title; flush horizontal edges when pinned to scroll top */
 .body[data-screen="overview"] .view__nav[data-scroll-edge-nav],
 .body[data-screen="payments"] .view__nav[data-scroll-edge-nav],
-.body[data-screen="account-details"] .view__nav[data-scroll-edge-nav] {
+.body[data-screen="account-details"] .view__nav[data-scroll-edge-nav],
+.body[data-screen="profile"] .view__nav[data-scroll-edge-nav] {
   position: sticky;
   top: 0;
   z-index: 10;
@@ -363,8 +389,9 @@ html:has(body.body--payment-open) {
   margin-bottom: var(--view-stack-gap);
 }
 
-/* Account details: nav spans full width of the 960dp column (overview/payments bleed, always on). */
-.body[data-screen="account-details"] .view__nav[data-scroll-edge-nav] {
+/* Account details + profile: nav spans full content width (overview/payments bleed when scrolled). */
+.body[data-screen="account-details"] .view__nav[data-scroll-edge-nav],
+.body[data-screen="profile"] .view__nav[data-scroll-edge-nav] {
   margin-inline: calc(-1 * var(--space-4));
   padding-inline: var(--space-4);
   box-sizing: border-box;
@@ -391,10 +418,6 @@ html:has(body.body--payment-open) {
 }
 
 .view__sidebar {
-  display: none;
-}
-
-.view--profile .view__nav {
   display: none;
 }
 
@@ -644,6 +667,52 @@ html:has(body.body--payment-open) {
  * Figma Payment - mobile Main Content: gap space/4 (16dp) between section cards. */
 
 @media (max-width: 1023px) {
+  /* Stick page nav to the top edge; 16dp horizontal gutter (space/3 = 1rem). */
+  .main-content__inner {
+    padding-top: 0;
+    padding-bottom: var(--space-6);
+    padding-inline: var(--space-3);
+  }
+
+  .body[data-screen="account-details"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="profile"] .view__nav[data-scroll-edge-nav] {
+    margin-inline: calc(-1 * var(--space-3));
+    padding-inline: var(--space-3);
+  }
+
+  .view__nav[data-scroll-edge-nav] {
+    padding-top: max(env(safe-area-inset-top, 0px), var(--space-2));
+    padding-bottom: var(--space-2);
+    top: 0;
+    z-index: 20;
+  }
+
+  /* Full-bleed sticky bar (match account-details). */
+  .body[data-screen="overview"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="payments"] .view__nav[data-scroll-edge-nav] {
+    margin-inline: calc(-1 * var(--space-3));
+    padding-inline: var(--space-3);
+  }
+
+  .view__nav--profile-tabs .profile-topic-tabs.segmented {
+    max-width: none;
+  }
+
+  /* Fit 3–4 circular actions in narrow viewports (e.g. iPhone 12 Pro). */
+  .action-buttons {
+    gap: var(--space-3);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .action-button {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    max-width: none;
+  }
+
   .body[data-screen='overview'] .view--active.view--overview,
   .body[data-screen='payments'] .view--active.view--payments {
     display: flex;
@@ -684,6 +753,17 @@ html:has(body.body--payment-open) {
 
   .body[data-screen='payments'] .view--active.view--payments .section-card {
     margin-bottom: 0;
+  }
+}
+
+/* Narrow phones — tighter action row (4 buttons on account-details). */
+@media (max-width: 24rem) {
+  .action-buttons {
+    gap: var(--space-2);
+  }
+
+  .action-button__label {
+    font-size: 0.6875rem;
   }
 }
 
@@ -990,6 +1070,9 @@ html:has(body.body--payment-open) {
   box-sizing: border-box;
   border-radius: var(--radius-regular);
   border: 0.0625rem solid color-mix(in srgb, var(--color-btn-primary-bg) 20%, transparent);
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 @supports not (border: 1px solid color-mix(in srgb, red 20%, transparent)) {
@@ -1051,6 +1134,19 @@ html:has(body.body--payment-open) {
   color: var(--color-btn-primary-bg);
 }
 
+/* Card has an opaque surface (--color-bg). Hover must layer state on that fill,
+   not replace it with a transparent token (which would show --color-bg-secondary
+   through in dark mode — carousel sits on the page, not inside bookings-card). */
+.list-item--group-account:hover {
+  background-color: var(--color-bg);
+  box-shadow: inset 0 0 0 9999px var(--color-surface-state-hover);
+}
+
+.list-item--group-account:active {
+  background-color: var(--color-bg);
+  box-shadow: inset 0 0 0 9999px var(--color-surface-state-pressed);
+}
+
 /* Non-interactive group-account (e.g. account-information summary). */
 .list-item--group-account.list-item--static {
   cursor: default;
@@ -1064,6 +1160,7 @@ html:has(body.body--payment-open) {
 .list-item--group-account.list-item--static:hover,
 .list-item--group-account.list-item--static:active {
   background-color: var(--color-bg);
+  box-shadow: none;
   border-color: color-mix(in srgb, var(--color-btn-primary-bg) 20%, transparent);
 }
 
@@ -1418,12 +1515,50 @@ html:has(body.body--payment-open) {
   /* Scroll only inside modal steps / [data-scroll-edge] — not the overlay host. */
   overflow: hidden;
   overscroll-behavior: contain;
-  /* Dim the underlying app; payment UI sits in .modal-shell (640dp) */
+  background-color: transparent;
+}
+
+/* Scrim fades in independently so the sheet can slide without dimming. */
+.modal-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   background-color: var(--color-overlay-scrim);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .modal-overlay--active {
   display: flex;
+}
+
+.modal-overlay--active::before {
+  animation: modal-scrim-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.modal-overlay--closing::before {
+  animation: modal-scrim-out 0.22s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes modal-scrim-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-scrim-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
 }
 
 /* Centered 640dp column for payment steps (not fullscreen flow) */
@@ -1434,7 +1569,7 @@ html:has(body.body--payment-open) {
   max-width: min(var(--modal-payment-max-width, 640px), 100%);
   flex-shrink: 0;
   transform: translateY(0);
-  transition: transform 0.25s ease-out;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Parked below viewport when flow is closed (set from JS after close) */
@@ -1449,7 +1584,23 @@ html:has(body.body--payment-open) {
 /* Close (X / backdrop / Done): sheet exits downward, ease-in */
 .modal-shell.modal-shell--closing {
   transform: translateY(100vh) !important;
-  transition: transform 0.25s ease-in !important;
+  transition: transform 0.28s cubic-bezier(0.4, 0, 1, 1) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-overlay--active::before,
+  .modal-overlay--closing::before {
+    animation: none;
+    opacity: 1;
+  }
+
+  .modal-shell {
+    transition: none;
+  }
+
+  .modal-shell.modal-shell--closing {
+    transition: none !important;
+  }
 }
 
 .modal {
@@ -1769,7 +1920,8 @@ html:has(body.body--payment-open) {
 
 .modal__footer.is-scroll-edge--before,
 .account-information__footer.is-scroll-edge--before,
-[data-scroll-edge-footer].is-scroll-edge--before {
+[data-scroll-edge-footer].is-scroll-edge--before,
+.tab-bar.is-scroll-edge--before {
   box-shadow: 0 -0.125rem 1rem color-mix(in srgb, var(--color-btn-primary-bg) 10%, transparent);
 }
 
@@ -1782,7 +1934,8 @@ html:has(body.body--payment-open) {
 
   .modal__footer.is-scroll-edge--before,
   .account-information__footer.is-scroll-edge--before,
-  [data-scroll-edge-footer].is-scroll-edge--before {
+  [data-scroll-edge-footer].is-scroll-edge--before,
+  .tab-bar.is-scroll-edge--before {
     box-shadow: 0 -0.125rem 1rem rgba(0, 21, 126, 0.1);
   }
 }
@@ -2416,10 +2569,13 @@ html:has(body.body--payment-open) {
   gap: var(--space-2);
   padding: var(--space-2);
   background: none;
-  border: 0.0625rem solid var(--color-fg);
+  border: none;
   border-radius: var(--radius-regular);
+  box-shadow: inset 0 0 0 var(--input-stroke-px, 1px) var(--color-input-stroke);
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 button.debit-account {
@@ -2436,6 +2592,11 @@ button.debit-account {
 
 .debit-account:active {
   background-color: var(--color-surface-state-pressed);
+}
+
+button.debit-account:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 var(--input-stroke-focus-px, 2px) var(--color-input-stroke-focus);
 }
 
 .debit-account__icon {
@@ -2864,10 +3025,30 @@ button.debit-account {
 }
 
 .confirmation-dialog__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 3rem;
   height: 3rem;
+  min-width: 3rem;
+  min-height: 3rem;
   margin: 0 auto var(--space-3);
   color: var(--color-fg);
+  flex-shrink: 0;
+}
+
+.confirmation-dialog__icon-svg {
+  display: block;
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+}
+
+.confirmation-dialog__icon svg:not(.confirmation-dialog__icon-svg) {
+  display: block;
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
 }
 
 .confirmation-dialog__text {
@@ -2926,6 +3107,10 @@ button.debit-account {
   line-height: var(--lh-text);
   color: var(--color-fg);
   margin-bottom: var(--space-4);
+}
+
+#uz-iat-overlay > .confirmation-overlay {
+  z-index: 10;
 }
 
 /* IAT: immediate execution copy (no date line) — match payment footer spacing above CTA */
@@ -3060,6 +3245,19 @@ button.debit-account {
     margin-inline: auto;
   }
 
+  .view__nav[data-scroll-edge-nav] {
+    top: 0;
+    z-index: 20;
+  }
+
+  .body[data-screen="overview"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="payments"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="account-details"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="profile"] .view__nav[data-scroll-edge-nav] {
+    margin-inline: calc(-1 * var(--space-4));
+    padding-inline: var(--space-4);
+  }
+
   .view--active.view--overview,
   .view--active.view--payments {
     display: grid;
@@ -3151,7 +3349,8 @@ button.debit-account {
     margin-inline: auto;
   }
 
-  .body[data-screen="account-details"] .view__nav[data-scroll-edge-nav] {
+  .body[data-screen="account-details"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="profile"] .view__nav[data-scroll-edge-nav] {
     margin-inline: calc(-1 * var(--space-5));
     padding-inline: var(--space-5);
   }
@@ -3307,8 +3506,17 @@ a.btn-primary {
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
-  padding-top: var(--space-4);
   max-width: 64rem;
+}
+
+.view__nav--profile-tabs {
+  justify-content: stretch;
+}
+
+.view__nav--profile-tabs .profile-topic-tabs.segmented {
+  width: 100%;
+  max-width: 34rem;
+  margin-inline: auto;
 }
 
 .profile-settings__header,
@@ -3337,7 +3545,6 @@ a.btn-primary {
 }
 
 .profile-topic-tabs.segmented {
-  width: min(100%, 34rem);
   background-color: var(--color-btn-secondary-hover);
 }
 
@@ -4069,7 +4276,7 @@ a.btn-primary {
   width: 100%;
 }
 
-/* Result row: always two horizontal columns — preview+ration | WCAG badges (badges wrap) */
+/* Result row: preview + ratio | WCAG badges; stacks on narrow viewports */
 .cc-section--result {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -4522,14 +4729,19 @@ a.btn-primary {
   color: var(--color-fg);
 }
 
-/* Mobile: keep result row as two columns; stack colour inputs below */
+/* Mobile: stack WCAG badges under preview + ratio; stack colour inputs */
 @media (max-width: 48rem) {
   .cc-section--result {
+    grid-template-columns: 1fr;
     gap: var(--space-5);
     align-items: start;
   }
   .cc-result-left {
     gap: var(--space-4);
+    width: 100%;
+  }
+  .cc-result-right {
+    width: 100%;
   }
   .cc-preview-box {
     width: 7.5rem;
@@ -4537,10 +4749,16 @@ a.btn-primary {
   }
   .cc-preview-text { font-size: 3.5rem; }
   .cc-contrast-ratio { font-size: 3rem; }
-  .cc-badge-stack { gap: var(--space-2); }
+  .cc-badge-stack {
+    gap: var(--space-2);
+    justify-content: flex-start;
+  }
   .cc-badge {
-    width: 4.5rem;
-    min-height: 2.5rem;
+    width: auto;
+    min-width: 0;
+    min-height: calc(var(--btn-height-sm, 2rem) * var(--appearance-font-scale, 1));
+    padding: var(--btn-pad-y-sm) var(--btn-pad-x-sm);
+    gap: var(--space-2);
     font-size: var(--fs-text-sm);
   }
   .cc-section--input {
@@ -5062,6 +5280,10 @@ dialog.form-sheet.form-sheet--closing[open] .form-sheet__panel {
   background-color: var(--color-surface-state-pressed);
 }
 
+.form-sheet__row:focus {
+  outline: none;
+}
+
 .form-sheet__row:focus-visible {
   outline: 2px solid var(--color-input-stroke-focus);
   outline-offset: -2px;
@@ -5151,7 +5373,43 @@ dialog.basic-dialog-payment-exit:not([open]) {
 
 dialog.basic-dialog-payment-exit::backdrop {
   background: var(--color-overlay-scrim);
-  animation: form-sheet-backdrop-in 0.24s ease-out forwards;
+  animation: form-sheet-backdrop-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+dialog.basic-dialog-payment-exit[open] .basic-dialog-payment-exit__surface {
+  animation: basic-dialog-surface-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+dialog.basic-dialog-payment-exit.basic-dialog-payment-exit--closing[open]::backdrop {
+  animation: form-sheet-backdrop-out 0.22s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+dialog.basic-dialog-payment-exit.basic-dialog-payment-exit--closing[open] .basic-dialog-payment-exit__surface {
+  animation: basic-dialog-surface-out 0.22s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes basic-dialog-surface-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.25rem, 0) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes basic-dialog-surface-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(0, 0.75rem, 0) scale(0.97);
+  }
 }
 
 .basic-dialog-payment-exit__surface {
@@ -5189,9 +5447,15 @@ dialog.basic-dialog-payment-exit::backdrop {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  dialog.basic-dialog-payment-exit::backdrop {
+  dialog.basic-dialog-payment-exit::backdrop,
+  dialog.basic-dialog-payment-exit.basic-dialog-payment-exit--closing[open]::backdrop {
     animation: none;
     opacity: 1;
+  }
+
+  dialog.basic-dialog-payment-exit[open] .basic-dialog-payment-exit__surface,
+  dialog.basic-dialog-payment-exit.basic-dialog-payment-exit--closing[open] .basic-dialog-payment-exit__surface {
+    animation: none;
   }
 }
 

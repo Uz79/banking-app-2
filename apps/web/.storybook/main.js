@@ -1,3 +1,30 @@
+import path from 'node:path';
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const webRoot = path.join(__dirname, '..');
+
+/** Serve /app/js/* in dev (works even when staticDirs were added after server start). */
+function viteServeAppJs() {
+  return {
+    name: 'storybook-serve-app-js',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        const url = req.url || '';
+        if (!url.startsWith('/app/js/')) return next();
+        const rel = url.slice('/app/js/'.length).split('?')[0];
+        const filePath = path.join(webRoot, 'js', rel);
+        if (!filePath.startsWith(path.join(webRoot, 'js')) || !fs.existsSync(filePath)) {
+          return next();
+        }
+        res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+        fs.createReadStream(filePath).pipe(res);
+      });
+    },
+  };
+}
+
 /** @type { import('@storybook/html-vite').StorybookConfig } */
 const config = {
   stories: ['../src/stories/**/*.stories.@(js|mjs)'],
@@ -9,7 +36,22 @@ const config = {
   staticDirs: [
     '../assets',
     { from: '../../../designs', to: '/designs' },
+    { from: '../js', to: '/app/js' },
+    { from: '../overview.html', to: '/app/overview.html' },
+    { from: '../payments.html', to: '/app/payments.html' },
+    { from: '../account-details.html', to: '/app/account-details.html' },
   ],
+  viteFinal: async (config) => ({
+    ...config,
+    plugins: [...(config.plugins || []), viteServeAppJs()],
+    server: {
+      ...config.server,
+      fs: {
+        ...config.server?.fs,
+        allow: [...(config.server?.fs?.allow || []), webRoot],
+      },
+    },
+  }),
 };
 
 export default config;
