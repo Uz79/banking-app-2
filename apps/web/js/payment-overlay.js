@@ -9,7 +9,9 @@
  * Depends on js/payment-state.js (window.UZBankPayState.getRecipients) being loaded before this script
  * on every page that includes the payment modal.
  */
-document.addEventListener('DOMContentLoaded', function () {
+(window.onDocumentReady || function (fn) {
+  document.addEventListener('DOMContentLoaded', fn);
+})(function () {
   var modalOverlay = document.querySelector('.modal-overlay');
   if (!modalOverlay) return;
 
@@ -670,7 +672,7 @@ document.addEventListener('DOMContentLoaded', function () {
     editingBookingId = null;
     editingStaticRow = null;
     showStep();
-    modalOverlay.classList.remove('modal-overlay--active');
+    modalOverlay.classList.remove('modal-overlay--active', 'modal-overlay--closing');
     document.body.classList.remove('body--payment-open');
     if (confirmationOverlay) confirmationOverlay.classList.remove('confirmation-overlay--visible');
     if (modalFooter) modalFooter.style.display = '';
@@ -695,6 +697,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     paymentFlowClosing = true;
+    modalOverlay.classList.add('modal-overlay--closing');
 
     if (modalShell) {
       modalShell.classList.remove('modal-shell--offscreen', 'modal-shell--no-transition');

@@ -1,0 +1,39 @@
+{
+  "name": "menu-sidebar",
+  "category": "menu",
+  "description": "Sidebar navigation menu items.",
+  "interactionStates": [
+    "default",
+    "hover",
+    "focus"
+  ],
+  "assets": {
+    "overview": "overview.png",
+    "variants": {
+      "sidebar-nav-selected": {
+        "default": "variants/sidebar-nav-selected/default.svg",
+        "hover": "variants/sidebar-nav-selected/hover.svg",
+        "focus": "variants/sidebar-nav-selected/focus.svg"
+      },
+      "sidebar-nav-unselected": {
+        "default": "variants/sidebar-nav-unselected/default.svg",
+        "hover": "variants/sidebar-nav-unselected/hover.svg",
+        "focus": "variants/sidebar-nav-unselected/focus.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": [
+    "Figma exports `Pressed` are stored as `focus.svg` for consistency."
+  ]
+}

@@ -66,6 +66,7 @@ const preview = {
     options: {
       storySort: {
         order: [
+          'Live',
           'Pages',
           [
             'Overview',

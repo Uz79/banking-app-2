@@ -112,6 +112,7 @@ def tabbar(active: str, prefix: str = "") -> str:
 MODAL_HTML = extract_payment_modal()
 
 ACCOUNT_INFORMATION_OVERLAY = (ROOT / "partials" / "account-information-overlay.html").read_text(encoding="utf-8")
+IAT_OVERLAY = (ROOT / "partials" / "iat-overlay.html").read_text(encoding="utf-8")
 SHARE_INFORMATION_OVERLAY = (ROOT / "partials" / "share-information-overlay.html").read_text(encoding="utf-8")
 
 
@@ -154,6 +155,7 @@ def shell(
             f'<script src="{prefix}js/analytics.js"></script>\n'
             f'<script src="{prefix}js/payment-state.js"></script>\n'
             f'<script src="{prefix}js/data-render.js"></script>\n'
+            f'<script src="{prefix}js/scroll-edge-chrome.js"></script>\n'
             f'<script src="{prefix}js/app-mp.js"></script>\n'
             f'<script src="{prefix}js/contrast-checker.js"></script>\n'
             f'<script src="{prefix}js/profile-settings.js"></script>\n'
@@ -299,6 +301,8 @@ account_sec = account_back_link(account_sec)
         overview_sec,
         "",
         include_payment_modal=True,
+        overlay_after_modal="\n" + IAT_OVERLAY.strip() + "\n",
+        extra_body_scripts='<script src="js/iat-overlay.js"></script>\n',
     ),
     encoding="utf-8",
 )
@@ -328,6 +332,8 @@ account_sec = account_back_link(account_sec)
         payments_sec,
         "",
         include_payment_modal=True,
+        overlay_after_modal="\n" + IAT_OVERLAY.strip() + "\n",
+        extra_body_scripts='<script src="js/iat-overlay.js"></script>\n',
     ),
     encoding="utf-8",
 )

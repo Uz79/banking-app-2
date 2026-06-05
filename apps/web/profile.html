@@ -152,21 +152,14 @@
       <!-- ── PROFILE ── -->
       <section class="view view--active view--profile" data-view="profile">
         <div class="view__main">
-          <header class="view__nav">
-            <button type="button" class="view__nav-btn view__nav-btn--leading view__nav-btn--hidden" aria-hidden="true" tabindex="-1">
-              <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
-            </button>
-            <h1 class="page-title view__nav-title">Profile</h1>
-            <button type="button" class="view__nav-btn view__nav-btn--trailing view__nav-btn--hidden" aria-hidden="true" tabindex="-1">
-              <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>
-            </button>
-          </header>
-          <section class="profile-settings" id="profileSettings" aria-label="Design system settings">
+          <header class="view__nav view__nav--profile-tabs" data-scroll-edge-nav>
             <div class="profile-topic-tabs segmented" role="tablist" aria-label="Profile settings topic">
               <button type="button" class="segmented__option segmented__option--active profile-topic-tabs__option" role="tab" aria-selected="true" aria-controls="profilePanelTheme" id="profileTabTheme" data-profile-tab="theme">Theme</button>
               <button type="button" class="segmented__option profile-topic-tabs__option" role="tab" aria-selected="false" aria-controls="profilePanelLegibility" id="profileTabLegibility" data-profile-tab="legibility">Legibility</button>
               <button type="button" class="segmented__option profile-topic-tabs__option" role="tab" aria-selected="false" aria-controls="profilePanelPersona" id="profileTabPersona" data-profile-tab="persona">Persona</button>
             </div>
+          </header>
+          <section class="profile-settings" id="profileSettings" aria-label="Design system settings">
 
             <div class="profile-panel profile-panel--active" id="profilePanelTheme" role="tabpanel" aria-labelledby="profileTabTheme" data-profile-panel="theme">
               <!-- Colour-contrast checker — wired to the global theme via js/contrast-checker.js -->
@@ -551,6 +544,7 @@
 <script src="js/analytics.js"></script>
 <script src="js/payment-state.js"></script>
 <script src="js/data-render.js"></script>
+<script src="js/scroll-edge-chrome.js"></script>
 <script src="js/app-mp.js"></script>
 <script src="js/contrast-checker.js"></script>
 <script src="js/profile-settings.js"></script>
