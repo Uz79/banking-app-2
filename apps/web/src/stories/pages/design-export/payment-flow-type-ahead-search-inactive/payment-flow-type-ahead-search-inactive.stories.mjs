@@ -4,7 +4,7 @@
 
 export default {
   id: "pages-payment-flow-type-ahead-search-inactive-design-export",
-  title: "Pages/Payment Flow/Type Ahead Search Inactive",
+  title: "Reference/Pages/Payment Flow/Type Ahead Search Inactive",
   tags: ['!autodocs'],
   parameters: {
     layout: "fullscreen",

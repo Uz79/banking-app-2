@@ -11,7 +11,7 @@
  */
 
 export default {
-  title: 'Components/Dialog',
+  title: 'Live/Components/Dialog',
   parameters: {
     docs: {
       description: {

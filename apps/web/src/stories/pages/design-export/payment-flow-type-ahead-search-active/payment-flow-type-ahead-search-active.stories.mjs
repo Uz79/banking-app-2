@@ -4,7 +4,7 @@
 
 export default {
   id: "pages-payment-flow-type-ahead-search-active-design-export",
-  title: "Pages/Payment Flow/Type Ahead Search Active",
+  title: "Reference/Pages/Payment Flow/Type Ahead Search Active",
   tags: ['!autodocs'],
   parameters: {
     layout: "fullscreen",

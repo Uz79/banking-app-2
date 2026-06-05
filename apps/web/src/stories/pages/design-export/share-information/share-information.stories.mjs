@@ -4,7 +4,7 @@
 
 export default {
   id: "pages-share-information-design-export",
-  title: "Pages/Share Information",
+  title: "Reference/Pages/Share Information",
   tags: ['!autodocs'],
   parameters: {
     layout: "fullscreen",

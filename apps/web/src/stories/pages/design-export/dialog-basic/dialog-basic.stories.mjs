@@ -4,7 +4,7 @@
 
 export default {
   id: "pages-dialog-basic-design-export",
-  title: "Pages/Dialog/Basic",
+  title: "Reference/Pages/Dialog/Basic",
   tags: ['!autodocs'],
   parameters: {
     layout: "fullscreen",

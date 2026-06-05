@@ -1,5 +1,5 @@
 export default {
-  title: 'Components/Menu',
+  title: 'Live/Components/Menu',
 };
 
 // ─── Sidebar ──────────────────────────────────────────────────────────────────

@@ -4,7 +4,7 @@
 
 export default {
   id: "components-button-icon-only-button-design-export",
-  title: "Components/Button/Icon Only Button",
+  title: "Reference/Components/Button/Icon Only Button",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

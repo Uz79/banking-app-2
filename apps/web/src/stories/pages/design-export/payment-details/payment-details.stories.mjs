@@ -4,7 +4,7 @@
 
 export default {
   id: "pages-payment-details-design-export",
-  title: "Pages/Payment Details",
+  title: "Reference/Pages/Payment Details",
   tags: ['!autodocs'],
   parameters: {
     layout: "fullscreen",

@@ -1,12 +1,12 @@
 export default {
-  title: 'Pages/Overview',
+  title: 'Live/Pages/Overview',
   parameters: {
     layout: 'fullscreen',
   },
 };
 
-export const Implementation = {
-  name: 'Implementation',
+export const StaticShell = {
+  name: 'Static shell (no scripts)',
   render: () => `
     <div class="app">
       <aside class="sidebar">

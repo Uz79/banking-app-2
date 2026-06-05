@@ -4,7 +4,7 @@
 
 export default {
   id: "components-menu-menu-sidebar-design-export",
-  title: "Components/Menu/Menu Sidebar",
+  title: "Reference/Components/Menu/Menu Sidebar",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

@@ -4,7 +4,7 @@
 
 export default {
   id: "components-list-item-selection-list-item-design-export",
-  title: "Components/List Item/Selection List Item",
+  title: "Reference/Components/List Item/Selection List Item",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

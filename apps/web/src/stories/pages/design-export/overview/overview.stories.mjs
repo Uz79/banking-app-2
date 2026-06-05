@@ -4,7 +4,7 @@
 
 export default {
   id: "pages-overview-design-export",
-  title: "Pages/Overview",
+  title: "Reference/Pages/Overview",
   tags: ['!autodocs'],
   parameters: {
     layout: "fullscreen",

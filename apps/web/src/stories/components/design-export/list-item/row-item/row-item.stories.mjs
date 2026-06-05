@@ -4,7 +4,7 @@
 
 export default {
   id: "components-list-item-row-item-design-export",
-  title: "Components/List Item/Row Item",
+  title: "Reference/Components/List Item/Row Item",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

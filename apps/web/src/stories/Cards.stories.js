@@ -1,5 +1,5 @@
 export default {
-  title: 'Components/Card',
+  title: 'Live/Components/Card',
 };
 
 // ─── Configurable Product Item (uses Controls panel) ─────────────────────────

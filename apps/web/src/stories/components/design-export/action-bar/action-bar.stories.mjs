@@ -4,7 +4,7 @@
 
 export default {
   id: "components-action-bar-design-export",
-  title: "Components/Action Bar",
+  title: "Reference/Components/Action Bar",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

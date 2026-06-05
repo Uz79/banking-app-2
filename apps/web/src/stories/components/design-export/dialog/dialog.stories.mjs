@@ -4,7 +4,7 @@
 
 export default {
   id: "components-dialog-design-export",
-  title: "Components/Dialog",
+  title: "Reference/Components/Dialog",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

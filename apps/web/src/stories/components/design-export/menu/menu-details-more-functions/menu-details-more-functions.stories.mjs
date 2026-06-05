@@ -4,7 +4,7 @@
 
 export default {
   id: "components-menu-menu-details-more-functions-design-export",
-  title: "Components/Menu/Menu Details More Functions",
+  title: "Reference/Components/Menu/Menu Details More Functions",
   tags: ['!autodocs'],
   parameters: {
     layout: "padded",

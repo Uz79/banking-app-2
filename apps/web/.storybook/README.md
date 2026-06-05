@@ -1,33 +1,30 @@
-# Storybook (apps/web)
+# Storybook (UZ Bank web app)
 
-## Run
+## Sidebar lanes
+
+| Lane | Source | Purpose |
+|------|--------|---------|
+| **Live** | Hand-written `src/stories/**/*.stories.js` and `src/stories/live/**` | Real HTML/CSS, Controls, hover states, and page shells with app scripts |
+| **Reference** | Auto-generated `npm run storybook:sync` → `components/design-export/`, `pages/design-export/` | Figma SVG grids from `designs/` (read-only) |
+
+Use the **Canvas** tab for design exports (Docs are disabled on Reference stories).
+
+## Regenerating Reference stories
 
 ```bash
-cd apps/web && npm run storybook
+npm run storybook:sync
 ```
 
-Default port: **6006** (Storybook picks the next free port if busy).
+Do not edit `*.stories.mjs` under `design-export/` by hand.
 
-## Story groups
+## Live page stories with scripts
 
-| Group | Path | Purpose |
-|-------|------|---------|
-| **Live** | `src/stories/live/` | Interactive — real app scripts, clicks, overlays |
-| **Pages** / **Components** | `src/stories/pages/implementation/`, `src/stories/*.stories.js` | Static HTML snapshots |
-| **Design export** | `src/stories/**/design-export/` | SVG reference from Figma (`npm run storybook:sync`) |
+`Live/Pages/Account Details` loads app IIFEs via `.storybook/load-app-scripts.js` in the story `play` function. `app-mp.js` and `data-render.js` use `onDocumentReady()` so init runs even when scripts load after the document is ready.
 
-## Live pages
+## Run Storybook
 
-Live page stories fetch `overview.html`, `payments.html`, or `account-details.html` and load the same `js/*` bundle as the standalone app.
+```bash
+npm run storybook
+```
 
-Helpers: `.storybook/mount-live-page.js`, `js/document-ready.js`.
-
-## Theme
-
-Use the **Theme** toolbar for light/dark on all stories.
-
-## Live pages blank / Interactions FAIL?
-
-Restart Storybook after pulling changes (`Ctrl+C`, then `npm run storybook` again). The running server on **6011** may have started before `/app/js` static files were configured.
-
-Live stories bundle HTML directly; app scripts load from `/app/js/*`.
+Default port: **6006** (use `-p 6010` if 6006 is busy).
