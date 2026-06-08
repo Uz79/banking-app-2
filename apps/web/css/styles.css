@@ -95,6 +95,14 @@ button, input, select, textarea {
 /* Main view vertical rhythm — Figma space/4 mobile (16dp = 1rem), space/5 desktop (32dp). */
 :root {
   --view-stack-gap: var(--space-3); /* 16dp */
+  /* Content-indication drop shadow (Figma feOffset dy=2, blur=16, primary @ 10%). */
+  --shadow-content-indication-after: 0 0.125rem 2rem rgba(0, 21, 126, 0.1);
+  --shadow-content-indication-before: 0 -0.125rem 2rem rgba(0, 21, 126, 0.1);
+}
+
+html[data-theme="dark"] {
+  --shadow-content-indication-after: 0 0.125rem 1rem rgba(0, 0, 0, 0.25);
+  --shadow-content-indication-before: 0 -0.125rem 1rem rgba(0, 0, 0, 0.25);
 }
 
 @media (min-width: 1024px) {
@@ -294,6 +302,13 @@ html:has(body.body--payment-open) {
 /* Account details: content column capped at 960dp (60rem), same as default main-content__inner. */
 .body[data-screen="account-details"] .main-content__inner {
   max-width: 60rem;
+  width: 100%;
+  margin-inline: auto;
+}
+
+/* All bookings: narrower 720dp (45rem) column for readable list rows (Figma desktop-default). */
+.body[data-screen="all-bookings"] .main-content__inner {
+  max-width: 45rem;
   width: 100%;
   margin-inline: auto;
 }
@@ -678,6 +693,30 @@ html:has(body.body--payment-open) {
   .body[data-screen="profile"] .view__nav[data-scroll-edge-nav] {
     margin-inline: calc(-1 * var(--space-3));
     padding-inline: var(--space-3);
+  }
+
+  .body[data-screen="all-bookings"] .all-bookings__sticky-header {
+    margin-inline: calc(-1 * var(--space-3));
+    padding-inline: var(--space-3);
+  }
+
+  .body[data-screen="all-bookings"].all-bookings--header-stuck .all-bookings__sticky-header {
+    margin-inline: calc(-1 * var(--all-bookings-header-bleed));
+    padding-inline: var(--space-3);
+  }
+
+  .body[data-screen="all-bookings"] .view__nav {
+    padding-top: max(env(safe-area-inset-top, 0px), var(--space-2));
+    padding-bottom: var(--space-2);
+  }
+
+  .body[data-screen="all-bookings"].all-bookings--header-stuck .view__nav {
+    padding-bottom: 0;
+  }
+
+  .all-bookings__sticky-header {
+    top: 0;
+    z-index: 30;
   }
 
   .view__nav[data-scroll-edge-nav] {
@@ -1480,6 +1519,208 @@ html:has(body.body--payment-open) {
   color: var(--color-fg);
 }
 
+/* ── All bookings view (designs/screens/all-bookings-and-payments) ───────── */
+
+.body[data-screen="all-bookings"] {
+  /* Measured from .all-bookings__sticky-header in js/all-bookings.js */
+  --all-bookings-sticky-header-height: 6.5rem;
+  /* Sticky composite header: 16dp top inset, 16dp side bleed (32dp wider than 720dp column). */
+  --all-bookings-sticky-top: var(--space-3);
+  --all-bookings-header-bleed: var(--space-3);
+}
+
+.all-bookings {
+  position: relative;
+}
+
+.all-bookings__scroll {
+  position: relative;
+  z-index: 0;
+}
+
+/* One sticky unit: title row + month chips (designs/…/mobile-content-indication). */
+.all-bookings__sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  margin-bottom: var(--view-stack-gap);
+  box-sizing: border-box;
+  background-color: var(--color-bg-secondary);
+  transition: box-shadow 0.15s ease, margin 0.15s ease, padding 0.15s ease,
+    background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.body[data-screen="all-bookings"] .all-bookings__sticky-header {
+  margin-inline: calc(-1 * var(--space-4));
+  padding-inline: var(--space-4);
+}
+
+/* Extra backing while content scrolls under, before stuck-card styling. */
+.body[data-screen="all-bookings"] .all-bookings__sticky-header.is-scroll-edge--after {
+  padding-bottom: var(--space-2);
+}
+
+.body[data-screen="all-bookings"] .view__nav {
+  position: relative;
+  top: auto;
+  z-index: auto;
+  display: grid;
+  grid-template-columns: 2.75rem 1fr 2.75rem;
+  align-items: center;
+  margin-inline: 0;
+  padding-inline: 0;
+  margin-bottom: 0;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.body[data-screen="all-bookings"] .view__nav .view__nav-btn--leading {
+  position: relative;
+  left: auto;
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+  z-index: 1;
+}
+
+.body[data-screen="all-bookings"] .view__nav .view__nav-btn--trailing {
+  position: relative;
+  right: auto;
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
+  z-index: 1;
+}
+
+.body[data-screen="all-bookings"] .view__nav .view__nav-title {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  width: 100%;
+  margin: 0;
+  text-align: center;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.all-bookings__intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+}
+
+.all-bookings__account-card {
+  border-radius: var(--radius-regular);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-separator);
+}
+
+.all-bookings__account-card .list-item--group-account {
+  border-radius: var(--radius-regular);
+}
+
+.all-bookings__toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.all-bookings__toolbar .segmented--sm {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Search — standard-button/small-secondary (mobile: icon-only 32×32; desktop: icon + label). */
+.all-bookings__search-btn.uz-btn--secondary {
+  flex-shrink: 0;
+  background-color: var(--color-btn-secondary-bg);
+  width: var(--btn-height-sm, 2rem);
+  height: var(--btn-height-sm, 2rem);
+  min-width: var(--btn-height-sm, 2rem);
+  min-height: var(--btn-height-sm, 2rem);
+  max-width: var(--btn-height-sm, 2rem);
+  max-height: var(--btn-height-sm, 2rem);
+  padding: 0;
+  border-radius: var(--radius-small);
+  box-sizing: border-box;
+}
+
+.all-bookings__search-btn .all-bookings__search-label {
+  display: none;
+}
+
+/* Stuck: single card for nav + month — border, radius, bleed, content-indication shadow. */
+.body[data-screen="all-bookings"].all-bookings--header-stuck .all-bookings__sticky-header {
+  top: calc(var(--all-bookings-sticky-top) + env(safe-area-inset-top, 0px));
+  margin-inline: calc(-1 * var(--all-bookings-header-bleed));
+  padding-inline: var(--space-3);
+  padding-bottom: var(--space-2);
+  background-color: var(--color-bg-secondary);
+  border: 0.0625rem solid var(--color-separator);
+  border-radius: var(--radius-regular);
+}
+
+.body[data-screen="all-bookings"].all-bookings--header-stuck .all-bookings__sticky-header.is-scroll-edge--after {
+  box-shadow: var(--shadow-content-indication-after);
+}
+
+.all-bookings__month-bar {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.all-bookings__month-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.all-bookings__month-chip {
+  flex-shrink: 0;
+  border: none;
+  border-radius: 9999px;
+  padding: 0.375rem 0.875rem;
+  font-family: var(--font-family);
+  font-size: var(--fs-text-sm);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+  background: transparent;
+  cursor: pointer;
+}
+
+.all-bookings__month-chip:not(.all-bookings__month-chip--active) {
+  background-color: var(--color-segmented-track-bg);
+}
+
+.all-bookings__month-chip:hover {
+  background-color: var(--color-surface-state-hover);
+}
+
+.all-bookings__month-chip--active {
+  background-color: var(--color-btn-primary-bg);
+  color: var(--color-btn-primary-fg);
+}
+
+.all-bookings__month-chip--active:hover {
+  background-color: var(--color-btn-primary-hover);
+}
+
+.all-bookings__list.bookings-card {
+  margin: 0;
+  padding: var(--space-2) 0;
+  background-color: var(--color-bg);
+  border-radius: var(--radius-regular);
+  border: 0.0625rem solid var(--color-separator);
+}
+
+a.show-all-btn {
+  text-decoration: none;
+  color: inherit;
+}
+
 /* ── Profile placeholder ──────────────────────────────── */
 
 .profile-placeholder {
@@ -1533,11 +1774,14 @@ html:has(body.body--payment-open) {
   display: flex;
 }
 
-.modal-overlay--active::before {
-  animation: modal-scrim-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+/* Keep scrim visible after fade-in (animation alone can reset when body scroll-lock toggles). */
+.modal-overlay--active:not(.modal-overlay--closing)::before {
+  opacity: 1;
+  animation: modal-scrim-in 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .modal-overlay--closing::before {
+  opacity: 0;
   animation: modal-scrim-out 0.22s cubic-bezier(0.4, 0, 1, 1) forwards;
 }
 
@@ -1588,10 +1832,17 @@ html:has(body.body--payment-open) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .modal-overlay--active::before,
+  .modal-overlay--active:not(.modal-overlay--closing)::before,
   .modal-overlay--closing::before {
     animation: none;
+  }
+
+  .modal-overlay--active:not(.modal-overlay--closing)::before {
     opacity: 1;
+  }
+
+  .modal-overlay--closing::before {
+    opacity: 0;
   }
 
   .modal-shell {
@@ -1915,29 +2166,14 @@ html:has(body.body--payment-open) {
 .modal__nav.is-scroll-edge--after,
 .view__nav.is-scroll-edge--after,
 [data-scroll-edge-nav].is-scroll-edge--after {
-  box-shadow: 0 0.125rem 1rem color-mix(in srgb, var(--color-btn-primary-bg) 10%, transparent);
+  box-shadow: var(--shadow-content-indication-after);
 }
 
 .modal__footer.is-scroll-edge--before,
 .account-information__footer.is-scroll-edge--before,
 [data-scroll-edge-footer].is-scroll-edge--before,
 .tab-bar.is-scroll-edge--before {
-  box-shadow: 0 -0.125rem 1rem color-mix(in srgb, var(--color-btn-primary-bg) 10%, transparent);
-}
-
-@supports not (color: color-mix(in srgb, red 10%, transparent)) {
-  .modal__nav.is-scroll-edge--after,
-  .view__nav.is-scroll-edge--after,
-  [data-scroll-edge-nav].is-scroll-edge--after {
-    box-shadow: 0 0.125rem 1rem rgba(0, 21, 126, 0.1);
-  }
-
-  .modal__footer.is-scroll-edge--before,
-  .account-information__footer.is-scroll-edge--before,
-  [data-scroll-edge-footer].is-scroll-edge--before,
-  .tab-bar.is-scroll-edge--before {
-    box-shadow: 0 -0.125rem 1rem rgba(0, 21, 126, 0.1);
-  }
+  box-shadow: var(--shadow-content-indication-before);
 }
 
 /* Recipient search: fill modal body height; scroll list so search + heading stay visible. */
@@ -2685,6 +2921,26 @@ button.debit-account:focus-visible {
   width: 100%;
 }
 
+/* Small — 36dp track (Figma Type=Small); aligns with .uz-btn--sm (32dp). */
+.segmented--sm {
+  min-height: 2.25rem;
+}
+
+.segmented--sm .segmented__option {
+  min-height: 2rem;
+  padding-block: 0;
+}
+
+/* Regular — 44dp track (Figma Type=Regular). */
+.segmented--regular {
+  min-height: 2.75rem;
+}
+
+.segmented--regular .segmented__option {
+  min-height: calc(2.75rem - 0.25rem);
+  padding-block: 0;
+}
+
 .segmented__option {
   flex: 1;
   min-height: 2rem;
@@ -2889,6 +3145,24 @@ button.debit-account:focus-visible {
   font-size: var(--fs-text-sm);
 }
 
+/* icon-only-button/small-secondary — 32×32dp box, 24dp glyph (after --sm so padding/height win). */
+.uz-btn.uz-btn--sm.uz-btn--icon-only-secondary {
+  width: var(--btn-height-sm, 2rem);
+  height: var(--btn-height-sm, 2rem);
+  min-width: var(--btn-height-sm, 2rem);
+  min-height: var(--btn-height-sm, 2rem);
+  max-width: var(--btn-height-sm, 2rem);
+  max-height: var(--btn-height-sm, 2rem);
+  padding: 0;
+  border-radius: var(--radius-small);
+  box-sizing: border-box;
+}
+
+.uz-btn.uz-btn--sm.uz-btn--icon-only-secondary .uz-btn__icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
 .uz-btn--md {
   padding: var(--btn-pad-y-md) var(--btn-pad-x-md);
   font-size: var(--fs-text-md);
@@ -2965,6 +3239,45 @@ button.debit-account:focus-visible {
 .uz-btn__icon > use {
   fill: none;
   pointer-events: none;
+}
+
+/* Icon-only — small glyph-only (32dp: 4dp pad + 24dp icon), designs/components/button/icon-only-button */
+.uz-btn--icon-only {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  min-height: 2rem;
+  padding: 0.25rem;
+  border: none;
+  background-color: transparent;
+  color: var(--color-fg);
+  border-radius: var(--radius-small);
+}
+
+/* Icon-only — small secondary (32×32, bordered), icon-only-button/small-secondary */
+.uz-btn--icon-only-secondary {
+  flex-shrink: 0;
+  background-color: var(--color-bg);
+  color: var(--color-btn-secondary-fg);
+  border: 0.0625rem solid var(--color-btn-secondary-border);
+  border-radius: var(--radius-small);
+}
+
+.uz-btn--icon-only-secondary:hover {
+  background-color: var(--color-btn-secondary-hover);
+}
+
+.uz-btn--icon-only-secondary:active,
+.uz-btn--icon-only-secondary.uz-btn--pressed {
+  background-color: var(--color-btn-secondary-pressed);
+}
+
+.uz-btn--icon-only:hover {
+  background-color: var(--color-surface-state-hover);
+}
+
+.uz-btn--icon-only:active {
+  background-color: var(--color-surface-state-pressed);
 }
 
 .show-all-btn.uz-btn {
@@ -3258,6 +3571,11 @@ button.debit-account:focus-visible {
     padding-inline: var(--space-4);
   }
 
+  .body[data-screen="all-bookings"] .all-bookings__sticky-header {
+    margin-inline: calc(-1 * var(--space-4));
+    padding-inline: var(--space-4);
+  }
+
   .view--active.view--overview,
   .view--active.view--payments {
     display: grid;
@@ -3353,6 +3671,37 @@ button.debit-account:focus-visible {
   .body[data-screen="profile"] .view__nav[data-scroll-edge-nav] {
     margin-inline: calc(-1 * var(--space-5));
     padding-inline: var(--space-5);
+  }
+
+  .body[data-screen="all-bookings"] .all-bookings__sticky-header {
+    margin-inline: calc(-1 * var(--space-5));
+    padding-inline: var(--space-5);
+  }
+
+  .body[data-screen="all-bookings"].all-bookings--header-stuck .all-bookings__sticky-header {
+    margin-inline: calc(-1 * var(--all-bookings-header-bleed));
+    padding-inline: var(--space-3);
+  }
+
+  .all-bookings__month-bar {
+    justify-content: center;
+  }
+
+  /* Desktop: standard-button/small-secondary — icon + “Search” label. */
+  .all-bookings__search-btn.uz-btn--secondary {
+    width: auto;
+    height: auto;
+    min-width: 0;
+    min-height: calc(var(--btn-height-sm, 2rem) * var(--appearance-font-scale, 1));
+    max-width: none;
+    max-height: none;
+    padding: var(--btn-pad-y-sm, 0) var(--btn-pad-x-sm, var(--space-2));
+    border-radius: var(--radius-small);
+    background-color: var(--color-btn-secondary-bg);
+  }
+
+  .all-bookings__search-btn .all-bookings__search-label {
+    display: inline;
   }
 
   .body[data-screen="overview"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,

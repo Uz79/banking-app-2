@@ -21,6 +21,16 @@ Do not edit `*.stories.mjs` under `design-export/` by hand.
 
 `Live/Pages/Account Details` loads app IIFEs via `.storybook/load-app-scripts.js` in the story `play` function. `app-mp.js` and `data-render.js` use `onDocumentReady()` so init runs even when scripts load after the document is ready.
 
+## CSS parity with the app
+
+`.storybook/preview.js` imports the same stylesheets as HTML pages, in the same order:
+
+1. `css/tokens.css` (generated)
+2. `css/typography.css` (generated — trim + `.type-*` classes)
+3. `css/styles.css` (components)
+
+`npm run storybook` runs `tokens:build` first. If typography looks wrong after a Figma import, fix `designs/tokens/*.json` and rebuild — see `designs/tokens/README.md`.
+
 ## Run Storybook
 
 ```bash

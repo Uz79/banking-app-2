@@ -166,6 +166,95 @@
     }
   };
 
+  var ACCOUNT_SNAPSHOTS = {
+    household: {
+      name: 'Household',
+      iban: 'CH35 0900 0000 2470 2920 1',
+      balance: "CHF 10'000.00",
+      icon: '#i-home'
+    },
+    savings: {
+      name: 'Savings account',
+      iban: 'CH35 0900 0000 2470 2920 2',
+      balance: "CHF 25'000.00",
+      icon: '#i-anchor'
+    },
+    deposit: {
+      name: 'Deposit',
+      iban: '123,456.78',
+      balance: "CHF 20'000.00",
+      icon: '#i-life-buoy'
+    }
+  };
+
+  function isAllBookingsScreen() {
+    return document.body.getAttribute('data-screen') === 'all-bookings';
+  }
+
+  function findAccountSnapshotByLabel(label) {
+    if (!label) return null;
+    var needle = label.toLowerCase().trim();
+    var keys = Object.keys(ACCOUNT_SNAPSHOTS);
+    for (var i = 0; i < keys.length; i++) {
+      var snap = ACCOUNT_SNAPSHOTS[keys[i]];
+      if ((snap.name || '').toLowerCase().trim() === needle) return snap;
+    }
+    if (needle.indexOf('household') >= 0) return ACCOUNT_SNAPSHOTS.household;
+    if (needle.indexOf('saving') >= 0) return ACCOUNT_SNAPSHOTS.savings;
+    if (needle.indexOf('deposit') >= 0) return ACCOUNT_SNAPSHOTS.deposit;
+    return null;
+  }
+
+  function isInternalTransferRow(row) {
+    var iconUse = row.querySelector('.booking-row__icon use');
+    return !!(iconUse && iconUse.getAttribute('href') === '#i-repeat');
+  }
+
+  function buildAllBookingsRowData(row, displayName) {
+    var curEl = row.querySelector('.booking-row__currency');
+    var valEl = row.querySelector('.booking-row__value');
+    var amount = valEl ? valEl.textContent.trim() : '';
+    var currency = curEl ? curEl.textContent.trim() : 'CHF';
+    var accountKey = window.__UZ_ACTIVE_ACCOUNT__ || 'savings';
+    var debit = ACCOUNT_SNAPSHOTS[accountKey] || ACCOUNT_SNAPSHOTS.savings;
+
+    if (isInternalTransferRow(row) || /^transfer to /i.test(displayName)) {
+      var targetLabel = displayName.replace(/^Transfer to /i, '').trim();
+      var credit = findAccountSnapshotByLabel(targetLabel) || {
+        name: targetLabel,
+        iban: 'CH35 0900 0000 2470 2920 0',
+        balance: "CHF 0.00",
+        icon: '#i-home'
+      };
+
+      return {
+        type: 'internal',
+        title: 'Internal Account Transfer',
+        amount: amount,
+        currency: currency,
+        debit: debit,
+        credit: credit,
+        status: 'executed',
+        message: null
+      };
+    }
+
+    var recipient = findRecipientByName(displayName);
+    var toStr = recipient
+      ? recipient.name + '\n' + recipient.street + '\n' + recipient.city
+      : displayName;
+
+    return {
+      type: 'domestic',
+      title: 'Domestic Payment',
+      amount: amount,
+      currency: currency,
+      to: toStr,
+      status: 'executed',
+      message: null
+    };
+  }
+
   function getBookingMap() {
     var account = window.__UZ_ACTIVE_ACCOUNT__ || 'household';
     if (account === 'savings') return BOOKING_MAP_SAVINGS;
@@ -460,8 +549,14 @@
         var wantType = route.type === 'internal' ? 'internal' : 'domestic';
         var dataType = currentPaymentData.type === 'internal' ? 'internal' : 'domestic';
         var idMatches = !route.bookingId || route.bookingId === currentBookingRouteId;
-        if (wantType === dataType && idMatches && !overlay.classList.contains('modal-overlay--active')) {
-          openOverlay(currentPaymentData, { skipRoute: true });
+        if (wantType === dataType && idMatches) {
+          if (!overlay.classList.contains('modal-overlay--active')) {
+            openOverlay(currentPaymentData, { skipRoute: true });
+          } else {
+            /* Route sync after pushState — cancel a stale close and restore scrim. */
+            isClosing = false;
+            overlay.classList.remove('modal-overlay--closing');
+          }
         }
       }
       return;
@@ -527,11 +622,12 @@
     if (furtherContent) furtherContent.hidden = true;
     if (messageValEl)   messageValEl.textContent = data.message || '';
 
-    // Slide overlay in
+    // Slide overlay in (mirror payment-overlay.js — clear stale close state on overlay + shell)
     if (shell) {
       shell.classList.remove('modal-shell--closing');
       shell.classList.add('modal-shell--offscreen', 'modal-shell--no-transition');
     }
+    overlay.classList.remove('modal-overlay--closing');
     overlay.classList.add('modal-overlay--active');
     overlay.setAttribute('aria-hidden', 'false');
     document.body.classList.add('body--payment-open');
@@ -553,6 +649,7 @@
       } else {
         notifyScreen();
       }
+      applyPaymentDetailsRoute();
     }
   }
 
@@ -594,7 +691,7 @@
   function finishClose(fromRoute) {
     fromRoute = fromRoute === true;
     isClosing = false;
-    overlay.classList.remove('modal-overlay--active');
+    overlay.classList.remove('modal-overlay--active', 'modal-overlay--closing');
     overlay.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('body--payment-open');
     if (shell) {
@@ -685,10 +782,14 @@
     currentBookingId = row.getAttribute('data-booking-id') || null;
     currentBookingRouteId = resolveBookingRouteId(row, currentBookingId);
 
-    // Dynamic rows (data-booking-id present) always use live DOM values — never
-    // the static BOOKING_MAP, even if the recipient name happens to match a key
-    // (e.g. a dynamically-committed "Apple" payment after editing the mock row).
-    var data = currentBookingId ? null : getBookingMap()[name];
+    var displayName = nameEl ? nameEl.textContent.trim() : '';
+    var data = null;
+
+    if (isAllBookingsScreen() && row.getAttribute('data-mock-booking') === 'static') {
+      data = buildAllBookingsRowData(row, displayName);
+    } else {
+      data = currentBookingId ? null : getBookingMap()[name];
+    }
 
     if (!data && currentBookingId) {
       data = buildDataFromStateBooking(getStateBooking(currentBookingId), row);

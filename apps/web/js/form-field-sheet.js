@@ -61,7 +61,7 @@
    * + designs/screens/flows/main-view-contextual-menu-navigation-flow.png (journey reference).
    */
   var MORE_FUNCTIONS_ITEMS = [
-    { icon: 'i-repeat', label: 'Internal account transfer', action: 'internal-account-transfer' },
+    { icon: 'i-arrow-right', label: 'Show all bookings', action: 'show-all-bookings' },
     { icon: 'i-edit-2', label: 'Change category', action: 'change-category' },
     { icon: 'i-eye', label: 'Show account information', action: 'show-account-information' }
   ];

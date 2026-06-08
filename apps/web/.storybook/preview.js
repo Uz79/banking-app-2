@@ -1,4 +1,6 @@
+/* Same CSS stack as app pages: tokens → typography → styles */
 import '../css/tokens.css';
+import '../css/typography.css';
 import '../css/styles.css';
 
 // Inject the SVG sprite into the document once so <use href="#i-*"> references work.

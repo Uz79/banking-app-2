@@ -1,0 +1,51 @@
+{
+  "name": "all-bookings-and-payments",
+  "category": "shell",
+  "description": "Full bookings list for one account — status tabs, month filter, searchable history.",
+  "interactionStates": [
+    "default",
+    "scroll"
+  ],
+  "flow": "../../flows/all-bookings-and-payments.png",
+  "assets": {
+    "overview": "overview.png",
+    "variants": {
+      "desktop-default": {
+        "default": "variants/desktop-default/default.svg"
+      },
+      "desktop-content-indication": {
+        "default": "variants/desktop-content-indication/default.svg"
+      },
+      "desktop-sticky-nav-bar": {
+        "default": "variants/desktop-sticky-nav-bar/default.svg"
+      },
+      "mobile-default": {
+        "default": "variants/mobile-default/default.svg"
+      },
+      "mobile-content-indication": {
+        "default": "variants/mobile-content-indication/default.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": [
+    "Figma `Size=Mobile, Type=Default` → variants/mobile-default/ (default.svg + default.png).",
+    "Figma `Size=Mobile, Type=Sticky TopBar` → variants/mobile-content-indication/ (title + month in one sticky card + scroll shadow).",
+    "Figma `Size=Desktop, Type=Default` → variants/desktop-default/.",
+    "Figma `Size=Desktop, Type=Sticky TopBar` → variants/desktop-content-indication/.",
+    "Figma `Size=Desktop, Type=Sticky NavBar` → variants/desktop-sticky-nav-bar/ (account summary + month in one sticky card after title scrolls off).",
+    "Sticky UI rule: one container per phase — do not split title and month into separate sticky elements.",
+    "Entry: account-details bookings card or More functions → Show all bookings (see flow PNG).",
+    "App route: all-bookings-and-payments.html?account=<key>."
+  ]
+}

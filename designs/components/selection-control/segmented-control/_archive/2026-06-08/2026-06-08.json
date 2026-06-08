@@ -1,0 +1,17 @@
+{
+  "date": "2026-06-08",
+  "component": "segmented-control",
+  "variantsAdded": [
+    "small-left-active",
+    "small-right-active"
+  ],
+  "variantsUpdated": [
+    "regular-left-active",
+    "regular-right-active"
+  ],
+  "archivedPaths": [
+    "_archive/2026-06-08/raw-exports/",
+    "_archive/2026-06-08/variants/regular-left-active/default.svg",
+    "_archive/2026-06-08/variants/regular-right-active/default.svg"
+  ]
+}

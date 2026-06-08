@@ -31,6 +31,7 @@ The **`category`** field in JSON groups screens logically: **`shell`**, **`payme
 |--------|-------|
 | `overview` | Home / dashboard |
 | `account-details` | Account surface |
+| `all-bookings-and-payments` | Full bookings list (`mobile-default`, `mobile-content-indication`, `desktop-default`, `desktop-content-indication`, `desktop-sticky-nav-bar`; entry from account details) |
 | `account-information` | Account information disclosure (`desktop-default`, `desktop-full-screen`, `mobile-default`, `mobile-content-indication`) |
 | `share-information` | Share information screen (`desktop-default`, `desktop-full-screen`, `mobile-default`) |
 | `payments` | Payments landing |
@@ -60,4 +61,9 @@ Legacy Title Case filenames (“Payment Flow … - mobile”, “Screen Overview
 | `Screen Overview - desktop` | `overview/variants/desktop-default/` |
 | `Payment - desktop` / `Payment - mobile` | `payments/variants/desktop-default/` / `mobile-default/` |
 | `Account Details - *` | `account-details/variants/` |
+| `All Bookings - mobile` / `Size=Mobile, Type=Default` | `all-bookings-and-payments/variants/mobile-default/` |
+| `Size=Mobile, Type=Sticky TopBar` | `all-bookings-and-payments/variants/mobile-content-indication/` |
+| `Size=Desktop, Type=Default` | `all-bookings-and-payments/variants/desktop-default/` |
+| `Size=Desktop, Type=Sticky TopBar` | `all-bookings-and-payments/variants/desktop-content-indication/` |
+| `Size=Desktop, Type=Sticky NavBar` | `all-bookings-and-payments/variants/desktop-sticky-nav-bar/` |
 | `Account Information - *` | `account-information/variants/` (use `mobile-content-indication` for Content Indication Effect frames) |

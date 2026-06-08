@@ -16,9 +16,9 @@
   "flowDocumentation": "../../../screens/flows/main-view-contextual-menu-navigation-flow.png",
   "menuItems": [
     {
-      "id": "internal-account-transfer",
-      "label": "Internal account transfer",
-      "icon": "i-repeat"
+      "id": "show-all-bookings",
+      "label": "Show all bookings",
+      "icon": "i-arrow-right"
     },
     {
       "id": "change-category",
@@ -37,7 +37,7 @@
     "dialogPattern": "dialog.form-sheet[data-form-sheet-type=\"more-functions\"]",
     "selectionEvent": "uz:more-functions-action",
     "eventDetail": {
-      "action": "internal-account-transfer | change-category | show-account-information",
+      "action": "show-all-bookings | change-category | show-account-information",
       "sourceView": "overview | account-details"
     }
   },
