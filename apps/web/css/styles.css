@@ -772,8 +772,8 @@ html:has(body.body--payment-open) {
 .product-item {
   display: flex;
   align-items: center;
-  padding: var(--space-2) var(--space-3);
-  gap: var(--space-3);
+  padding: var(--list-row-pad-y) var(--list-row-pad-x);
+  gap: var(--list-row-gap);
   cursor: pointer;
   border-radius: var(--radius-small);
 }
@@ -993,8 +993,8 @@ html:has(body.body--payment-open) {
 .list-item {
   display: flex;
   align-items: center;
-  padding: var(--space-2) var(--space-3);
-  gap: var(--space-3);
+  padding: var(--list-row-pad-y) var(--list-row-pad-x);
+  gap: var(--list-row-gap);
   cursor: pointer;
   border-radius: var(--radius-small);
 }
@@ -1063,7 +1063,7 @@ html:has(body.body--payment-open) {
  * Hug height: padding-block + content (icon / text-stack / amount). No fixed row height. */
 .list-item--group-account {
   align-items: center;
-  padding-block: var(--space-3); /* 16dp vertical inset */
+  padding-block: var(--list-row-pad-y);
   padding-inline: 0;
   gap: 0;
   width: 100%;
@@ -1086,7 +1086,7 @@ html:has(body.body--payment-open) {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-left: var(--space-3); /* Left Side — 16px inset */
+  padding-left: var(--list-row-pad-x);
   margin-right: var(--space-3); /* 16px icon to text */
 }
 
@@ -1111,7 +1111,7 @@ html:has(body.body--payment-open) {
   justify-content: flex-end;
   gap: var(--space-1); /* 8px currency to amount */
   padding-left: var(--space-1); /* Right Side — 8px */
-  padding-right: var(--space-3); /* Right Side — 16px */
+  padding-right: var(--list-row-pad-x);
 }
 
 .list-item--group-account .list-item__currency {
@@ -1438,8 +1438,8 @@ html:has(body.body--payment-open) {
 .booking-row {
   display: flex;
   align-items: center;
-  padding: var(--space-2) var(--space-3);
-  gap: var(--space-3);
+  padding: var(--list-row-pad-y) var(--list-row-pad-x);
+  gap: var(--list-row-gap);
   cursor: pointer;
   border-radius: var(--radius-small);
 }

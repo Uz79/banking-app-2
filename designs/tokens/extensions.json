@@ -1,0 +1,29 @@
+{
+  "$comment": "NOT from Figma — merged after each export. Safe to keep font-metrics, trim, and stack gaps here so tokens:build survives brand/alias re-imports.",
+  "brand": {
+    "font-metrics": {
+      "profile-pro": {
+        "units-per-em": { "value": "1000", "type": "other" },
+        "cap-height": { "value": "602", "type": "other" },
+        "typo-ascender": { "value": "785", "type": "other" },
+        "typo-descender": { "value": "215", "type": "other" }
+      }
+    }
+  },
+  "alias": {
+    "trim": {
+      "cap-height": { "value": "{font-metrics.profile-pro.cap-height}", "type": "other" },
+      "baseline": { "value": "{font-metrics.profile-pro.typo-descender}", "type": "other" },
+      "primary-trim-top": { "value": "{trim.cap-height}", "type": "other" },
+      "primary-trim-bottom": { "value": "{trim.baseline}", "type": "other" },
+      "stack-row-gap": { "value": "{space.1}", "type": "spacing" }
+    },
+    "component": {
+      "list-row": {
+        "padding-y": { "value": "{space.3}", "type": "spacing" },
+        "padding-x": { "value": "{space.3}", "type": "spacing" },
+        "gap": { "value": "{space.3}", "type": "spacing" }
+      }
+    }
+  }
+}

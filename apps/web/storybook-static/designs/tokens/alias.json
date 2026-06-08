@@ -53,10 +53,6 @@
         "value": "rgba(0, 21, 126, 0.1)",
         "type": "color"
       },
-      "900-20pc": {
-        "value": "rgba(0, 21, 126, 0.2)",
-        "type": "color"
-      },
       "900-0pc": {
         "value": "rgba(0, 21, 126, 0)",
         "type": "color"
@@ -123,10 +119,6 @@
       },
       "white-10pc": {
         "value": "rgba(255, 255, 255, 0.1)",
-        "type": "color"
-      },
-      "white-20pc": {
-        "value": "rgba(255, 255, 255, 0.2)",
         "type": "color"
       },
       "white-0pc": {

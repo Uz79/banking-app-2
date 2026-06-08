@@ -373,13 +373,14 @@
   }
 
   function closeOverlay(replaceState) {
+    overlay.classList.add('modal-overlay--closing');
     shell.classList.add('modal-shell--closing');
     shell.addEventListener('transitionend', function onEnd() {
       shell.removeEventListener('transitionend', onEnd);
       shell.classList.remove('modal-shell--closing');
       shell.classList.add('modal-shell--offscreen', 'modal-shell--no-transition');
       overlay.setAttribute('aria-hidden', 'true');
-      overlay.classList.remove('modal-overlay--active');
+      overlay.classList.remove('modal-overlay--active', 'modal-overlay--closing');
       document.body.classList.remove('body--iat-open');
     }, { once: true });
 

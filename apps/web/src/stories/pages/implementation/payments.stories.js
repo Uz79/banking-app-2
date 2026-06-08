@@ -82,7 +82,7 @@ export const StaticShell = {
                   <span class="section-card__date">28.05.2026</span>
                   <div class="list-item">
                     <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg>
-                    <div class="list-item__content"><span class="list-item__title">Rent</span></div>
+                    <div class="list-item__content"><span class="list-item__title type-sm type-trim">Rent</span></div>
                     <span class="list-item__amount">
                       <span class="list-item__currency">CHF</span>
                       <span class="list-item__value">2'050.00</span>
@@ -92,7 +92,7 @@ export const StaticShell = {
                   <span class="section-card__date">29.04.2026</span>
                   <div class="list-item">
                     <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg>
-                    <div class="list-item__content"><span class="list-item__title">Healthcare</span></div>
+                    <div class="list-item__content"><span class="list-item__title type-sm type-trim">Healthcare</span></div>
                     <span class="list-item__amount">
                       <span class="list-item__currency">CHF</span>
                       <span class="list-item__value">420.00</span>
@@ -115,19 +115,19 @@ export const StaticShell = {
                 <div class="section-card__body">
                   <div class="list-item">
                     <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-rotate-ccw"/></svg>
-                    <div class="list-item__content"><span class="list-item__title">Rent</span></div>
+                    <div class="list-item__content"><span class="list-item__title type-sm type-trim">Rent</span></div>
                     <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
                   </div>
                   <div class="divider"></div>
                   <div class="list-item">
                     <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-rotate-ccw"/></svg>
-                    <div class="list-item__content"><span class="list-item__title">Fonds Investment</span></div>
+                    <div class="list-item__content"><span class="list-item__title type-sm type-trim">Fonds Investment</span></div>
                     <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
                   </div>
                   <div class="divider"></div>
                   <div class="list-item">
                     <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-rotate-ccw"/></svg>
-                    <div class="list-item__content"><span class="list-item__title">Allowance</span></div>
+                    <div class="list-item__content"><span class="list-item__title type-sm type-trim">Allowance</span></div>
                     <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
                   </div>
                 </div>
@@ -140,21 +140,21 @@ export const StaticShell = {
                 <div class="section-card__body">
                   <div class="list-item">
                     <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-user"/></svg>
-                    <div class="list-item__content"><span class="list-item__title">Anna Müller</span></div>
+                    <div class="list-item__content"><span class="list-item__title type-sm type-trim">Anna Müller</span></div>
                     <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
                   </div>
                   <div class="divider"></div>
                   <div class="list-item">
                     <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-sunrise-logo"/></svg>
-                    <div class="list-item__content"><span class="list-item__title">Sunrise</span></div>
+                    <div class="list-item__content"><span class="list-item__title type-sm type-trim">Sunrise</span></div>
                     <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
                   </div>
                   <div class="divider"></div>
                   <div class="list-item">
                     <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-user"/></svg>
-                    <div class="list-item__content">
-                      <span class="list-item__title">Hans Meyer</span>
-                      <span class="list-item__subtitle">Rent</span>
+                    <div class="list-item__content type-stack-tight">
+                      <span class="list-item__title type-sm type-trim">Hans Meyer</span>
+                      <span class="list-item__subtitle type-xs type-trim">Rent</span>
                     </div>
                     <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
                   </div>

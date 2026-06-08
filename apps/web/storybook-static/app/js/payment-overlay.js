@@ -672,7 +672,7 @@
     editingBookingId = null;
     editingStaticRow = null;
     showStep();
-    modalOverlay.classList.remove('modal-overlay--active');
+    modalOverlay.classList.remove('modal-overlay--active', 'modal-overlay--closing');
     document.body.classList.remove('body--payment-open');
     if (confirmationOverlay) confirmationOverlay.classList.remove('confirmation-overlay--visible');
     if (modalFooter) modalFooter.style.display = '';
@@ -697,6 +697,7 @@
     }
 
     paymentFlowClosing = true;
+    modalOverlay.classList.add('modal-overlay--closing');
 
     if (modalShell) {
       modalShell.classList.remove('modal-shell--offscreen', 'modal-shell--no-transition');

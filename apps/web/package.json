@@ -9,8 +9,8 @@
     "build": "npm run tokens:build && vite build",
     "preview": "vite preview",
     "storybook:sync": "node scripts/generate-storybook-design-exports.mjs",
-    "storybook": "npm run storybook:sync && storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "storybook": "npm run tokens:build && npm run storybook:sync && storybook dev -p 6006",
+    "build-storybook": "npm run tokens:build && storybook build"
   },
   "devDependencies": {
     "vite": "^8.0.11",

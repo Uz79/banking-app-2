@@ -398,8 +398,11 @@
         /* One extra frame so max-height/layout from positionFormSheet is committed before comparing scroll metrics. */
         window.requestAnimationFrame(function () {
           syncFormSheetListOverflow();
-          var first = listEl.querySelector('button');
-          if (first) first.focus();
+          /* Keyboard only — programmatic focus shows a ring on touch (iOS). */
+          if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+            var first = listEl.querySelector('button');
+            if (first) first.focus();
+          }
         });
       });
     });

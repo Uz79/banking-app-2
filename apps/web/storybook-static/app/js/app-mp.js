@@ -325,9 +325,15 @@
 
   global.UZBankApplyTheme = applyTheme;
 
-  (global.onDocumentReady || function (fn) {
-    document.addEventListener('DOMContentLoaded', fn);
-  })(function () {
+  function onDocumentReady(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn);
+    } else {
+      fn();
+    }
+  }
+
+  onDocumentReady(function () {
     function getTheme() {
       var t = document.documentElement.getAttribute('data-theme');
       return t === 'light' || t === 'dark' ? t : 'dark';
@@ -584,19 +590,27 @@
 
     function bindMainScrollChrome() {
       var screen = document.body.getAttribute('data-screen');
-      if (screen !== 'overview' && screen !== 'payments' && screen !== 'account-details') return;
+      if (screen !== 'overview' && screen !== 'payments' && screen !== 'account-details' && screen !== 'profile') return;
 
       var mainContent = document.querySelector('.main-content');
+      var app = document.querySelector('.app');
       var view = document.querySelector('.view--active');
-      if (!mainContent || !view || !window.UZBankScrollEdgeChrome) return;
+      if (!mainContent || !app || !view || !window.UZBankScrollEdgeChrome) return;
       if (!view.querySelector('[data-scroll-edge-nav]')) return;
 
-      window.UZBankScrollEdgeChrome.bind(view, {
+      var bindOptions = {
         nav: '[data-scroll-edge-nav]',
         getScrollEl: function () {
           return mainContent;
         }
-      });
+      };
+
+      /* Mobile / tablet tab bar: bottom content-indication shadow when scroll continues below. */
+      if (window.matchMedia('(max-width: 1279px)').matches && app.querySelector('.tab-bar')) {
+        bindOptions.footer = '.tab-bar';
+      }
+
+      window.UZBankScrollEdgeChrome.bind(app, bindOptions);
     }
 
     bindMainScrollChrome();

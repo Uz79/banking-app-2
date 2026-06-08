@@ -85,9 +85,9 @@ export const StaticShell = {
                 <div class="section-card__body">
                   <a class="product-item" href="#">
                     <svg class="product-item__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
-                    <div class="product-item__info">
-                      <span class="product-item__name">Household</span>
-                      <span class="product-item__iban">CH35 0900 0000 2470 2920 1</span>
+                    <div class="product-item__info type-stack-tight">
+                      <span class="product-item__name type-sm type-trim">Household</span>
+                      <span class="product-item__iban type-xs type-trim">CH35 0900 0000 2470 2920 1</span>
                     </div>
                     <span class="product-item__amount">
                       <span class="product-item__currency">CHF</span>
@@ -97,9 +97,9 @@ export const StaticShell = {
                   <div class="divider"></div>
                   <a class="product-item" href="#">
                     <svg class="product-item__icon" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg>
-                    <div class="product-item__info">
-                      <span class="product-item__name">Savings account</span>
-                      <span class="product-item__iban">CH35 0900 0000 2470 2920 2</span>
+                    <div class="product-item__info type-stack-tight">
+                      <span class="product-item__name type-sm type-trim">Savings account</span>
+                      <span class="product-item__iban type-xs type-trim">CH35 0900 0000 2470 2920 2</span>
                     </div>
                     <span class="product-item__amount">
                       <span class="product-item__currency">CHF</span>
@@ -109,9 +109,9 @@ export const StaticShell = {
                   <div class="divider"></div>
                   <div class="product-item">
                     <svg class="product-item__icon" aria-hidden="true" focusable="false"><use href="#i-life-buoy"/></svg>
-                    <div class="product-item__info">
-                      <span class="product-item__name">Deposit</span>
-                      <span class="product-item__iban">123.456.78</span>
+                    <div class="product-item__info type-stack-tight">
+                      <span class="product-item__name type-sm type-trim">Deposit</span>
+                      <span class="product-item__iban type-xs type-trim">123.456.78</span>
                     </div>
                     <span class="product-item__amount">
                       <span class="product-item__currency">CHF</span>
@@ -121,9 +121,9 @@ export const StaticShell = {
                   <div class="divider"></div>
                   <div class="product-item">
                     <svg class="product-item__icon" aria-hidden="true" focusable="false"><use href="#i-anchor"/></svg>
-                    <div class="product-item__info">
-                      <span class="product-item__name">Retirement savings 3a</span>
-                      <span class="product-item__iban">7740205-08</span>
+                    <div class="product-item__info type-stack-tight">
+                      <span class="product-item__name type-sm type-trim">Retirement savings 3a</span>
+                      <span class="product-item__iban type-xs type-trim">7740205-08</span>
                     </div>
                     <span class="product-item__amount">
                       <span class="product-item__currency">CHF</span>
@@ -140,9 +140,9 @@ export const StaticShell = {
                 <div class="section-card__body">
                   <div class="list-item">
                     <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-credit-card"/></svg>
-                    <div class="list-item__content">
-                      <span class="list-item__title">VISA Gold</span>
-                      <span class="list-item__subtitle">available CHF 4'700.00</span>
+                    <div class="list-item__content type-stack-tight">
+                      <span class="list-item__title type-sm type-trim">VISA Gold</span>
+                      <span class="list-item__subtitle type-xs type-trim">available CHF 4'700.00</span>
                     </div>
                     <span class="list-item__amount">
                       <span class="list-item__currency">Limit CHF</span>
@@ -161,27 +161,27 @@ export const StaticShell = {
                 <div class="section-card__body">
                   <div class="list-item">
                     <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg>
-                    <div class="list-item__content">
-                      <span class="list-item__title">Accounts</span>
-                      <span class="list-item__subtitle">Private &amp; saving accounts</span>
+                    <div class="list-item__content type-stack-tight">
+                      <span class="list-item__title type-sm type-trim">Accounts</span>
+                      <span class="list-item__subtitle type-xs type-trim">Private &amp; saving accounts</span>
                     </div>
                     <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
                   </div>
                   <div class="divider"></div>
                   <div class="list-item">
                     <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-credit-card"/></svg>
-                    <div class="list-item__content">
-                      <span class="list-item__title">Cards</span>
-                      <span class="list-item__subtitle">Order NEW cards, monitor</span>
+                    <div class="list-item__content type-stack-tight">
+                      <span class="list-item__title type-sm type-trim">Cards</span>
+                      <span class="list-item__subtitle type-xs type-trim">Order NEW cards, monitor</span>
                     </div>
                     <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
                   </div>
                   <div class="divider"></div>
                   <div class="list-item">
                     <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-trending-up"/></svg>
-                    <div class="list-item__content">
-                      <span class="list-item__title">Investment</span>
-                      <span class="list-item__subtitle">Fonds, trading, asset management</span>
+                    <div class="list-item__content type-stack-tight">
+                      <span class="list-item__title type-sm type-trim">Investment</span>
+                      <span class="list-item__subtitle type-xs type-trim">Fonds, trading, asset management</span>
                     </div>
                     <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
                   </div>

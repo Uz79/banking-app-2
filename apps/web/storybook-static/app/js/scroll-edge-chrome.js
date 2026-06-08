@@ -27,6 +27,8 @@
     function isFooterVisible() {
       if (!footer) return false;
       if (footer.style.display === 'none') return false;
+      var position = window.getComputedStyle(footer).position;
+      if (position === 'fixed' || position === 'sticky') return true;
       return footer.offsetParent !== null;
     }
 
@@ -49,6 +51,8 @@
       if (position === 'sticky' || position === '-webkit-sticky') {
         /* Nav inside the scrollport (main views): pinned when its top meets the scroll edge. */
         if (boundScrollEl.contains(nav)) {
+          /* At scrollTop 0 the nav sits at the scroll edge but nothing is hidden behind it yet. */
+          if (boundScrollEl.scrollTop <= 1) return false;
           var scrollRect = boundScrollEl.getBoundingClientRect();
           var navRect = nav.getBoundingClientRect();
           return navRect.top <= scrollRect.top + 1;

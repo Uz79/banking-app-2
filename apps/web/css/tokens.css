@@ -1,3 +1,5 @@
+/* GENERATED — do not edit. Source: designs/tokens/* + extensions.json → npm run tokens:build */
+
 @font-face {
   font-family: 'Profile Pro';
   src: url('../assets/fonts/ProfilePro-Regular.otf') format('opentype');
@@ -113,8 +115,13 @@
   --trim-bottom-caption: 4.98px;
   --ps-caption: 0.5rem;
 
-  /* Tight row gap for stacked trimmed labels — Figma space/2 (8dp) */
+  /* Tight title/subtitle stack — alias.trim.stack-row-gap (default space/1 = 8dp) */
   --text-row-gap: var(--space-1);
+
+  /* List row — Figma grouped/wealth account row (56dp hug, space/3 insets) */
+  --list-row-pad-y: var(--space-3);
+  --list-row-pad-x: var(--space-3);
+  --list-row-gap: var(--space-3);
 
   --btn-pad-y-sm: 0;
   --btn-pad-x-sm: var(--space-2);
@@ -153,7 +160,7 @@ html[data-theme="light"] {
   --color-btn-secondary-border: #00157E;
   --color-btn-secondary-fg: #00157E;
   --color-btn-secondary-hover: rgba(0, 21, 126, 0.1);
-  --color-btn-secondary-pressed: rgba(0, 21, 126, 0.2);
+  --color-btn-secondary-pressed: {color.primary.900-20pc};
 
   --color-btn-tonal-bg: #F1F2F8;
   --color-btn-tonal-border: #F1F2F8;
@@ -202,7 +209,7 @@ html[data-theme="dark"] {
   --color-btn-secondary-border: #FFFFFF;
   --color-btn-secondary-fg: #FFFFFF;
   --color-btn-secondary-hover: rgba(255, 255, 255, 0.1);
-  --color-btn-secondary-pressed: rgba(255, 255, 255, 0.2);
+  --color-btn-secondary-pressed: {color.neutral.white-20pc};
 
   --color-btn-tonal-bg: #39499B;
   --color-btn-tonal-border: #39499B;

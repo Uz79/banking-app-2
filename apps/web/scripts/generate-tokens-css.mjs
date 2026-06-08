@@ -12,8 +12,32 @@ const typographyOutFile = path.join(repoRoot, "apps/web/css/typography.css");
 
 const readJson = (p) => JSON.parse(fs.readFileSync(p, "utf8"));
 
-const brand = readJson(path.join(tokensDir, "brand.json"));
-const alias = readJson(path.join(tokensDir, "alias.json"));
+/** Deep-merge token trees; `extensions.json` overlays Figma exports (font-metrics, trim, etc.). */
+function mergeTokenTrees(base, ext) {
+  if (!ext || typeof ext !== "object") return base;
+  const out = { ...base };
+  for (const [key, val] of Object.entries(ext)) {
+    if (key.startsWith("$")) continue;
+    if (val && typeof val === "object" && !("value" in val) && !("type" in val)) {
+      out[key] = mergeTokenTrees(out[key] || {}, val);
+    } else {
+      out[key] = val;
+    }
+  }
+  return out;
+}
+
+const extensionsPath = path.join(tokensDir, "extensions.json");
+const extensions = fs.existsSync(extensionsPath) ? readJson(extensionsPath) : {};
+
+const brand = mergeTokenTrees(
+  readJson(path.join(tokensDir, "brand.json")),
+  extensions.brand
+);
+const alias = mergeTokenTrees(
+  readJson(path.join(tokensDir, "alias.json")),
+  extensions.alias
+);
 const light = readJson(path.join(tokensDir, "mapped/light.json"));
 const dark = readJson(path.join(tokensDir, "mapped/dark.json"));
 const mobile = readJson(path.join(tokensDir, "responsive/mobile.json"));
@@ -104,9 +128,40 @@ function trimPx(value) {
   return `${Number(value).toFixed(3).replace(/\.?0+$/, "")}px`;
 }
 
+/** Resolve alias ref like `{space.3}` → `var(--space-3)` for generated component vars. */
+function aliasSpaceVar(map, dottedPath, fallback = "var(--space-1)") {
+  const raw = String(tokenValue(get(map, dottedPath)) || "");
+  const spaceRef = /^\{space\.(\d+)\}$/.exec(raw.trim());
+  if (spaceRef) return `var(--space-${spaceRef[1]})`;
+  const resolved = resolveTokenString(raw);
+  if (/^\d+(\.\d+)?$/.test(resolved)) return `${resolved}px`;
+  return fallback;
+}
+
+function assertTypographyPipeline(vars, metrics) {
+  const errors = [];
+  if (!metrics.unitsPerEm) {
+    errors.push("font-metrics.profile-pro is missing — add to designs/tokens/extensions.json");
+  }
+  if (!vars.textSm?.trimTop) {
+    errors.push("--trim-top-text-sm computed as 0 — font-metrics or paragraph.sm tokens are invalid");
+  }
+  if (!vars.textXs?.trimTop) {
+    errors.push("--trim-top-text-xs computed as 0");
+  }
+  if (errors.length) {
+    throw new Error(
+      `tokens:build typography validation failed:\n${errors.map((e) => `  - ${e}`).join("\n")}`
+    );
+  }
+}
+
 function isLeadingTrimEnabled(node) {
   const v = node?.leadingTrim?.value;
-  return v === true || v === "true";
+  if (v === false || v === "false") return false;
+  if (v === true || v === "true") return true;
+  /* Product markup uses .type-trim on body/label styles; opt-out via leadingTrim: false in tokens. */
+  return true;
 }
 
 function fontWeightKey(node) {
@@ -287,7 +342,9 @@ function typographyClassesCss(vars) {
     .map(({ className }) => `.type-${className}.type-trim`)
     .join(",\n");
 
-  return `/* Generated from designs/tokens/* — bundled semantic text styles */
+  return `/* GENERATED — do not edit. Source: designs/tokens/* + extensions.json → npm run tokens:build */
+
+/* Generated from designs/tokens/* — bundled semantic text styles */
 
 ${typeRules}
 
@@ -306,11 +363,13 @@ ${typeRules}
   margin-block-end: calc(-1 * var(--text-trim-bottom, 0px));
 }
 
-${trimStyles} {
+${trimStyles
+    ? `${trimStyles} {
   display: block;
   margin-block-start: calc(-1 * var(--text-trim-top));
   margin-block-end: calc(-1 * var(--text-trim-bottom));
-}
+}`
+    : ""}
 
 /* Stacked trimmed lines — .type-stack-tight + .type-trim; row gap via trim-aware margins */
 .type-stack-tight {
@@ -338,7 +397,54 @@ ${trimStyles} {
   margin-block: 0;
 }
 
-/* Margin-based trim only — text-box-trim caused inconsistent stack/row layout in modals and carousels. */
+/* Margin fallback — always available for unsupported browsers and opt-out contexts */
+@supports (text-box-trim: trim-both) {
+  .type-trim {
+    display: block;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+    margin-block-start: 0;
+    margin-block-end: 0;
+  }
+
+  .type-stack-tight {
+    gap: var(--text-row-gap);
+  }
+
+  .type-stack-tight > .type-sm.type-trim + .type-xs.type-trim {
+    margin-block-start: 0;
+  }
+
+  /* Modals + carousel — margin trim only (text-box-trim breaks fixed-height rows there) */
+  .modal-overlay .type-trim,
+  .carousel .type-trim {
+    text-box-trim: none;
+    text-box-edge: auto;
+    margin-block-start: calc(-1 * var(--text-trim-top, 0px));
+    margin-block-end: calc(-1 * var(--text-trim-bottom, 0px));
+  }
+
+  .modal-overlay .type-stack-tight,
+  .carousel .type-stack-tight {
+    gap: 0;
+  }
+
+  .modal-overlay .type-stack-tight > .type-sm.type-trim + .type-xs.type-trim,
+  .carousel .type-stack-tight > .type-sm.type-trim + .type-xs.type-trim {
+    margin-block-start: calc(
+      var(--text-row-gap) - var(--trim-bottom-text-sm) - var(--trim-top-text-xs)
+    );
+  }
+
+  .list-item__amount .type-trim,
+  .list-item__currency.type-trim,
+  .list-item__value.type-trim,
+  .list-item--group-account .list-item__end .type-trim {
+    display: inline;
+    text-box-trim: none;
+    margin-block: 0;
+  }
+}
 `;
 }
 
@@ -486,7 +592,14 @@ const metrics = fontMetrics();
 const mob = typographyVars(mobile, metrics);
 const desk = typographyVars(desktop, metrics);
 
-const css = `@font-face {
+const GENERATED_BANNER = `/* GENERATED — do not edit. Source: designs/tokens/* + extensions.json → npm run tokens:build */\n\n`;
+
+const textRowGap = aliasSpaceVar(alias, "trim.stack-row-gap", "var(--space-1)");
+const listRowPadY = aliasSpaceVar(alias, "component.list-row.padding-y", "var(--space-3)");
+const listRowPadX = aliasSpaceVar(alias, "component.list-row.padding-x", "var(--space-3)");
+const listRowGap = aliasSpaceVar(alias, "component.list-row.gap", "var(--space-3)");
+
+const css = `${GENERATED_BANNER}@font-face {
   font-family: 'Profile Pro';
   src: url('../assets/fonts/ProfilePro-Regular.otf') format('opentype');
   font-weight: 400;
@@ -555,8 +668,13 @@ ${typographySizeCss(mob, "mobile")}
   /* Leading trim — Profile Pro cap → baseline (computed from brand font-metrics) */
 ${typographyTrimCss(mob)}
 
-  /* Tight row gap for stacked trimmed labels — Figma space/2 (8dp) */
-  --text-row-gap: var(--space-1);
+  /* Tight title/subtitle stack — alias.trim.stack-row-gap (default space/1 = 8dp) */
+  --text-row-gap: ${textRowGap};
+
+  /* List row — Figma grouped/wealth account row (56dp hug, space/3 insets) */
+  --list-row-pad-y: ${listRowPadY};
+  --list-row-pad-x: ${listRowPadX};
+  --list-row-gap: ${listRowGap};
 
   --btn-pad-y-sm: 0;
   --btn-pad-x-sm: var(--space-2);
@@ -598,7 +716,12 @@ ${typographyTrimCss(desk)}
 }
 `;
 
+assertTypographyPipeline(mob, metrics);
+
 fs.writeFileSync(outFile, css, "utf8");
 fs.writeFileSync(typographyOutFile, typographyClassesCss(mob), "utf8");
 console.log(`Wrote ${outFile}`);
 console.log(`Wrote ${typographyOutFile}`);
+console.log(`  --text-row-gap: ${textRowGap}`);
+console.log(`  --list-row-pad-y: ${listRowPadY}`);
+console.log(`  --trim-top-text-sm: ${trimPx(mob.textSm.trimTop)}`);

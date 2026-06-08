@@ -23,3 +23,15 @@ Place new exports under `variants/<slug>/` as `default.svg` + `default.png` (+ `
 - `default`
 - `hover` (when exported)
 - `focus` (exported as `Pressed` in Figma)
+
+## Spacing (account rows)
+
+Grouped-top and wealth-overview account rows in Figma use **56dp hug height** with **space/3 (16dp)** vertical padding and horizontal insets on the leading/trailing sides.
+
+| Token alias | CSS variable | Default | Used by |
+|-------------|--------------|---------|---------|
+| `component.list-row.padding-y` | `--list-row-pad-y` | `{space.3}` → 16dp | `.product-item`, `.list-item`, `.booking-row`, `.list-item--group-account` |
+| `component.list-row.padding-x` | `--list-row-pad-x` | `{space.3}` → 16dp | same |
+| `component.list-row.gap` | `--list-row-gap` | `{space.3}` → 16dp | icon ↔ text ↔ amount |
+
+Override in `designs/tokens/extensions.json` (survives Figma re-import), then `npm run tokens:build`. Storybook **Live → Components → List item → List row spacing** reads computed values from the DOM.

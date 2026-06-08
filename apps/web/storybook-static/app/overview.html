@@ -175,7 +175,7 @@
               </span>
               <span class="action-button__label">Pay</span>
             </button>
-            <button class="action-button" type="button">
+            <button class="action-button" type="button" data-action="iat">
               <span class="action-button__circle">
                 <svg class="action-button__icon" aria-hidden="true" focusable="false"><use href="#i-repeat"/></svg>
               </span>
@@ -571,8 +571,8 @@
 
   <div class="confirmation-overlay">
     <div class="confirmation-dialog">
-      <div class="confirmation-dialog__icon">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <div class="confirmation-dialog__icon" aria-hidden="true">
+        <svg class="confirmation-dialog__icon-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2"/>
           <path d="M15 24L21 30L33 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -593,6 +593,201 @@
   </div>
 </div>
 
+<!-- ===== INTERNAL ACCOUNT TRANSFER FLOW (hash: #iat/<step>) ===== -->
+<div id="uz-iat-overlay" class="modal-overlay" aria-hidden="true">
+  <div class="modal-shell modal-shell--offscreen modal-shell--no-transition">
+    <div class="modal modal--iat-flow">
+
+      <!-- Nav -->
+      <div class="modal__nav">
+        <button class="modal__back" type="button" aria-label="Back" id="uz-iat-back">
+          <svg class="modal__back-icon" role="img" aria-label="" focusable="false"><use href="#i-arrow-left"/></svg>
+        </button>
+        <span class="modal__title" id="uz-iat-title">Amount &amp; recipient</span>
+        <button class="modal__close" type="button" aria-label="Close" id="uz-iat-close">
+          <svg class="modal__close-icon" role="img" aria-label="" focusable="false"><use href="#i-x"/></svg>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal__body">
+
+        <!-- Step 0: Amount & Recipient -->
+        <div class="modal__step modal__step--active" data-iat-step="recipient">
+          <div class="form">
+            <p class="iat-intro">I want to transfer internally</p>
+
+            <div class="form-field">
+              <span class="form-field__label">Amount</span>
+              <div class="amount-input">
+                <span class="amount-input__currency">
+                  <span id="uz-iat-currency-label">CHF</span>
+                  <svg class="amount-input__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+                </span>
+                <input class="amount-input__value" type="text" inputmode="decimal" value="500.00" id="uz-iat-amount-input" aria-label="Amount" />
+                <button type="button" class="amount-input__clear amount-input__clear--hidden" aria-label="Clear amount" id="uz-iat-amount-clear">
+                  <svg class="amount-input__clear-icon" aria-hidden="true" focusable="false"><use href="#i-x-circle"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <span class="form-field__label">from</span>
+              <button class="debit-account" type="button" id="uz-iat-from-btn" aria-label="Select debit account">
+                <svg class="debit-account__icon" id="uz-iat-from-icon" aria-hidden="true" focusable="false"><use href="#i-anchor"/></svg>
+                <div class="debit-account__info">
+                  <span class="debit-account__name" id="uz-iat-from-name">Savings Account</span>
+                  <span class="debit-account__iban" id="uz-iat-from-iban">CH35 0900 0000 2470 2920 2</span>
+                </div>
+                <div class="debit-account__end">
+                  <span class="debit-account__amount">
+                    <span class="debit-account__amount-currency" id="uz-iat-from-currency">CHF</span>
+                    <span class="debit-account__amount-value" id="uz-iat-from-balance">25'000.00</span>
+                  </span>
+                  <svg class="debit-account__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+                </div>
+              </button>
+            </div>
+
+            <div class="form-field">
+              <span class="form-field__label">to</span>
+              <button class="debit-account" type="button" id="uz-iat-to-btn" aria-label="Select credit account">
+                <svg class="debit-account__icon" id="uz-iat-to-icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
+                <div class="debit-account__info">
+                  <span class="debit-account__name" id="uz-iat-to-name">Household</span>
+                  <span class="debit-account__iban" id="uz-iat-to-iban">CH35 0900 0000 2470 2920 1</span>
+                </div>
+                <div class="debit-account__end">
+                  <span class="debit-account__amount">
+                    <span class="debit-account__amount-currency" id="uz-iat-to-currency">CHF</span>
+                    <span class="debit-account__amount-value" id="uz-iat-to-balance">10'000.00</span>
+                  </span>
+                  <svg class="debit-account__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 1: Time schedule -->
+        <div class="modal__step" data-iat-step="schedule">
+          <div class="form">
+            <div class="segmented segmented--full" role="group" aria-label="Execution type" id="uz-iat-exec-type">
+              <button type="button" class="segmented__option segmented__option--active" data-exec="single">Single execution</button>
+              <button type="button" class="segmented__option" data-exec="recurring">Recurring execution</button>
+            </div>
+
+            <div class="iat-toggle-row">
+              <span class="iat-toggle-row__label">Immediately</span>
+              <button class="toggle toggle--active" type="button" role="switch" aria-checked="true" id="uz-iat-immediately-toggle">
+                <span class="toggle__thumb toggle__thumb--active"></span>
+              </button>
+            </div>
+
+            <div class="form-field" id="uz-iat-execute-on-field">
+              <span class="form-field__label">Execute on</span>
+              <div class="form-field__row form-field__row--bordered">
+                <span class="form-field__value" id="uz-iat-date-value">31.05.2026</span>
+                <svg class="form-field__calendar-icon" aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Summary -->
+        <div class="modal__step" data-iat-step="summary">
+          <div class="form">
+            <div class="form-field">
+              <span class="form-field__label">Amount</span>
+              <div class="form-field__row">
+                <span class="form-field__value" id="uz-iat-summary-amount">CHF  500.00</span>
+                <button class="form-field__edit" type="button" aria-label="Edit amount" data-iat-nav="recipient">
+                  <svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-edit-2"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <span class="form-field__label">Execute on</span>
+              <div class="form-field__row">
+                <span class="form-field__value" id="uz-iat-summary-date">31.05.2026</span>
+                <button class="form-field__edit" type="button" aria-label="Edit date" data-iat-nav="schedule">
+                  <svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-edit-2"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <span class="form-field__label">Recipient</span>
+              <button class="debit-account" type="button" aria-label="Change recipient account" data-iat-nav="recipient">
+                <svg class="debit-account__icon" id="uz-iat-summary-to-icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
+                <div class="debit-account__info">
+                  <span class="debit-account__name" id="uz-iat-summary-to-name">Household</span>
+                  <span class="debit-account__iban" id="uz-iat-summary-to-iban">CH35 0900 0000 2470 2920 1</span>
+                </div>
+                <div class="debit-account__end">
+                  <span class="debit-account__amount">
+                    <span class="debit-account__amount-currency" id="uz-iat-summary-to-currency">CHF</span>
+                    <span class="debit-account__amount-value" id="uz-iat-summary-to-balance">10'000.00</span>
+                  </span>
+                  <svg class="debit-account__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+                </div>
+              </button>
+            </div>
+
+            <div class="form-field">
+              <span class="form-field__label">Debit account</span>
+              <button class="debit-account" type="button" aria-label="Change debit account" data-iat-nav="recipient">
+                <svg class="debit-account__icon" id="uz-iat-summary-from-icon" aria-hidden="true" focusable="false"><use href="#i-anchor"/></svg>
+                <div class="debit-account__info">
+                  <span class="debit-account__name" id="uz-iat-summary-from-name">Savings Account</span>
+                  <span class="debit-account__iban" id="uz-iat-summary-from-iban">CH35 0900 0000 2470 2920 2</span>
+                </div>
+                <div class="debit-account__end">
+                  <span class="debit-account__amount">
+                    <span class="debit-account__amount-currency" id="uz-iat-summary-from-currency">CHF</span>
+                    <span class="debit-account__amount-value" id="uz-iat-summary-from-balance">25'000.00</span>
+                  </span>
+                  <svg class="debit-account__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /modal__body -->
+
+      <!-- Footer -->
+      <div class="modal__footer" id="uz-iat-footer">
+        <button class="uz-btn uz-btn--primary uz-btn--md uz-btn--block" type="button" id="uz-iat-confirm-btn">Confirm</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Confirmation dialog — same shell as domestic payment flow -->
+  <div class="confirmation-overlay" id="uz-iat-confirmation" aria-hidden="true">
+    <div class="confirmation-dialog">
+            <div class="confirmation-dialog__icon" aria-hidden="true">
+        <svg class="confirmation-dialog__icon-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2"/>
+          <path d="M15 24L21 30L33 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="confirmation-dialog__text">Your payment of</span>
+      <div class="confirmation-dialog__amount">
+        <span class="confirmation-dialog__currency" id="uz-iat-conf-currency">CHF</span>
+        <span class="confirmation-dialog__sum" id="uz-iat-conf-amount">500.00</span>
+      </div>
+      <div class="confirmation-dialog__recipient">
+        <span>to</span>
+        <span class="confirmation-dialog__recipient-name" id="uz-iat-conf-recipient">Household</span>
+      </div>
+      <span class="confirmation-dialog__footer">will be executed now</span>
+      <button class="uz-btn uz-btn--primary uz-btn--md uz-btn--block" type="button" id="uz-iat-conf-btn">Confirm</button>
+    </div>
+  </div>
+</div>
 
 
 <script src="js/document-ready.js"></script>
@@ -603,6 +798,7 @@
 <script src="js/data-render.js"></script>
 <script src="js/scroll-edge-chrome.js"></script>
 <script src="js/payment-overlay.js"></script>
+<script src="js/iat-overlay.js"></script>
 <script src="js/app-mp.js"></script>
 <div id="uzbank-icon-defs" aria-hidden="true" class="uzbank-icon-defs">
 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden;pointer-events:none">

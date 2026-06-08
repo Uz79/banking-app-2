@@ -1,4 +1,6 @@
+/* Same cascade as shell pages (overview.html, etc.): tokens → typography → styles */
 import '../css/tokens.css';
+import '../css/typography.css';
 import '../css/styles.css';
 
 // Inject the SVG sprite into the document once so <use href="#i-*"> references work.
@@ -71,7 +73,7 @@ const preview = {
       storySort: {
         order: [
           'Live',
-          ['Pages', 'Components'],
+          ['Foundations', 'Pages', 'Components'],
           'Reference',
           ['Pages', 'Components'],
         ],

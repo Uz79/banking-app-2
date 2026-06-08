@@ -2,9 +2,10 @@
   'use strict';
 
   var root = document.getElementById('profileSettings');
-  if (!root) return;
+  var view = document.querySelector('.view--profile');
+  if (!root || !view) return;
 
-  var tabs = Array.prototype.slice.call(root.querySelectorAll('[data-profile-tab]'));
+  var tabs = Array.prototype.slice.call(view.querySelectorAll('[data-profile-tab]'));
   var panels = Array.prototype.slice.call(root.querySelectorAll('[data-profile-panel]'));
   var fontRange = document.getElementById('profileFontScale');
   var spaceRange = document.getElementById('profileSpaceScale');

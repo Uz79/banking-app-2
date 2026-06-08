@@ -1,3 +1,5 @@
+import { fillProbeValues, readRootCssVar, readRowMetrics } from '../../utils/css-var-probe.js';
+
 export default {
   title: 'Live/Components/List item',
   parameters: {
@@ -58,6 +60,71 @@ export const GroupAccountStatic = {
   `),
 };
 
+export const ListRowSpacing = {
+  name: 'List row spacing (derived from tokens)',
+  render: () => `
+    <div data-probe="list-row-spacing" style="max-width:28rem;display:flex;flex-direction:column;gap:var(--space-4);">
+      <p style="margin:0;font-size:var(--fs-text-sm);color:var(--color-fg-secondary);">
+        Figma grouped/wealth account rows: 56dp hug height, space/3 (16dp) vertical padding.
+        CSS uses <code>--list-row-pad-y</code> / <code>--list-row-pad-x</code> / <code>--list-row-gap</code>.
+      </p>
+      <a class="product-item" data-probe-row="product" href="#">
+        <svg class="product-item__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
+        <div class="product-item__info type-stack-tight">
+          <span class="product-item__name type-sm type-trim">Household</span>
+          <span class="product-item__iban type-xs type-trim">CH35 0900 0000 2470 2920 1</span>
+        </div>
+        <span class="product-item__amount">
+          <span class="product-item__currency">CHF</span>
+          <span class="product-item__value">10'000.00</span>
+        </span>
+      </a>
+      <article class="list-item list-item--group-account" data-probe-row="group" aria-label="Savings account">
+        <div class="list-item__media">
+          <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-anchor"/></svg>
+        </div>
+        <div class="list-item__body type-stack-tight">
+          <span class="list-item__title type-sm type-trim">Savings account</span>
+          <span class="list-item__subtitle type-xs type-trim">CH35 0900 0000 2470 2920 2</span>
+        </div>
+        <div class="list-item__end">
+          <span class="list-item__currency type-xs">CHF</span>
+          <span class="list-item__value type-sm type-bold">25'000.00</span>
+        </div>
+      </article>
+      <dl style="margin:0;font-size:var(--fs-text-sm);line-height:var(--lh-text);display:grid;grid-template-columns:auto 1fr;gap:var(--space-2) var(--space-4);">
+        <dt style="color:var(--color-fg-secondary);">Token --list-row-pad-y</dt>
+        <dd data-probe-dd="token-pad-y" style="margin:0;font-family:monospace;">…</dd>
+        <dt style="color:var(--color-fg-secondary);">.product-item padding-block</dt>
+        <dd data-probe-dd="product-pad-block" style="margin:0;font-family:monospace;">…</dd>
+        <dt style="color:var(--color-fg-secondary);">.product-item height</dt>
+        <dd data-probe-dd="product-height" style="margin:0;font-family:monospace;">…</dd>
+        <dt style="color:var(--color-fg-secondary);">.list-item--group-account padding-block</dt>
+        <dd data-probe-dd="group-pad-block" style="margin:0;font-family:monospace;">…</dd>
+        <dt style="color:var(--color-fg-secondary);">.list-item--group-account height</dt>
+        <dd data-probe-dd="group-height" style="margin:0;font-family:monospace;">…</dd>
+        <dt style="color:var(--color-fg-secondary);">Figma target height</dt>
+        <dd style="margin:0;font-family:monospace;">56px</dd>
+      </dl>
+    </div>
+  `,
+  play: async ({ canvasElement }) => {
+    const root = canvasElement.querySelector('[data-probe="list-row-spacing"]');
+    const product = root?.querySelector('[data-probe-row="product"]');
+    const group = root?.querySelector('[data-probe-row="group"]');
+    const productM = readRowMetrics(product);
+    const groupM = readRowMetrics(group);
+    const padY = readRootCssVar('--list-row-pad-y');
+    fillProbeValues(root, {
+      'token-pad-y': padY,
+      'product-pad-block': productM ? `${productM.paddingTop} / ${productM.paddingBottom}` : '—',
+      'product-height': productM?.height ?? '—',
+      'group-pad-block': groupM ? `${groupM.paddingTop} / ${groupM.paddingBottom}` : '—',
+      'group-height': groupM?.height ?? '—',
+    });
+  },
+};
+
 export const ProductItem = {
   name: 'Product item',
   render: () => wrap(`
@@ -65,8 +132,8 @@ export const ProductItem = {
       <a class="product-item" href="#">
         <svg class="product-item__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
         <div class="product-item__info type-stack-tight">
-          <span class="product-item__name">Household</span>
-          <span class="product-item__iban">CH35 0900 0000 2470 2920 1</span>
+          <span class="product-item__name type-sm type-trim">Household</span>
+          <span class="product-item__iban type-xs type-trim">CH35 0900 0000 2470 2920 1</span>
         </div>
         <span class="product-item__amount">
           <span class="product-item__currency">CHF</span>
