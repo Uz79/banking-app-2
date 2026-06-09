@@ -41,6 +41,10 @@ export const DesignExport = {
   <figcaption class="de-cap">small-secondary / hover</figcaption>
 </figure>
 <figure class="de-item">
+  <img class="de-img" src="/designs/components/button/standard-button/variants/small-secondary/pressed 2.svg" alt="small-secondary / pressed 2" loading="lazy" />
+  <figcaption class="de-cap">small-secondary / pressed 2</figcaption>
+</figure>
+<figure class="de-item">
   <img class="de-img" src="/designs/components/button/standard-button/variants/small-secondary/pressed.svg" alt="small-secondary / pressed" loading="lazy" />
   <figcaption class="de-cap">small-secondary / pressed</figcaption>
 </figure>
@@ -71,6 +75,18 @@ export const DesignExport = {
   <figcaption class="de-cap">regular-filledtonal / hover</figcaption>
 </figure>
 <figure class="de-item">
+  <img class="de-img" src="/designs/components/button/standard-button/variants/regular-filledtonal/pressed 2.svg" alt="regular-filledtonal / pressed 2" loading="lazy" />
+  <figcaption class="de-cap">regular-filledtonal / pressed 2</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/button/standard-button/variants/regular-filledtonal/default 2.svg" alt="regular-filledtonal / default 2" loading="lazy" />
+  <figcaption class="de-cap">regular-filledtonal / default 2</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/button/standard-button/variants/regular-filledtonal/hover 2.svg" alt="regular-filledtonal / hover 2" loading="lazy" />
+  <figcaption class="de-cap">regular-filledtonal / hover 2</figcaption>
+</figure>
+<figure class="de-item">
   <img class="de-img" src="/designs/components/button/standard-button/variants/regular-filledtonal/pressed.svg" alt="regular-filledtonal / pressed" loading="lazy" />
   <figcaption class="de-cap">regular-filledtonal / pressed</figcaption>
 </figure>
@@ -88,6 +104,10 @@ export const DesignExport = {
 <figure class="de-item">
   <img class="de-img" src="/designs/components/button/standard-button/variants/regular-secondary/hover.svg" alt="regular-secondary / hover" loading="lazy" />
   <figcaption class="de-cap">regular-secondary / hover</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/button/standard-button/variants/regular-secondary/pressed 2.svg" alt="regular-secondary / pressed 2" loading="lazy" />
+  <figcaption class="de-cap">regular-secondary / pressed 2</figcaption>
 </figure>
 <figure class="de-item">
   <img class="de-img" src="/designs/components/button/standard-button/variants/regular-secondary/pressed.svg" alt="regular-secondary / pressed" loading="lazy" />
@@ -124,6 +144,10 @@ export const DesignExport = {
   <figcaption class="de-cap">small-primary / hover</figcaption>
 </figure>
 <figure class="de-item">
+  <img class="de-img" src="/designs/components/button/standard-button/variants/small-primary/pressed 2.svg" alt="small-primary / pressed 2" loading="lazy" />
+  <figcaption class="de-cap">small-primary / pressed 2</figcaption>
+</figure>
+<figure class="de-item">
   <img class="de-img" src="/designs/components/button/standard-button/variants/small-primary/pressed.svg" alt="small-primary / pressed" loading="lazy" />
   <figcaption class="de-cap">small-primary / pressed</figcaption>
 </figure>
@@ -143,6 +167,10 @@ export const DesignExport = {
   <figcaption class="de-cap">large-txt-only / hover</figcaption>
 </figure>
 <figure class="de-item">
+  <img class="de-img" src="/designs/components/button/standard-button/variants/large-txt-only/pressed 2.svg" alt="large-txt-only / pressed 2" loading="lazy" />
+  <figcaption class="de-cap">large-txt-only / pressed 2</figcaption>
+</figure>
+<figure class="de-item">
   <img class="de-img" src="/designs/components/button/standard-button/variants/large-txt-only/pressed.svg" alt="large-txt-only / pressed" loading="lazy" />
   <figcaption class="de-cap">large-txt-only / pressed</figcaption>
 </figure>
@@ -160,6 +188,10 @@ export const DesignExport = {
 <figure class="de-item">
   <img class="de-img" src="/designs/components/button/standard-button/variants/large-secondary/hover.svg" alt="large-secondary / hover" loading="lazy" />
   <figcaption class="de-cap">large-secondary / hover</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/button/standard-button/variants/large-secondary/pressed 2.svg" alt="large-secondary / pressed 2" loading="lazy" />
+  <figcaption class="de-cap">large-secondary / pressed 2</figcaption>
 </figure>
 <figure class="de-item">
   <img class="de-img" src="/designs/components/button/standard-button/variants/large-secondary/pressed.svg" alt="large-secondary / pressed" loading="lazy" />
@@ -196,6 +228,10 @@ export const DesignExport = {
   <figcaption class="de-cap">regular-txt-only / hover</figcaption>
 </figure>
 <figure class="de-item">
+  <img class="de-img" src="/designs/components/button/standard-button/variants/regular-txt-only/pressed 2.svg" alt="regular-txt-only / pressed 2" loading="lazy" />
+  <figcaption class="de-cap">regular-txt-only / pressed 2</figcaption>
+</figure>
+<figure class="de-item">
   <img class="de-img" src="/designs/components/button/standard-button/variants/regular-txt-only/pressed.svg" alt="regular-txt-only / pressed" loading="lazy" />
   <figcaption class="de-cap">regular-txt-only / pressed</figcaption>
 </figure>
@@ -213,6 +249,10 @@ export const DesignExport = {
 <figure class="de-item">
   <img class="de-img" src="/designs/components/button/standard-button/variants/large-primary/hover.svg" alt="large-primary / hover" loading="lazy" />
   <figcaption class="de-cap">large-primary / hover</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/button/standard-button/variants/large-primary/pressed 2.svg" alt="large-primary / pressed 2" loading="lazy" />
+  <figcaption class="de-cap">large-primary / pressed 2</figcaption>
 </figure>
 <figure class="de-item">
   <img class="de-img" src="/designs/components/button/standard-button/variants/large-primary/pressed.svg" alt="large-primary / pressed" loading="lazy" />
@@ -234,6 +274,10 @@ export const DesignExport = {
   <figcaption class="de-cap">small-txt-only / hover</figcaption>
 </figure>
 <figure class="de-item">
+  <img class="de-img" src="/designs/components/button/standard-button/variants/small-txt-only/pressed 2.svg" alt="small-txt-only / pressed 2" loading="lazy" />
+  <figcaption class="de-cap">small-txt-only / pressed 2</figcaption>
+</figure>
+<figure class="de-item">
   <img class="de-img" src="/designs/components/button/standard-button/variants/small-txt-only/pressed.svg" alt="small-txt-only / pressed" loading="lazy" />
   <figcaption class="de-cap">small-txt-only / pressed</figcaption>
 </figure>
@@ -247,6 +291,18 @@ export const DesignExport = {
 <figure class="de-item">
   <img class="de-img" src="/designs/components/button/standard-button/variants/small-filledtonal/hover.svg" alt="small-filledtonal / hover" loading="lazy" />
   <figcaption class="de-cap">small-filledtonal / hover</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/button/standard-button/variants/small-filledtonal/pressed 2.svg" alt="small-filledtonal / pressed 2" loading="lazy" />
+  <figcaption class="de-cap">small-filledtonal / pressed 2</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/button/standard-button/variants/small-filledtonal/default 2.svg" alt="small-filledtonal / default 2" loading="lazy" />
+  <figcaption class="de-cap">small-filledtonal / default 2</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/button/standard-button/variants/small-filledtonal/hover 2.svg" alt="small-filledtonal / hover 2" loading="lazy" />
+  <figcaption class="de-cap">small-filledtonal / hover 2</figcaption>
 </figure>
 <figure class="de-item">
   <img class="de-img" src="/designs/components/button/standard-button/variants/small-filledtonal/pressed.svg" alt="small-filledtonal / pressed" loading="lazy" />
@@ -268,6 +324,10 @@ export const DesignExport = {
   <figcaption class="de-cap">regular-primary / hover</figcaption>
 </figure>
 <figure class="de-item">
+  <img class="de-img" src="/designs/components/button/standard-button/variants/regular-primary/pressed 2.svg" alt="regular-primary / pressed 2" loading="lazy" />
+  <figcaption class="de-cap">regular-primary / pressed 2</figcaption>
+</figure>
+<figure class="de-item">
   <img class="de-img" src="/designs/components/button/standard-button/variants/regular-primary/pressed.svg" alt="regular-primary / pressed" loading="lazy" />
   <figcaption class="de-cap">regular-primary / pressed</figcaption>
 </figure>
@@ -281,6 +341,18 @@ export const DesignExport = {
 <figure class="de-item">
   <img class="de-img" src="/designs/components/button/standard-button/variants/large-filledtonal/hover.svg" alt="large-filledtonal / hover" loading="lazy" />
   <figcaption class="de-cap">large-filledtonal / hover</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/button/standard-button/variants/large-filledtonal/pressed 2.svg" alt="large-filledtonal / pressed 2" loading="lazy" />
+  <figcaption class="de-cap">large-filledtonal / pressed 2</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/button/standard-button/variants/large-filledtonal/default 2.svg" alt="large-filledtonal / default 2" loading="lazy" />
+  <figcaption class="de-cap">large-filledtonal / default 2</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/button/standard-button/variants/large-filledtonal/hover 2.svg" alt="large-filledtonal / hover 2" loading="lazy" />
+  <figcaption class="de-cap">large-filledtonal / hover 2</figcaption>
 </figure>
 <figure class="de-item">
   <img class="de-img" src="/designs/components/button/standard-button/variants/large-filledtonal/pressed.svg" alt="large-filledtonal / pressed" loading="lazy" />

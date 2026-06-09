@@ -39,6 +39,10 @@ export const DesignExport = {
   <img class="de-img" src="/designs/components/nav-bar/variants/default/default.svg" alt="default / default" loading="lazy" />
   <figcaption class="de-cap">default / default</figcaption>
 </figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/nav-bar/variants/default/default 2.svg" alt="default / default 2" loading="lazy" />
+  <figcaption class="de-cap">default / default 2</figcaption>
+</figure>
 </div>
     </div>
   `,

@@ -173,21 +173,6 @@ export function accountDetailsLiveMarkup() {
                           </div>
                         </article>
                       </div>
-                      <div class="carousel__slide" data-account-key="deposit" data-account-type="Deposit account" data-account-currency="CHF">
-                        <article class="list-item list-item--group-account" aria-label="Deposit account">
-                          <div class="list-item__media">
-                            <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-life-buoy"/></svg>
-                          </div>
-                          <div class="list-item__body type-stack-tight">
-                            <span class="list-item__title type-sm type-trim">Deposit</span>
-                            <span class="list-item__subtitle type-xs type-trim">123,456.78</span>
-                          </div>
-                          <div class="list-item__end">
-                            <span class="list-item__currency type-xs">CHF</span>
-                            <span class="list-item__value type-sm type-bold">20'000.00</span>
-                          </div>
-                        </article>
-                      </div>
                     </div>
                   </div>
                   <div class="carousel__pagination">
@@ -195,7 +180,6 @@ export function accountDetailsLiveMarkup() {
                       <svg class="carousel__arrow-icon" role="img" aria-label="Previous" focusable="false"><use href="#i-chevron-left"/></svg>
                     </button>
                     <span class="carousel__dot carousel__dot--active"></span>
-                    <span class="carousel__dot"></span>
                     <span class="carousel__dot"></span>
                     <button class="carousel__arrow" type="button">
                       <svg class="carousel__arrow-icon" role="img" aria-label="Next" focusable="false"><use href="#i-chevron-right"/></svg>
@@ -256,25 +240,6 @@ export function accountDetailsLiveMarkup() {
                       <span class="booking-row__amount">
                         <span class="booking-row__currency">CHF</span>
                         <span class="booking-row__value">+5'000.00</span>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div class="bookings-card__account" data-account-bookings="deposit" hidden>
-                  <div class="booking-group" data-day="today">
-                    <header class="booking-group__header">
-                      <span class="booking-group__label">Today</span>
-                      <span class="booking-group__balance">
-                        <span class="booking-group__balance-currency">CHF</span>
-                        <span class="booking-group__balance-value">20'000.00</span>
-                      </span>
-                    </header>
-                    <div class="booking-row" data-mock-booking="static">
-                      <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-trending-up"/></svg>
-                      <span class="booking-row__name">Interest credit</span>
-                      <span class="booking-row__amount">
-                        <span class="booking-row__currency">CHF</span>
-                        <span class="booking-row__value">+125.00</span>
                       </span>
                     </div>
                   </div>

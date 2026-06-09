@@ -13,6 +13,9 @@
       },
       "mobile-default": {
         "default": "variants/mobile-default/default.svg"
+      },
+      "account-details": {
+        "desktop-default": "variants/account-details/desktop-default/default.svg"
       }
     }
   },
@@ -28,7 +31,7 @@
     }
   },
   "notes": [
-    "Figma exports: 'Account Details - desktop' → variants/desktop-default/; 'Account Details - mobile' → variants/mobile-default/. Each variant folder also has default.png.",
+    "Figma exports: 'Account Details - desktop' \u2192 variants/desktop-default/; 'Account Details - mobile' \u2192 variants/mobile-default/. Each variant folder also has default.png.",
     "Bookings block uses card/section-card variant bookings."
   ]
 }

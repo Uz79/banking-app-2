@@ -10,49 +10,76 @@
   "assets": {
     "variants": {
       "small-secondary": {
+        "focus 2": "variants/small-secondary/focus 2.svg",
         "focus": "variants/small-secondary/focus.svg",
         "default": "variants/small-secondary/default.svg",
-        "hover": "variants/small-secondary/hover.svg"
+        "hover": "variants/small-secondary/hover.svg",
+        "default 2": "variants/small-secondary/default 2.svg",
+        "hover 2": "variants/small-secondary/hover 2.svg"
       },
       "large-filled-tonal": {
+        "focus 2": "variants/large-filled-tonal/focus 2.svg",
         "focus": "variants/large-filled-tonal/focus.svg",
         "default": "variants/large-filled-tonal/default.svg",
-        "hover": "variants/large-filled-tonal/hover.svg"
+        "hover": "variants/large-filled-tonal/hover.svg",
+        "default 2": "variants/large-filled-tonal/default 2.svg",
+        "hover 2": "variants/large-filled-tonal/hover 2.svg"
       },
       "regular-secondary": {
+        "focus 2": "variants/regular-secondary/focus 2.svg",
         "focus": "variants/regular-secondary/focus.svg",
         "default": "variants/regular-secondary/default.svg",
-        "hover": "variants/regular-secondary/hover.svg"
+        "hover": "variants/regular-secondary/hover.svg",
+        "default 2": "variants/regular-secondary/default 2.svg",
+        "hover 2": "variants/regular-secondary/hover 2.svg"
       },
       "small-filled-tonal": {
+        "focus 2": "variants/small-filled-tonal/focus 2.svg",
         "focus": "variants/small-filled-tonal/focus.svg",
         "default": "variants/small-filled-tonal/default.svg",
-        "hover": "variants/small-filled-tonal/hover.svg"
+        "hover": "variants/small-filled-tonal/hover.svg",
+        "default 2": "variants/small-filled-tonal/default 2.svg",
+        "hover 2": "variants/small-filled-tonal/hover 2.svg"
       },
       "small-primary": {
+        "focus 2": "variants/small-primary/focus 2.svg",
         "focus": "variants/small-primary/focus.svg",
         "default": "variants/small-primary/default.svg",
-        "hover": "variants/small-primary/hover.svg"
+        "hover": "variants/small-primary/hover.svg",
+        "default 2": "variants/small-primary/default 2.svg",
+        "hover 2": "variants/small-primary/hover 2.svg"
       },
       "large-secondary": {
+        "focus 2": "variants/large-secondary/focus 2.svg",
         "focus": "variants/large-secondary/focus.svg",
         "default": "variants/large-secondary/default.svg",
-        "hover": "variants/large-secondary/hover.svg"
+        "hover": "variants/large-secondary/hover.svg",
+        "default 2": "variants/large-secondary/default 2.svg",
+        "hover 2": "variants/large-secondary/hover 2.svg"
       },
       "regular-filled-tonal": {
+        "focus 2": "variants/regular-filled-tonal/focus 2.svg",
         "focus": "variants/regular-filled-tonal/focus.svg",
         "default": "variants/regular-filled-tonal/default.svg",
-        "hover": "variants/regular-filled-tonal/hover.svg"
+        "hover": "variants/regular-filled-tonal/hover.svg",
+        "default 2": "variants/regular-filled-tonal/default 2.svg",
+        "hover 2": "variants/regular-filled-tonal/hover 2.svg"
       },
       "large-primary": {
+        "focus 2": "variants/large-primary/focus 2.svg",
         "focus": "variants/large-primary/focus.svg",
         "default": "variants/large-primary/default.svg",
-        "hover": "variants/large-primary/hover.svg"
+        "hover": "variants/large-primary/hover.svg",
+        "default 2": "variants/large-primary/default 2.svg",
+        "hover 2": "variants/large-primary/hover 2.svg"
       },
       "regular-primary": {
+        "focus 2": "variants/regular-primary/focus 2.svg",
         "focus": "variants/regular-primary/focus.svg",
         "default": "variants/regular-primary/default.svg",
-        "hover": "variants/regular-primary/hover.svg"
+        "hover": "variants/regular-primary/hover.svg",
+        "default 2": "variants/regular-primary/default 2.svg",
+        "hover 2": "variants/regular-primary/hover 2.svg"
       }
     }
   },

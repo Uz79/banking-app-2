@@ -74,7 +74,7 @@
     },
     "secondary": {
       "background": {
-        "value": "{color.neutral.white}",
+        "value": "{color.primary.900-0pc}",
         "type": "color"
       },
       "border": {

@@ -15,7 +15,8 @@
         "hover": "variants/default-default/hover.svg"
       },
       "readonly-multiple-text-rows": {
-        "default": "variants/readonly-multiple-text-rows/default.svg"
+        "default": "variants/readonly-multiple-text-rows/default.svg",
+        "default 2": "variants/readonly-multiple-text-rows/default 2.svg"
       },
       "readonly-informative": {
         "default": "variants/readonly-informative/default.svg"

@@ -353,7 +353,14 @@
       return carouselSlides.children.length;
     }
 
-    var SLIDE_ACCOUNTS = ['household', 'savings', 'deposit'];
+    var SLIDE_ACCOUNTS = carouselSlides
+      ? Array.prototype.map
+          .call(carouselSlides.children, function (slide) {
+            return slide.getAttribute('data-account-key');
+          })
+          .filter(Boolean)
+      : [];
+    if (!SLIDE_ACCOUNTS.length) SLIDE_ACCOUNTS = ['household', 'savings'];
     window.__UZ_ACTIVE_ACCOUNT__ = SLIDE_ACCOUNTS[0];
 
     // On overview: store which account was tapped before navigating away
@@ -587,7 +594,15 @@
 
     function bindMainScrollChrome() {
       var screen = document.body.getAttribute('data-screen');
-      if (screen !== 'overview' && screen !== 'payments' && screen !== 'account-details' && screen !== 'profile') return;
+      if (
+        screen !== 'overview' &&
+        screen !== 'payments' &&
+        screen !== 'account-details' &&
+        screen !== 'profile' &&
+        screen !== 'investment-product-details'
+      ) {
+        return;
+      }
 
       var mainContent = document.querySelector('.main-content');
       var app = document.querySelector('.app');

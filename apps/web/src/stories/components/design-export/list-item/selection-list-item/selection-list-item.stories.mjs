@@ -33,15 +33,12 @@ export const DesignExport = {
   <figcaption class="de-cap">grouped-bottom-country / default</figcaption>
 </figure>
 </div>
-<h4 class="de-variant">grouped-mid-country</h4>
-<div class="de-grid">
-<figure class="de-item">
-  <img class="de-img" src="/designs/components/list-item/selection-list-item/variants/grouped-mid-country/default.svg" alt="grouped-mid-country / default" loading="lazy" />
-  <figcaption class="de-cap">grouped-mid-country / default</figcaption>
-</figure>
-</div>
 <h4 class="de-variant">grouped-top-country</h4>
 <div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/selection-list-item/variants/grouped-top-country/focus.svg" alt="grouped-top-country / focus" loading="lazy" />
+  <figcaption class="de-cap">grouped-top-country / focus</figcaption>
+</figure>
 <figure class="de-item">
   <img class="de-img" src="/designs/components/list-item/selection-list-item/variants/grouped-top-country/default.svg" alt="grouped-top-country / default" loading="lazy" />
   <figcaption class="de-cap">grouped-top-country / default</figcaption>
@@ -51,12 +48,19 @@ export const DesignExport = {
   <figcaption class="de-cap">grouped-top-country / hover</figcaption>
 </figure>
 <figure class="de-item">
-  <img class="de-img" src="/designs/components/list-item/selection-list-item/variants/grouped-top-country/focus.svg" alt="grouped-top-country / focus" loading="lazy" />
-  <figcaption class="de-cap">grouped-top-country / focus</figcaption>
+  <img class="de-img" src="/designs/components/list-item/selection-list-item/variants/grouped-top-country/pressed 2.svg" alt="grouped-top-country / pressed 2" loading="lazy" />
+  <figcaption class="de-cap">grouped-top-country / pressed 2</figcaption>
 </figure>
 <figure class="de-item">
   <img class="de-img" src="/designs/components/list-item/selection-list-item/variants/grouped-top-country/pressed.svg" alt="grouped-top-country / pressed" loading="lazy" />
   <figcaption class="de-cap">grouped-top-country / pressed</figcaption>
+</figure>
+</div>
+<h4 class="de-variant">grouped-mid-country</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/selection-list-item/variants/grouped-mid-country/default.svg" alt="grouped-mid-country / default" loading="lazy" />
+  <figcaption class="de-cap">grouped-mid-country / default</figcaption>
 </figure>
 </div>
     </div>

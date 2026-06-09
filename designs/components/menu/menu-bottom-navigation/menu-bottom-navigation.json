@@ -8,24 +8,26 @@
     "focus"
   ],
   "assets": {
-    "overview": "overview.png",
     "variants": {
+      "default-default": {
+        "default": "variants/default-default/default.svg"
+      },
       "bottom-nav-selected": {
+        "focus": "variants/bottom-nav-selected/focus.svg",
         "default": "variants/bottom-nav-selected/default.svg",
         "hover": "variants/bottom-nav-selected/hover.svg",
-        "focus": "variants/bottom-nav-selected/focus.svg",
+        "pressed 2": "variants/bottom-nav-selected/pressed 2.svg",
         "pressed": "variants/bottom-nav-selected/pressed.svg"
       },
       "bottom-nav-unselected": {
+        "focus": "variants/bottom-nav-unselected/focus.svg",
         "default": "variants/bottom-nav-unselected/default.svg",
         "hover": "variants/bottom-nav-unselected/hover.svg",
-        "focus": "variants/bottom-nav-unselected/focus.svg",
+        "pressed 2": "variants/bottom-nav-unselected/pressed 2.svg",
         "pressed": "variants/bottom-nav-unselected/pressed.svg"
-      },
-      "default-default": {
-        "default": "variants/default-default/default.svg"
       }
-    }
+    },
+    "overview": "overview.png"
   },
   "tokens": {
     "radius": "alias.radius.regular",

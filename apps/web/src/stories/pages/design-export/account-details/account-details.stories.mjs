@@ -42,6 +42,13 @@ export const DesignExport = {
   <figcaption class="de-cap">mobile-default / default</figcaption>
 </figure>
 </div>
+<h4 class="de-variant">account-details</h4>
+<div class="de-grid de-grid--screen">
+<figure class="de-item">
+  <img class="de-img de-img--screen" src="/designs/screens/account-details/variants/account-details/desktop-default/default.svg" alt="account-details / desktop-default" loading="lazy" />
+  <figcaption class="de-cap">account-details / desktop-default</figcaption>
+</figure>
+</div>
     </div>
   `,
 };

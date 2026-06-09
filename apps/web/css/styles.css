@@ -316,8 +316,9 @@ html:has(body.body--payment-open) {
   min-width: min(60rem, 100%);
 }
 
-/* Account details: content column capped at 960dp (60rem), same as default main-content__inner. */
-.body[data-screen="account-details"] .main-content__inner {
+/* Account details / investment product details: content column capped at 960dp (60rem). */
+.body[data-screen="account-details"] .main-content__inner,
+.body[data-screen="investment-product-details"] .main-content__inner {
   max-width: 60rem;
   width: 100%;
   margin-inline: auto;
@@ -412,6 +413,7 @@ html:has(body.body--payment-open) {
 .body[data-screen="overview"] .view__nav[data-scroll-edge-nav],
 .body[data-screen="payments"] .view__nav[data-scroll-edge-nav],
 .body[data-screen="account-details"] .view__nav[data-scroll-edge-nav],
+.body[data-screen="investment-product-details"] .view__nav[data-scroll-edge-nav],
 .body[data-screen="profile"] .view__nav[data-scroll-edge-nav] {
   position: sticky;
   top: 0;
@@ -683,6 +685,7 @@ html:has(body.body--payment-open) {
  * sticky chrome and cards share the same width (account-details 60rem, all-bookings 45rem). */
 @media (min-width: 1024px) {
   .body[data-screen="account-details"] .main-content__inner,
+  .body[data-screen="investment-product-details"] .main-content__inner,
   .body[data-screen="profile"] .main-content__inner,
   .body[data-screen="all-bookings"] .main-content__inner {
     padding-inline: 0;
@@ -690,6 +693,7 @@ html:has(body.body--payment-open) {
   }
 
   .body[data-screen="account-details"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="investment-product-details"] .view__nav[data-scroll-edge-nav],
   .body[data-screen="profile"] .view__nav[data-scroll-edge-nav] {
     margin-inline: 0;
     padding-inline: var(--space-3);
@@ -712,6 +716,7 @@ html:has(body.body--payment-open) {
   .body[data-screen="overview"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="payments"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="account-details"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
+  .body[data-screen="investment-product-details"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="profile"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="all-bookings"] .all-bookings__sticky-header.is-scroll-edge--after {
     margin-inline: calc(-1 * var(--view-nav-sticky-bleed));
@@ -733,6 +738,7 @@ html:has(body.body--payment-open) {
   }
 
   .body[data-screen="account-details"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="investment-product-details"] .view__nav[data-scroll-edge-nav],
   .body[data-screen="profile"] .view__nav[data-scroll-edge-nav] {
     margin-inline: calc(-1 * var(--space-3));
     padding-inline: var(--space-3);
@@ -6304,5 +6310,318 @@ body.body--iat-open {
 
 #uz-iat-overlay .modal-shell {
   position: relative;
+}
+
+/* ── Investment product details (designs/screens/investment-product-details) ── */
+
+.view--investment-product-details .view__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--view-stack-gap);
+}
+
+.view--investment-product-details .view__nav,
+.view--investment-product-details .action-buttons {
+  margin-bottom: 0;
+}
+
+.investment-product-details__grid {
+  display: grid;
+  gap: var(--view-stack-gap);
+}
+
+.section-card--performance,
+.section-card--positions {
+  margin-bottom: 0;
+}
+
+.section-card--performance .section-card__body,
+.section-card--positions .section-card__body {
+  padding: var(--space-3);
+}
+
+.performance-card__header {
+  margin-bottom: var(--space-1);
+}
+
+.performance-card__balance {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.performance-card__balance-value {
+  font-size: var(--fs-h5);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+}
+
+.performance-card__balance-currency {
+  font-size: var(--fs-text-md);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.performance-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.performance-card__date {
+  flex-shrink: 0;
+  font-size: var(--fs-text-xs);
+  line-height: var(--lh-text);
+  color: var(--color-fg-label);
+  font-style: normal;
+}
+
+.performance-card__change {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  font-size: var(--fs-text-xs);
+  line-height: var(--lh-text);
+  color: var(--color-fg-label);
+}
+
+.performance-card__change-sep {
+  color: var(--color-fg-label);
+}
+
+.performance-card__chart {
+  color: var(--color-btn-primary-bg);
+  margin-bottom: var(--space-3);
+}
+
+.performance-card__chart-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 388 / 164;
+}
+
+.performance-card__chart-axis {
+  fill: var(--color-fg-label);
+  font-family: var(--font-family);
+  font-size: 10px;
+  text-anchor: end;
+}
+
+.performance-card__chart-axis--x {
+  text-anchor: middle;
+  font-size: 10px;
+}
+
+.performance-card__chart-tooltip {
+  fill: var(--color-bg);
+  stroke: var(--color-separator);
+  stroke-width: 1;
+}
+
+.performance-card__chart-tooltip-value {
+  fill: var(--color-fg);
+  font-family: var(--font-family);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.performance-card__chart-tooltip-date {
+  fill: var(--color-fg-label);
+  font-family: var(--font-family);
+  font-size: 10px;
+}
+
+.performance-card__chart-hover[hidden] {
+  display: none;
+}
+
+.performance-card__chart-hover {
+  pointer-events: none;
+}
+
+.performance-card__chart-line-hit {
+  cursor: crosshair;
+}
+
+.performance-card__range {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.performance-card__range-chip {
+  flex-shrink: 0;
+  border: none;
+  border-radius: 9999px;
+  padding: 0.25rem 0.625rem;
+  font-family: var(--font-family);
+  font-size: var(--fs-text-xs);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+  background-color: var(--color-segmented-track-bg);
+  cursor: pointer;
+}
+
+.performance-card__range-chip:hover {
+  background-color: var(--color-surface-state-hover);
+}
+
+.performance-card__range-chip--active {
+  background-color: var(--color-btn-primary-bg);
+  color: var(--color-btn-primary-fg);
+}
+
+.performance-card__range-chip--active:hover {
+  background-color: var(--color-btn-primary-hover);
+}
+
+.performance-card__summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.performance-card__summary-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.performance-card__summary-icon {
+  flex-shrink: 0;
+  pointer-events: none;
+  cursor: default;
+}
+
+.performance-card__summary-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+}
+
+.performance-card__summary-amount {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.performance-card__summary-currency {
+  font-size: var(--fs-text-xs);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.performance-card__summary-value {
+  font-size: var(--fs-text-sm);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+}
+
+.section-card__inline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
+}
+
+.section-card--positions .section-card__title {
+  color: var(--color-fg);
+  font-weight: var(--fw-regular);
+}
+
+.list-item--position {
+  align-items: flex-start;
+  padding-block: var(--space-3);
+  padding-inline: 0;
+  gap: var(--space-3);
+  width: 100%;
+  box-sizing: border-box;
+  text-decoration: none;
+  color: inherit;
+}
+
+.section-card--positions .divider {
+  margin-inline: 0;
+}
+
+.list-item--position .list-item__body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.list-item--position .list-item__title {
+  color: var(--color-fg);
+}
+
+.list-item--position .list-item__subtitle,
+.list-item--position .list-item__performance {
+  color: var(--color-fg-label);
+}
+
+.list-item--position .list-item__performance {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.list-item__end--position {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.125rem;
+  text-align: right;
+}
+
+.list-item--position .list-item__price,
+.list-item--position .list-item__total {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: var(--space-1);
+}
+
+.list-item--position .list-item__quantity {
+  color: var(--color-fg-label);
+}
+
+.list-item--position .list-item__currency {
+  font-size: var(--fs-text-xs);
+  line-height: var(--lh-text);
+  color: var(--color-fg-label);
+}
+
+.list-item--position .list-item__value {
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+}
+
+.action-buttons--investment {
+  justify-content: flex-start;
+  gap: var(--space-6);
+}
+
+@media (min-width: 1024px) {
+  .investment-product-details__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
 }
 

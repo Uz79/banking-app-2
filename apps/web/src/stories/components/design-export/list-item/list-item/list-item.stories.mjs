@@ -101,6 +101,13 @@ export const DesignExport = {
   <figcaption class="de-cap">group-credit-card / default</figcaption>
 </figure>
 </div>
+<h4 class="de-variant">position</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/list-item/variants/position/default.svg" alt="position / default" loading="lazy" />
+  <figcaption class="de-cap">position / default</figcaption>
+</figure>
+</div>
     </div>
   `,
 };

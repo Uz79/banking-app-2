@@ -8,15 +8,16 @@
     "focus"
   ],
   "assets": {
-    "overview": "overview.png",
     "variants": {
       "default-default": {
         "default": "variants/default-default/default.svg"
       },
       "bank-products": {
-        "default": "variants/bank-products/default.svg"
+        "default": "variants/bank-products/default.svg",
+        "default 2": "variants/bank-products/default 2.svg"
       }
-    }
+    },
+    "overview": "overview.png"
   },
   "tokens": {
     "radius": "alias.radius.regular",

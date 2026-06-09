@@ -22,6 +22,7 @@ export default {
         payments: resolve(dir, 'payments.html'),
         profile: resolve(dir, 'profile.html'),
         accountInformation: resolve(dir, 'account-information.html'),
+        investmentProductDetails: resolve(dir, 'investment-product-details.html'),
       },
     },
   },

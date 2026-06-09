@@ -29,6 +29,10 @@ export const DesignExport = {
 <h4 class="de-variant">default-booking</h4>
 <div class="de-grid">
 <figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/row-item/variants/default-booking/focus.svg" alt="default-booking / focus" loading="lazy" />
+  <figcaption class="de-cap">default-booking / focus</figcaption>
+</figure>
+<figure class="de-item">
   <img class="de-img" src="/designs/components/list-item/row-item/variants/default-booking/default.svg" alt="default-booking / default" loading="lazy" />
   <figcaption class="de-cap">default-booking / default</figcaption>
 </figure>
@@ -37,26 +41,12 @@ export const DesignExport = {
   <figcaption class="de-cap">default-booking / hover</figcaption>
 </figure>
 <figure class="de-item">
-  <img class="de-img" src="/designs/components/list-item/row-item/variants/default-booking/focus.svg" alt="default-booking / focus" loading="lazy" />
-  <figcaption class="de-cap">default-booking / focus</figcaption>
+  <img class="de-img" src="/designs/components/list-item/row-item/variants/default-booking/pressed 2.svg" alt="default-booking / pressed 2" loading="lazy" />
+  <figcaption class="de-cap">default-booking / pressed 2</figcaption>
 </figure>
 <figure class="de-item">
   <img class="de-img" src="/designs/components/list-item/row-item/variants/default-booking/pressed.svg" alt="default-booking / pressed" loading="lazy" />
   <figcaption class="de-cap">default-booking / pressed</figcaption>
-</figure>
-</div>
-<h4 class="de-variant">default-header</h4>
-<div class="de-grid">
-<figure class="de-item">
-  <img class="de-img" src="/designs/components/list-item/row-item/variants/default-header/default.svg" alt="default-header / default" loading="lazy" />
-  <figcaption class="de-cap">default-header / default</figcaption>
-</figure>
-</div>
-<h4 class="de-variant">default-compact-summary</h4>
-<div class="de-grid">
-<figure class="de-item">
-  <img class="de-img" src="/designs/components/list-item/row-item/variants/default-compact-summary/default.svg" alt="default-compact-summary / default" loading="lazy" />
-  <figcaption class="de-cap">default-compact-summary / default</figcaption>
 </figure>
 </div>
 <h4 class="de-variant">default-chip</h4>
@@ -65,12 +55,38 @@ export const DesignExport = {
   <img class="de-img" src="/designs/components/list-item/row-item/variants/default-chip/default.svg" alt="default-chip / default" loading="lazy" />
   <figcaption class="de-cap">default-chip / default</figcaption>
 </figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/row-item/variants/default-chip/default 2.svg" alt="default-chip / default 2" loading="lazy" />
+  <figcaption class="de-cap">default-chip / default 2</figcaption>
+</figure>
 </div>
 <h4 class="de-variant">default-action</h4>
 <div class="de-grid">
 <figure class="de-item">
   <img class="de-img" src="/designs/components/list-item/row-item/variants/default-action/default.svg" alt="default-action / default" loading="lazy" />
   <figcaption class="de-cap">default-action / default</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/row-item/variants/default-action/default 2.svg" alt="default-action / default 2" loading="lazy" />
+  <figcaption class="de-cap">default-action / default 2</figcaption>
+</figure>
+</div>
+<h4 class="de-variant">default-compact-summary</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/row-item/variants/default-compact-summary/default.svg" alt="default-compact-summary / default" loading="lazy" />
+  <figcaption class="de-cap">default-compact-summary / default</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/row-item/variants/default-compact-summary/default 2.svg" alt="default-compact-summary / default 2" loading="lazy" />
+  <figcaption class="de-cap">default-compact-summary / default 2</figcaption>
+</figure>
+</div>
+<h4 class="de-variant">default-header</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/row-item/variants/default-header/default.svg" alt="default-header / default" loading="lazy" />
+  <figcaption class="de-cap">default-header / default</figcaption>
 </figure>
 </div>
     </div>

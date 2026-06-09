@@ -131,7 +131,7 @@
   }
 
   function renderBookings(state) {
-    ['household', 'savings', 'deposit'].forEach(function (accountKey) {
+    ['household', 'savings'].forEach(function (accountKey) {
       renderBookingsForAccount(state, accountKey);
     });
   }

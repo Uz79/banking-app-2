@@ -38,6 +38,9 @@
       },
       "group-credit-card": {
         "default": "variants/group-credit-card/default.svg"
+      },
+      "position": {
+        "default": "variants/position/default.svg"
       }
     },
     "overview": "overview.png"

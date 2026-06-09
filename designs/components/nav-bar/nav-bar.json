@@ -9,15 +9,16 @@
     "focus"
   ],
   "assets": {
-    "overview": "variants/default-default/default.svg",
     "variants": {
       "default-default": {
         "default": "variants/default-default/default.svg"
       },
       "default": {
-        "default": "variants/default/default.svg"
+        "default": "variants/default/default.svg",
+        "default 2": "variants/default/default 2.svg"
       }
-    }
+    },
+    "overview": "variants/default-default/default.svg"
   },
   "tokens": {
     "radius": "alias.radius.small",

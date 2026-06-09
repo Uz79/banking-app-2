@@ -8,21 +8,23 @@
     "focus"
   ],
   "assets": {
-    "overview": "overview.png",
     "variants": {
-      "regular-active": {
-        "default": "variants/regular-active/default.svg",
-        "hover": "variants/regular-active/hover.svg",
-        "focus": "variants/regular-active/focus.svg",
-        "pressed": "variants/regular-active/pressed.svg"
-      },
       "regular-inactive": {
+        "focus": "variants/regular-inactive/focus.svg",
         "default": "variants/regular-inactive/default.svg",
         "hover": "variants/regular-inactive/hover.svg",
-        "focus": "variants/regular-inactive/focus.svg",
+        "pressed 2": "variants/regular-inactive/pressed 2.svg",
         "pressed": "variants/regular-inactive/pressed.svg"
+      },
+      "regular-active": {
+        "focus": "variants/regular-active/focus.svg",
+        "default": "variants/regular-active/default.svg",
+        "hover": "variants/regular-active/hover.svg",
+        "pressed 2": "variants/regular-active/pressed 2.svg",
+        "pressed": "variants/regular-active/pressed.svg"
       }
-    }
+    },
+    "overview": "overview.png"
   },
   "tokens": {
     "radius": "alias.radius.regular",

@@ -8,21 +8,22 @@
     "focus"
   ],
   "assets": {
-    "overview": "overview.png",
     "variants": {
       "grouped-bottom-country": {
         "default": "variants/grouped-bottom-country/default.svg"
       },
-      "grouped-mid-country": {
-        "default": "variants/grouped-mid-country/default.svg"
-      },
       "grouped-top-country": {
+        "focus": "variants/grouped-top-country/focus.svg",
         "default": "variants/grouped-top-country/default.svg",
         "hover": "variants/grouped-top-country/hover.svg",
-        "focus": "variants/grouped-top-country/focus.svg",
+        "pressed 2": "variants/grouped-top-country/pressed 2.svg",
         "pressed": "variants/grouped-top-country/pressed.svg"
+      },
+      "grouped-mid-country": {
+        "default": "variants/grouped-mid-country/default.svg"
       }
-    }
+    },
+    "overview": "overview.png"
   },
   "tokens": {
     "radius": "alias.radius.regular",

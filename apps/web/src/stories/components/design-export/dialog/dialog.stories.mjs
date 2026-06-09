@@ -39,12 +39,20 @@ export const DesignExport = {
   <img class="de-img" src="/designs/components/dialog/variants/basic/default.svg" alt="basic / default" loading="lazy" />
   <figcaption class="de-cap">basic / default</figcaption>
 </figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/dialog/variants/basic/default 2.svg" alt="basic / default 2" loading="lazy" />
+  <figcaption class="de-cap">basic / default 2</figcaption>
+</figure>
 </div>
 <h4 class="de-variant">confirmation</h4>
 <div class="de-grid">
 <figure class="de-item">
   <img class="de-img" src="/designs/components/dialog/variants/confirmation/default.svg" alt="confirmation / default" loading="lazy" />
   <figcaption class="de-cap">confirmation / default</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/dialog/variants/confirmation/default 2.svg" alt="confirmation / default 2" loading="lazy" />
+  <figcaption class="de-cap">confirmation / default 2</figcaption>
 </figure>
 </div>
     </div>
