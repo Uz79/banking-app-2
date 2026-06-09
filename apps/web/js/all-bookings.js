@@ -124,6 +124,49 @@
     update();
   }
 
+  function syncIntroClearScrollTop(root) {
+    var scrollEl = document.querySelector('.main-content');
+    var intro = root.querySelector('.all-bookings__intro');
+    var header = root.querySelector('[data-all-bookings-sticky-header]');
+    if (!scrollEl || !intro || !header) return 0;
+
+    var scrollRect = scrollEl.getBoundingClientRect();
+    var introRect = intro.getBoundingClientRect();
+    var stickyTop = parseFloat(window.getComputedStyle(header).top) || 0;
+
+    return Math.max(
+      0,
+      scrollEl.scrollTop +
+        (introRect.bottom - scrollRect.top) -
+        stickyTop -
+        header.offsetHeight
+    );
+  }
+
+  function bindIntroClearThreshold(root) {
+    var intro = root.querySelector('.all-bookings__intro');
+    if (!intro) return function () {
+      return 0;
+    };
+
+    var introClearScrollTop = 0;
+
+    function update() {
+      introClearScrollTop = syncIntroClearScrollTop(root);
+    }
+
+    window.addEventListener('resize', update);
+    if (typeof ResizeObserver !== 'undefined') {
+      var ro = new ResizeObserver(update);
+      ro.observe(intro);
+    }
+    update();
+
+    return function () {
+      return introClearScrollTop;
+    };
+  }
+
   function init() {
     var root = document.querySelector('[data-view="all-bookings"]');
     if (!root) return;
@@ -134,10 +177,10 @@
     bindSegmented(root, 'data-bookings-status');
     bindMonthChips(root);
     bindStickyHeaderHeight(root);
+    var getIntroClearScrollTop = bindIntroClearThreshold(root);
 
-    var scrollEdgeChrome = null;
     if (window.UZBankScrollEdgeChrome) {
-      scrollEdgeChrome = window.UZBankScrollEdgeChrome.bind(root, {
+      window.UZBankScrollEdgeChrome.bind(root, {
         nav: '[data-all-bookings-sticky-header]',
         getScrollEl: function () {
           return document.querySelector('.main-content');
@@ -145,32 +188,13 @@
         stickyAfter: '[data-all-bookings-sticky-header]',
         isStickyAfterAtEdge: function () {
           var scrollEl = document.querySelector('.main-content');
-          var intro = root.querySelector('.all-bookings__intro');
-          var header = root.querySelector('[data-all-bookings-sticky-header]');
-          if (!scrollEl || !intro || !header || scrollEl.scrollTop <= 1) return false;
-          return intro.getBoundingClientRect().bottom <= header.getBoundingClientRect().bottom + 1;
+          if (!scrollEl || scrollEl.scrollTop <= 1) return false;
+          return scrollEl.scrollTop >= getIntroClearScrollTop() - 1;
         },
         onStickyAfterChange: function (stuck) {
           document.body.classList.toggle('all-bookings--header-stuck', stuck);
-          syncStickyHeaderHeight(root);
-          if (scrollEdgeChrome) {
-            requestAnimationFrame(function () {
-              scrollEdgeChrome.update();
-            });
-          }
         },
       });
-    }
-
-    if (scrollEdgeChrome) {
-      var header = root.querySelector('[data-all-bookings-sticky-header]');
-      if (header && typeof ResizeObserver !== 'undefined') {
-        var chromeRo = new ResizeObserver(function () {
-          syncStickyHeaderHeight(root);
-          scrollEdgeChrome.update();
-        });
-        chromeRo.observe(header);
-      }
     }
   }
 

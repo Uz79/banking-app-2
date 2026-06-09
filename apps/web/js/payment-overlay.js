@@ -21,7 +21,8 @@
   var modalTitle = document.querySelector('.modal__title');
   var modalBack = document.querySelector('.modal__back');
   var modalClose = document.querySelector('.modal__close');
-  var modalSteps = document.querySelectorAll('.modal__step');
+  /* Scope to payment steps only — IAT uses .modal__step[data-iat-step] in #uz-iat-overlay */
+  var modalSteps = modalOverlay.querySelectorAll('.modal__step[data-step]');
   var modalFooter = document.querySelector('.modal__footer');
   var modalConfirmBtn = modalFooter ? modalFooter.querySelector('[data-payment-confirm]') : null;
   var confirmationOverlay = document.querySelector('.confirmation-overlay');

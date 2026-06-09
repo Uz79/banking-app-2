@@ -303,6 +303,23 @@
   var currentBookingRouteId  = null; /* slug/id used in #payment-details/<type>/<id> */
   var currentRow             = null; /* the actual .booking-row DOM node that was tapped */
 
+  var pdScrollChrome =
+    modal && window.UZBankScrollEdgeChrome
+      ? window.UZBankScrollEdgeChrome.bind(modal, {
+          getScrollEl: function (root) {
+            return root.querySelector('.modal__body');
+          },
+          footer: '.modal__footer'
+        })
+      : null;
+
+  function refreshPaymentDetailsScrollChrome() {
+    if (!pdScrollChrome) return;
+    requestAnimationFrame(function () {
+      pdScrollChrome.update();
+    });
+  }
+
   /* ── Balance string helpers ──────────────────────────────────── */
 
   /**
@@ -622,6 +639,9 @@
     if (furtherContent) furtherContent.hidden = true;
     if (messageValEl)   messageValEl.textContent = data.message || '';
 
+    var modalBody = modal ? modal.querySelector('.modal__body') : null;
+    if (modalBody) modalBody.scrollTop = 0;
+
     // Slide overlay in (mirror payment-overlay.js — clear stale close state on overlay + shell)
     if (shell) {
       shell.classList.remove('modal-shell--closing');
@@ -638,8 +658,11 @@
         shell.classList.remove('modal-shell--no-transition');
         shell.offsetHeight; // force reflow
         shell.classList.remove('modal-shell--offscreen');
+        refreshPaymentDetailsScrollChrome();
       });
     });
+
+    refreshPaymentDetailsScrollChrome();
 
     if (!opts.skipRoute && currentBookingRouteId) {
       var pdType = data.type === 'internal' ? 'internal' : 'domestic';
@@ -746,6 +769,7 @@
       var expanded = furtherToggle.getAttribute('aria-expanded') === 'true';
       furtherToggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
       furtherContent.hidden = expanded;
+      refreshPaymentDetailsScrollChrome();
     });
   }
 

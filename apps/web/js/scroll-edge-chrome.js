@@ -56,6 +56,13 @@
       return boundScrollEl.scrollHeight - boundScrollEl.clientHeight > 1;
     }
 
+    function stickyTopOffset(el) {
+      if (!el) return 0;
+      var position = window.getComputedStyle(el).position;
+      if (position !== 'sticky' && position !== '-webkit-sticky') return 0;
+      return parseFloat(window.getComputedStyle(el).top) || 0;
+    }
+
     function isNavAtScrollEdge() {
       if (!nav || !boundScrollEl || !scrollContentOverflows()) return false;
 
@@ -67,7 +74,8 @@
           if (boundScrollEl.scrollTop <= 1) return false;
           var scrollRect = boundScrollEl.getBoundingClientRect();
           var navRect = nav.getBoundingClientRect();
-          return navRect.top <= scrollRect.top + 1;
+          var stickyTop = stickyTopOffset(nav);
+          return navRect.top <= scrollRect.top + stickyTop + 1;
         }
         /* Nav above the scroll region (modal / account-information): use scroll offset. */
         return boundScrollEl.scrollTop > 1;
@@ -86,7 +94,7 @@
       var position = window.getComputedStyle(stickyAfter).position;
       if (position !== 'sticky' && position !== '-webkit-sticky') return false;
 
-      var stickyTop = parseFloat(window.getComputedStyle(stickyAfter).top) || 0;
+      var stickyTop = stickyTopOffset(stickyAfter);
       var scrollRect = boundScrollEl.getBoundingClientRect();
       var barRect = stickyAfter.getBoundingClientRect();
       var naturalTop =
@@ -118,18 +126,22 @@
       var overflows = maxScroll > 1;
       var atBottom = maxScroll <= 1 || scrollTop >= maxScroll - 1;
       var stickyAfterStuck = isStickyAfterAtEdge();
+      var navAtEdge = nav ? isNavAtScrollEdge() : false;
+      var sharedAfterTarget = stickyAfter && nav && stickyAfter === nav;
 
-      if (nav) {
+      if (nav && !sharedAfterTarget) {
         nav.classList.toggle(
           'is-scroll-edge--after',
-          isNavAtScrollEdge() && !stickyAfterStuck
+          navAtEdge && !stickyAfterStuck
         );
       }
       if (stickyAfter) {
         stickyAfter.classList.toggle('is-scroll-edge--stuck', stickyAfterStuck);
         stickyAfter.classList.toggle(
           'is-scroll-edge--after',
-          stickyAfterStuck && overflows && !atBottom
+          overflows &&
+            !atBottom &&
+            (sharedAfterTarget ? stickyAfterStuck || navAtEdge : stickyAfterStuck)
         );
       }
       if (onStickyAfterChange && stickyAfterStuck !== stickyAfterWasStuck) {

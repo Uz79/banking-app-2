@@ -54,56 +54,53 @@
   if (!overlay) return;
 
   var shell         = overlay.querySelector('.modal-shell');
-  var titleEl       = document.getElementById('uz-iat-title');
-  var backBtn       = document.getElementById('uz-iat-back');
-  var closeBtn      = document.getElementById('uz-iat-close');
-  var confirmBtn    = document.getElementById('uz-iat-confirm-btn');
+  var modalCard     = overlay.querySelector('.modal.modal--iat-flow');
+  var titleEl       = overlay.querySelector('#uz-iat-title');
+  var backBtn       = overlay.querySelector('#uz-iat-back');
+  var closeBtn      = overlay.querySelector('#uz-iat-close');
+  var confirmBtn    = overlay.querySelector('#uz-iat-confirm-btn');
   var steps         = overlay.querySelectorAll('.modal__step[data-iat-step]');
 
-  /* Step 0 – recipient */
-  var amountInput   = document.getElementById('uz-iat-amount-input');
-  var amountClear   = document.getElementById('uz-iat-amount-clear');
-  var currencyLabel = document.getElementById('uz-iat-currency-label');
-  var fromIcon      = overlay.querySelector('#uz-iat-from-icon use');
-  var fromName      = document.getElementById('uz-iat-from-name');
-  var fromIban      = document.getElementById('uz-iat-from-iban');
-  var fromCurrency  = document.getElementById('uz-iat-from-currency');
-  var fromBalance   = document.getElementById('uz-iat-from-balance');
+  var iatScrollChrome =
+    modalCard && window.UZBankScrollEdgeChrome
+      ? window.UZBankScrollEdgeChrome.bind(modalCard, {
+          getScrollEl: function (root) {
+            return root.querySelector('.modal__step--active');
+          }
+        })
+      : null;
 
-  var toIcon        = overlay.querySelector('#uz-iat-to-icon use');
-  var toName        = document.getElementById('uz-iat-to-name');
-  var toIban        = document.getElementById('uz-iat-to-iban');
-  var toCurrency    = document.getElementById('uz-iat-to-currency');
-  var toBalance     = document.getElementById('uz-iat-to-balance');
+  function refreshIatScrollChrome() {
+    if (!iatScrollChrome) return;
+    requestAnimationFrame(function () {
+      iatScrollChrome.update();
+    });
+  }
+
+  /* Step 0 – recipient */
+  var amountInput   = overlay.querySelector('#uz-iat-amount-input');
+  var amountClear   = overlay.querySelector('#uz-iat-amount-clear');
+  var currencyLabel = overlay.querySelector('#uz-iat-currency-label');
+  var fromBtn       = overlay.querySelector('#uz-iat-from-btn');
+  var toBtn         = overlay.querySelector('#uz-iat-to-btn');
 
   /* Step 1 – schedule */
-  var immediatelyToggle = document.getElementById('uz-iat-immediately-toggle');
-  var dateValue         = document.getElementById('uz-iat-date-value');
-  var executeOnField    = document.getElementById('uz-iat-execute-on-field');
+  var immediatelyToggle = overlay.querySelector('#uz-iat-immediately-toggle');
+  var dateValue         = overlay.querySelector('#uz-iat-date-value');
+  var executeOnField    = overlay.querySelector('#uz-iat-execute-on-field');
 
   /* Step 2 – summary */
-  var summaryAmount      = document.getElementById('uz-iat-summary-amount');
-  var summaryDate        = document.getElementById('uz-iat-summary-date');
-  var summaryToIcon      = overlay.querySelector('#uz-iat-summary-to-icon use');
-  var summaryToName      = document.getElementById('uz-iat-summary-to-name');
-  var summaryToIban      = document.getElementById('uz-iat-summary-to-iban');
-  var summaryToCurrency  = document.getElementById('uz-iat-summary-to-currency');
-  var summaryToBalance   = document.getElementById('uz-iat-summary-to-balance');
-  var summaryFromIcon    = overlay.querySelector('#uz-iat-summary-from-icon use');
-  var summaryFromName    = document.getElementById('uz-iat-summary-from-name');
-  var summaryFromIban    = document.getElementById('uz-iat-summary-from-iban');
-  var summaryFromCurrency = document.getElementById('uz-iat-summary-from-currency');
-  var summaryFromBalance  = document.getElementById('uz-iat-summary-from-balance');
+  var summaryAmount      = overlay.querySelector('#uz-iat-summary-amount');
+  var summaryDate        = overlay.querySelector('#uz-iat-summary-date');
+  var summaryToBtn       = overlay.querySelector('[data-iat-step="summary"] [aria-label="Change recipient account"]');
+  var summaryFromBtn     = overlay.querySelector('[data-iat-step="summary"] [aria-label="Change debit account"]');
 
   /* Confirmation dialog */
   var confOverlay    = overlay.querySelector('.confirmation-overlay');
-  var confCurrency   = document.getElementById('uz-iat-conf-currency');
-  var confAmount     = document.getElementById('uz-iat-conf-amount');
-  var confRecipient  = document.getElementById('uz-iat-conf-recipient');
-  var confBtn        = document.getElementById('uz-iat-conf-btn');
-
-  var fromBtn        = document.getElementById('uz-iat-from-btn');
-  var toBtn          = document.getElementById('uz-iat-to-btn');
+  var confCurrency   = overlay.querySelector('#uz-iat-conf-currency');
+  var confAmount     = overlay.querySelector('#uz-iat-conf-amount');
+  var confRecipient  = overlay.querySelector('#uz-iat-conf-recipient');
+  var confBtn        = overlay.querySelector('#uz-iat-conf-btn');
 
   /* ── Live state ────────────────────────────────────────────────── */
 
@@ -197,6 +194,20 @@
     });
   }
 
+  function stampDebitAccount(btn, acc) {
+    if (!btn || !acc) return;
+    var useIcon = btn.querySelector('.debit-account__icon use');
+    if (useIcon) useIcon.setAttribute('href', acc.icon);
+    var name = btn.querySelector('.debit-account__name');
+    if (name) name.textContent = acc.name;
+    var iban = btn.querySelector('.debit-account__iban');
+    if (iban) iban.textContent = acc.iban;
+    var cur = btn.querySelector('.debit-account__amount-currency');
+    var val = btn.querySelector('.debit-account__amount-value');
+    if (cur) cur.textContent = acc.currency;
+    if (val) val.textContent = acc.balance;
+  }
+
   /* ── Paint functions ───────────────────────────────────────────── */
 
   function syncIatAmountClearVisibility() {
@@ -217,17 +228,8 @@
     if (currencyLabel) currencyLabel.textContent = live.currency;
     syncIatAmountClearVisibility();
 
-    if (fromIcon)    fromIcon.setAttribute('href', from.icon);
-    if (fromName)    fromName.textContent  = from.name;
-    if (fromIban)    fromIban.textContent  = from.iban;
-    if (fromCurrency) fromCurrency.textContent = from.currency;
-    if (fromBalance) fromBalance.textContent   = from.balance;
-
-    if (toIcon)     toIcon.setAttribute('href', to.icon);
-    if (toName)     toName.textContent    = to.name;
-    if (toIban)     toIban.textContent    = to.iban;
-    if (toCurrency) toCurrency.textContent = to.currency;
-    if (toBalance)  toBalance.textContent  = to.balance;
+    stampDebitAccount(fromBtn, from);
+    stampDebitAccount(toBtn, to);
   }
 
   function paintScheduleStep() {
@@ -251,17 +253,8 @@
     if (summaryAmount) summaryAmount.textContent = live.currency + '  ' + formatAmount(live.amount);
     if (summaryDate)   summaryDate.textContent    = live.dateLabel || formatTodayDate();
 
-    if (summaryToIcon)     summaryToIcon.setAttribute('href', to.icon);
-    if (summaryToName)     summaryToName.textContent     = to.name;
-    if (summaryToIban)     summaryToIban.textContent     = to.iban;
-    if (summaryToCurrency) summaryToCurrency.textContent = to.currency;
-    if (summaryToBalance)  summaryToBalance.textContent  = to.balance;
-
-    if (summaryFromIcon)     summaryFromIcon.setAttribute('href', from.icon);
-    if (summaryFromName)     summaryFromName.textContent     = from.name;
-    if (summaryFromIban)     summaryFromIban.textContent     = from.iban;
-    if (summaryFromCurrency) summaryFromCurrency.textContent = from.currency;
-    if (summaryFromBalance)  summaryFromBalance.textContent  = from.balance;
+    stampDebitAccount(summaryToBtn, to);
+    stampDebitAccount(summaryFromBtn, from);
   }
 
   function paintConfirmationDialog() {
@@ -308,6 +301,7 @@
 
     /* Paint the step */
     paintStep(name);
+    refreshIatScrollChrome();
 
     /* History */
     if (pushState !== false) {
@@ -366,6 +360,7 @@
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
         shell.classList.remove('modal-shell--offscreen', 'modal-shell--no-transition');
+        refreshIatScrollChrome();
       });
     });
 
@@ -469,7 +464,7 @@
   }
 
   /* Segmented control: Single / Recurring execution */
-  var execTypeGroup = document.getElementById('uz-iat-exec-type');
+  var execTypeGroup = overlay.querySelector('#uz-iat-exec-type');
   if (execTypeGroup) {
     execTypeGroup.addEventListener('click', function (e) {
       var btn = e.target.closest('.segmented__option');
@@ -525,14 +520,18 @@
     if (STEPS.indexOf(step) >= 0) goToStep(step, false);
   });
 
-  /* Hash on page load (deep link) */
-  (function () {
+  /* Hash on page load (deep link) — after payment overlay init so step active state is not cleared */
+  function tryOpenFromHash() {
     var hash = location.hash;
     var m = hash.match(/^#iat\/(\w+)$/);
     if (m && STEPS.indexOf(m[1]) >= 0) {
       openOverlay();
       goToStep(m[1], false);
     }
-  })();
+  }
+
+  (window.onDocumentReady || function (fn) {
+    document.addEventListener('DOMContentLoaded', fn);
+  })(tryOpenFromHash);
 
 })();
