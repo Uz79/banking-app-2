@@ -40,6 +40,20 @@ export const DesignExport = {
   <figcaption class="de-cap">regular-right-active / default</figcaption>
 </figure>
 </div>
+<h4 class="de-variant">small-left-active</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/selection-control/segmented-control/variants/small-left-active/default.svg" alt="small-left-active / default" loading="lazy" />
+  <figcaption class="de-cap">small-left-active / default</figcaption>
+</figure>
+</div>
+<h4 class="de-variant">small-right-active</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/selection-control/segmented-control/variants/small-right-active/default.svg" alt="small-right-active / default" loading="lazy" />
+  <figcaption class="de-cap">small-right-active / default</figcaption>
+</figure>
+</div>
     </div>
   `,
 };

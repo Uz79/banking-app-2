@@ -6,7 +6,14 @@
    * content extends past the viewport (designs/…/mobile-content-indication).
    *
    * @param {Element} root
-   * @param {{ nav?: string, footer?: string, getScrollEl?: (root: Element) => Element|null }} [options]
+   * @param {{
+   *   nav?: string,
+   *   footer?: string,
+   *   stickyAfter?: string,
+   *   getScrollEl?: (root: Element) => Element|null,
+   *   isStickyAfterAtEdge?: () => boolean,
+   *   onStickyAfterChange?: (stuck: boolean) => void
+   * }} [options]
    * @returns {{ update: () => void }}
    */
   function bindScrollEdgeChrome(root, options) {
@@ -14,6 +21,9 @@
     var navSelector = options.nav || '.modal__nav, .view__nav, [data-scroll-edge-nav]';
     var footerSelector =
       options.footer || '.modal__footer, .account-information__footer, [data-scroll-edge-footer]';
+    var stickyAfterSelector = options.stickyAfter;
+    var isStickyAfterAtEdgeFn = options.isStickyAfterAtEdge;
+    var onStickyAfterChange = options.onStickyAfterChange;
     var getScrollEl =
       options.getScrollEl ||
       function (el) {
@@ -22,7 +32,9 @@
 
     var nav = root.querySelector(navSelector);
     var footer = root.querySelector(footerSelector);
+    var stickyAfter = stickyAfterSelector ? root.querySelector(stickyAfterSelector) : null;
     var boundScrollEl = null;
+    var stickyAfterWasStuck = false;
 
     function isFooterVisible() {
       if (!footer) return false;
@@ -44,6 +56,13 @@
       return boundScrollEl.scrollHeight - boundScrollEl.clientHeight > 1;
     }
 
+    function stickyTopOffset(el) {
+      if (!el) return 0;
+      var position = window.getComputedStyle(el).position;
+      if (position !== 'sticky' && position !== '-webkit-sticky') return 0;
+      return parseFloat(window.getComputedStyle(el).top) || 0;
+    }
+
     function isNavAtScrollEdge() {
       if (!nav || !boundScrollEl || !scrollContentOverflows()) return false;
 
@@ -55,7 +74,8 @@
           if (boundScrollEl.scrollTop <= 1) return false;
           var scrollRect = boundScrollEl.getBoundingClientRect();
           var navRect = nav.getBoundingClientRect();
-          return navRect.top <= scrollRect.top + 1;
+          var stickyTop = stickyTopOffset(nav);
+          return navRect.top <= scrollRect.top + stickyTop + 1;
         }
         /* Nav above the scroll region (modal / account-information): use scroll offset. */
         return boundScrollEl.scrollTop > 1;
@@ -64,12 +84,40 @@
       return boundScrollEl.scrollTop > 1;
     }
 
+    function isStickyAfterAtEdge() {
+      if (!stickyAfter || !boundScrollEl || !scrollContentOverflows()) return false;
+
+      if (isStickyAfterAtEdgeFn) {
+        return isStickyAfterAtEdgeFn();
+      }
+
+      var position = window.getComputedStyle(stickyAfter).position;
+      if (position !== 'sticky' && position !== '-webkit-sticky') return false;
+
+      var stickyTop = stickyTopOffset(stickyAfter);
+      var scrollRect = boundScrollEl.getBoundingClientRect();
+      var barRect = stickyAfter.getBoundingClientRect();
+      var naturalTop =
+        boundScrollEl.scrollTop + (barRect.top - scrollRect.top);
+      var stickStart = naturalTop - stickyTop;
+
+      return boundScrollEl.scrollTop >= stickStart - 1;
+    }
+
     function update() {
       attachScrollEl(getScrollEl(root));
 
       if (!boundScrollEl) {
         if (nav) nav.classList.remove('is-scroll-edge--after');
+        if (stickyAfter) {
+          stickyAfter.classList.remove('is-scroll-edge--after');
+          stickyAfter.classList.remove('is-scroll-edge--stuck');
+        }
         if (footer) footer.classList.remove('is-scroll-edge--before');
+        if (onStickyAfterChange && stickyAfterWasStuck) {
+          stickyAfterWasStuck = false;
+          onStickyAfterChange(false);
+        }
         return;
       }
 
@@ -77,8 +125,29 @@
       var maxScroll = boundScrollEl.scrollHeight - boundScrollEl.clientHeight;
       var overflows = maxScroll > 1;
       var atBottom = maxScroll <= 1 || scrollTop >= maxScroll - 1;
+      var stickyAfterStuck = isStickyAfterAtEdge();
+      var navAtEdge = nav ? isNavAtScrollEdge() : false;
+      var sharedAfterTarget = stickyAfter && nav && stickyAfter === nav;
 
-      if (nav) nav.classList.toggle('is-scroll-edge--after', isNavAtScrollEdge());
+      if (nav && !sharedAfterTarget) {
+        nav.classList.toggle(
+          'is-scroll-edge--after',
+          navAtEdge && !stickyAfterStuck
+        );
+      }
+      if (stickyAfter) {
+        stickyAfter.classList.toggle('is-scroll-edge--stuck', stickyAfterStuck);
+        stickyAfter.classList.toggle(
+          'is-scroll-edge--after',
+          overflows &&
+            !atBottom &&
+            (sharedAfterTarget ? stickyAfterStuck || navAtEdge : stickyAfterStuck)
+        );
+      }
+      if (onStickyAfterChange && stickyAfterStuck !== stickyAfterWasStuck) {
+        stickyAfterWasStuck = stickyAfterStuck;
+        onStickyAfterChange(stickyAfterStuck);
+      }
       if (footer && isFooterVisible()) {
         footer.classList.toggle('is-scroll-edge--before', overflows && !atBottom);
       } else if (footer) footer.classList.remove('is-scroll-edge--before');

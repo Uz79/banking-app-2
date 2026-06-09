@@ -18,6 +18,7 @@ export default {
         index: resolve(dir, 'index.html'),
         overview: resolve(dir, 'overview.html'),
         accountDetails: resolve(dir, 'account-details.html'),
+        allBookings: resolve(dir, 'all-bookings-and-payments.html'),
         payments: resolve(dir, 'payments.html'),
         profile: resolve(dir, 'profile.html'),
         accountInformation: resolve(dir, 'account-information.html'),

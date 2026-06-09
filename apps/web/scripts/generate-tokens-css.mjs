@@ -12,6 +12,13 @@ const typographyOutFile = path.join(repoRoot, "apps/web/css/typography.css");
 
 const readJson = (p) => JSON.parse(fs.readFileSync(p, "utf8"));
 
+const GENERATED_BANNER = `/* AUTO-GENERATED — do not edit.
+ * Source: designs/tokens/* → scripts/generate-tokens-css.mjs
+ * Regenerate: npm run tokens:build (from apps/web)
+ */
+
+`;
+
 const brand = readJson(path.join(tokensDir, "brand.json"));
 const alias = readJson(path.join(tokensDir, "alias.json"));
 const light = readJson(path.join(tokensDir, "mapped/light.json"));
@@ -287,7 +294,7 @@ function typographyClassesCss(vars) {
     .map(({ className }) => `.type-${className}.type-trim`)
     .join(",\n");
 
-  return `/* Generated from designs/tokens/* — bundled semantic text styles */
+  return `${GENERATED_BANNER}/* Bundled semantic text styles */
 
 ${typeRules}
 
@@ -482,11 +489,54 @@ function themeBlock(map, mode) {
 `;
 }
 
+/** Fail fast when a Figma re-import would silently break list-row typography. */
+function assertTypographyPipeline(metrics, mob) {
+  const errors = [];
+  const { unitsPerEm, capHeight, typoAscender, typoDescender } = metrics;
+
+  if (!unitsPerEm || !capHeight || !typoAscender || !typoDescender) {
+    errors.push(
+      "brand.font-metrics.profile-pro is missing or incomplete — need units-per-em, cap-height, typo-ascender, typo-descender in brand.json."
+    );
+  }
+
+  for (const [label, style] of [
+    ["text-sm", mob.textSm],
+    ["text-xs", mob.textXs],
+  ]) {
+    if (!style.trimTop || !style.trimBottom) {
+      errors.push(
+        `Leading trim for ${label} computed to 0 — font-metrics or responsive typography may be broken after the Figma export.`
+      );
+    }
+  }
+
+  if (Number(mob.textMd.fontSize) !== 16) {
+    errors.push(
+      `paragraph.md must be 16px on mobile (got ${mob.textMd.fontSize}px) — accessibility base size.`
+    );
+  }
+
+  if (errors.length) {
+    console.error("tokens:build validation failed:\n");
+    for (const msg of errors) console.error(`  • ${msg}`);
+    console.error(
+      "\nFix designs/tokens/*.json, then re-run npm run tokens:build."
+    );
+    console.error(
+      "Do not hand-edit apps/web/css/tokens.css or typography.css.\n"
+    );
+    process.exit(1);
+  }
+}
+
 const metrics = fontMetrics();
 const mob = typographyVars(mobile, metrics);
 const desk = typographyVars(desktop, metrics);
 
-const css = `@font-face {
+assertTypographyPipeline(metrics, mob);
+
+const css = `${GENERATED_BANNER}@font-face {
   font-family: 'Profile Pro';
   src: url('../assets/fonts/ProfilePro-Regular.otf') format('opentype');
   font-weight: 400;
@@ -602,3 +652,5 @@ fs.writeFileSync(outFile, css, "utf8");
 fs.writeFileSync(typographyOutFile, typographyClassesCss(mob), "utf8");
 console.log(`Wrote ${outFile}`);
 console.log(`Wrote ${typographyOutFile}`);
+console.log(`  --trim-top-text-sm: ${trimPx(mob.textSm.trimTop)}`);
+console.log(`  --text-row-gap: var(--space-1)`);

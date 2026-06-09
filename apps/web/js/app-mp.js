@@ -567,12 +567,9 @@
       function go(page) {
         window.location.href = prefix + page;
       }
-      if (action === 'internal-account-transfer') {
-        if (typeof window.__UZ_IAT_OPEN === 'function') {
-          window.__UZ_IAT_OPEN();
-        } else {
-          go('payments.html');
-        }
+      if (action === 'show-all-bookings') {
+        var accountKey = window.__UZ_ACTIVE_ACCOUNT__ || 'savings';
+        go('all-bookings-and-payments.html?account=' + encodeURIComponent(accountKey));
         return;
       }
       if (action === 'change-category') {

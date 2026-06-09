@@ -1,4 +1,9 @@
-/* Generated from designs/tokens/* — bundled semantic text styles */
+/* AUTO-GENERATED — do not edit.
+ * Source: designs/tokens/* → scripts/generate-tokens-css.mjs
+ * Regenerate: npm run tokens:build (from apps/web)
+ */
+
+/* Bundled semantic text styles */
 
 .type-hero {
   font-family: var(--font-family);

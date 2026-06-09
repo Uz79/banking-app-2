@@ -1,6 +1,6 @@
 # Flow documentation (screens)
 
-Raster flows that span multiple views live here so component manifests can reference them without nesting large binaries under each component folder.
+Raster flows live under **`designs/flows/`** (see `designs/flows/README.md`). This folder is legacy; prefer the top-level flows directory for new journey PNGs.
 
 | Asset | Describes |
 | ----- | --------- |

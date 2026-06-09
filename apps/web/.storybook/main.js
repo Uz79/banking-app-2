@@ -40,6 +40,7 @@ const config = {
     { from: '../overview.html', to: '/app/overview.html' },
     { from: '../payments.html', to: '/app/payments.html' },
     { from: '../account-details.html', to: '/app/account-details.html' },
+    { from: '../all-bookings-and-payments.html', to: '/app/all-bookings-and-payments.html' },
   ],
   viteFinal: async (config) => ({
     ...config,
