@@ -13,6 +13,8 @@ Section header (title, optional trailing amount) plus a bordered body card. Matc
 | Card - Recurring payments | `recurring-payments` | Payments (sidebar) |
 | Card - Recipients | `recipients` | Payments — “Most recent recipients” (sidebar) |
 | Card - Bookings | `bookings` | Account details |
+| Card - Performance | `performance` | Investment account details (performance chart) |
+| Card - Positions | `positions` | Investment account details (holdings table) |
 
 Place new exports under `variants/<slug>/` as `default.svg` and `default.png`. Do not leave `Card - …` files at `card/` root.
 

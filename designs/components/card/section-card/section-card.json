@@ -27,6 +27,12 @@
       },
       "other-products": {
         "default": "variants/other-products/default.svg"
+      },
+      "performance": {
+        "default": "variants/performance/default.svg"
+      },
+      "positions": {
+        "default": "variants/positions/default.svg"
       }
     },
     "overview": "overview.png"
@@ -48,6 +54,7 @@
     "Implementation: apps/web/css/styles.css (.section-card, .section-card__header, .section-card__body).",
     "accounts-investment / other-products: Overview main column; offers: Overview sidebar.",
     "pending-payments: Payments main column; recurring-payments / recipients: Payments sidebar.",
-    "bookings: Account details bookings surface."
+    "bookings: Account details bookings surface.",
+    "performance / positions: Investment account details (chart + holdings table)."
   ]
 }
