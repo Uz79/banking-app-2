@@ -75,6 +75,20 @@ export const DesignExport = {
   <figcaption class="de-cap">other-products / default</figcaption>
 </figure>
 </div>
+<h4 class="de-variant">performance</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/card/section-card/variants/performance/default.svg" alt="performance / default" loading="lazy" />
+  <figcaption class="de-cap">performance / default</figcaption>
+</figure>
+</div>
+<h4 class="de-variant">positions</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/card/section-card/variants/positions/default.svg" alt="positions / default" loading="lazy" />
+  <figcaption class="de-cap">positions / default</figcaption>
+</figure>
+</div>
     </div>
   `,
 };
