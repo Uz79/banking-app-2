@@ -54,6 +54,20 @@ export const DesignExport = {
   <figcaption class="de-cap">grouped-top-service / default</figcaption>
 </figure>
 </div>
+<h4 class="de-variant">position</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/list-item/variants/position/default.svg" alt="position / default" loading="lazy" />
+  <figcaption class="de-cap">position / default</figcaption>
+</figure>
+</div>
+<h4 class="de-variant">group-credit-card</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/list-item/list-item/variants/group-credit-card/default.svg" alt="group-credit-card / default" loading="lazy" />
+  <figcaption class="de-cap">group-credit-card / default</figcaption>
+</figure>
+</div>
 <h4 class="de-variant">grouped-mid-user2</h4>
 <div class="de-grid">
 <figure class="de-item">
@@ -92,13 +106,6 @@ export const DesignExport = {
 <figure class="de-item">
   <img class="de-img" src="/designs/components/list-item/list-item/variants/wealth-overview-account/pressed.svg" alt="wealth-overview-account / pressed" loading="lazy" />
   <figcaption class="de-cap">wealth-overview-account / pressed</figcaption>
-</figure>
-</div>
-<h4 class="de-variant">group-credit-card</h4>
-<div class="de-grid">
-<figure class="de-item">
-  <img class="de-img" src="/designs/components/list-item/list-item/variants/group-credit-card/default.svg" alt="group-credit-card / default" loading="lazy" />
-  <figcaption class="de-cap">group-credit-card / default</figcaption>
 </figure>
 </div>
     </div>

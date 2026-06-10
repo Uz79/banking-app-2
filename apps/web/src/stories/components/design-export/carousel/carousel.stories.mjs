@@ -39,6 +39,10 @@ export const DesignExport = {
   <img class="de-img" src="/designs/components/carousel/variants/bank-products/default.svg" alt="bank-products / default" loading="lazy" />
   <figcaption class="de-cap">bank-products / default</figcaption>
 </figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/carousel/variants/bank-products/default 2.svg" alt="bank-products / default 2" loading="lazy" />
+  <figcaption class="de-cap">bank-products / default 2</figcaption>
+</figure>
 </div>
     </div>
   `,

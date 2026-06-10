@@ -1,0 +1,33 @@
+{
+  "name": "investment-product-details",
+  "category": "shell",
+  "description": "Investment product details shell screen (performance + positions).",
+  "interactionStates": [
+    "default"
+  ],
+  "assets": {
+    "variants": {
+      "desktop-default": {
+        "default": "variants/desktop-default/default.svg"
+      },
+      "mobile-default": {
+        "default": "variants/mobile-default/default.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": [
+    "Figma exports: 'Details of Investment Product - desktop' \u2192 variants/desktop-default/; 'Details of Investment Product - mobile' \u2192 variants/mobile-default/.",
+    "Performance and positions blocks use card/section-card variants performance and positions."
+  ]
+}

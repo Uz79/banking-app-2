@@ -9,7 +9,7 @@
     "overview": "overview.png",
     "variants": {
       "desktop-default": {
-        "default": "variants/desktop-default/default.svg"
+        "default": "variants/desktop-default/default.png"
       },
       "mobile-default": {
         "default": "variants/mobile-default/default.png"
@@ -28,7 +28,7 @@
     }
   },
   "notes": [
-    "Figma export: 'Screen Overview - desktop' → variants/desktop-default/default.svg.",
+    "Figma export: 'Screen Overview - desktop' \u2192 variants/desktop-default/default.svg.",
     "Add variants/mobile-default/default.png when a new mobile export is dropped."
   ]
 }

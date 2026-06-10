@@ -654,7 +654,51 @@ def iter_component_root_dirs() -> Iterable[Path]:
 # Category buckets (e.g. designs/components/card/) route "<Category> - <label>" to a leaf component.
 INBOX_CATEGORY_DEFAULT_CHILD: Dict[str, str] = {
     "card": "section-card",
+    "list-item": "list-item",
 }
+
+# Figma screen frame titles → designs/screens/<folder> (when kebab(title) ≠ folder name).
+INBOX_SCREEN_ALIASES: Dict[str, str] = {
+    "details-of-investment-product": "investment-product-details",
+    "screen-overview": "overview",
+    "payment": "payments",
+}
+
+
+def resolve_inbox_screen_dir(screens_root: Path, target: str) -> Optional[Path]:
+    """Map inbox prefix slug to an existing designs/screens/<folder>."""
+    direct = screens_root / target
+    if direct.is_dir():
+        return direct
+    alias = INBOX_SCREEN_ALIASES.get(target)
+    if alias:
+        aliased = screens_root / alias
+        if aliased.is_dir():
+            return aliased
+    return None
+
+
+def parse_inbox_screen_rest(rest_name: str) -> Optional[Tuple[str, Optional[str]]]:
+    """
+    Parse screen export remainder after '<screen> - '.
+
+    Supports:
+      - '<variant> - <breakpoint>.ext'  → variant folder + breakpoint subfolder
+      - '<breakpoint>.ext' only         → single folder (e.g. desktop.svg → desktop-default/)
+    """
+    if " - " in rest_name:
+        base, suffix_ext = rest_name.split(" - ", 1)
+        variant_key = kebab(base)
+        breakpoint = screen_breakpoint_from_suffix(suffix_ext)
+        if breakpoint is None:
+            return None
+        return (variant_key, breakpoint)
+
+    breakpoint = screen_breakpoint_from_suffix(rest_name)
+    if breakpoint is None:
+        return None
+    # Shell screens: variants/desktop-default/default.svg (no nested variant folder).
+    return (breakpoint, None)
 
 
 def find_child_component_by_label(category_dir: Path, label: str) -> Optional[Path]:
@@ -907,16 +951,24 @@ def normalize_inbox(*, dry_run: bool) -> List[Tuple[Path, Path]]:
                     )
                 continue
 
-        screen_dir = screens_root / target
-        if screen_dir.exists():
-            if " - " not in rest_name:
+        screen_dir = resolve_inbox_screen_dir(screens_root, target)
+        if screen_dir:
+            parsed_screen = parse_inbox_screen_rest(rest_name)
+            if parsed_screen is None:
                 continue
-            base, suffix_ext = rest_name.split(" - ", 1)
-            variant_key = kebab(base)
-            breakpoint = screen_breakpoint_from_suffix(suffix_ext)
+            variant_key, breakpoint = parsed_screen
             if breakpoint is None:
-                continue
-            dest = screen_dir / "variants" / variant_key / breakpoint / f"default{f.suffix.lower()}"
+                dest = screen_dir / "variants" / variant_key / f"default{f.suffix.lower()}"
+                json_breakpoint = "default"
+            else:
+                dest = (
+                    screen_dir
+                    / "variants"
+                    / variant_key
+                    / breakpoint
+                    / f"default{f.suffix.lower()}"
+                )
+                json_breakpoint = breakpoint
             if move_with_archive(
                 f,
                 dest,
@@ -930,7 +982,7 @@ def normalize_inbox(*, dry_run: bool) -> List[Tuple[Path, Path]]:
                 upsert_assets_variants(
                     json_path,
                     variant_key=variant_key,
-                    state_or_breakpoint=breakpoint,
+                    state_or_breakpoint=json_breakpoint,
                     rel_path=str(dest.relative_to(screen_dir)).replace("\\", "/"),
                     dry_run=dry_run,
                 )

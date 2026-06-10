@@ -31,7 +31,7 @@ export const DesignExport = {
 <h4 class="de-variant">desktop-default</h4>
 <div class="de-grid de-grid--screen">
 <figure class="de-item">
-  <img class="de-img de-img--screen" src="/designs/screens/overview/variants/desktop-default/default.svg" alt="desktop-default / default" loading="lazy" />
+  <img class="de-img de-img--screen" src="/designs/screens/overview/variants/desktop-default/default.png" alt="desktop-default / default" loading="lazy" />
   <figcaption class="de-cap">desktop-default / default</figcaption>
 </figure>
 </div>

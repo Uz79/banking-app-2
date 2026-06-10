@@ -13,6 +13,7 @@
         "focus": "variants/default-default/focus.svg",
         "default": "variants/default-default/default.svg",
         "hover": "variants/default-default/hover.svg",
+        "pressed 2": "variants/default-default/pressed 2.svg",
         "pressed": "variants/default-default/pressed.svg"
       },
       "default-error": {

@@ -8,18 +8,20 @@
     "focus"
   ],
   "assets": {
-    "overview": "overview.png",
     "variants": {
       "default-default": {
         "default": "variants/default-default/default.svg"
       },
       "basic": {
-        "default": "variants/basic/default.svg"
+        "default": "variants/basic/default.svg",
+        "default 2": "variants/basic/default 2.svg"
       },
       "confirmation": {
-        "default": "variants/confirmation/default.svg"
+        "default": "variants/confirmation/default.svg",
+        "default 2": "variants/confirmation/default 2.svg"
       }
-    }
+    },
+    "overview": "overview.png"
   },
   "tokens": {
     "radius": "alias.radius.regular",

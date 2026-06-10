@@ -15,8 +15,9 @@ Reusable list item patterns (e.g. accounts, services, users, cards).
 | `Type=Grouped-Top`, `Case=User` | `grouped-top-user` | Grouped user row (top) |
 | `Type=Grouped-Mid`, `Case=User2` | `grouped-mid-user2` | Grouped user row (mid) |
 | `Type=Wealth Overview`, `Case=Account` | `wealth-overview-account` | Wealth overview account row (default / hover / focus) |
+| `List Item - Position` | `position` | Investment position row (title, subtitle, performance, value) |
 
-Place new exports under `variants/<slug>/` as `default.svg` + `default.png` (+ `hover` / `focus` when exported). Do not leave `Type=…` files at `list-item/` root.
+Place new exports under `variants/<slug>/` as `default.svg` + `default.png` (+ `hover` / `focus` when exported). Do not leave `Type=…` or `List Item - …` files at `list-item/` root.
 
 ## States
 

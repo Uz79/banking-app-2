@@ -2,17 +2,26 @@
 
 ## After a Figma export (3 steps)
 
-1. Replace the exported JSON in this folder (`brand.json`, `alias.json`, `responsive/*`, `mapped/*`).
-2. From `apps/web`, run:
+1. Paste the export under `designs/tokens/_NEW/<YYMMDD>_tokens/` (inbox only — build does not read `_NEW/`).
+2. From `apps/web`, validate (optional preview) then promote:
 
    ```bash
-   npm run tokens:build
+   npm run tokens:validate -- <folder>   # preview — will fail if Figma omitted engineering tokens
+   npm run tokens:promote -- <folder>    # archive live → merge engineering tokens → build
    ```
 
-3. If the build **passes** → spot-check Overview in the app and one Live story in Storybook.  
-   If it **fails** → fix the JSON (see errors in the terminal). **Do not** patch generated CSS.
+   Example: `npm run tokens:promote -- 260609_tokens`
+
+   `tokens:promote` archives the current live tokens to `designs/tokens/_archive/`, copies the export into this folder, carries forward any missing engineering tokens from the archive (see manifest), runs `tokens:build`, and rolls back on failure.
+
+3. Spot-check Overview in the app and one Live story in Storybook.  
+   If promote **fails** → fix the JSON or re-export from Figma. **Do not** patch generated CSS.
 
 Commit the updated Figma JSON **and** the regenerated `apps/web/css/tokens.css` + `typography.css`.
+
+### Engineering tokens (required-manifest.json)
+
+Figma may omit tokens the CSS generator needs. `required-manifest.json` lists them. `tokens:validate` reports missing tokens; `tokens:promote` merges them from the last live export when absent. Update the manifest when `generate-tokens-css.mjs` gains new hard dependencies.
 
 ## What not to hand-edit
 

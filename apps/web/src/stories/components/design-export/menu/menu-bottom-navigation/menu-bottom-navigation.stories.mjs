@@ -26,8 +26,19 @@ export const DesignExport = {
     </style>
     <div class="de-wrap">
       <p class="de-desc">Bottom navigation menu items.</p>
+<h4 class="de-variant">default-default</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/menu/menu-bottom-navigation/variants/default-default/default.svg" alt="default-default / default" loading="lazy" />
+  <figcaption class="de-cap">default-default / default</figcaption>
+</figure>
+</div>
 <h4 class="de-variant">bottom-nav-selected</h4>
 <div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/menu/menu-bottom-navigation/variants/bottom-nav-selected/focus.svg" alt="bottom-nav-selected / focus" loading="lazy" />
+  <figcaption class="de-cap">bottom-nav-selected / focus</figcaption>
+</figure>
 <figure class="de-item">
   <img class="de-img" src="/designs/components/menu/menu-bottom-navigation/variants/bottom-nav-selected/default.svg" alt="bottom-nav-selected / default" loading="lazy" />
   <figcaption class="de-cap">bottom-nav-selected / default</figcaption>
@@ -37,8 +48,8 @@ export const DesignExport = {
   <figcaption class="de-cap">bottom-nav-selected / hover</figcaption>
 </figure>
 <figure class="de-item">
-  <img class="de-img" src="/designs/components/menu/menu-bottom-navigation/variants/bottom-nav-selected/focus.svg" alt="bottom-nav-selected / focus" loading="lazy" />
-  <figcaption class="de-cap">bottom-nav-selected / focus</figcaption>
+  <img class="de-img" src="/designs/components/menu/menu-bottom-navigation/variants/bottom-nav-selected/pressed 2.svg" alt="bottom-nav-selected / pressed 2" loading="lazy" />
+  <figcaption class="de-cap">bottom-nav-selected / pressed 2</figcaption>
 </figure>
 <figure class="de-item">
   <img class="de-img" src="/designs/components/menu/menu-bottom-navigation/variants/bottom-nav-selected/pressed.svg" alt="bottom-nav-selected / pressed" loading="lazy" />
@@ -48,6 +59,10 @@ export const DesignExport = {
 <h4 class="de-variant">bottom-nav-unselected</h4>
 <div class="de-grid">
 <figure class="de-item">
+  <img class="de-img" src="/designs/components/menu/menu-bottom-navigation/variants/bottom-nav-unselected/focus.svg" alt="bottom-nav-unselected / focus" loading="lazy" />
+  <figcaption class="de-cap">bottom-nav-unselected / focus</figcaption>
+</figure>
+<figure class="de-item">
   <img class="de-img" src="/designs/components/menu/menu-bottom-navigation/variants/bottom-nav-unselected/default.svg" alt="bottom-nav-unselected / default" loading="lazy" />
   <figcaption class="de-cap">bottom-nav-unselected / default</figcaption>
 </figure>
@@ -56,19 +71,12 @@ export const DesignExport = {
   <figcaption class="de-cap">bottom-nav-unselected / hover</figcaption>
 </figure>
 <figure class="de-item">
-  <img class="de-img" src="/designs/components/menu/menu-bottom-navigation/variants/bottom-nav-unselected/focus.svg" alt="bottom-nav-unselected / focus" loading="lazy" />
-  <figcaption class="de-cap">bottom-nav-unselected / focus</figcaption>
+  <img class="de-img" src="/designs/components/menu/menu-bottom-navigation/variants/bottom-nav-unselected/pressed 2.svg" alt="bottom-nav-unselected / pressed 2" loading="lazy" />
+  <figcaption class="de-cap">bottom-nav-unselected / pressed 2</figcaption>
 </figure>
 <figure class="de-item">
   <img class="de-img" src="/designs/components/menu/menu-bottom-navigation/variants/bottom-nav-unselected/pressed.svg" alt="bottom-nav-unselected / pressed" loading="lazy" />
   <figcaption class="de-cap">bottom-nav-unselected / pressed</figcaption>
-</figure>
-</div>
-<h4 class="de-variant">default-default</h4>
-<div class="de-grid">
-<figure class="de-item">
-  <img class="de-img" src="/designs/components/menu/menu-bottom-navigation/variants/default-default/default.svg" alt="default-default / default" loading="lazy" />
-  <figcaption class="de-cap">default-default / default</figcaption>
 </figure>
 </div>
     </div>

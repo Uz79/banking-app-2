@@ -32,6 +32,10 @@ export const DesignExport = {
   <img class="de-img" src="/designs/components/expander/variants/regular-expanded/default.svg" alt="regular-expanded / default" loading="lazy" />
   <figcaption class="de-cap">regular-expanded / default</figcaption>
 </figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/expander/variants/regular-expanded/default 2.svg" alt="regular-expanded / default 2" loading="lazy" />
+  <figcaption class="de-cap">regular-expanded / default 2</figcaption>
+</figure>
 </div>
 <h4 class="de-variant">regular-collapsed</h4>
 <div class="de-grid">
@@ -42,6 +46,18 @@ export const DesignExport = {
 <figure class="de-item">
   <img class="de-img" src="/designs/components/expander/variants/regular-collapsed/hover.svg" alt="regular-collapsed / hover" loading="lazy" />
   <figcaption class="de-cap">regular-collapsed / hover</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/expander/variants/regular-collapsed/pressed 2.svg" alt="regular-collapsed / pressed 2" loading="lazy" />
+  <figcaption class="de-cap">regular-collapsed / pressed 2</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/expander/variants/regular-collapsed/default 2.svg" alt="regular-collapsed / default 2" loading="lazy" />
+  <figcaption class="de-cap">regular-collapsed / default 2</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/expander/variants/regular-collapsed/hover 2.svg" alt="regular-collapsed / hover 2" loading="lazy" />
+  <figcaption class="de-cap">regular-collapsed / hover 2</figcaption>
 </figure>
 <figure class="de-item">
   <img class="de-img" src="/designs/components/expander/variants/regular-collapsed/pressed.svg" alt="regular-collapsed / pressed" loading="lazy" />

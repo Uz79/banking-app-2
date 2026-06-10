@@ -53,12 +53,12 @@
         "value": "rgba(0, 21, 126, 0.1)",
         "type": "color"
       },
-      "900-20pc": {
-        "value": "rgba(0, 21, 126, 0.2)",
-        "type": "color"
-      },
       "900-0pc": {
         "value": "rgba(0, 21, 126, 0)",
+        "type": "color"
+      },
+      "900-20pc": {
+        "value": "rgba(0, 21, 126, 0.2)",
         "type": "color"
       }
     },
@@ -125,12 +125,12 @@
         "value": "rgba(255, 255, 255, 0.1)",
         "type": "color"
       },
-      "white-20pc": {
-        "value": "rgba(255, 255, 255, 0.2)",
-        "type": "color"
-      },
       "white-0pc": {
         "value": "rgba(255, 255, 255, 0)",
+        "type": "color"
+      },
+      "white-20pc": {
+        "value": "rgba(255, 255, 255, 0.2)",
         "type": "color"
       }
     }
@@ -225,24 +225,6 @@
     "pill": {
       "value": "{size.16}",
       "type": "borderRadius"
-    }
-  },
-  "trim": {
-    "cap-height": {
-      "value": "{font-metrics.profile-pro.cap-height}",
-      "type": "other"
-    },
-    "baseline": {
-      "value": "{font-metrics.profile-pro.typo-descender}",
-      "type": "other"
-    },
-    "primary-trim-top": {
-      "value": "{trim.cap-height}",
-      "type": "other"
-    },
-    "primary-trim-bottom": {
-      "value": "{trim.baseline}",
-      "type": "other"
     }
   }
 }

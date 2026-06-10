@@ -113,6 +113,7 @@
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/typography.css">
   <link rel="stylesheet" href="css/styles.css">
+  <script src="js/shell-nav-boot.js"></script>
 </head>
 <body class="body" data-screen="overview" data-page="overview">
 <div class="app">
@@ -162,6 +163,7 @@
             </button>
           </header>
 
+          <div class="overview__primary">
           <div class="action-buttons">
             <button class="action-button" type="button">
               <span class="action-button__circle">
@@ -186,7 +188,7 @@
           <!-- Accounts & Investment -->
           <div class="section-card">
             <div class="section-card__header">
-              <span class="section-card__title">Accounts &amp; investment</span>
+              <span class="section-card__title">Accounts &amp; Investment</span>
               <span class="section-card__amount">
                 <span class="section-card__currency">CHF</span>
                 <span class="section-card__value">65'000.00</span>
@@ -217,17 +219,17 @@
                 </span>
               </a>
               <div class="divider"></div>
-              <div class="product-item">
-                <svg class="product-item__icon" aria-hidden="true" focusable="false"><use href="#i-life-buoy"/></svg>
+              <a class="product-item" href="investment-product-details.html">
+                <svg class="product-item__icon" aria-hidden="true" focusable="false"><use href="#i-gitlab"/></svg>
                 <div class="product-item__info type-stack-tight">
                   <span class="product-item__name type-sm type-trim">Deposit</span>
-                  <span class="product-item__iban type-xs type-trim">123,456,78</span>
+                  <span class="product-item__iban type-xs type-trim">123.456.78</span>
                 </div>
                 <span class="product-item__amount">
                   <span class="product-item__currency">CHF</span>
                   <span class="product-item__value">20'000.00</span>
                 </span>
-              </div>
+              </a>
               <div class="divider"></div>
               <div class="product-item">
                 <svg class="product-item__icon" aria-hidden="true" focusable="false"><use href="#i-anchor"/></svg>
@@ -253,7 +255,7 @@
                 <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-credit-card"/></svg>
                 <div class="list-item__content type-stack-tight">
                   <span class="list-item__title type-sm type-trim">VISA Gold</span>
-                  <span class="list-item__subtitle type-xs type-trim">available CHF 4'700.00</span>
+                  <span class="list-item__subtitle type-xs type-trim">available USD 4'700.00</span>
                 </div>
                 <span class="list-item__amount">
                   <span class="list-item__currency type-xs">Limit CHF</span>
@@ -262,11 +264,104 @@
               </div>
             </div>
           </div>
+          </div>
         </div>
 
-        <!-- Overview right sidebar (desktop) -->
+        <!-- Overview right column (desktop): performance + offers -->
         <aside class="view__sidebar">
-          <div class="section-card">
+          <div class="section-card section-card--performance">
+            <div class="section-card__body performance-card">
+              <header class="performance-card__toolbar">
+                <a class="performance-card__product" href="investment-product-details.html">
+                  <svg class="performance-card__product-icon" aria-hidden="true" focusable="false"><use href="#i-gitlab"/></svg>
+                  <span class="performance-card__product-title">Deposit - 123.456.78</span>
+                </a>
+                <a class="performance-card__details-btn uz-btn uz-btn--tonal uz-btn--sm" href="investment-product-details.html">
+                  <span>Details</span>
+                  <svg class="uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
+                </a>
+              </header>
+              <header class="performance-card__header">
+                <div class="performance-card__balance">
+                  <span class="performance-card__balance-value">20'000.00</span>
+                  <span class="performance-card__balance-currency">CHF</span>
+                </div>
+              </header>
+              <div class="performance-card__meta">
+                <p class="performance-card__change">
+                  <span>+ 980.39 CHF</span>
+                  <span class="performance-card__change-sep" aria-hidden="true">&bull;</span>
+                  <span>+ 5.13 %</span>
+                </p>
+                <time class="performance-card__date" datetime="2026-05-05">05.May 2026</time>
+              </div>
+
+              <div class="performance-card__chart" aria-hidden="true">
+                <svg class="performance-card__chart-svg" viewBox="0 0 388 164" xmlns="http://www.w3.org/2000/svg" data-performance-chart>
+                  <defs>
+                    <linearGradient id="overview-performance-chart-fill" x1="194" y1="8" x2="194" y2="132" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="currentColor" stop-opacity="0.2"/>
+                      <stop offset="1" stop-color="currentColor" stop-opacity="0"/>
+                    </linearGradient>
+                    <filter id="overview-performance-chart-tooltip-shadow" class="performance-card__chart-tooltip-shadow" filterUnits="objectBoundingBox" x="-0.08" y="-0.12" width="1.16" height="1.45" color-interpolation-filters="sRGB">
+                      <feDropShadow dx="0" dy="2" stdDeviation="6"/>
+                    </filter>
+                  </defs>
+                  <text class="performance-card__chart-axis performance-card__chart-axis--y" x="384" y="32" text-anchor="end">60</text>
+                  <text class="performance-card__chart-axis performance-card__chart-axis--y" x="384" y="64" text-anchor="end">40</text>
+                  <text class="performance-card__chart-axis performance-card__chart-axis--y" x="384" y="96" text-anchor="end">20</text>
+                  <text class="performance-card__chart-axis performance-card__chart-axis--y" x="384" y="132" text-anchor="end">0</text>
+                  <path class="performance-card__chart-area" data-performance-chart-area d="M0 74 L29 67 L57 70 L85 54 L113 62 L141 50 L169 60 L197 44 L225 52 L253 40 L281 50 L309 46 L337 54 L352 48 V132 H0 Z" fill="url(#overview-performance-chart-fill)"/>
+                  <path class="performance-card__chart-line" data-performance-chart-line d="M0 74 L29 67 L57 70 L85 54 L113 62 L141 50 L169 60 L197 44 L225 52 L253 40 L281 50 L309 46 L337 54 L352 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path class="performance-card__chart-line-hit" data-performance-chart-line-hit d="M0 74 L29 67 L57 70 L85 54 L113 62 L141 50 L169 60 L197 44 L225 52 L253 40 L281 50 L309 46 L337 54 L352 48" fill="none" stroke="transparent" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+                  <g class="performance-card__chart-hover" data-performance-chart-hover hidden>
+                    <line class="performance-card__chart-marker" data-performance-chart-marker x1="197" y1="44" x2="197" y2="132" stroke="currentColor" stroke-opacity="0.7" stroke-width="0.5" stroke-dasharray="2 2"/>
+                    <circle class="performance-card__chart-dot" data-performance-chart-dot cx="197" cy="44" r="7" fill="var(--color-bg)" stroke="currentColor" stroke-width="2"/>
+                    <rect class="performance-card__chart-tooltip" data-performance-chart-tooltip filter="url(#overview-performance-chart-tooltip-shadow)" x="67" y="8" width="260" height="43" rx="8"/>
+                    <text class="performance-card__chart-tooltip-value" data-performance-chart-tooltip-value x="83" y="35" text-anchor="start">25'000.00</text>
+                    <text class="performance-card__chart-tooltip-date" data-performance-chart-tooltip-date x="311" y="35" text-anchor="end">05.May 2026</text>
+                  </g>
+                  <text class="performance-card__chart-axis performance-card__chart-axis--x" data-performance-chart-x-label x="24" y="152">Feb</text>
+                  <text class="performance-card__chart-axis performance-card__chart-axis--x" data-performance-chart-x-label x="120" y="152">Feb</text>
+                  <text class="performance-card__chart-axis performance-card__chart-axis--x" data-performance-chart-x-label x="216" y="152">Mai</text>
+                  <text class="performance-card__chart-axis performance-card__chart-axis--x" data-performance-chart-x-label x="312" y="152">Aug</text>
+                </svg>
+              </div>
+
+              <div class="performance-card__range" role="group" aria-label="Performance time range" data-performance-range>
+                <button type="button" class="performance-card__range-chip" data-range="1w" aria-pressed="false">1w</button>
+                <button type="button" class="performance-card__range-chip" data-range="1m" aria-pressed="false">1m</button>
+                <button type="button" class="performance-card__range-chip" data-range="3m" aria-pressed="false">3m</button>
+                <button type="button" class="performance-card__range-chip" data-range="ytd" aria-pressed="false">ytd</button>
+                <button type="button" class="performance-card__range-chip performance-card__range-chip--active" data-range="max" aria-pressed="true">Max</button>
+              </div>
+
+              <div class="performance-card__summary">
+                <div class="performance-card__summary-row">
+                  <span class="performance-card__summary-icon uz-btn uz-btn--sm uz-btn--icon-only-filledtonal" aria-hidden="true">
+                    <svg class="uz-btn__icon" focusable="false"><use href="#i-coffee"/></svg>
+                  </span>
+                  <span class="performance-card__summary-label">Invested</span>
+                  <span class="performance-card__summary-amount">
+                    <span class="performance-card__summary-currency">CHF</span>
+                    <span class="performance-card__summary-value">15'000.00</span>
+                  </span>
+                </div>
+                <div class="performance-card__summary-row">
+                  <span class="performance-card__summary-icon uz-btn uz-btn--sm uz-btn--icon-only-filledtonal" aria-hidden="true">
+                    <svg class="uz-btn__icon" focusable="false"><use href="#i-dollar-sign"/></svg>
+                  </span>
+                  <span class="performance-card__summary-label">Cash</span>
+                  <span class="performance-card__summary-amount">
+                    <span class="performance-card__summary-currency">CHF</span>
+                    <span class="performance-card__summary-value">5'000.00</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card section-card--overview-offers">
             <div class="section-card__header">
               <span class="section-card__title">Offers</span>
             </div>
@@ -791,6 +886,7 @@
 
 
 <script src="js/document-ready.js"></script>
+<script src="js/shell-nav.js"></script>
 <script src="js/analytics.js"></script>
 <script src="js/form-field-sheet.js"></script>
 <script src="js/payment-exit-confirm.js"></script>
@@ -800,6 +896,7 @@
 <script src="js/payment-overlay.js"></script>
 <script src="js/iat-overlay.js"></script>
 <script src="js/app-mp.js"></script>
+<script src="js/investment-product-details.js"></script>
 <div id="uzbank-icon-defs" aria-hidden="true" class="uzbank-icon-defs">
 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden;pointer-events:none">
 <symbol id="i-anchor" viewBox="0 0 24 24">
@@ -842,9 +939,17 @@
 <rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2" fill="none"/>
 <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 </symbol>
+<symbol id="i-coffee" viewBox="0 0 24 24">
+<path d="M18 8h1a4 4 0 010 8h-1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6 1v3M10 1v3M14 1v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
 <symbol id="i-corner-up-right" viewBox="0 0 24 24">
 <path d="M15 14L20 9L15 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M4 20V13C4 11.9391 4.42143 10.9217 5.17157 10.1716C5.92172 9.42143 6.93913 9 8 9H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-dollar-sign" viewBox="0 0 24 24">
+<path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </symbol>
 <symbol id="i-credit-card" viewBox="0 0 24 24">
 <path d="M21 4H3C1.89543 4 1 4.89543 1 6V18C1 19.1046 1.89543 20 3 20H21C22.1046 20 23 19.1046 23 18V6C23 4.89543 22.1046 4 21 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

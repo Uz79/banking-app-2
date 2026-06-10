@@ -11,6 +11,13 @@ export default {
   root: dir,
   server: {
     open: '/overview.html',
+    proxy: {
+      '/api/yahoo': {
+        target: 'https://query1.finance.yahoo.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/yahoo/, ''),
+      },
+    },
   },
   build: {
     rollupOptions: {
@@ -22,6 +29,8 @@ export default {
         payments: resolve(dir, 'payments.html'),
         profile: resolve(dir, 'profile.html'),
         accountInformation: resolve(dir, 'account-information.html'),
+        investmentProductDetails: resolve(dir, 'investment-product-details.html'),
+        detailsOfPosition: resolve(dir, 'details-of-position.html'),
       },
     },
   },

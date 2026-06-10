@@ -47,6 +47,10 @@ export const DesignExport = {
   <img class="de-img" src="/designs/components/form-field/text-field/variants/readonly-multiple-text-rows/default.svg" alt="readonly-multiple-text-rows / default" loading="lazy" />
   <figcaption class="de-cap">readonly-multiple-text-rows / default</figcaption>
 </figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/form-field/text-field/variants/readonly-multiple-text-rows/default 2.svg" alt="readonly-multiple-text-rows / default 2" loading="lazy" />
+  <figcaption class="de-cap">readonly-multiple-text-rows / default 2</figcaption>
+</figure>
 </div>
 <h4 class="de-variant">readonly-informative</h4>
 <div class="de-grid">

@@ -113,13 +113,14 @@
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/typography.css">
   <link rel="stylesheet" href="css/styles.css">
+  <script src="js/shell-nav-boot.js"></script>
 </head>
 <body class="body" data-screen="all-bookings" data-page="all-bookings">
 <div class="app">
   <aside class="sidebar">
     <div class="sidebar__logo"><a href="overview.html">UZ Bank</a></div>
     <nav class="sidebar__nav">
-      <a class="sidebar__nav-item sidebar__nav-item--active" href="overview.html" aria-current="page">
+      <a class="sidebar__nav-item" href="overview.html">
         <svg class="sidebar__nav-icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
         <span>Overview</span>
       </a>
@@ -593,8 +594,8 @@
   </main>
 
   <nav class="tab-bar">
-    <a class="tab-bar__item tab-bar__item--active" href="overview.html" aria-current="page">
-      <span class="tab-bar__icon-wrap tab-bar__icon-wrap--active">
+    <a class="tab-bar__item" href="overview.html">
+      <span class="tab-bar__icon-wrap">
         <svg class="tab-bar__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
       </span>
       <span class="tab-bar__label">Overview</span>
@@ -747,6 +748,7 @@
 </div>
 
 <script src="js/document-ready.js"></script>
+<script src="js/shell-nav.js"></script>
 <script src="js/analytics.js"></script>
 <script src="js/scroll-edge-chrome.js"></script>
 <script src="js/payment-details.js"></script>

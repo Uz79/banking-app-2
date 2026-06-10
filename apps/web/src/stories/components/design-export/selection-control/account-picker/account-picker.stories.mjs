@@ -41,6 +41,10 @@ export const DesignExport = {
   <figcaption class="de-cap">default-default / hover</figcaption>
 </figure>
 <figure class="de-item">
+  <img class="de-img" src="/designs/components/selection-control/account-picker/variants/default-default/pressed 2.svg" alt="default-default / pressed 2" loading="lazy" />
+  <figcaption class="de-cap">default-default / pressed 2</figcaption>
+</figure>
+<figure class="de-item">
   <img class="de-img" src="/designs/components/selection-control/account-picker/variants/default-default/pressed.svg" alt="default-default / pressed" loading="lazy" />
   <figcaption class="de-cap">default-default / pressed</figcaption>
 </figure>

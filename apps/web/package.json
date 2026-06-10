@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "tokens:build": "node scripts/generate-tokens-css.mjs",
+    "tokens:validate": "node scripts/validate-tokens.mjs",
+    "tokens:promote": "node scripts/promote-tokens.mjs",
     "dev": "npm run tokens:build && vite",
     "build": "npm run tokens:build && vite build",
     "preview": "vite preview",

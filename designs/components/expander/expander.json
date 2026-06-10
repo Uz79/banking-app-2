@@ -10,11 +10,15 @@
   "assets": {
     "variants": {
       "regular-expanded": {
-        "default": "variants/regular-expanded/default.svg"
+        "default": "variants/regular-expanded/default.svg",
+        "default 2": "variants/regular-expanded/default 2.svg"
       },
       "regular-collapsed": {
         "default": "variants/regular-collapsed/default.svg",
         "hover": "variants/regular-collapsed/hover.svg",
+        "pressed 2": "variants/regular-collapsed/pressed 2.svg",
+        "default 2": "variants/regular-collapsed/default 2.svg",
+        "hover 2": "variants/regular-collapsed/hover 2.svg",
         "pressed": "variants/regular-collapsed/pressed.svg"
       },
       "regular": {
