@@ -13,6 +13,9 @@
       "bookings": {
         "default": "variants/bookings/default.svg"
       },
+      "my-positions": {
+        "default": "variants/my-positions/default.svg"
+      },
       "accounts-investment": {
         "default": "variants/accounts-investment/default.svg"
       },
@@ -25,14 +28,17 @@
       "pending-payments": {
         "default": "variants/pending-payments/default.svg"
       },
+      "positions": {
+        "default": "variants/positions/default.svg"
+      },
       "other-products": {
         "default": "variants/other-products/default.svg"
       },
+      "key-figures": {
+        "default": "variants/key-figures/default.svg"
+      },
       "performance": {
         "default": "variants/performance/default.svg"
-      },
-      "positions": {
-        "default": "variants/positions/default.svg"
       }
     },
     "overview": "overview.png"
@@ -55,6 +61,8 @@
     "accounts-investment / other-products: Overview main column; offers: Overview sidebar.",
     "pending-payments: Payments main column; recurring-payments / recipients: Payments sidebar.",
     "bookings: Account details bookings surface.",
-    "performance / positions: Investment account details (chart + holdings table)."
+    "performance / positions: Investment account details (chart + holdings table).",
+    "my-positions / key-figures: Details of position screen (holdings list + summary metrics).",
+    "positions preview shows 5 rows on desktop and 3 on mobile; position list-item is the row pattern (export List Item - Position to variants/position/)."
   ]
 }

@@ -113,13 +113,14 @@
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/typography.css">
   <link rel="stylesheet" href="css/styles.css">
+  <script src="js/shell-nav-boot.js"></script>
 </head>
 <body class="body" data-screen="investment-product-details" data-page="investment-product-details">
 <div class="app">
   <aside class="sidebar">
     <div class="sidebar__logo"><a href="overview.html">UZ Bank</a></div>
     <nav class="sidebar__nav">
-      <a class="sidebar__nav-item sidebar__nav-item--active" href="overview.html" aria-current="page">
+      <a class="sidebar__nav-item" href="overview.html">
         <svg class="sidebar__nav-icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
         <span>Overview</span>
       </a>
@@ -151,34 +152,48 @@
     <div class="main-content__inner">
       <section class="view view--active view--investment-product-details" data-view="investment-product-details">
         <div class="view__main">
-          <header class="view__nav" data-scroll-edge-nav>
+          <header class="view__nav view__nav--position-details" data-scroll-edge-nav>
             <a class="view__nav-btn view__nav-btn--leading view__back" href="overview.html" aria-label="Back">
               <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
             </a>
-            <h1 class="page-title view__nav-title">Deposit</h1>
+            <div class="view__nav-title-stack" data-shell-reveal>
+              <h1 class="page-title view__nav-title">Deposit</h1>
+              <p class="view__nav-meta">123.456.78</p>
+            </div>
             <button type="button" class="view__nav-btn view__nav-btn--trailing view__nav-btn--hidden" aria-hidden="true" tabindex="-1">
               <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>
             </button>
           </header>
 
-          <div class="action-buttons action-buttons--investment">
-            <button class="action-button" type="button">
-              <span class="action-button__circle">
-                <svg class="action-button__icon" aria-hidden="true" focusable="false"><use href="#i-search"/></svg>
-              </span>
-              <span class="action-button__label">Trade</span>
-            </button>
-            <button class="action-button" type="button">
-              <span class="action-button__circle">
-                <svg class="action-button__icon" aria-hidden="true" focusable="false"><use href="#i-eye"/></svg>
-              </span>
-              <span class="action-button__label">Details</span>
-            </button>
-          </div>
-
           <div class="investment-product-details__grid">
-            <div class="section-card section-card--performance">
+            <div class="investment-product-details__left">
+              <div class="action-buttons action-buttons--investment">
+                <button class="action-button" type="button">
+                  <span class="action-button__circle">
+                    <svg class="action-button__icon" aria-hidden="true" focusable="false"><use href="#i-search"/></svg>
+                  </span>
+                  <span class="action-button__label">Trade</span>
+                </button>
+                <button class="action-button" type="button">
+                  <span class="action-button__circle">
+                    <svg class="action-button__icon" aria-hidden="true" focusable="false"><use href="#i-eye"/></svg>
+                  </span>
+                  <span class="action-button__label">Details</span>
+                </button>
+              </div>
+
+              <div class="section-card section-card--performance">
               <div class="section-card__body performance-card">
+                <header class="performance-card__toolbar">
+                  <div class="performance-card__product">
+                    <svg class="performance-card__product-icon" aria-hidden="true" focusable="false"><use href="#i-gitlab"/></svg>
+                    <span class="performance-card__product-title">Deposit - 123.456.78</span>
+                  </div>
+                  <button type="button" class="performance-card__details-btn uz-btn uz-btn--tonal uz-btn--sm">
+                    <span>Details</span>
+                    <svg class="uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
+                  </button>
+                </header>
                 <header class="performance-card__header">
                   <div class="performance-card__balance">
                     <span class="performance-card__balance-value">20'000.00</span>
@@ -189,7 +204,7 @@
                   <p class="performance-card__change">
                     <span>+ 980.39 CHF</span>
                     <span class="performance-card__change-sep" aria-hidden="true">&bull;</span>
-                    <span>+ 2.00 %</span>
+                    <span>+ 5.13 %</span>
                   </p>
                   <time class="performance-card__date" datetime="2026-05-05">05.May 2026</time>
                 </div>
@@ -201,26 +216,28 @@
                         <stop stop-color="currentColor" stop-opacity="0.2"/>
                         <stop offset="1" stop-color="currentColor" stop-opacity="0"/>
                       </linearGradient>
+                      <filter id="performance-chart-tooltip-shadow" class="performance-card__chart-tooltip-shadow" filterUnits="objectBoundingBox" x="-0.08" y="-0.12" width="1.16" height="1.45" color-interpolation-filters="sRGB">
+                        <feDropShadow dx="0" dy="2" stdDeviation="6"/>
+                      </filter>
                     </defs>
-                    <text class="performance-card__chart-axis" x="372" y="20">80</text>
-                    <text class="performance-card__chart-axis" x="372" y="48">60</text>
-                    <text class="performance-card__chart-axis" x="372" y="76">40</text>
-                    <text class="performance-card__chart-axis" x="372" y="104">20</text>
-                    <text class="performance-card__chart-axis" x="372" y="132">0</text>
-                    <path class="performance-card__chart-area" d="M0 74 L29 67 L57 70 L85 54 L113 62 L141 50 L169 60 L197 44 L225 52 L253 40 L281 50 L309 46 L337 54 L352 48 V132 H0 Z" fill="url(#performance-chart-fill)"/>
-                    <path class="performance-card__chart-line" d="M0 74 L29 67 L57 70 L85 54 L113 62 L141 50 L169 60 L197 44 L225 52 L253 40 L281 50 L309 46 L337 54 L352 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path class="performance-card__chart-line-hit" d="M0 74 L29 67 L57 70 L85 54 L113 62 L141 50 L169 60 L197 44 L225 52 L253 40 L281 50 L309 46 L337 54 L352 48" fill="none" stroke="transparent" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+                    <text class="performance-card__chart-axis performance-card__chart-axis--y" x="384" y="32" text-anchor="end">60</text>
+                    <text class="performance-card__chart-axis performance-card__chart-axis--y" x="384" y="64" text-anchor="end">40</text>
+                    <text class="performance-card__chart-axis performance-card__chart-axis--y" x="384" y="96" text-anchor="end">20</text>
+                    <text class="performance-card__chart-axis performance-card__chart-axis--y" x="384" y="132" text-anchor="end">0</text>
+                    <path class="performance-card__chart-area" data-performance-chart-area d="M0 74 L29 67 L57 70 L85 54 L113 62 L141 50 L169 60 L197 44 L225 52 L253 40 L281 50 L309 46 L337 54 L352 48 V132 H0 Z" fill="url(#performance-chart-fill)"/>
+                    <path class="performance-card__chart-line" data-performance-chart-line d="M0 74 L29 67 L57 70 L85 54 L113 62 L141 50 L169 60 L197 44 L225 52 L253 40 L281 50 L309 46 L337 54 L352 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path class="performance-card__chart-line-hit" data-performance-chart-line-hit d="M0 74 L29 67 L57 70 L85 54 L113 62 L141 50 L169 60 L197 44 L225 52 L253 40 L281 50 L309 46 L337 54 L352 48" fill="none" stroke="transparent" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
                     <g class="performance-card__chart-hover" data-performance-chart-hover hidden>
                       <line class="performance-card__chart-marker" data-performance-chart-marker x1="197" y1="44" x2="197" y2="132" stroke="currentColor" stroke-opacity="0.7" stroke-width="0.5" stroke-dasharray="2 2"/>
                       <circle class="performance-card__chart-dot" data-performance-chart-dot cx="197" cy="44" r="7" fill="var(--color-bg)" stroke="currentColor" stroke-width="2"/>
-                      <rect class="performance-card__chart-tooltip" data-performance-chart-tooltip x="77" y="8" width="240" height="40" rx="8"/>
-                      <text class="performance-card__chart-tooltip-value" data-performance-chart-tooltip-value x="197" y="26" text-anchor="middle">25'000.00</text>
-                      <text class="performance-card__chart-tooltip-date" data-performance-chart-tooltip-date x="197" y="40" text-anchor="middle">05.May 2026</text>
+                      <rect class="performance-card__chart-tooltip" data-performance-chart-tooltip filter="url(#performance-chart-tooltip-shadow)" x="67" y="8" width="260" height="43" rx="8"/>
+                      <text class="performance-card__chart-tooltip-value" data-performance-chart-tooltip-value x="83" y="35" text-anchor="start">25'000.00</text>
+                      <text class="performance-card__chart-tooltip-date" data-performance-chart-tooltip-date x="311" y="35" text-anchor="end">05.May 2026</text>
                     </g>
-                    <text class="performance-card__chart-axis performance-card__chart-axis--x" x="24" y="152">Nov</text>
-                    <text class="performance-card__chart-axis performance-card__chart-axis--x" x="120" y="152">feb</text>
-                    <text class="performance-card__chart-axis performance-card__chart-axis--x" x="216" y="152">Mal</text>
-                    <text class="performance-card__chart-axis performance-card__chart-axis--x" x="312" y="152">Aug</text>
+                    <text class="performance-card__chart-axis performance-card__chart-axis--x" data-performance-chart-x-label x="24" y="152">Feb</text>
+                    <text class="performance-card__chart-axis performance-card__chart-axis--x" data-performance-chart-x-label x="120" y="152">Feb</text>
+                    <text class="performance-card__chart-axis performance-card__chart-axis--x" data-performance-chart-x-label x="216" y="152">Mai</text>
+                    <text class="performance-card__chart-axis performance-card__chart-axis--x" data-performance-chart-x-label x="312" y="152">Aug</text>
                   </svg>
                 </div>
 
@@ -234,8 +251,8 @@
 
                 <div class="performance-card__summary">
                   <div class="performance-card__summary-row">
-                    <span class="performance-card__summary-icon uz-btn uz-btn--sm uz-btn--icon-only-secondary" aria-hidden="true">
-                      <svg class="uz-btn__icon" focusable="false"><use href="#i-trending-up"/></svg>
+                    <span class="performance-card__summary-icon uz-btn uz-btn--sm uz-btn--icon-only-filledtonal" aria-hidden="true">
+                      <svg class="uz-btn__icon" focusable="false"><use href="#i-coffee"/></svg>
                     </span>
                     <span class="performance-card__summary-label">Invested</span>
                     <span class="performance-card__summary-amount">
@@ -244,8 +261,8 @@
                     </span>
                   </div>
                   <div class="performance-card__summary-row">
-                    <span class="performance-card__summary-icon uz-btn uz-btn--sm uz-btn--icon-only-secondary" aria-hidden="true">
-                      <svg class="uz-btn__icon" focusable="false"><use href="#i-credit-card"/></svg>
+                    <span class="performance-card__summary-icon uz-btn uz-btn--sm uz-btn--icon-only-filledtonal" aria-hidden="true">
+                      <svg class="uz-btn__icon" focusable="false"><use href="#i-dollar-sign"/></svg>
                     </span>
                     <span class="performance-card__summary-label">Cash</span>
                     <span class="performance-card__summary-amount">
@@ -255,6 +272,7 @@
                   </div>
                 </div>
               </div>
+            </div>
             </div>
 
             <div class="section-card section-card--positions">
@@ -266,115 +284,7 @@
                     <svg class="show-all-btn__icon uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
                   </button>
                 </header>
-                <a class="list-item list-item--position" href="#">
-                  <div class="list-item__body type-stack-tight">
-                    <span class="list-item__title type-sm type-trim">ABB Ltd</span>
-                    <span class="list-item__subtitle type-xs type-trim">Structured product</span>
-                    <span class="list-item__performance type-xs type-trim">
-                      <span>+1'200.86 CHF</span>
-                      <span>+12.86 %</span>
-                    </span>
-                  </div>
-                  <div class="list-item__end list-item__end--position">
-                    <div class="list-item__price">
-                      <span class="list-item__currency type-xs">CHF</span>
-                      <span class="list-item__value type-sm">1'008.50</span>
-                    </div>
-                    <span class="list-item__quantity type-xs type-trim">pcs. 10</span>
-                    <div class="list-item__total">
-                      <span class="list-item__currency type-xs">CHF</span>
-                      <span class="list-item__value type-sm type-bold">10'805.00</span>
-                    </div>
-                  </div>
-                </a>
-                <div class="divider"></div>
-                <a class="list-item list-item--position" href="#">
-                  <div class="list-item__body type-stack-tight">
-                    <span class="list-item__title type-sm type-trim">ABB Ltd</span>
-                    <span class="list-item__subtitle type-xs type-trim">Structured product</span>
-                    <span class="list-item__performance type-xs type-trim">
-                      <span>+1'200.86 CHF</span>
-                      <span>+12.86 %</span>
-                    </span>
-                  </div>
-                  <div class="list-item__end list-item__end--position">
-                    <div class="list-item__price">
-                      <span class="list-item__currency type-xs">CHF</span>
-                      <span class="list-item__value type-sm">1'008.50</span>
-                    </div>
-                    <span class="list-item__quantity type-xs type-trim">pcs. 10</span>
-                    <div class="list-item__total">
-                      <span class="list-item__currency type-xs">CHF</span>
-                      <span class="list-item__value type-sm type-bold">10'805.00</span>
-                    </div>
-                  </div>
-                </a>
-                <div class="divider"></div>
-                <a class="list-item list-item--position" href="#">
-                  <div class="list-item__body type-stack-tight">
-                    <span class="list-item__title type-sm type-trim">ABB Ltd</span>
-                    <span class="list-item__subtitle type-xs type-trim">Structured product</span>
-                    <span class="list-item__performance type-xs type-trim">
-                      <span>+1'200.86 CHF</span>
-                      <span>+12.86 %</span>
-                    </span>
-                  </div>
-                  <div class="list-item__end list-item__end--position">
-                    <div class="list-item__price">
-                      <span class="list-item__currency type-xs">CHF</span>
-                      <span class="list-item__value type-sm">1'008.50</span>
-                    </div>
-                    <span class="list-item__quantity type-xs type-trim">pcs. 10</span>
-                    <div class="list-item__total">
-                      <span class="list-item__currency type-xs">CHF</span>
-                      <span class="list-item__value type-sm type-bold">10'805.00</span>
-                    </div>
-                  </div>
-                </a>
-                <div class="divider"></div>
-                <a class="list-item list-item--position" href="#">
-                  <div class="list-item__body type-stack-tight">
-                    <span class="list-item__title type-sm type-trim">ABB Ltd</span>
-                    <span class="list-item__subtitle type-xs type-trim">Structured product</span>
-                    <span class="list-item__performance type-xs type-trim">
-                      <span>+1'200.86 CHF</span>
-                      <span>+12.86 %</span>
-                    </span>
-                  </div>
-                  <div class="list-item__end list-item__end--position">
-                    <div class="list-item__price">
-                      <span class="list-item__currency type-xs">CHF</span>
-                      <span class="list-item__value type-sm">1'008.50</span>
-                    </div>
-                    <span class="list-item__quantity type-xs type-trim">pcs. 10</span>
-                    <div class="list-item__total">
-                      <span class="list-item__currency type-xs">CHF</span>
-                      <span class="list-item__value type-sm type-bold">10'805.00</span>
-                    </div>
-                  </div>
-                </a>
-                <div class="divider"></div>
-                <a class="list-item list-item--position" href="#">
-                  <div class="list-item__body type-stack-tight">
-                    <span class="list-item__title type-sm type-trim">ABB Ltd</span>
-                    <span class="list-item__subtitle type-xs type-trim">Structured product</span>
-                    <span class="list-item__performance type-xs type-trim">
-                      <span>+1'200.86 CHF</span>
-                      <span>+12.86 %</span>
-                    </span>
-                  </div>
-                  <div class="list-item__end list-item__end--position">
-                    <div class="list-item__price">
-                      <span class="list-item__currency type-xs">CHF</span>
-                      <span class="list-item__value type-sm">1'008.50</span>
-                    </div>
-                    <span class="list-item__quantity type-xs type-trim">pcs. 10</span>
-                    <div class="list-item__total">
-                      <span class="list-item__currency type-xs">CHF</span>
-                      <span class="list-item__value type-sm type-bold">10'805.00</span>
-                    </div>
-                  </div>
-                </a>
+                <div class="positions-list" data-positions-list data-shell-reveal="when-ready" aria-live="polite"></div>
               </div>
             </div>
           </div>
@@ -383,8 +293,8 @@
     </div>
   </main>
   <nav class="tab-bar">
-    <a class="tab-bar__item tab-bar__item--active" href="overview.html" aria-current="page">
-      <span class="tab-bar__icon-wrap tab-bar__icon-wrap--active">
+    <a class="tab-bar__item" href="overview.html">
+      <span class="tab-bar__icon-wrap">
         <svg class="tab-bar__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
       </span>
       <span class="tab-bar__label">Overview</span>
@@ -409,10 +319,12 @@
 </div>
 
 <script src="js/document-ready.js"></script>
+<script src="js/shell-nav.js"></script>
 <script src="js/analytics.js"></script>
 <script src="js/scroll-edge-chrome.js"></script>
 <script src="js/app-mp.js"></script>
 <script src="js/investment-product-details.js"></script>
+<script src="js/investment-positions.js"></script>
 <div id="uzbank-icon-defs" aria-hidden="true" class="uzbank-icon-defs">
 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden;pointer-events:none">
 <symbol id="i-anchor" viewBox="0 0 24 24">
@@ -537,6 +449,10 @@
 <symbol id="i-trending-up" viewBox="0 0 24 24">
 <path d="M23 6L13.5 15.5L8.5 10.5L1 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17 6H23V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-trending-down" viewBox="0 0 24 24">
+<path d="M23 18L13.5 8.5L8.5 13.5L1 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17 18H23V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </symbol>
 <symbol id="i-user" viewBox="0 0 24 24">
 <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

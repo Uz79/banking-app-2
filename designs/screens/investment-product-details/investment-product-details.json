@@ -27,7 +27,7 @@
     }
   },
   "notes": [
-    "Figma exports: 'Details of Investment Product - desktop' → variants/desktop-default/; 'Details of Investment Product - mobile' → variants/mobile-default/.",
+    "Figma exports: 'Details of Investment Product - desktop' \u2192 variants/desktop-default/; 'Details of Investment Product - mobile' \u2192 variants/mobile-default/.",
     "Performance and positions blocks use card/section-card variants performance and positions."
   ]
 }

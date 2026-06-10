@@ -77,6 +77,63 @@ export const ProductItem = {
   `),
 };
 
+export const PositionItem = {
+  name: 'Position item',
+  render: () => wrap(`
+    <div style="padding:0;border-radius:var(--radius-regular);background:var(--color-bg);border:1px solid var(--color-separator);overflow:hidden;">
+      <a class="list-item list-item--position" href="#">
+        <div class="list-item__body type-stack-tight">
+          <span class="list-item__title type-sm type-bold type-trim">ABB Ltd</span>
+          <span class="list-item__subtitle type-xs type-trim">Structured product</span>
+          <span class="list-item__performance type-xs type-trim">
+            <svg class="list-item__performance-icon" aria-hidden="true" focusable="false"><use href="#i-trending-up"/></svg>
+            <span class="list-item__performance-values">
+              <span>+1'200.86 CHF</span>
+              <span>+12.86 %</span>
+            </span>
+          </span>
+        </div>
+        <div class="list-item__end list-item__end--position type-stack-tight">
+          <div class="list-item__price type-sm type-trim">
+            <span class="list-item__currency type-xs">CHF</span>
+            <span class="list-item__value type-sm type-bold">1'008.50</span>
+          </div>
+          <span class="list-item__quantity type-xs type-trim">pcs. 10</span>
+          <div class="list-item__total type-sm type-trim">
+            <span class="list-item__currency type-xs">CHF</span>
+            <span class="list-item__value type-sm">10'805.00</span>
+          </div>
+        </div>
+      </a>
+      <div class="divider"></div>
+      <a class="list-item list-item--position" href="#">
+        <div class="list-item__body type-stack-tight">
+          <span class="list-item__title type-sm type-bold type-trim">Applied Optoelectronics, Inc.</span>
+          <span class="list-item__subtitle type-xs type-trim">Equity</span>
+          <span class="list-item__performance type-xs type-trim">
+            <svg class="list-item__performance-icon" aria-hidden="true" focusable="false"><use href="#i-trending-down"/></svg>
+            <span class="list-item__performance-values">
+              <span>-330.28 CHF</span>
+              <span>-17.35 %</span>
+            </span>
+          </span>
+        </div>
+        <div class="list-item__end list-item__end--position type-stack-tight">
+          <div class="list-item__price type-sm type-trim">
+            <span class="list-item__currency type-xs">CHF</span>
+            <span class="list-item__value type-sm type-bold">1'574.72</span>
+          </div>
+          <span class="list-item__quantity type-xs type-trim">pcs. 12</span>
+          <div class="list-item__total type-sm type-trim">
+            <span class="list-item__currency type-xs">CHF</span>
+            <span class="list-item__value type-sm">18'896.64</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  `),
+};
+
 export const BookingRow = {
   name: 'Booking row',
   render: () => wrap(`

@@ -14,7 +14,10 @@ Section header (title, optional trailing amount) plus a bordered body card. Matc
 | Card - Recipients | `recipients` | Payments — “Most recent recipients” (sidebar) |
 | Card - Bookings | `bookings` | Account details |
 | Card - Performance | `performance` | Investment account details (performance chart) |
-| Card - Positions | `positions` | Investment account details (holdings table) |
+| Card - Positions | `positions` | Investment account details — preview list (5 rows desktop / 3 mobile + Show all) |
+| Card - My Positions | `my-positions` | Details of position — full holdings list with Show all |
+| Card - Key Figures | `key-figures` | Details of position — summary metrics card |
+| Card - Position item | `position-item` | Single holdings row (used inside `positions`; export separately) |
 
 Place new exports under `variants/<slug>/` as `default.svg` and `default.png`. Do not leave `Card - …` files at `card/` root.
 
@@ -26,6 +29,14 @@ Place new exports under `variants/<slug>/` as `default.svg` and `default.png`. D
 
 - **Header** — `.section-card__header` / `__title` / optional `__amount`.
 - **Body** — `.section-card__body` (bordered container); rows use `product-item`, `list-item`, dates (`.section-card__date`), or CTAs (`show-all-btn`).
+
+### Performance variant (`variants/performance/`)
+
+Single bordered card (420×480) with toolbar, balance, chart, range chips, and invested/cash rows inside `.section-card__body`:
+
+- **Toolbar** — `.performance-card__toolbar`: coffee icon + `Deposit - …` product label + tonal **Details** (top-right).
+- **Balance** — `.performance-card__header` / `__balance` (Details is not beside the balance).
+- **Chart** — fluid width; tooltip fixed size; range chips left-aligned with `space/2` (8dp) gap.
 
 ## Spacing (Figma)
 

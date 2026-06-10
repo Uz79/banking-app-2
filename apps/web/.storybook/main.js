@@ -47,6 +47,13 @@ const config = {
     plugins: [...(config.plugins || []), viteServeAppJs()],
     server: {
       ...config.server,
+      proxy: {
+        '/api/yahoo': {
+          target: 'https://query1.finance.yahoo.com',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/yahoo/, ''),
+        },
+      },
       fs: {
         ...config.server?.fs,
         allow: [...(config.server?.fs?.allow || []), webRoot],

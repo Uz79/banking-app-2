@@ -1,0 +1,33 @@
+{
+  "name": "details-of-position",
+  "category": "shell",
+  "description": "Position detail shell screen (key figures + holdings list).",
+  "interactionStates": [
+    "default"
+  ],
+  "assets": {
+    "variants": {
+      "desktop-default": {
+        "default": "variants/desktop-default/default.svg"
+      },
+      "mobile-default": {
+        "default": "variants/mobile-default/default.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": [
+    "Figma exports: 'Details of Position - desktop' → variants/desktop-default/; 'Details of Position - mobile' → variants/mobile-default/.",
+    "Key figures and my-positions blocks use card/section-card variants key-figures and my-positions."
+  ]
+}

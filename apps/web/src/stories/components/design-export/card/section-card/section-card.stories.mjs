@@ -40,6 +40,13 @@ export const DesignExport = {
   <figcaption class="de-cap">bookings / default</figcaption>
 </figure>
 </div>
+<h4 class="de-variant">my-positions</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/card/section-card/variants/my-positions/default.svg" alt="my-positions / default" loading="lazy" />
+  <figcaption class="de-cap">my-positions / default</figcaption>
+</figure>
+</div>
 <h4 class="de-variant">accounts-investment</h4>
 <div class="de-grid">
 <figure class="de-item">
@@ -68,6 +75,13 @@ export const DesignExport = {
   <figcaption class="de-cap">pending-payments / default</figcaption>
 </figure>
 </div>
+<h4 class="de-variant">positions</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/card/section-card/variants/positions/default.svg" alt="positions / default" loading="lazy" />
+  <figcaption class="de-cap">positions / default</figcaption>
+</figure>
+</div>
 <h4 class="de-variant">other-products</h4>
 <div class="de-grid">
 <figure class="de-item">
@@ -75,18 +89,18 @@ export const DesignExport = {
   <figcaption class="de-cap">other-products / default</figcaption>
 </figure>
 </div>
+<h4 class="de-variant">key-figures</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/card/section-card/variants/key-figures/default.svg" alt="key-figures / default" loading="lazy" />
+  <figcaption class="de-cap">key-figures / default</figcaption>
+</figure>
+</div>
 <h4 class="de-variant">performance</h4>
 <div class="de-grid">
 <figure class="de-item">
   <img class="de-img" src="/designs/components/card/section-card/variants/performance/default.svg" alt="performance / default" loading="lazy" />
   <figcaption class="de-cap">performance / default</figcaption>
-</figure>
-</div>
-<h4 class="de-variant">positions</h4>
-<div class="de-grid">
-<figure class="de-item">
-  <img class="de-img" src="/designs/components/card/section-card/variants/positions/default.svg" alt="positions / default" loading="lazy" />
-  <figcaption class="de-cap">positions / default</figcaption>
 </figure>
 </div>
     </div>

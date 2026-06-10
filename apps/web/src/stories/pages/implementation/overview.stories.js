@@ -76,7 +76,7 @@ export const StaticShell = {
 
               <div class="section-card">
                 <div class="section-card__header">
-                  <span class="section-card__title">Accounts &amp; investment</span>
+                  <span class="section-card__title">Accounts &amp; Investment</span>
                   <span class="section-card__amount">
                     <span class="section-card__currency">CHF</span>
                     <span class="section-card__value">65'570.00</span>
@@ -142,7 +142,7 @@ export const StaticShell = {
                     <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-credit-card"/></svg>
                     <div class="list-item__content">
                       <span class="list-item__title">VISA Gold</span>
-                      <span class="list-item__subtitle">available CHF 4'700.00</span>
+                      <span class="list-item__subtitle">available USD 4'700.00</span>
                     </div>
                     <span class="list-item__amount">
                       <span class="list-item__currency">Limit CHF</span>

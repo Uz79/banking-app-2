@@ -599,7 +599,8 @@
         screen !== 'payments' &&
         screen !== 'account-details' &&
         screen !== 'profile' &&
-        screen !== 'investment-product-details'
+        screen !== 'investment-product-details' &&
+        screen !== 'details-of-position'
       ) {
         return;
       }
