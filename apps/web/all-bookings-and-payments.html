@@ -157,7 +157,6 @@
               class="all-bookings__sticky-header"
               data-all-bookings-sticky-header
               data-scroll-edge-nav
-              data-scroll-edge-month
             >
               <header class="view__nav">
                 <a class="view__nav-btn view__nav-btn--leading view__back" href="account-details.html" aria-label="Back">
@@ -168,12 +167,18 @@
                   <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>
                 </button>
               </header>
-              <div class="all-bookings__month-bar" role="group" aria-label="Month">
-                <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-02" aria-pressed="false">Feb</button>
-                <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-03" aria-pressed="false">Mar</button>
-                <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-04" aria-pressed="false">Apr</button>
-                <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-05" aria-pressed="false">May</button>
-                <button type="button" class="all-bookings__month-chip all-bookings__month-chip--active" data-bookings-month="2026-06" aria-pressed="true">Jun</button>
+              <div class="all-bookings__month-dock" data-all-bookings-month-dock aria-hidden="true">
+                <div
+                  class="all-bookings__month-bar all-bookings__month-bar--docked"
+                  role="group"
+                  aria-label="Month"
+                >
+                  <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-02" aria-pressed="false" tabindex="-1">Feb</button>
+                  <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-03" aria-pressed="false" tabindex="-1">Mar</button>
+                  <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-04" aria-pressed="false" tabindex="-1">Apr</button>
+                  <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-05" aria-pressed="false" tabindex="-1">May</button>
+                  <button type="button" class="all-bookings__month-chip all-bookings__month-chip--active" data-bookings-month="2026-06" aria-pressed="true" tabindex="-1">Jun</button>
+                </div>
               </div>
             </div>
 
@@ -206,6 +211,20 @@
                     <span class="all-bookings__search-label">Search</span>
                   </button>
                 </div>
+              </div>
+
+              <div
+                class="all-bookings__month-bar"
+                data-all-bookings-month-bar
+                data-scroll-edge-month
+                role="group"
+                aria-label="Month"
+              >
+                <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-02" aria-pressed="false">Feb</button>
+                <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-03" aria-pressed="false">Mar</button>
+                <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-04" aria-pressed="false">Apr</button>
+                <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-05" aria-pressed="false">May</button>
+                <button type="button" class="all-bookings__month-chip all-bookings__month-chip--active" data-bookings-month="2026-06" aria-pressed="true">Jun</button>
               </div>
 
               <div class="bookings-card all-bookings__list">

@@ -719,6 +719,11 @@ html:has(body.body--payment-open) {
     box-sizing: border-box;
   }
 
+  .body[data-screen="all-bookings"].all-bookings--month-merged .all-bookings__sticky-header {
+    margin-inline: calc(-1 * var(--view-nav-sticky-bleed));
+    padding-inline: var(--space-3);
+  }
+
   .body[data-screen="overview"] .view__nav[data-scroll-edge-nav],
   .body[data-screen="payments"] .view__nav[data-scroll-edge-nav] {
     margin-inline: 0;
@@ -1605,10 +1610,17 @@ html:has(body.body--payment-open) {
 /* ── All bookings view (designs/screens/all-bookings-and-payments) ───────── */
 
 .body[data-screen="all-bookings"] {
-  /* Measured from .all-bookings__sticky-header in js/all-bookings.js */
+  /* Measured in js/all-bookings.js */
+  --all-bookings-nav-height: 3.25rem;
   --all-bookings-sticky-header-height: 6.5rem;
-  /* Sticky composite header: 16dp top inset when pinned (designs/…/desktop-sticky-nav-bar). */
+  --all-bookings-month-bar-height: 2.75rem;
+  --all-bookings-month-dock-height: 0px;
   --all-bookings-sticky-top: var(--space-3);
+  /* designs/…/*-default: toolbar→month ≈ space/4; month→card ≈ space/3 */
+  --all-bookings-month-gap-top: var(--space-4);
+  --all-bookings-month-gap-bottom: var(--space-3);
+  --all-bookings-merge-duration: 0.2s;
+  --all-bookings-merge-ease: ease-in-out;
 }
 
 .all-bookings {
@@ -1620,7 +1632,7 @@ html:has(body.body--payment-open) {
   z-index: 0;
 }
 
-/* One sticky unit: title row + month chips (designs/…/mobile-content-indication). */
+/* Sticky title row; month chips dock inside after crossfade merge. */
 .all-bookings__sticky-header {
   position: sticky;
   top: 0;
@@ -1628,12 +1640,55 @@ html:has(body.body--payment-open) {
   margin-bottom: var(--view-stack-gap);
   box-sizing: border-box;
   background-color: var(--color-bg-secondary);
-  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  overflow: hidden;
+  transition:
+    box-shadow var(--all-bookings-merge-duration) var(--all-bookings-merge-ease),
+    border-color var(--all-bookings-merge-duration) var(--all-bookings-merge-ease),
+    border-radius var(--all-bookings-merge-duration) var(--all-bookings-merge-ease),
+    top var(--all-bookings-merge-duration) var(--all-bookings-merge-ease);
 }
 
-/* Mobile/tablet: shadow only until desktop card chrome (1280px) takes over. */
+.body.all-bookings--month-merged[data-screen="all-bookings"] .all-bookings__sticky-header {
+  overflow: visible;
+}
+
+/* Animated slot — grows when month row docks into the nav card. */
+.all-bookings__month-dock {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--all-bookings-merge-duration) var(--all-bookings-merge-ease);
+  overflow: hidden;
+}
+
+.body.all-bookings--month-merged[data-screen="all-bookings"] .all-bookings__month-dock {
+  grid-template-rows: 1fr;
+}
+
+.all-bookings__month-bar--docked {
+  min-height: 0;
+  opacity: 0;
+  padding: 0 var(--space-3) var(--space-2);
+  margin: 0;
+  pointer-events: none;
+  background-color: transparent;
+  transition: opacity 0.12s var(--all-bookings-merge-ease);
+}
+
+.body.all-bookings--month-merged[data-screen="all-bookings"] .all-bookings__month-bar--docked {
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: 0.06s;
+}
+
+.body.all-bookings--month-merging[data-screen="all-bookings"] .all-bookings__month-bar--docked {
+  transition-delay: 0s;
+  opacity: 0;
+}
+
+/* Mobile/tablet: nav-only shadow until month merges (designs/…/mobile-content-indication). */
 @media (max-width: 1279px) {
-  .body[data-screen="all-bookings"] .all-bookings__sticky-header.is-scroll-edge--after {
+  .body[data-screen="all-bookings"]:not(.all-bookings--month-merged)
+    .all-bookings__sticky-header.is-scroll-edge--after {
     box-shadow: var(--shadow-content-indication-after);
   }
 }
@@ -1684,7 +1739,7 @@ html:has(body.body--payment-open) {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  padding-bottom: var(--space-3);
+  padding-bottom: 0;
 }
 
 .all-bookings__account-card {
@@ -1727,41 +1782,55 @@ html:has(body.body--payment-open) {
   display: none;
 }
 
-/* Stuck (mobile): single card for nav + month — full-bleed, square, no stroke. */
+/* Stuck (mobile): merged nav card — full-bleed, square, no stroke. */
 @media (max-width: 1023px) {
-  .body[data-screen="all-bookings"].all-bookings--header-stuck .all-bookings__sticky-header {
-    padding-inline: var(--space-3);
-    padding-bottom: var(--space-2);
-    background-color: var(--color-bg-secondary);
-  }
-}
-
-/* Mobile Sticky TopBar — full-bleed (0 side inset), square, no stroke; shadow only. */
-@media (max-width: 1023px) {
-  .body[data-screen="all-bookings"] .all-bookings__sticky-header.is-scroll-edge--after {
-    padding-bottom: 0;
-  }
-
-  .body[data-screen="all-bookings"].all-bookings--header-stuck .all-bookings__sticky-header {
+  .body[data-screen="all-bookings"].all-bookings--month-merged .all-bookings__sticky-header {
     top: 0;
     margin-inline: calc(-1 * var(--space-3));
     padding-bottom: 0;
     border: none;
     border-radius: 0;
   }
+
+  .body[data-screen="all-bookings"].all-bookings--month-merged .all-bookings__month-bar--docked {
+    padding-inline: var(--space-3);
+  }
 }
 
 .all-bookings__month-bar {
   display: flex;
   gap: var(--space-2);
-  padding: var(--space-2) 0;
+  justify-content: center;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  box-sizing: border-box;
 }
 
 .all-bookings__month-bar::-webkit-scrollbar {
   display: none;
+}
+
+.all-bookings__month-bar[data-all-bookings-month-bar] {
+  position: relative;
+  z-index: 1;
+  padding: 0;
+  margin-top: var(--all-bookings-month-gap-top);
+  margin-bottom: var(--all-bookings-month-gap-bottom);
+  background-color: transparent;
+  opacity: 1;
+  transition: opacity 0.12s var(--all-bookings-merge-ease);
+}
+
+.body.all-bookings--month-merging[data-screen="all-bookings"] .all-bookings__month-bar[data-all-bookings-month-bar],
+.body.all-bookings--month-merged[data-screen="all-bookings"] .all-bookings__month-bar[data-all-bookings-month-bar] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Preserve scroll layout while the flow row is hidden during merge. */
+.body.all-bookings--month-merged[data-screen="all-bookings"] .all-bookings__month-bar[data-all-bookings-month-bar] {
+  visibility: hidden;
 }
 
 .all-bookings__month-chip {
@@ -1793,6 +1862,29 @@ html:has(body.body--payment-open) {
 
 .all-bookings__month-chip--active:hover {
   background-color: var(--color-btn-primary-hover);
+}
+
+/* Merged sticky chrome: shadow on expanded nav card while list continues below. */
+@media (max-width: 1279px) {
+  .body[data-screen="all-bookings"].all-bookings--month-merged .all-bookings__sticky-header {
+    box-shadow: var(--shadow-content-indication-after);
+  }
+}
+
+/* Desktop: merged nav card grows to include month row. */
+@media (min-width: 1280px) {
+  .body[data-screen="all-bookings"].all-bookings--month-merged .all-bookings__sticky-header {
+    top: var(--view-nav-sticky-top);
+    background-color: var(--color-bg-secondary);
+    border: 0.0625rem solid var(--color-separator);
+    border-radius: var(--radius-regular);
+    box-shadow: var(--shadow-content-indication-after);
+  }
+
+  .body[data-screen="all-bookings"].all-bookings--month-merged .all-bookings__month-bar--docked {
+    padding-inline: var(--space-3);
+    padding-bottom: var(--space-2);
+  }
 }
 
 .all-bookings__list.bookings-card {
@@ -3821,10 +3913,6 @@ button.debit-account:focus-visible {
     margin-inline: auto;
   }
 
-  .all-bookings__month-bar {
-    justify-content: center;
-  }
-
   /* Desktop: standard-button/small-secondary — icon + “Search” label. */
   .all-bookings__search-btn.uz-btn--secondary {
     width: auto;
@@ -3887,9 +3975,9 @@ button.debit-account:focus-visible {
     box-sizing: border-box;
   }
 
-  .body[data-screen="all-bookings"] .all-bookings__sticky-header.is-scroll-edge--after {
+  .body[data-screen="all-bookings"]:not(.all-bookings--month-merged)
+    .all-bookings__sticky-header.is-scroll-edge--after {
     top: var(--view-nav-sticky-top);
-    padding-bottom: var(--space-2);
     background-color: var(--color-bg-secondary);
     border-color: var(--color-separator);
     border-radius: var(--radius-regular);
