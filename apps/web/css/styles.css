@@ -308,7 +308,7 @@ html:has(body.body--payment-open) {
   width: 100%;
   min-width: 0;
   margin: 0 auto;
-  /* Match WebApp_02 main wrapper: 48dp vertical */
+  /* Main wrapper: 48dp vertical */
   padding: var(--space-6) var(--space-4);
   box-sizing: border-box;
 }
@@ -3991,7 +3991,7 @@ button.debit-account:focus-visible {
   }
 }
 
-/* ── WebApp 05: multi-page shell & payment steps ───────── */
+/* ── Multi-page shell & payment steps ───────── */
 
 a.action-button {
   text-decoration: none;

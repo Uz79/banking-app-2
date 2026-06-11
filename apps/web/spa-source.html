@@ -4,11 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark light">
-  <title>UZ Bank – E-Banking (WebApp 11 SPA source)</title>
+  <title>UZ Bank – SPA source (legacy reference)</title>
+  <script src="js/storage-migrate.js"></script>
   <script>
     (function () {
       try {
-        var t = localStorage.getItem('uzBankWebApp11Theme');
+        var t = localStorage.getItem('uzBankWebTheme');
         if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
       } catch (e) {}
     })();

@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-  var THEME_KEY = 'uzBankWebApp03Theme';
+  var THEME_KEY = 'uzBankWebTheme';
 
   function getTheme() {
     var t = document.documentElement.getAttribute('data-theme');

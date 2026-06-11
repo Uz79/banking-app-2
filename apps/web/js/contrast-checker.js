@@ -1,5 +1,5 @@
 /**
- * E-Banking WebApp 11 — embedded colour-contrast checker with token derivation
+ * UZ Bank Web — embedded colour-contrast checker with token derivation
  *
  * Lives only on profile.html.
  *
@@ -10,7 +10,7 @@
  * the entire UI coherently in one shot.
  *
  * Persistence:
- *   - localStorage key uzBankWebApp11ColorOverride stores just { bg, fg }
+ *   - localStorage key uzBankWebColorOverride stores just { bg, fg }
  *   - All other tokens are recomputed at load + on every change
  *   - The same derivation function runs in the boot script (inlined) so
  *     navigating to other pages re-derives + applies before paint.
@@ -21,8 +21,8 @@
   var root = document.getElementById('contrastChecker');
   if (!root) return;
 
-  var STORAGE_KEY = 'uzBankWebApp11ColorOverride';
-  var THEMES_KEY = 'uzBankWebApp11SavedColorThemes';
+  var STORAGE_KEY = 'uzBankWebColorOverride';
+  var THEMES_KEY = 'uzBankWebSavedColorThemes';
 
   /** Canonical BG/FG for sidebar Light / Dark (matches tokens.css). */
   var CANONICAL = {

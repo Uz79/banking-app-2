@@ -1,12 +1,12 @@
 /**
- * E-Banking WebApp 11 — payment state
+ * UZ Bank Web — payment state
  *
  * Single source of truth for everything the payment flow + dashboard
  * shares: 8 recipients, the running list of booked payments (max 5, FIFO),
  * and the live Household account balance.
  *
  * Persistence:
- *   localStorage key  uzBankWebApp11PaymentState
+ *   localStorage key  uzBankWebPaymentState
  *   shape             { schemaVersion: 1, bookings: [...], household: <number> }
  *
  * State changes dispatch a `uzbank:state-changed` CustomEvent on document
@@ -25,7 +25,7 @@
 (function () {
   'use strict';
 
-  var STORAGE_KEY  = 'uzBankWebApp11PaymentState';
+  var STORAGE_KEY  = 'uzBankWebPaymentState';
   var MAX_BOOKINGS = 5;
 
   // Household account in CHF — this is the *registered* end-of-yesterday

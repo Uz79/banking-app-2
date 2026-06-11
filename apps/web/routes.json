@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "description": "E-Banking_WebApp_11 routes. Shell pages use real paths; payment flow is a modal with #pay/<step> (recipient-search | recipient | amount | schedule | summary | confirmation). Legacy payment/*.html redirect into that hash flow. Icons: assets/icons-sprite.svg and SVG use references.",
+  "description": "UZ Bank Web routes. Shell pages use real paths; payment flow is a modal with #pay/<step> (recipient-search | recipient | amount | schedule | summary | confirmation). Legacy payment/*.html redirect into that hash flow. Icons: assets/icons-sprite.svg and SVG use references.",
   "entry": "overview.html",
   "screens": [
     { "id": "overview", "path": "overview.html", "title": "Overview" },

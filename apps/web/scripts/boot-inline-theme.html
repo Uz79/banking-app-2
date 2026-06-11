@@ -6,9 +6,9 @@
        This logic mirrors deriveTokens() in js/contrast-checker.js. */
     (function () {
       try {
-        var t = localStorage.getItem('uzBankWebApp11Theme');
+        var t = localStorage.getItem('uzBankWebTheme');
         if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
-        var raw = localStorage.getItem('uzBankWebApp11ColorOverride');
+        var raw = localStorage.getItem('uzBankWebColorOverride');
         if (!raw) return;
         var o = JSON.parse(raw);
         if (!o || !/^#[0-9a-f]{6}$/i.test(o.bg) || !/^#[0-9a-f]{6}$/i.test(o.fg)) return;

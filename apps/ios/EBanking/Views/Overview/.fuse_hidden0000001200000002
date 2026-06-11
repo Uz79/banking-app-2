@@ -1,0 +1,120 @@
+import SwiftUI
+
+struct AccountDetailView: View {
+    let account: Account
+    @Binding var showPaymentFlow: Bool
+    @Binding var showInternalTransfer: Bool
+    @Binding var selectedRecipient: Recipient?
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var currentPage = 0
+    private let accounts = [Account.household, Account.savings]
+
+    var currentAccount: Account {
+        accounts[currentPage]
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            CustomNavBar(
+                title: "Account details",
+                showBack: true,
+                onBack: { dismiss() }
+            )
+
+            ScrollView {
+                VStack(spacing: Space._4) {
+                    ActionButtonsRow(showMore: true, onPay: {
+                        selectedRecipient = nil
+                        showPaymentFlow = true
+                    }, onTransfer: {
+                        showInternalTransfer = true
+                    })
+
+                    AccountCarousel(
+                        accounts: accounts,
+                        currentPage: $currentPage
+                    )
+
+                    bookingsCard
+                }
+                .padding(.horizontal, Space._3)
+                .padding(.bottom, Space._6)
+            }
+        }
+        .background(AppColor.backgroundSecondary)
+        #if os(iOS)
+        .navigationBarHidden(true)
+        #endif
+        .onAppear {
+            if let idx = accounts.firstIndex(where: { $0.id == account.id }) {
+                currentPage = idx
+            }
+        }
+    }
+
+    // MARK: - Combined Bookings Card
+
+    private var bookingsCard: some View {
+        VStack(spacing: 0) {
+            pendingHeader
+            Divider().padding(.horizontal, Space._3)
+            BookingGroupSection(group: .today)
+            Divider().padding(.horizontal, Space._3)
+            BookingGroupSection(group: .yesterday)
+            ShowAllButton("Show all bookings")
+                .background(AppColor.showAllBg)
+                .clipShape(RoundedRectangle(cornerRadius: Radius.small))
+                .padding(.horizontal, Space._3)
+                .padding(.vertical, Space._1)
+        }
+        .padding(.vertical, Space._2)
+        .background(AppColor.background)
+        .clipShape(RoundedRectangle(cornerRadius: Radius.regular))
+    }
+
+    private var pendingHeader: some View {
+        HStack {
+            HStack(spacing: Space._2) {
+                Image("icon24-chevron-down")
+                    .renderingMode(.template)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 16, height: 16)
+                    .foregroundColor(AppColor.foreground)
+                    .frame(width: 32, height: 32)
+                    .background(AppColor.backgroundSecondary)
+                    .clipShape(Circle())
+
+                Text("Pending payments until\n31.05.2026")
+                    .font(AppFont.font(size: AppFont.Size.textSm, weight: .regular))
+                    .foregroundColor(AppColor.foreground)
+                    .lineLimit(2)
+            }
+
+            Spacer()
+
+            HStack(spacing: 6) {
+                Text(currentAccount.currency)
+                    .captionStyle()
+                    .foregroundColor(AppColor.foregroundSecondary)
+                Text("2'500.00")
+                    .font(AppFont.font(size: AppFont.Size.textSm, weight: .medium))
+                    .foregroundColor(AppColor.foreground)
+            }
+        }
+        .padding(.horizontal, Space._3)
+        .padding(.vertical, Space._2)
+    }
+}
+
+#Preview {
+    NavigationStack {
+        AccountDetailView(
+            account: .household,
+            showPaymentFlow: .constant(false),
+            showInternalTransfer: .constant(false),
+            selectedRecipient: .constant(nil)
+        )
+    }
+}
