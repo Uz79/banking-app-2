@@ -1,5 +1,5 @@
 /**
- * E-Banking WebApp 11 — DOM renderer for payment state
+ * UZ Bank Web — DOM renderer for payment state
  *
  * Reads from window.UZBankPayState.getState() and updates every place in
  * the DOM that displays state-driven values:

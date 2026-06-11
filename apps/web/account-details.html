@@ -33,6 +33,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark light">
   <title>UZ Bank – Details of an Account</title>
+  <script src="js/storage-migrate.js"></script>
   <script>
     /* Boot: apply saved theme + colour-override before paint.
        The colour override stores only { bg, fg }; we derive every other
@@ -41,9 +42,9 @@
        This logic mirrors deriveTokens() in js/contrast-checker.js. */
     (function () {
       try {
-        var t = localStorage.getItem('uzBankWebApp11Theme');
+        var t = localStorage.getItem('uzBankWebTheme');
         if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
-        var raw = localStorage.getItem('uzBankWebApp11ColorOverride');
+        var raw = localStorage.getItem('uzBankWebColorOverride');
         if (!raw) return;
         var o = JSON.parse(raw);
         if (!o || !/^#[0-9a-f]{6}$/i.test(o.bg) || !/^#[0-9a-f]{6}$/i.test(o.fg)) return;

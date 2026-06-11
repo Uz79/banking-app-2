@@ -1,5 +1,5 @@
 /**
- * UZ Bank WebApp 05 — analytics / instrumentation shim for UX tools (e.g. Maze,
+ * UZ Bank Web — analytics / instrumentation shim for UX tools (e.g. Maze,
  * Hotjar, GA4). Uses page paths plus optional hash routes (#pay/…, #payment-details/…) for modal flows.
  *
  * Screen IDs combine body data-screen with optional hash routes (e.g. account-details/payment-details/domestic/lena-fischer).

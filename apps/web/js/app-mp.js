@@ -1,19 +1,18 @@
 /**
- * E-Banking WebApp 11 — multi-page shell (no in-page view switching).
+ * UZ Bank Web — multi-page shell (no in-page view switching).
  * Theme toggle, carousel on account details, trivial toggles.
  * Payment UI lives in payment-overlay.js (modal + #pay/… hash / history).
  *
- * NOTE: theme storage key bumped 08 -> 09 to coexist with the colour
- * override key (uzBankWebApp11ColorOverride). The override stores only
- * { bg, fg } and every other --color-* role is derived from that pair (see
- * deriveTokens in contrast-checker.js).
+ * Colour override key (uzBankWebColorOverride) stores only { bg, fg }; every
+ * other --color-* role is derived from that pair (see deriveTokens in
+ * contrast-checker.js). Legacy WebApp_* keys are migrated in storage-migrate.js.
  */
 (function (global) {
   'use strict';
 
-  var THEME_KEY = 'uzBankWebApp11Theme';
-  var OVERRIDE_KEY = 'uzBankWebApp11ColorOverride';
-  var APPEARANCE_KEY = 'uzBankWebApp11Appearance';
+  var THEME_KEY = 'uzBankWebTheme';
+  var OVERRIDE_KEY = 'uzBankWebColorOverride';
+  var APPEARANCE_KEY = 'uzBankWebAppearance';
 
   /** Same BG/FG as tokens.css / contrast-checker CANONICAL. */
   var CANONICAL_PAIR = {

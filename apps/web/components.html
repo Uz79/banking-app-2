@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark light">
   <title>UZ Bank – Buttons</title>
+  <script src="js/storage-migrate.js"></script>
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/typography.css">
   <link rel="stylesheet" href="css/styles.css">
@@ -101,7 +102,7 @@
   if (!btn) return;
   function apply(t) {
     document.documentElement.setAttribute('data-theme', t);
-    try { localStorage.setItem('uzBankWebApp11Theme', t); } catch (e) {}
+    try { localStorage.setItem('uzBankWebTheme', t); } catch (e) {}
     btn.setAttribute('aria-pressed', t === 'dark' ? 'true' : 'false');
   }
   btn.addEventListener('click', function () {

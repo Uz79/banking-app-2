@@ -1,22 +1,33 @@
-# E-Banking_WebApp_11
+# UZ Bank Web
 
-Fork of **WebApp_10** with the same multi-page shell, tokens, and **eight static recipients** from `js/payment-state.js`. **New:** opening **Pay** starts the **Type Ahead Search** step (`#pay/recipient-search`; see **`../../designs/screens`** (`payment-flow-*` folders)): search by name or IBAN, pick a row, then continue through the recipient form → amount → time schedule → summary.
+Multi-page e-banking shell (`apps/web` in the banking-app monorepo): overview, payments, profile, account and investment flows, with design tokens from `../../designs/tokens/`.
 
-Multi-page shell (same UX as _07) with **centralised SVG icons**: one sprite file plus `<use>` references so strokes follow `var(--color-fg)` via `currentColor`.
+Opening **Pay** starts the type-ahead recipient search step (`#pay/recipient-search`), then recipient → amount → schedule → summary. See `../../designs/screens/` for payment-flow exports.
+
+Icons are centralised: one sprite plus same-document `<use>` references so strokes follow `var(--color-fg)` via `currentColor`.
+
+## Quick start
+
+```bash
+cd apps/web
+npm install
+npm run dev
+```
+
+Open `http://localhost:5173/overview.html`.
 
 ## Icons workflow
 
-1. **Add or edit** a source file under `assets/icons/` named `icon24-{name}.svg` (24×24 viewBox, brand strokes/fills as `#00157E` is fine—the build rewrites to `currentColor`).
-2. **Regenerate the sprite** from this folder:
+1. **Add or edit** a source file under `assets/icons/` named `icon24-{name}.svg` (24×24 viewBox).
+2. **Regenerate the sprite**:
 
    ```bash
-   cd E-Banking_WebApp_11
    python3 scripts/sync_icons_sprite.py
    ```
 
-   That rebuilds `assets/icons-sprite.svg` from every `assets/icons/icon24-*.svg`. (The same script can migrate legacy `<img>` markup and bump storage keys when pointed at an older tree; on _09 the HTML is already migrated.)
+   Rebuilds `assets/icons-sprite.svg` and embeds symbols into shell HTML pages.
 
-3. **Markup**: each shell page includes an inline **sprite block** right after `<body>` (`#uzbank-icon-defs`). Icons use **same-document** references only:
+3. **Markup** — each shell page includes an inline sprite block after `<body>` (`#uzbank-icon-defs`). Icons use same-document references:
 
    ```html
    <svg class="sidebar__nav-icon" aria-hidden="true" focusable="false">
@@ -24,27 +35,30 @@ Multi-page shell (same UX as _07) with **centralised SVG icons**: one sprite fil
    </svg>
    ```
 
-   Do **not** point `<use>` at `icons-sprite.svg#…` alone: external fragments are unreliable under `file://` and in WebKit. Re-run `sync_icons_sprite.py` to refresh the inline block after editing the sprite.
-
-   **Why not `hidden` / `display:none` on the sprite?** That prevents same-document `<use>` from painting in Safari; the sprite root uses a zero-sized absolutely positioned SVG instead (`styles.css` clips the host div).
-
-4. **Styles**: BEM classes on the host `<svg>` set size; `css/styles.css` sets `color: var(--color-fg)` (or `var(--color-btn-primary-fg)` for action circles / logout). No per-theme `filter` stack on these icons.
-
 ## Scripts
 
 | Script | Purpose |
 |--------|---------|
-| `scripts/sync_icons_sprite.py` | Build `icons-sprite.svg`, migrate legacy `<img>` if present, **embed** the sprite into each shell HTML page after `<body>`, rewrite `<use>` to `href="#i-…"`. Re-run after adding icons. |
-| `scripts/generate_mp_pages.py` | One-off generator from `spa-source.html` slices; uses `svg_icon()` for sidebar/tab bar. Regenerating overwrites shell pages—keep the inline colour boot in sync manually if you use it. |
+| `scripts/sync_icons_sprite.py` | Build sprite, migrate legacy `<img>` icons, embed into shell HTML |
+| `scripts/generate-tokens-css.mjs` | Regenerate `css/tokens.css` from `designs/tokens/` |
+| `scripts/generate-storybook-design-exports.mjs` | Reference Storybook stories from `designs/` |
 
 ## Storage keys
 
-- Theme: `uzBankWebApp11Theme`
-- Colour override: `uzBankWebApp11ColorOverride` (`{ bg, fg }` only; extended derivation includes button pressed + tonal roles — see `js/contrast-checker.js` and shell boot scripts.)
+Persisted in `localStorage` (see `js/storage-migrate.js` for legacy key migration):
+
+| Key | Purpose |
+|-----|---------|
+| `uzBankWebTheme` | `light` / `dark` |
+| `uzBankWebColorOverride` | Custom `{ bg, fg }` palette |
+| `uzBankWebAppearance` | Profile legibility / persona scale |
+| `uzBankWebPaymentState` | Demo payment balances and bookings |
+| `uzBankWebSavedColorThemes` | Profile saved colour themes |
 
 ## Source layout
 
-- `spa-source.html` — wide SPA-style source; boot uses `uzBankWebApp11Theme` (colour override boot lives on shell pages such as `overview.html`).
-- `components.html` — **Button** design-system gallery (primary, secondary, tonal; hover / pressed / static “pressed” demo).
-- `css/tokens.css` — resolved from repo root `tokens4_website-UZ.json` (mapped light/dark + responsive type scale). Includes `--color-surface-state-hover` / `--color-surface-state-pressed` (aliases of secondary button overlays) for list rows, nav, inputs, and other non-button surfaces.
-- Individual `assets/icons/icon24-*.svg` remain the **authoring** copies; the sprite is generated output.
+- `spa-source.html` — wide SPA-style reference (not the primary runtime)
+- `components.html` — button design-system gallery
+- `css/tokens.css` — generated from `designs/tokens/`
+- `css/typography.css` — generated responsive type scale
+- `css/styles.css` — components and page layout

@@ -4,11 +4,11 @@ Build assets/icons-sprite.svg from assets/icons/icon24-*.svg, migrate legacy
 <img> icons, embed the sprite into each shell HTML page (same-document <use>),
 and bump storage keys when migrating from _07.
 
-Run from repo root:
-  python3 E-Banking_WebApp_11/scripts/sync_icons_sprite.py
-
-Or from E-Banking_WebApp_11:
+Run from apps/web:
   python3 scripts/sync_icons_sprite.py
+
+Or from the banking-app monorepo root:
+  python3 apps/web/scripts/sync_icons_sprite.py
 """
 from __future__ import annotations
 
@@ -107,16 +107,20 @@ def migrate_html_files() -> None:
 
 
 def bump_storage_keys() -> None:
-    """10 -> 11 theme / override localStorage keys (run after copying a _10 tree)."""
+    """Migrate legacy WebApp_* localStorage keys to uzBankWeb* names."""
     subs = [
-        ("uzBankWebApp10Theme", "uzBankWebApp11Theme"),
-        ("uzBankWebApp10ColorOverride", "uzBankWebApp11ColorOverride"),
-        ("UZ Bank (10)", "UZ Bank (11)"),
-        ("WebApp 10", "WebApp 11"),
-        ("E-Banking WebApp 10", "E-Banking WebApp 11"),
-        ("_10 ", "_11 "),
-        ("09 -> 10", "10 -> 11"),
-        ("bumped 09 -> 10", "bumped 10 -> 11"),
+        ("uzBankWebApp03Theme", "uzBankWebTheme"),
+        ("uzBankWebApp10Theme", "uzBankWebTheme"),
+        ("uzBankWebApp11Theme", "uzBankWebTheme"),
+        ("uzBankWebApp10ColorOverride", "uzBankWebColorOverride"),
+        ("uzBankWebApp11ColorOverride", "uzBankWebColorOverride"),
+        ("uzBankWebApp11Appearance", "uzBankWebAppearance"),
+        ("uzBankWebApp11PaymentState", "uzBankWebPaymentState"),
+        ("uzBankWebApp11SavedColorThemes", "uzBankWebSavedColorThemes"),
+        ("E-Banking WebApp 11", "UZ Bank Web"),
+        ("E-Banking WebApp 10", "UZ Bank Web"),
+        ("WebApp 11", "UZ Bank Web"),
+        ("WebApp 10", "UZ Bank Web"),
     ]
     exts = {".html", ".js", ".py", ".json", ".md"}
     for path in ROOT.rglob("*"):

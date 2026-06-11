@@ -1,5 +1,5 @@
 /**
- * E-Banking WebApp — payment details overlay
+ * UZ Bank Web — payment details overlay
  *
  * Opens a "Domestic Payment" or "Internal Account Transfer" detail sheet
  * when the user taps any .booking-row in the bookings card.
