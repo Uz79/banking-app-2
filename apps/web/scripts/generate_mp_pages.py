@@ -172,6 +172,7 @@ def shell(
 <head>
 {MAZE_SNIPPET}  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
   <meta name="color-scheme" content="dark light">
   <title>{title}</title>
 {BOOT_SCRIPT}
@@ -200,6 +201,7 @@ def pay_redirect_page(step: str) -> str:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
   <title>Opening payment…</title>
   <script>
     (function () {{
@@ -358,6 +360,7 @@ account_sec = account_back_link(account_sec)
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
   <meta name="color-scheme" content="dark light">
   <title>UZ Bank – Account information</title>
   <script>
@@ -402,6 +405,7 @@ payment_dir.mkdir(exist_ok=True)
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
   <meta http-equiv="refresh" content="0; url=overview.html">
   <title>UZ Bank – Redirecting…</title>
   <link rel="canonical" href="overview.html">
