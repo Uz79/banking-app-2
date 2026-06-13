@@ -26,7 +26,7 @@ struct ListItemRow: View {
                     .frame(width: 24, height: 24)
                     .foregroundColor(AppColor.foreground)
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: Space._1) {
                     Text(title)
                         .textSmall()
                         .foregroundColor(AppColor.foreground)

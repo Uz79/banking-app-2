@@ -131,7 +131,6 @@
     function fgAlpha(a) { return 'rgba(' + fg.r + ', ' + fg.g + ', ' + fg.b + ', ' + a + ')'; }
     function rgbAlpha(c, a) { return 'rgba(' + c.r + ', ' + c.g + ', ' + c.b + ', ' + a + ')'; }
     function blackAlpha(a) { return 'rgba(0, 0, 0, ' + a + ')'; }
-    var scrimRgb = isDark ? bg : fg;
 
     var bgElev = isDark ? 0.22 : 0.07;
     var fgElev = isDark ? 0.06 : 0.22;
@@ -181,7 +180,7 @@
       'color-btn-tonal-pressed': mix(bg, fg, isDark ? 0.48 : 0.22),
 
       // Elevation — brand-tinted scrim; neutral shadows
-      'color-overlay-scrim':         rgbAlpha(scrimRgb, isDark ? 0.62 : 0.45),
+      'color-overlay-tint':         fgHex,
       'color-nav-elevated-shadow':   blackAlpha(isDark ? 0.35 : 0.06),
       'color-modal-elevated-shadow': blackAlpha(isDark ? 0.45 : 0.12),
 
@@ -210,7 +209,7 @@
     'color-btn-secondary-hover', 'color-btn-secondary-pressed',
     'color-btn-tonal-bg', 'color-btn-tonal-border', 'color-btn-tonal-fg',
     'color-btn-tonal-hover', 'color-btn-tonal-pressed',
-    'color-overlay-scrim', 'color-nav-elevated-shadow', 'color-modal-elevated-shadow',
+    'color-overlay-tint', 'color-nav-elevated-shadow', 'color-modal-elevated-shadow',
     'color-surface-state-hover', 'color-surface-state-pressed',
     'color-action-circle-state-hover', 'color-action-circle-state-pressed'
   ];

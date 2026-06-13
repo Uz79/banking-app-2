@@ -27,6 +27,11 @@ struct InvestmentPosition: Identifiable {
     }
     var isPositive: Bool { changePct >= 0 }
 
+    /// Market as-of label for the performance card (web `formatMarketDate`).
+    var formattedMarketDate: String {
+        formatPerformanceMarketDate(Date())
+    }
+
     static let abb = InvestmentPosition(
         id: "ABBN", name: "ABB Ltd", symbol: "ABBN",
         isin: "CH0012221711", exchange: "SWX", currency: "CHF",
@@ -80,4 +85,13 @@ enum InvestmentProduct {
     static let yLabels = ["60", "40", "20", "0"]
     static let xLabels = ["Feb", "Mar", "May", "Aug"]
     static let ranges = ["1w", "1m", "3m", "ytd", "Max"]
+}
+
+/// Web `formatMarketDate` — e.g. "2. June 2026".
+func formatPerformanceMarketDate(_ date: Date) -> String {
+    let calendar = Calendar.current
+    let day = calendar.component(.day, from: date)
+    let month = calendar.monthSymbols[calendar.component(.month, from: date) - 1]
+    let year = calendar.component(.year, from: date)
+    return "\(day). \(month) \(year)"
 }

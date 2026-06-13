@@ -6,12 +6,13 @@ struct AccountDetailView: View {
     @Binding var showInternalTransfer: Bool
     @Binding var selectedRecipient: Recipient?
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var tabBar: TabBarCoordinator
 
     @State private var currentPage = 0
     @State private var showMore = false
     @State private var showAccountInfo = false
-    @State private var showAllBookings = false
     @State private var selectedDetail: PaymentDetail?
+    @State private var topShadow = false
     private let accounts = [Account.household, Account.savings]
 
     var currentAccount: Account {
@@ -27,8 +28,9 @@ struct AccountDetailView: View {
                 trailingIcon: "icon24-info",
                 onTrailing: { showAccountInfo = true }
             )
+            .topChromeShadow(topShadow)
 
-            EdgeShadowScroll {
+            EdgeShadowScroll(topShadow: $topShadow) {
                 VStack(spacing: Space._4) {
                     ActionButtonsRow(showMore: true, onPay: {
                         selectedRecipient = nil
@@ -59,17 +61,14 @@ struct AccountDetailView: View {
                 currentPage = idx
             }
         }
-        .sheet(isPresented: $showMore) {
-            MoreActionsSheet(actions: moreActions)
+        .foregroundScrimSheet(isPresented: $showMore, size: .fitted) {
+            MoreActionsSheet(actions: moreActions, onClose: { showMore = false })
         }
-        .sheet(isPresented: $showAccountInfo) {
-            AccountInformationView(account: currentAccount)
+        .foregroundScrimSheet(isPresented: $showAccountInfo, size: .large) {
+            AccountInformationView(account: currentAccount, onClose: { showAccountInfo = false })
         }
-        .sheet(item: $selectedDetail) { detail in
-            PaymentDetailView(detail: detail)
-        }
-        .navigationDestination(isPresented: $showAllBookings) {
-            AllBookingsView(account: currentAccount)
+        .foregroundScrimSheet(item: $selectedDetail, size: .large) { detail in
+            PaymentDetailView(detail: detail, onClose: { selectedDetail = nil })
         }
     }
 
@@ -106,13 +105,10 @@ struct AccountDetailView: View {
             BookingGroupSection(group: .today, onSelect: openDetail)
             Divider().padding(.horizontal, Space._3)
             BookingGroupSection(group: .yesterday, onSelect: openDetail)
-            ShowAllButton("Show all bookings", action: { showAllBookings = true })
-                .background(AppColor.showAllBg)
-                .clipShape(RoundedRectangle(cornerRadius: Radius.small))
-                .padding(.horizontal, Space._3)
-                .padding(.vertical, Space._1)
+            ShowAllButton("Show all bookings", action: {
+                tabBar.overviewPath.append(OverviewRoute.allBookings(currentAccount))
+            })
         }
-        .padding(.vertical, Space._2)
         .background(AppColor.background)
         .clipShape(RoundedRectangle(cornerRadius: Radius.regular))
     }
@@ -161,4 +157,6 @@ struct AccountDetailView: View {
             selectedRecipient: .constant(nil)
         )
     }
+    .environmentObject(TabBarCoordinator())
+    .environmentObject(ScrollEdgeModel())
 }

@@ -1,16 +1,85 @@
 import SwiftUI
 
+// MARK: - Nav search field (web: `.recipient-search__field-wrap` in `.modal__nav-search`)
+
+struct RecipientSearchField: View {
+    @Binding var query: String
+    @FocusState.Binding var focused: Bool
+
+    var body: some View {
+        HStack(spacing: Space._2) {
+            Image("icon24-search")
+                .renderingMode(.template)
+                .resizable().scaledToFit()
+                .frame(width: 24, height: 24)
+                .foregroundColor(AppColor.foreground)
+
+            TextField("Enter IBAN, name or account number", text: $query)
+                .font(AppFont.font(size: AppFont.Size.textMd))
+                .foregroundColor(AppColor.foreground)
+                .focused($focused)
+                .autocorrectionDisabled()
+                #if os(iOS)
+                .textInputAutocapitalization(.never)
+                #endif
+
+            if !query.isEmpty {
+                Button { query = "" } label: {
+                    Image("icon24-x-circle")
+                        .renderingMode(.template)
+                        .resizable().scaledToFit()
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(AppColor.foreground)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, Space._2)
+        .padding(.vertical, Space._1)
+        .background(AppColor.background)
+        .clipShape(RoundedRectangle(cornerRadius: Radius.small))
+        .fieldBorder(focused: focused, radius: Radius.small)
+    }
+}
+
+// MARK: - Nav bar (web: `.modal--recipient-search-active` — search + close, no title/back)
+
+struct RecipientSearchNavBar: View {
+    @Binding var query: String
+    @FocusState.Binding var searchFocused: Bool
+    let onClose: () -> Void
+
+    var body: some View {
+        HStack(spacing: Space._2) {
+            RecipientSearchField(query: $query, focused: $searchFocused)
+
+            Button(action: onClose) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(AppColor.foreground)
+                    .frame(width: 44, height: 44)
+            }
+        }
+        .padding(.leading, Space._3)
+        .padding(.trailing, Space._2)
+        .frame(height: 48)
+    }
+}
+
+// MARK: - Step body (web: `data-step="recipient-search"`)
+
 /// Type-ahead recipient search — the first step of the payment flow.
-/// Mirrors the web `#pay/recipient-search` step: search by name or IBAN,
-/// pick a row, then continue to the recipient form.
+/// Mirrors the web `#pay/recipient-search` step: search in nav, recommended list below.
 struct RecipientSearchStepView: View {
+    let query: String
     let onSelect: (Recipient) -> Void
 
-    @State private var query: String = ""
-    @FocusState private var searchFocused: Bool
+    private var trimmedQuery: String {
+        query.trimmingCharacters(in: .whitespaces)
+    }
 
     private var results: [Recipient] {
-        let q = query.trimmingCharacters(in: .whitespaces).lowercased()
+        let q = trimmedQuery.lowercased()
         guard !q.isEmpty else { return Recipient.directory }
         let compact = q.replacingOccurrences(of: " ", with: "")
         return Recipient.directory.filter { r in
@@ -20,11 +89,12 @@ struct RecipientSearchStepView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            searchField
+        VStack(spacing: Space._3) {
+            Text("Recommended recipients")
+                .font(AppFont.font(size: AppFont.Size.textXs, weight: .medium))
+                .foregroundColor(AppColor.foregroundSecondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, Space._3)
-                .padding(.top, Space._2)
-                .padding(.bottom, Space._3)
 
             if results.isEmpty {
                 emptyState
@@ -38,58 +108,17 @@ struct RecipientSearchStepView: View {
                             .buttonStyle(.plain)
 
                             if recipient.id != results.last?.id {
-                                Divider().padding(.leading, Space._3 + 24 + Space._3)
+                                Divider()
+                                    .overlay(AppColor.separator)
                             }
                         }
                     }
-                    .background(AppColor.background)
-                    .clipShape(RoundedRectangle(cornerRadius: Radius.regular))
-                    .padding(.horizontal, Space._3)
-                    .padding(.bottom, Space._4)
                 }
             }
         }
-        .background(AppColor.backgroundSecondary)
-        .onAppear { searchFocused = true }
-    }
-
-    private var searchField: some View {
-        HStack(spacing: Space._2) {
-            Image("icon24-search")
-                .renderingMode(.template)
-                .resizable().scaledToFit()
-                .frame(width: 20, height: 20)
-                .foregroundColor(AppColor.foregroundSecondary)
-
-            TextField("Search by name or IBAN", text: $query)
-                .font(AppFont.font(size: AppFont.Size.textMd))
-                .foregroundColor(AppColor.foreground)
-                .focused($searchFocused)
-                .autocorrectionDisabled()
-                #if os(iOS)
-                .textInputAutocapitalization(.never)
-                #endif
-
-            if !query.isEmpty {
-                Button { query = "" } label: {
-                    Image("icon24-x-circle")
-                        .renderingMode(.template)
-                        .resizable().scaledToFit()
-                        .frame(width: 20, height: 20)
-                        .foregroundColor(AppColor.foregroundSecondary)
-                }
-                .buttonStyle(.plain)
-            }
-        }
-        .padding(.horizontal, Space._3)
         .padding(.vertical, Space._3)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(AppColor.background)
-        .clipShape(RoundedRectangle(cornerRadius: Radius.regular))
-        .overlay(
-            RoundedRectangle(cornerRadius: Radius.regular)
-                .stroke(searchFocused ? AppColor.foreground : AppColor.separator,
-                        lineWidth: searchFocused ? 2 : 1)
-        )
     }
 
     private func recipientRow(_ recipient: Recipient) -> some View {
@@ -100,45 +129,43 @@ struct RecipientSearchStepView: View {
                 .frame(width: 24, height: 24)
                 .foregroundColor(AppColor.foreground)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 0) {
                 Text(recipient.name)
                     .textSmall().fontWeight(.medium)
                     .foregroundColor(AppColor.foreground)
                 Text(recipient.iban)
-                    .captionStyle()
+                    .font(AppFont.font(size: AppFont.Size.textXs))
                     .foregroundColor(AppColor.foregroundSecondary)
             }
 
-            Spacer()
+            Spacer(minLength: 0)
 
             Image("icon24-chevron-right")
                 .renderingMode(.template)
                 .resizable().scaledToFit()
-                .frame(width: 20, height: 20)
-                .foregroundColor(AppColor.foreground)
+                .frame(width: 24, height: 24)
+                .foregroundColor(AppColor.foregroundSecondary)
         }
         .padding(.horizontal, Space._3)
-        .padding(.vertical, Space._3)
+        .padding(.vertical, Space._2)
         .contentShape(Rectangle())
     }
 
     private var emptyState: some View {
-        VStack(spacing: Space._2) {
-            Spacer()
-            Image("icon24-search")
-                .renderingMode(.template)
-                .resizable().scaledToFit()
-                .frame(width: 40, height: 40)
-                .foregroundColor(AppColor.foregroundDisabled)
-            Text("No recipients found")
-                .textSmall()
-                .foregroundColor(AppColor.foregroundSecondary)
-            Spacer()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        Text("No recipients match your search.")
+            .font(AppFont.font(size: AppFont.Size.textSm))
+            .foregroundColor(AppColor.foregroundSecondary)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .padding(.horizontal, Space._3)
     }
 }
 
 #Preview {
-    RecipientSearchStepView(onSelect: { _ in })
+    @Previewable @State var query = ""
+    @Previewable @FocusState var focused: Bool
+
+    VStack(spacing: 0) {
+        RecipientSearchNavBar(query: $query, searchFocused: $focused, onClose: {})
+        RecipientSearchStepView(query: query, onSelect: { _ in })
+    }
 }

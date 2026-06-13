@@ -98,17 +98,19 @@ button, input, select, textarea {
   /* Sticky nav: 16dp top inset + 16dp side bleed per edge when elevated (shadow state). */
   --view-nav-sticky-top: var(--space-3);
   --view-nav-sticky-bleed: var(--space-3);
-  /* Content-indication drop shadow (Figma feOffset dy=2, blur=16, primary @ 10%). */
-  --shadow-content-indication-after: 0 0.125rem 2rem rgba(0, 21, 126, 0.1);
-  --shadow-content-indication-before: 0 -0.125rem 2rem rgba(0, 21, 126, 0.1);
+  /* Overlay / content-indication tint: always foreground — dark navy on light, bright on dark. */
+  --color-overlay-tint: var(--color-fg);
+  /* Content-indication drop shadow (Figma feOffset dy=2, blur=16, tint @ 10%). */
+  --shadow-content-indication-after: 0 0.125rem 2rem color-mix(in srgb, var(--color-overlay-tint) 10%, transparent);
+  --shadow-content-indication-before: 0 -0.125rem 2rem color-mix(in srgb, var(--color-overlay-tint) 10%, transparent);
   /* Performance chart tooltip — Figma primary @ 15%, dy=2, blur=6. */
   --performance-chart-tooltip-shadow-color: var(--color-fg);
   --performance-chart-tooltip-shadow-opacity: 0.15;
 }
 
 html[data-theme="dark"] {
-  --shadow-content-indication-after: 0 0.125rem 1rem rgba(0, 0, 0, 0.25);
-  --shadow-content-indication-before: 0 -0.125rem 1rem rgba(0, 0, 0, 0.25);
+  --shadow-content-indication-after: 0 0.125rem 1rem color-mix(in srgb, var(--color-overlay-tint) 25%, transparent);
+  --shadow-content-indication-before: 0 -0.125rem 1rem color-mix(in srgb, var(--color-overlay-tint) 25%, transparent);
   --performance-chart-tooltip-shadow-color: #000000;
   --performance-chart-tooltip-shadow-opacity: 0.35;
 }
@@ -464,7 +466,8 @@ html:has(body.body--payment-open) {
   display: flex;
   background-color: var(--color-bg-sidebar);
   padding: var(--space-2) 0 var(--space-4) 0;
-  box-shadow: 0 -0.125rem 0.5rem var(--color-nav-elevated-shadow);
+  box-shadow: none;
+  transition: box-shadow 0.15s ease;
   z-index: 50;
 }
 
@@ -3397,6 +3400,7 @@ button.debit-account:focus-visible {
   background-color: var(--color-btn-secondary-bg);
   color: var(--color-btn-secondary-fg);
   border-color: var(--color-btn-secondary-border);
+  border-radius: var(--radius-small);
 }
 
 .uz-btn--secondary:hover {

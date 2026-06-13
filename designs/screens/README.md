@@ -1,6 +1,8 @@
 # Screen design manifests
 
-Screens under `designs/screens/` mirror the **`designs/components/`** convention:
+Screens under `designs/screens/` mirror the **`designs/components/`** convention.
+
+**Interaction behavior** (scroll shadows, sticky transitions, etc.) is documented separately in **`designs/interaction-patterns/`** — check that folder when a variant name includes `content-indication` or the screen uses sticky chrome.
 
 ```
 <screen-kebab-slug>/

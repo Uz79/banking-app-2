@@ -1,5 +1,32 @@
 import SwiftUI
 
+/// Absolute + relative performance with as-of date on one row
+/// (web `.performance-card__meta`).
+struct PerformanceCardMetaRow: View {
+    let changeAbsolute: String
+    let changePercent: String
+    let date: String
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: Space._3) {
+            HStack(spacing: Space._1) {
+                Text(changeAbsolute)
+                Text("•")
+                    .foregroundColor(AppColor.foregroundDisabled)
+                Text(changePercent)
+            }
+            .textSmall()
+            .foregroundColor(AppColor.foregroundSecondary)
+
+            Spacer(minLength: Space._3)
+
+            Text(date)
+                .textSmall()
+                .foregroundColor(AppColor.foregroundSecondary)
+        }
+    }
+}
+
 /// Line + area performance chart drawn natively with `Path`, with right-aligned
 /// y-axis labels, x-axis labels, and range-selector pills. Mirrors the web
 /// `.performance-card__chart`.

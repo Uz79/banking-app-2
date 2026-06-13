@@ -22,3 +22,46 @@ extension View {
         modifier(FieldBorder(focused: focused, radius: radius))
     }
 }
+
+// MARK: - Bordered text field (web: `.form-field__text-wrap` + `.form-field__clear`)
+
+struct BorderedFormField<Field: Hashable>: View {
+    let label: String
+    @Binding var text: String
+    var focus: FocusState<Field?>.Binding
+    var field: Field
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Space._1) {
+            Text(label)
+                .textSmall()
+                .foregroundColor(AppColor.foregroundSecondary)
+
+            HStack(spacing: Space._2) {
+                TextField("", text: $text)
+                    .font(AppFont.font(size: AppFont.Size.textMd, weight: .regular))
+                    .foregroundColor(AppColor.foreground)
+                    .focused(focus, equals: field)
+
+                Button {
+                    text = ""
+                } label: {
+                    Image("icon24-x-circle")
+                        .renderingMode(.template)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(AppColor.foreground)
+                }
+                .buttonStyle(.plain)
+                .frame(width: 32, height: 32)
+                .opacity(focus.wrappedValue == field && !text.isEmpty ? 1 : 0)
+                .allowsHitTesting(focus.wrappedValue == field && !text.isEmpty)
+                .accessibilityLabel("Clear \(label)")
+            }
+            .padding(.horizontal, Space._2)
+            .padding(.vertical, Space._1)
+            .fieldBorder(focused: focus.wrappedValue == field)
+        }
+    }
+}

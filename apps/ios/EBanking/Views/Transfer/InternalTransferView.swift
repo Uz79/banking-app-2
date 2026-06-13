@@ -23,8 +23,10 @@ struct InternalTransferView: View {
     @State private var amountText: String = "500.00"
     @State private var isForward = true
     @State private var showConfirmation = false
+    @State private var showExitConfirm = false
     @State private var picking: PickTarget?
     @FocusState private var amountFocused: Bool
+    @StateObject private var scrimSheetCenter = ScrimSheetCenter()
 
     enum PickTarget: Int, Identifiable { case from, to; var id: Int { rawValue } }
 
@@ -35,7 +37,7 @@ struct InternalTransferView: View {
                 showBack: currentStep != .details,
                 showClose: true,
                 onBack: goBack,
-                onClose: { isPresented = false }
+                onClose: promptExit
             )
 
             Group {
@@ -67,7 +69,9 @@ struct InternalTransferView: View {
             }
         }
         .animation(.easeInOut(duration: 0.3), value: showConfirmation)
-        .sheet(item: $picking) { target in
+        .overlay { ScrimSheetHost(center: scrimSheetCenter) }
+        .environment(\.scrimSheetCenter, scrimSheetCenter)
+        .foregroundScrimSheet(item: $picking, size: .fitted) { target in
             AccountPickerSheet(
                 title: target == .from ? "From account" : "To account",
                 accounts: Account.allAccounts.filter {
@@ -76,9 +80,30 @@ struct InternalTransferView: View {
                 selectedID: target == .from ? draft.fromAccount.id : draft.toAccount.id,
                 onSelect: { acc in
                     if target == .from { draft.fromAccount = acc } else { draft.toAccount = acc }
-                }
+                },
+                onClose: { picking = nil }
             )
         }
+        .overlay {
+            BasicDialogOverlay(isPresented: $showExitConfirm, onScrimTap: dismissExitConfirm) {
+                TransferExitConfirmDialog(
+                    onContinue: dismissExitConfirm,
+                    onDiscard: {
+                        showExitConfirm = false
+                        isPresented = false
+                    }
+                )
+            }
+        }
+        .animation(.easeInOut(duration: 0.2), value: showExitConfirm)
+    }
+
+    private func promptExit() {
+        showExitConfirm = true
+    }
+
+    private func dismissExitConfirm() {
+        showExitConfirm = false
     }
 
     // MARK: - Step 1: details

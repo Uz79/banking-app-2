@@ -2,10 +2,11 @@ import SwiftUI
 
 struct AmountStepView: View {
     @Binding var draft: PaymentDraft
+    @Binding var showCurrencyPicker: Bool
+    @Binding var showDebitPicker: Bool
     let onConfirm: () -> Void
 
     @State private var amountText: String = ""
-    @State private var showDebitPicker = false
     @FocusState private var amountFocused: Bool
 
     var body: some View {
@@ -27,14 +28,6 @@ struct AmountStepView: View {
             if amountText.isEmpty {
                 amountText = draft.amount > 0 ? draft.formattedAmount : "500.00"
             }
-        }
-        .sheet(isPresented: $showDebitPicker) {
-            AccountPickerSheet(
-                title: "Debit account",
-                accounts: Account.allAccounts,
-                selectedID: draft.debitAccount.id,
-                onSelect: { draft.debitAccount = $0 }
-            )
         }
     }
 
@@ -75,17 +68,21 @@ struct AmountStepView: View {
                 .foregroundColor(AppColor.foregroundSecondary)
 
             HStack {
-                HStack(spacing: 4) {
-                    Text(draft.currency)
-                        .font(AppFont.font(size: AppFont.Size.textMd, weight: .medium))
-                        .foregroundColor(AppColor.foreground)
-                    Image("icon24-chevron-down")
-                        .renderingMode(.template)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 12, height: 12)
-                        .foregroundColor(AppColor.foreground)
+                Button { showCurrencyPicker = true } label: {
+                    HStack(spacing: 4) {
+                        Text(draft.currency)
+                            .font(AppFont.font(size: AppFont.Size.textMd, weight: .medium))
+                            .foregroundColor(AppColor.foreground)
+                        Image("icon24-chevron-down")
+                            .renderingMode(.template)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 12, height: 12)
+                            .foregroundColor(AppColor.foreground)
+                    }
                 }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Choose currency")
 
                 Spacer()
 
@@ -177,6 +174,8 @@ struct AmountStepView: View {
 #Preview {
     AmountStepView(
         draft: .constant(PaymentDraft(recipient: .hansMeyer)),
+        showCurrencyPicker: .constant(false),
+        showDebitPicker: .constant(false),
         onConfirm: {}
     )
 }

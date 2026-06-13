@@ -214,6 +214,11 @@
     }).join('');
     container.removeAttribute('aria-busy');
     markPositionsRevealReady();
+    try {
+      window.dispatchEvent(new CustomEvent('uz:scroll-content-changed'));
+    } catch (err) {
+      /* ignore */
+    }
   }
 
   function initPositions() {

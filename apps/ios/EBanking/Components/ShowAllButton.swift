@@ -21,8 +21,12 @@ struct ShowAllButton: View {
                     .frame(width: 20, height: 20)
             }
             .foregroundColor(AppColor.foreground)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, Space._2)
+            .frame(maxWidth: .infinity, minHeight: 32)
+            .background(AppColor.showAllBg)
+            .clipShape(RoundedRectangle(cornerRadius: Radius.small))
         }
+        .buttonStyle(.plain)
+        .padding(.horizontal, Space._3)
+        .padding(.vertical, Space._2)
     }
 }

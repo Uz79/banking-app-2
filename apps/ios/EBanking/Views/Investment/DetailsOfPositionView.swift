@@ -4,6 +4,7 @@ struct DetailsOfPositionView: View {
     let position: InvestmentPosition
     @Environment(\.dismiss) private var dismiss
     @State private var range = "1d"
+    @State private var topShadow = false
 
     private var pl: Double { (position.price - position.acquisitionPrice) * Double(position.quantity) }
     private var plSign: String { pl >= 0 ? "+" : "−" }
@@ -12,11 +13,16 @@ struct DetailsOfPositionView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            CustomNavBar(title: position.name, showBack: true, onBack: { dismiss() })
+            CustomNavBar(
+                title: position.name,
+                subtitle: "ISIN | \(position.isin) | \(position.exchange)",
+                showBack: true,
+                onBack: { dismiss() }
+            )
+                .topChromeShadow(topShadow)
 
-            EdgeShadowScroll {
+            EdgeShadowScroll(topShadow: $topShadow) {
                 VStack(alignment: .leading, spacing: Space._4) {
-                    header
                     actionButtons
                     priceCard
                     myPositionsCard
@@ -33,36 +39,10 @@ struct DetailsOfPositionView: View {
         #endif
     }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(position.name)
-                .font(AppFont.font(size: AppFont.Size.h6, weight: .medium))
-                .foregroundColor(AppColor.foreground)
-            Text("ISIN | \(position.isin) | \(position.exchange)")
-                .captionStyle()
-                .foregroundColor(AppColor.foregroundSecondary)
-        }
-    }
-
     private var actionButtons: some View {
         HStack(spacing: Space._2) {
-            Button(action: {}) {
-                Text("Buy")
-                    .textSmall().fontWeight(.medium)
-                    .foregroundColor(AppColor.Button.primaryFg)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, Space._2)
-                    .background(AppColor.Button.primaryBg)
-                    .clipShape(Capsule())
-            }
-            Button(action: {}) {
-                Text("Sell")
-                    .textSmall().fontWeight(.medium)
-                    .foregroundColor(AppColor.Button.secondaryFg)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, Space._2)
-                    .overlay(Capsule().stroke(AppColor.Button.secondaryBorder, lineWidth: 1))
-            }
+            SecondaryButton(title: "Buy", size: .regular, action: {})
+            SecondaryButton(title: "Sell", size: .regular, action: {})
         }
     }
 
@@ -75,12 +55,11 @@ struct DetailsOfPositionView: View {
                 Text(position.currency)
                     .textSmall().foregroundColor(AppColor.foregroundSecondary)
             }
-            HStack(spacing: Space._2) {
-                Text(position.formattedChange)
-                Text("•").foregroundColor(AppColor.foregroundDisabled)
-                Text(position.formattedChangePct)
-            }
-            .textSmall().foregroundColor(AppColor.foreground)
+            PerformanceCardMetaRow(
+                changeAbsolute: position.formattedChange,
+                changePercent: position.formattedChangePct,
+                date: position.formattedMarketDate
+            )
 
             PerformanceChart(
                 values: series,
@@ -100,56 +79,39 @@ struct DetailsOfPositionView: View {
     }
 
     private var myPositionsCard: some View {
-        VStack(alignment: .leading, spacing: Space._1) {
-            Text("My positions").textSmall().foregroundColor(AppColor.foregroundSecondary)
-                .padding(.horizontal, Space._3)
-            VStack(spacing: 0) {
-                infoRow("Account", "Deposit \(InvestmentProduct.depositNumber)")
-                divider
-                infoRow("Acquisition price", "\(position.currency) \(formatAmount(position.acquisitionPrice))")
-                divider
-                infoRow("Value", "\(position.currency) \(position.formattedValue)")
-                divider
-                infoRow("Quantity", "pcs. \(position.quantity)")
-                divider
-                infoRow("Unrealized P/L", "\(position.currency) \(plSign) \(formatAmount(abs(pl)))")
-                divider
-                infoRow("Total P/L", "\(position.currency) \(plSign) \(formatAmount(abs(pl)))")
-            }
-            .padding(.vertical, Space._2)
-            .background(AppColor.background)
-            .clipShape(RoundedRectangle(cornerRadius: Radius.regular))
+        DataCard(title: "My positions") {
+            dataRow("Account", "Deposit \(InvestmentProduct.depositNumber)")
+            dataDivider
+            dataRow("Acquisition price", "\(position.currency) \(formatAmount(position.acquisitionPrice))")
+            dataDivider
+            dataRow("Value", "\(position.currency) \(position.formattedValue)")
+            dataDivider
+            dataRow("Quantity", "pcs. \(position.quantity)")
+            dataDivider
+            dataRow("Unrealized P/L", "\(position.currency) \(plSign) \(formatAmount(abs(pl)))")
+            dataDivider
+            dataRow("Total P/L", "\(position.currency) \(plSign) \(formatAmount(abs(pl)))")
         }
     }
 
     private var keyFiguresCard: some View {
-        VStack(alignment: .leading, spacing: Space._1) {
-            Text("Key figures").textSmall().foregroundColor(AppColor.foregroundSecondary)
-                .padding(.horizontal, Space._3)
-            VStack(spacing: 0) {
-                infoRow("High", "\(position.currency) \(formatAmount(position.high))")
-                divider
-                infoRow("Low", "\(position.currency) \(formatAmount(position.low))")
-            }
-            .padding(.vertical, Space._2)
-            .background(AppColor.background)
-            .clipShape(RoundedRectangle(cornerRadius: Radius.regular))
+        DataCard(title: "Key figures") {
+            dataRow("High", "\(position.currency) \(formatAmount(position.high))")
+            dataDivider
+            dataRow("Low", "\(position.currency) \(formatAmount(position.low))")
         }
     }
 
-    private var divider: some View { Divider().padding(.horizontal, Space._3) }
+    private var dataDivider: some View {
+        Divider()
+    }
 
-    private func infoRow(_ label: String, _ value: String) -> some View {
-        HStack {
-            Text(label).textSmall().foregroundColor(AppColor.foregroundSecondary)
-            Spacer()
-            Text(value).textSmall().fontWeight(.medium).foregroundColor(AppColor.foreground)
-        }
-        .padding(.horizontal, Space._3)
-        .padding(.vertical, Space._2)
+    private func dataRow(_ label: String, _ value: String) -> some View {
+        DataCardRow(label: label, value: value)
     }
 }
 
 #Preview {
     NavigationStack { DetailsOfPositionView(position: .abb) }
+        .environmentObject(ScrollEdgeModel())
 }
