@@ -5945,6 +5945,13 @@ dialog.form-sheet.form-sheet--closing[open] .form-sheet__panel {
   outline-offset: -2px;
 }
 
+@media (hover: none) and (pointer: coarse) {
+  .form-sheet__row:focus,
+  dialog.basic-dialog-payment-exit .uz-btn:focus {
+    outline: none;
+  }
+}
+
 .form-sheet__account-icon {
   width: 1.5rem;
   height: 1.5rem;
@@ -6181,6 +6188,9 @@ dialog.basic-dialog-payment-exit.basic-dialog-payment-exit--closing[open] .basic
 
 /* Edit buttons are only visible for pending payments */
 .modal--payment-details:not(.pd--pending) .payment-details__edit-btn { display: none; }
+
+/* Recipient is read-only in payment details (Edit/Delete/Copy bar covers pending edits). */
+.payment-details__edit-btn--to { display: none !important; }
 
 /* Edit button (pencil) — reused on amount row and "to" row */
 .payment-details__edit-btn {

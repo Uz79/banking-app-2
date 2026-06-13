@@ -185,6 +185,7 @@
     dialog.className = 'form-sheet';
     dialog.setAttribute('role', 'dialog');
     dialog.setAttribute('aria-modal', 'true');
+    dialog.setAttribute('tabindex', '-1');
     dialog.innerHTML =
       '<div class="form-sheet__panel">' +
       '<h2 class="form-sheet__heading-sr" id="form-sheet-heading">' +
@@ -386,6 +387,9 @@
     dialog.setAttribute('data-form-sheet-type', sheetFlags.sheetType || 'generic');
     clearAnchoredSheetLayout();
     dialog.showModal();
+    if (window.UZBankDialogFocus) {
+      window.UZBankDialogFocus.suppressInitialFocus(dialog);
+    }
     window.requestAnimationFrame(function () {
       window.requestAnimationFrame(function () {
         positionFormSheet();
@@ -398,8 +402,7 @@
         /* One extra frame so max-height/layout from positionFormSheet is committed before comparing scroll metrics. */
         window.requestAnimationFrame(function () {
           syncFormSheetListOverflow();
-          /* Keyboard only — programmatic focus shows a ring on touch (iOS). */
-          if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+          if (window.UZBankDialogFocus && window.UZBankDialogFocus.prefersKeyboardFocus()) {
             var first = listEl.querySelector('button');
             if (first) first.focus();
           }

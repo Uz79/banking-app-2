@@ -16,6 +16,7 @@ const PAGE_SCRIPTS = {
   overview: [
     'document-ready.js',
     'analytics.js',
+    'dialog-focus.js',
     'form-field-sheet.js',
     'payment-exit-confirm.js',
     'payment-state.js',
@@ -28,6 +29,7 @@ const PAGE_SCRIPTS = {
   payments: [
     'document-ready.js',
     'analytics.js',
+    'dialog-focus.js',
     'form-field-sheet.js',
     'payment-exit-confirm.js',
     'payment-state.js',
@@ -40,6 +42,7 @@ const PAGE_SCRIPTS = {
   'account-details': [
     'document-ready.js',
     'analytics.js',
+    'dialog-focus.js',
     'form-field-sheet.js',
     'payment-exit-confirm.js',
     'payment-state.js',
