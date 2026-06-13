@@ -140,6 +140,7 @@ def shell(
     modal_block = f"\n{MODAL_HTML}\n" if include_payment_modal else ""
     pay_js = (
         (
+            f'<script src="{prefix}js/dialog-focus.js"></script>\n'
             f'<script src="{prefix}js/form-field-sheet.js"></script>\n'
             f'<script src="{prefix}js/payment-exit-confirm.js"></script>\n'
             f'<script src="{prefix}js/payment-state.js"></script>\n'

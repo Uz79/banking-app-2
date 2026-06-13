@@ -10,6 +10,7 @@
     if (dialog) return dialog;
     dialog = document.createElement('dialog');
     dialog.className = 'basic-dialog-payment-exit';
+    dialog.setAttribute('tabindex', '-1');
     dialog.setAttribute('role', 'alertdialog');
     dialog.setAttribute('aria-modal', 'true');
     dialog.setAttribute('aria-labelledby', 'basic-dialog-payment-exit-title');
@@ -64,6 +65,9 @@
     dialog.querySelector('[data-payment-exit-leave]').textContent =
       o.leaveLabel || 'Discard';
     dialog.showModal();
+    if (window.UZBankDialogFocus) {
+      window.UZBankDialogFocus.suppressInitialFocus(dialog);
+    }
   }
 
   window.UZBankPaymentExitPrompt = prompt;
