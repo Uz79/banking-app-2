@@ -34,7 +34,9 @@
     var footer = root.querySelector(footerSelector);
     var stickyAfter = stickyAfterSelector ? root.querySelector(stickyAfterSelector) : null;
     var boundScrollEl = null;
+    var boundScrollContentEl = null;
     var stickyAfterWasStuck = false;
+    var scrollContentObserver = null;
 
     function isFooterVisible() {
       if (!footer) return false;
@@ -44,11 +46,50 @@
       return footer.offsetParent !== null;
     }
 
+    function scrollContentTarget(scrollEl) {
+      if (!scrollEl) return null;
+      return (
+        scrollEl.querySelector('[data-scroll-edge-content]') ||
+        scrollEl.querySelector('.main-content__inner') ||
+        scrollEl.firstElementChild
+      );
+    }
+
+    function attachScrollContentObserver(scrollEl) {
+      if (typeof ResizeObserver === 'undefined') return;
+
+      if (!scrollContentObserver) {
+        scrollContentObserver = new ResizeObserver(function () {
+          update();
+        });
+      }
+
+      var contentEl = scrollContentTarget(scrollEl);
+      if (contentEl === boundScrollContentEl) return;
+
+      if (boundScrollContentEl) {
+        scrollContentObserver.unobserve(boundScrollContentEl);
+      }
+      boundScrollContentEl = contentEl;
+      if (boundScrollContentEl) {
+        scrollContentObserver.observe(boundScrollContentEl);
+      }
+    }
+
     function attachScrollEl(scrollEl) {
-      if (scrollEl === boundScrollEl) return;
+      if (scrollEl === boundScrollEl) {
+        attachScrollContentObserver(scrollEl);
+        return;
+      }
       if (boundScrollEl) boundScrollEl.removeEventListener('scroll', update);
       boundScrollEl = scrollEl;
-      if (boundScrollEl) boundScrollEl.addEventListener('scroll', update, { passive: true });
+      if (boundScrollEl) {
+        boundScrollEl.addEventListener('scroll', update, { passive: true });
+        attachScrollContentObserver(boundScrollEl);
+      } else if (scrollContentObserver && boundScrollContentEl) {
+        scrollContentObserver.unobserve(boundScrollContentEl);
+        boundScrollContentEl = null;
+      }
     }
 
     function scrollContentOverflows() {
@@ -149,7 +190,10 @@
         onStickyAfterChange(stickyAfterStuck);
       }
       if (footer && isFooterVisible()) {
-        footer.classList.toggle('is-scroll-edge--before', overflows && !atBottom);
+        footer.classList.toggle(
+          'is-scroll-edge--before',
+          overflows && !atBottom
+        );
       } else if (footer) footer.classList.remove('is-scroll-edge--before');
     }
 
@@ -159,7 +203,18 @@
     }
 
     window.addEventListener('resize', update);
+    window.addEventListener('uz:shell-view-entered', update);
+    window.addEventListener('uz:scroll-content-changed', update);
+
     update();
+    window.requestAnimationFrame(function () {
+      update();
+      window.requestAnimationFrame(update);
+    });
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(update);
+    }
 
     return { update: update };
   }

@@ -242,15 +242,33 @@ final class AppSettings: ObservableObject {
 
 extension Color {
     /// A color that resolves to `light` or `dark` based on the active interface style.
-    static func themed(light: String, dark: String, alpha: Double = 1) -> Color {
+    static func themed(
+        light: String,
+        dark: String,
+        alpha: Double = 1,
+        lightAlpha: Double? = nil,
+        darkAlpha: Double? = nil
+    ) -> Color {
+        let resolvedLightAlpha = lightAlpha ?? alpha
+        let resolvedDarkAlpha = darkAlpha ?? alpha
         #if canImport(UIKit)
         return Color(UIColor { trait in
-            let hex = trait.userInterfaceStyle == .dark ? dark : light
-            return UIColor(hexString: hex, alpha: alpha)
+            let isDark = trait.userInterfaceStyle == .dark
+            let hex = isDark ? dark : light
+            let a = isDark ? resolvedDarkAlpha : resolvedLightAlpha
+            return UIColor(hexString: hex, alpha: a)
         })
         #else
-        return Color(hex: light).opacity(alpha)
+        return Color(hex: light).opacity(resolvedLightAlpha)
         #endif
+    }
+
+    /// Semi-transparent overlay scrim — `color-mix(fg, transparent)` matching web `--color-overlay-scrim`.
+    static func themedScrimBackdrop(lightAlpha: Double, darkAlpha: Double) -> Color {
+        themed(
+            light: "#00157E", dark: "#FFFFFF",
+            lightAlpha: lightAlpha, darkAlpha: darkAlpha
+        )
     }
 }
 

@@ -7,13 +7,15 @@ struct PaymentsView: View {
 
     @State private var showMore = false
     @State private var selectedDetail: PaymentDetail?
+    @State private var topShadow = false
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
                 CustomNavBar(title: "Payments")
+                    .topChromeShadow(topShadow)
 
-                EdgeShadowScroll {
+                EdgeShadowScroll(topShadow: $topShadow) {
                     VStack(spacing: Space._4) {
                         ActionButtonsRow(showMore: true, onPay: {
                             selectedRecipient = nil
@@ -36,11 +38,11 @@ struct PaymentsView: View {
             #if os(iOS)
             .navigationBarHidden(true)
             #endif
-            .sheet(isPresented: $showMore) {
-                MoreActionsSheet(actions: moreActions)
+            .foregroundScrimSheet(isPresented: $showMore, size: .fitted) {
+                MoreActionsSheet(actions: moreActions, onClose: { showMore = false })
             }
-            .sheet(item: $selectedDetail) { detail in
-                PaymentDetailView(detail: detail)
+            .foregroundScrimSheet(item: $selectedDetail, size: .large) { detail in
+                PaymentDetailView(detail: detail, onClose: { selectedDetail = nil })
             }
         }
     }
@@ -94,8 +96,6 @@ struct PaymentsView: View {
                 Divider().padding(.horizontal, Space._3)
 
                 ShowAllButton("Show all pending payments")
-                    .padding(.horizontal, Space._3)
-                    .padding(.vertical, Space._1)
             }
         }
     }
@@ -149,4 +149,5 @@ struct PaymentsView: View {
         showInternalTransfer: .constant(false),
         selectedRecipient: .constant(nil)
     )
+    .environmentObject(ScrollEdgeModel())
 }

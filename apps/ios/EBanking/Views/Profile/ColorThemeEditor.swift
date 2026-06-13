@@ -33,9 +33,18 @@ struct ColorThemeEditor: View {
         .background(AppColor.background)
         .clipShape(RoundedRectangle(cornerRadius: Radius.regular))
         .onAppear(perform: syncFromActive)
-        .onChange(of: settings.themeMode) { syncFromActive() }
-        .onChange(of: systemScheme) { syncFromActive() }
-        .onChange(of: settings.colorOverride) { syncFromActive() }
+        .onChange(of: settings.themeMode) { _, _ in
+            DispatchQueue.main.async { syncFromActive() }
+        }
+        .onChange(of: systemScheme) { _, _ in
+            DispatchQueue.main.async { syncFromActive() }
+        }
+        .onChange(of: settings.colorOverride?.bg) { _, _ in
+            DispatchQueue.main.async { syncFromActive() }
+        }
+        .onChange(of: settings.colorOverride?.fg) { _, _ in
+            DispatchQueue.main.async { syncFromActive() }
+        }
     }
 
     // MARK: - Result + badges
@@ -237,18 +246,8 @@ struct ColorThemeEditor: View {
     // MARK: - Reset
 
     private var resetButton: some View {
-        Button(action: resetToTheme) {
-            Text("Reset to theme")
-                .textSmall().fontWeight(.medium)
-                .foregroundColor(AppColor.Button.secondaryFg)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, Space._3)
-                .overlay(
-                    RoundedRectangle(cornerRadius: Radius.regular)
-                        .stroke(AppColor.Button.secondaryBorder, lineWidth: 1)
-                )
-        }
-        .padding(.top, Space._1)
+        SecondaryButton(title: "Reset to theme", size: .regular, action: resetToTheme)
+            .padding(.top, Space._1)
     }
 
     // MARK: - Logic
@@ -271,7 +270,9 @@ struct ColorThemeEditor: View {
 
     private func apply() {
         guard isValid(bg), isValid(fg) else { return }
-        settings.colorOverride = ColorOverride(bg: normalize(bg), fg: normalize(fg))
+        let next = ColorOverride(bg: normalize(bg), fg: normalize(fg))
+        guard settings.colorOverride != next else { return }
+        settings.colorOverride = next
     }
 
     private func resetToTheme() {

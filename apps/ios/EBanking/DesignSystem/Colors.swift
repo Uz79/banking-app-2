@@ -34,10 +34,15 @@ enum AppColor {
     // Segmented control track (--color-segmented-track-bg)
     static var segmentedTrack: Color      { p?.segmentedTrack ?? Color.themed(light: "#00157E", dark: "#FFFFFF", alpha: 0.06) }
 
-    // Modal scrim (--color-overlay-scrim). Neutral dark dimming so it stays
-    // visible in every theme (a brand-hued scrim disappears against a same-hue
-    // page background, e.g. #00157E in dark).
-    static var overlayScrim: Color        { p?.overlayScrim ?? Color.black.opacity(0.5) }
+    // Semi-transparent foreground scrim (--color-overlay-scrim: fg at 45%/62% over content).
+    static var overlayScrim: Color {
+        p?.overlayScrim ?? Color.themedScrimBackdrop(lightAlpha: 0.45, darkAlpha: 0.62)
+    }
+
+    static var contentIndicationShadow: Color {
+        p?.contentIndicationShadow
+            ?? Color.themed(light: "#00157E", dark: "#FFFFFF", lightAlpha: 0.10, darkAlpha: 0.25)
+    }
 
     enum Button {
         private static var p: DerivedPalette? { AppSettings.shared.palette }
@@ -48,9 +53,11 @@ enum AppColor {
         static var primaryBgHover: Color   { p?.primaryBgHover ?? Color.themed(light: "#39499B", dark: "#F1F2F8") }
 
         // Secondary (--color-btn-secondary-*)
+        static var secondaryBg: Color         { Color.clear }
         static var secondaryBorder: Color  { p?.secondaryBorder ?? Color.themed(light: "#00157E", dark: "#FFFFFF") }
         static var secondaryFg: Color      { p?.secondaryFg ?? Color.themed(light: "#00157E", dark: "#FFFFFF") }
         static var secondaryBgHover: Color { p?.secondaryBgHover ?? Color.themed(light: "#00157E", dark: "#FFFFFF", alpha: 0.1) }
+        static var secondaryBgPressed: Color { p?.surfaceStatePressed ?? Color.themed(light: "#00157E", dark: "#FFFFFF", alpha: 0.2) }
 
         // Tonal (--color-btn-tonal-*)
         static var tonalBg: Color          { p?.tonalBg ?? Color.themed(light: "#F1F2F8", dark: "#39499B") }

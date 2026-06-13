@@ -6,7 +6,7 @@
  * - Debit account (.debit-account)
  * - Main view “More functions” ([data-more-functions-trigger] on Overview / Account details)
  *
- * Uses <dialog> + ::backdrop (`--color-overlay-scrim`, same as modals). Backdrop and bottom sheet animate together on open (~0.45s);
+ * Uses <dialog> + ::backdrop (`--color-overlay-scrim` from `--color-overlay-tint`, same as modals). Backdrop and bottom sheet animate together on open (~0.45s);
  * close exits in ~0.28s ease-in before `dialog.close()`.
  * Esc uses the `cancel` event (preventDefault + animated close). Reduces to instant close when
  * `prefers-reduced-motion: reduce`.

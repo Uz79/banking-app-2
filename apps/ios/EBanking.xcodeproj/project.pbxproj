@@ -52,6 +52,11 @@
 		A10000067 /* DetailsOfPositionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000067 /* DetailsOfPositionView.swift */; };
 		A10000068 /* AllBookingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000068 /* AllBookingsView.swift */; };
 		A10000069 /* ShareInformationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000069 /* ShareInformationView.swift */; };
+		A10000070 /* ScrollEdge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000070 /* ScrollEdge.swift */; };
+		A10000071 /* AllBookingsMonthMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000071 /* AllBookingsMonthMerge.swift */; };
+		A10000072 /* ForegroundScrimSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000072 /* ForegroundScrimSheet.swift */; };
+		A10000073 /* BasicDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000073 /* BasicDialog.swift */; };
+		A10000074 /* TabBarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000074 /* TabBarCoordinator.swift */; };
 		A10000030 /* ProfilePro-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = B10000030 /* ProfilePro-Regular.otf */; };
 		A10000031 /* ProfilePro-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = B10000031 /* ProfilePro-Medium.otf */; };
 		A10000032 /* ProfilePro-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = B10000032 /* ProfilePro-Bold.otf */; };
@@ -109,6 +114,11 @@
 		B10000067 /* DetailsOfPositionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsOfPositionView.swift; sourceTree = "<group>"; };
 		B10000068 /* AllBookingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllBookingsView.swift; sourceTree = "<group>"; };
 		B10000069 /* ShareInformationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareInformationView.swift; sourceTree = "<group>"; };
+		B10000070 /* ScrollEdge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollEdge.swift; sourceTree = "<group>"; };
+		B10000071 /* AllBookingsMonthMerge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllBookingsMonthMerge.swift; sourceTree = "<group>"; };
+		B10000072 /* ForegroundScrimSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForegroundScrimSheet.swift; sourceTree = "<group>"; };
+		B10000073 /* BasicDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicDialog.swift; sourceTree = "<group>"; };
+		B10000074 /* TabBarCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarCoordinator.swift; sourceTree = "<group>"; };
 		C10000001 /* EBanking.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EBanking.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -185,6 +195,11 @@
 				B10000058 /* FieldStyles.swift */,
 				B10000059 /* PickerSheets.swift */,
 				B10000060 /* EdgeShadowScroll.swift */,
+				B10000071 /* AllBookingsMonthMerge.swift */,
+				B10000072 /* ForegroundScrimSheet.swift */,
+				B10000073 /* BasicDialog.swift */,
+				B10000074 /* TabBarCoordinator.swift */,
+				B10000070 /* ScrollEdge.swift */,
 				B10000061 /* MoreActionsSheet.swift */,
 				B10000065 /* PerformanceChart.swift */,
 			);
@@ -400,6 +415,10 @@
 				A10000058 /* FieldStyles.swift in Sources */,
 				A10000059 /* PickerSheets.swift in Sources */,
 				A10000060 /* EdgeShadowScroll.swift in Sources */,
+				A10000071 /* AllBookingsMonthMerge.swift in Sources */,
+				A10000072 /* ForegroundScrimSheet.swift in Sources */,
+				A10000073 /* BasicDialog.swift in Sources */,
+				A10000074 /* TabBarCoordinator.swift in Sources */,
 				A10000061 /* MoreActionsSheet.swift in Sources */,
 				A10000062 /* PaymentDetailView.swift in Sources */,
 				A10000063 /* AccountInformationView.swift in Sources */,
@@ -409,6 +428,7 @@
 				A10000067 /* DetailsOfPositionView.swift in Sources */,
 				A10000068 /* AllBookingsView.swift in Sources */,
 				A10000069 /* ShareInformationView.swift in Sources */,
+				A10000070 /* ScrollEdge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

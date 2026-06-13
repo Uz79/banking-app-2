@@ -1,5 +1,72 @@
 import SwiftUI
 
+// MARK: - standard-button / secondary (designs/components/button/standard-button)
+
+enum StandardButtonSize {
+    case small
+    case regular
+
+    /// SVG: small-secondary 32×32dp; regular-secondary 40dp tall.
+    var minHeight: CGFloat {
+        switch self {
+        case .small: 32
+        case .regular: 40
+        }
+    }
+
+    var horizontalPadding: CGFloat {
+        switch self {
+        case .small: Space._2
+        case .regular: Space._3
+        }
+    }
+
+    var fontSize: CGFloat {
+        switch self {
+        case .small: AppFont.Size.textSm
+        case .regular: AppFont.Size.textMd
+        }
+    }
+}
+
+private struct SecondaryButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .background {
+                RoundedRectangle(cornerRadius: Radius.small, style: .continuous)
+                    .fill(configuration.isPressed
+                          ? AppColor.Button.secondaryBgPressed
+                          : AppColor.Button.secondaryBg)
+            }
+            .overlay {
+                RoundedRectangle(cornerRadius: Radius.small, style: .continuous)
+                    .stroke(AppColor.Button.secondaryBorder, lineWidth: 1)
+            }
+            .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
+    }
+}
+
+/// Secondary standard button — mirrors web `.uz-btn.uz-btn--secondary` and
+/// `standard-button/*-secondary` SVGs (rounded rect, 1px border, not pill).
+struct SecondaryButton: View {
+    let title: String
+    var size: StandardButtonSize = .small
+    var expands: Bool = true
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(AppFont.font(size: size.fontSize, weight: .medium))
+                .foregroundColor(AppColor.Button.secondaryFg)
+                .frame(maxWidth: expands ? .infinity : nil)
+                .frame(minHeight: size.minHeight)
+                .padding(.horizontal, size.horizontalPadding)
+        }
+        .buttonStyle(SecondaryButtonStyle())
+    }
+}
+
 struct CircularActionButton: View {
     let icon: String
     let label: String

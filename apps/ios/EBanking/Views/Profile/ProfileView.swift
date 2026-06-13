@@ -10,21 +10,25 @@ enum ProfileTopic: String, CaseIterable, Identifiable {
 struct ProfileView: View {
     @EnvironmentObject private var settings: AppSettings
     @State private var topic: ProfileTopic = .theme
+    @State private var topShadow = false
 
     var body: some View {
         VStack(spacing: 0) {
-            CustomNavBar(title: "Profile")
+            VStack(spacing: 0) {
+                CustomNavBar(title: "Profile")
 
-            // Topic tabs (mirrors web .profile-topic-tabs)
-            SegmentedControl(
-                options: ProfileTopic.allCases,
-                selection: $topic,
-                label: { $0.rawValue }
-            )
-            .padding(.horizontal, Space._3)
-            .padding(.bottom, Space._3)
+                // Topic tabs (mirrors web .profile-topic-tabs)
+                SegmentedControl(
+                    options: ProfileTopic.allCases,
+                    selection: $topic,
+                    label: { $0.rawValue }
+                )
+                .padding(.horizontal, Space._3)
+                .padding(.bottom, Space._3)
+            }
+            .topChromeShadow(topShadow)
 
-            EdgeShadowScroll {
+            EdgeShadowScroll(topShadow: $topShadow) {
                 VStack(alignment: .leading, spacing: Space._4) {
                     switch topic {
                     case .theme:      themePanel
@@ -250,4 +254,5 @@ struct ProfileView: View {
 #Preview {
     ProfileView()
         .environmentObject(AppSettings.shared)
+        .environmentObject(ScrollEdgeModel())
 }

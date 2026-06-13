@@ -11,16 +11,16 @@ struct MoreAction: Identifiable {
 /// Bottom-sheet contextual menu opened by the "More" quick action.
 struct MoreActionsSheet: View {
     let actions: [MoreAction]
-    @Environment(\.dismiss) private var dismiss
+    var onClose: () -> Void
+
+    @Environment(\.scrimSheetDismiss) private var dismissAnimated
 
     var body: some View {
-        sheetScaffold(title: "More actions") {
+        sheetScaffold(title: "More actions", onClose: close, fitted: true) {
             ForEach(actions) { item in
                 Button {
-                    dismiss()
-                    // Let the sheet finish dismissing before triggering a flow
-                    // so a follow-on full-screen cover presents cleanly.
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    close()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.22) {
                         item.action()
                     }
                 } label: {
@@ -32,14 +32,10 @@ struct MoreActionsSheet: View {
                         Text(item.label)
                             .textSmall().fontWeight(.medium)
                             .foregroundColor(item.enabled ? AppColor.foreground : AppColor.foregroundDisabled)
-                        Spacer()
-                        Image("icon24-chevron-right")
-                            .renderingMode(.template).resizable().scaledToFit()
-                            .frame(width: 20, height: 20)
-                            .foregroundColor(AppColor.foregroundSecondary)
+                        Spacer(minLength: 0)
                     }
                     .padding(.horizontal, Space._3)
-                    .padding(.vertical, Space._3)
+                    .padding(.vertical, Space._2)
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
@@ -49,6 +45,14 @@ struct MoreActionsSheet: View {
                     Divider().padding(.leading, Space._3 + 24 + Space._3)
                 }
             }
+        }
+    }
+
+    private func close() {
+        if let dismissAnimated {
+            dismissAnimated()
+        } else {
+            onClose()
         }
     }
 }

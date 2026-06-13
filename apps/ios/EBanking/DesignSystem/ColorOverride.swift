@@ -40,6 +40,7 @@ struct DerivedPalette {
     let showAllBg: Color
     let segmentedTrack: Color
     let overlayScrim: Color
+    let contentIndicationShadow: Color
 
     let primaryBg: Color
     let primaryFg: Color
@@ -119,7 +120,8 @@ func derivePalette(_ override: ColorOverride) -> DerivedPalette {
         surfaceStatePressed: fgA(0.20),
         showAllBg:           fgA(0.10),
         segmentedTrack:      fgA(0.05),
-        overlayScrim:        Color.black.opacity(isDark ? 0.6 : 0.45),
+        overlayScrim:        fgA(isDark ? 0.62 : 0.45),
+        contentIndicationShadow: fgA(isDark ? 0.25 : 0.10),
         primaryBg:           c(fg),
         primaryFg:           c(bg),
         primaryBgHover:      c(ColorMath.mix(fg, bg, fgElev)),

@@ -13,9 +13,11 @@ enum AccountInfoTab: String, CaseIterable, Identifiable {
 /// summary card, Information / Conditions tabs, read-only fields, share.
 struct AccountInformationView: View {
     let account: Account
+    var onClose: (() -> Void)?
     @Environment(\.dismiss) private var dismiss
     @State private var tab: AccountInfoTab = .information
     @State private var showShare = false
+    @State private var topShadow = false
 
     private var owner: String { AppSettings.shared.persona.name }
 
@@ -34,9 +36,10 @@ struct AccountInformationView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            CustomNavBar(title: "Account information", showClose: true, onClose: { dismiss() })
+            CustomNavBar(title: "Account information", showClose: true, onClose: close)
+                .topChromeShadow(topShadow)
 
-            ScrollView {
+            EdgeShadowScroll(topShadow: $topShadow) {
                 VStack(alignment: .leading, spacing: Space._4) {
                     summaryCard
                     SegmentedControl(options: AccountInfoTab.allCases, selection: $tab, label: { $0.rawValue })
@@ -54,13 +57,14 @@ struct AccountInformationView: View {
             }
         }
         .background(AppColor.backgroundSecondary)
-        #if os(iOS)
-        .presentationDetents([.large])
-        .presentationDragIndicator(.visible)
-        #endif
-        .sheet(isPresented: $showShare) {
-            ShareInformationView(account: account)
+        .clipShape(RoundedRectangle(cornerRadius: Radius.regular, style: .continuous))
+        .foregroundScrimSheet(isPresented: $showShare, size: .large) {
+            ShareInformationView(account: account, onClose: { showShare = false })
         }
+    }
+
+    private func close() {
+        if let onClose { onClose() } else { dismiss() }
     }
 
     private var summaryCard: some View {

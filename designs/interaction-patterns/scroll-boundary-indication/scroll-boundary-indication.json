@@ -1,0 +1,74 @@
+{
+  "name": "scroll-boundary-indication",
+  "category": "scroll",
+  "description": "Elevation shadow on fixed top or bottom chrome when scrollable content continues past the viewport edge.",
+  "interactionStates": [
+    "at-top",
+    "scrolled",
+    "mid-scroll",
+    "at-bottom",
+    "no-overflow"
+  ],
+  "assets": {
+    "overview": "overview.png",
+    "states": "states.svg",
+    "variants": {
+      "mobile-top-indication": {
+        "default": "examples/mobile-top-indication/default.svg",
+        "defaultPng": "examples/mobile-top-indication/default.png"
+      },
+      "mobile-top-at-boundary": {
+        "default": "examples/mobile-top-at-boundary/default.svg",
+        "defaultPng": "examples/mobile-top-at-boundary/default.png"
+      },
+      "mobile-bottom-indication": {
+        "default": "examples/mobile-bottom-indication/default.svg",
+        "defaultPng": "examples/mobile-bottom-indication/default.png"
+      },
+      "mobile-bottom-at-boundary": {
+        "default": "examples/mobile-bottom-at-boundary/default.svg",
+        "defaultPng": "examples/mobile-bottom-at-boundary/default.png"
+      }
+    },
+    "screenReferences": {
+      "all-bookings-mobile": "../../screens/all-bookings-and-payments/variants/mobile-content-indication/default.svg",
+      "all-bookings-desktop": "../../screens/all-bookings-and-payments/variants/desktop-content-indication/default.svg",
+      "account-information-mobile": "../../screens/account-information/variants/mobile-content-indication/default.svg"
+    }
+  },
+  "tokens": {
+    "shadowAfter": "--shadow-content-indication-after",
+    "shadowBefore": "--shadow-content-indication-before",
+    "modes": {
+      "light": {
+        "shadowColor": "color-mix(in srgb, var(--color-fg) 10%, transparent)"
+      },
+      "dark": {
+        "shadowColor": "color-mix(in srgb, var(--color-fg) 25%, transparent)"
+      }
+    }
+  },
+  "implementation": {
+    "script": "../../../apps/web/js/scroll-edge-chrome.js",
+    "export": "UZBankScrollEdgeChrome.bind",
+    "classes": {
+      "top": "is-scroll-edge--after",
+      "bottom": "is-scroll-edge--before",
+      "stickyStuck": "is-scroll-edge--stuck"
+    },
+    "selectors": {
+      "nav": ".modal__nav, .view__nav, [data-scroll-edge-nav]",
+      "footer": ".modal__footer, .account-information__footer, .tab-bar, [data-scroll-edge-footer]",
+      "scrollport": "[data-scroll-edge], [data-ai-scroll]"
+    }
+  },
+  "notes": [
+    "overview.png is the annotated pattern board: four states, swipe gestures, shadow dimensions, and Figma CSS snippets on chrome edges.",
+    "examples/* holds clean per-state mobile frames (no measurement overlays) — pair with overview.png for full context.",
+    "Figma label: Content Indication Effect / Sticky TopBar — not a separate component; a behavioral overlay on nav-bar and bottom navigation.",
+    "Top shadow (--after): downward drop shadow on chrome when content is hidden above or list continues below the pinned header.",
+    "Bottom shadow (--before): upward drop shadow on chrome when content is hidden below (tab bar, modal footer).",
+    "Shadow is suppressed at scroll boundaries and when content does not overflow.",
+    "bindMainScrollChrome in apps/web/js/app-mp.js wires overview, payments, account-details, profile, and investment screens; all-bookings uses a dedicated bind with stickyAfter."
+  ]
+}

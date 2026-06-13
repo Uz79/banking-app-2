@@ -2,6 +2,8 @@ import SwiftUI
 
 struct RecipientStepView: View {
     @Binding var draft: PaymentDraft
+    @Binding var country: String
+    @Binding var showCountryPicker: Bool
     let onConfirm: () -> Void
 
     @State private var iban: String = ""
@@ -9,13 +11,9 @@ struct RecipientStepView: View {
     @State private var recipientName: String = ""
     @State private var street: String = ""
     @State private var city: String = ""
-    @State private var country: String = "Switzerland"
-    @State private var showCountryPicker = false
 
     enum Field: Hashable { case name, street, city }
     @FocusState private var focus: Field?
-
-    private let countries = ["Switzerland", "Germany", "Austria", "France", "Italy", "Liechtenstein"]
 
     var body: some View {
         VStack(spacing: 0) {
@@ -24,9 +22,9 @@ struct RecipientStepView: View {
                     readOnlyField(label: "IBAN", value: iban, icon: "icon24-edit-2")
                     readOnlyField(label: "Bank Name", value: bankName)
 
-                    borderedField(label: "Recipient name", text: $recipientName, field: .name)
-                    borderedField(label: "Street and number", text: $street, field: .street)
-                    borderedField(label: "City and postal code", text: $city, field: .city)
+                    BorderedFormField(label: "Recipient name", text: $recipientName, focus: $focus, field: .name)
+                    BorderedFormField(label: "Street and number", text: $street, focus: $focus, field: .street)
+                    BorderedFormField(label: "City and postal code", text: $city, focus: $focus, field: .city)
 
                     VStack(alignment: .leading, spacing: Space._1) {
                         Text("Country")
@@ -63,14 +61,6 @@ struct RecipientStepView: View {
         }
         .background(AppColor.background)
         .onAppear { prefill() }
-        .sheet(isPresented: $showCountryPicker) {
-            OptionPickerSheet(
-                title: "Country",
-                options: countries,
-                selected: country,
-                onSelect: { country = $0 }
-            )
-        }
     }
 
     private func prefill() {
@@ -123,22 +113,6 @@ struct RecipientStepView: View {
         }
     }
 
-    private func borderedField(label: String, text: Binding<String>, field: Field) -> some View {
-        VStack(alignment: .leading, spacing: Space._1) {
-            Text(label)
-                .textSmall()
-                .foregroundColor(AppColor.foregroundSecondary)
-
-            TextField("", text: text)
-                .font(AppFont.font(size: AppFont.Size.textMd, weight: .regular))
-                .foregroundColor(AppColor.foreground)
-                .focused($focus, equals: field)
-                .padding(.horizontal, Space._2)
-                .padding(.vertical, Space._2)
-                .fieldBorder(focused: focus == field)
-        }
-    }
-
     private var confirmButton: some View {
         Button(action: {
             if draft.recipient == nil {
@@ -167,6 +141,8 @@ struct RecipientStepView: View {
 #Preview {
     RecipientStepView(
         draft: .constant(PaymentDraft(recipient: .hansMeyer)),
+        country: .constant("Switzerland"),
+        showCountryPicker: .constant(false),
         onConfirm: {}
     )
 }

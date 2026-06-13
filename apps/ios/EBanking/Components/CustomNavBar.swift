@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CustomNavBar: View {
     let title: String
+    var subtitle: String? = nil
     var showBack: Bool = false
     var showClose: Bool = false
     var onBack: (() -> Void)?
@@ -10,11 +11,25 @@ struct CustomNavBar: View {
     var trailingIcon: String?
     var onTrailing: (() -> Void)?
 
+    private var navHeight: CGFloat { subtitle == nil ? 48 : 56 }
+
     var body: some View {
         ZStack {
-            Text(title)
-                .font(AppFont.font(size: AppFont.Size.textLg, weight: .medium))
-                .foregroundColor(AppColor.foreground)
+            VStack(spacing: 2) {
+                Text(title)
+                    .font(AppFont.font(size: AppFont.Size.textLg, weight: .medium))
+                    .foregroundColor(AppColor.foreground)
+                    .lineLimit(1)
+
+                if let subtitle {
+                    Text(subtitle)
+                        .font(AppFont.font(size: AppFont.Size.textXs))
+                        .foregroundColor(AppColor.foregroundSecondary)
+                        .lineLimit(1)
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 52)
 
             HStack {
                 if showBack, let onBack {
@@ -52,6 +67,6 @@ struct CustomNavBar: View {
             }
         }
         .padding(.horizontal, Space._1)
-        .frame(height: 48)
+        .frame(height: navHeight)
     }
 }

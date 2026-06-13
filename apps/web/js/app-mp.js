@@ -179,7 +179,7 @@
       'color-btn-tonal-fg': fgHex,
       'color-btn-tonal-hover': mix(bg, fg, isDark ? 0.38 : 0.14),
       'color-btn-tonal-pressed': mix(bg, fg, isDark ? 0.48 : 0.22),
-      'color-overlay-scrim': sa(isDark ? bg : fg, isDark ? 0.62 : 0.45),
+      'color-overlay-tint': fgHex,
       'color-nav-elevated-shadow': ba(isDark ? 0.35 : 0.06),
       'color-modal-elevated-shadow': ba(isDark ? 0.45 : 0.12),
       'color-surface-state-hover': fa(0.1),

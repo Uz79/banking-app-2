@@ -37,3 +37,9 @@ enum ComponentPadding {
     static let regular: CGFloat = 12   // space.2
     static let large: CGFloat   = 24   // space.4
 }
+
+// MARK: - Section card (web --section-card-header-gap-to-body)
+
+enum SectionCardMetrics {
+    static let headerToBody: CGFloat = 4  // 0.25rem — Figma space/1 in section-card context
+}

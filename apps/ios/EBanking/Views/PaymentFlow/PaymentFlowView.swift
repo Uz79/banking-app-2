@@ -27,6 +27,14 @@ struct PaymentFlowView: View {
     @State private var draft: PaymentDraft
     @State private var isForward = true
     @State private var showConfirmation = false
+    @State private var showCountryPicker = false
+    @State private var showCurrencyPicker = false
+    @State private var showDebitPicker = false
+    @State private var showExitConfirm = false
+    @State private var country = "Switzerland"
+    @State private var recipientSearchQuery = ""
+    @FocusState private var recipientSearchFocused: Bool
+    @StateObject private var scrimSheetCenter = ScrimSheetCenter()
 
     /// Where the flow begins: directly at the recipient form when a recipient
     /// was pre-picked (e.g. from "recent recipients"), otherwise the search.
@@ -47,27 +55,44 @@ struct PaymentFlowView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            CustomNavBar(
-                title: currentStep.title,
-                showBack: currentStep.rawValue > startStep.rawValue,
-                showClose: true,
-                onBack: goBack,
-                onClose: { isPresented = false }
-            )
+            if currentStep == .recipientSearch {
+                RecipientSearchNavBar(
+                    query: $recipientSearchQuery,
+                    searchFocused: $recipientSearchFocused,
+                    onClose: promptExit
+                )
+                .onAppear { recipientSearchFocused = true }
+            } else {
+                CustomNavBar(
+                    title: currentStep.title,
+                    showBack: currentStep.rawValue > startStep.rawValue,
+                    showClose: true,
+                    onBack: goBack,
+                    onClose: promptExit
+                )
+            }
 
             Group {
                 switch currentStep {
                 case .recipientSearch:
-                    RecipientSearchStepView { recipient in
+                    RecipientSearchStepView(query: recipientSearchQuery) { recipient in
                         draft.recipient = recipient
                         advance(to: .recipient)
                     }
                 case .recipient:
-                    RecipientStepView(draft: $draft) {
+                    RecipientStepView(
+                        draft: $draft,
+                        country: $country,
+                        showCountryPicker: $showCountryPicker
+                    ) {
                         advance(to: .amount)
                     }
                 case .amount:
-                    AmountStepView(draft: $draft) {
+                    AmountStepView(
+                        draft: $draft,
+                        showCurrencyPicker: $showCurrencyPicker,
+                        showDebitPicker: $showDebitPicker
+                    ) {
                         advance(to: .schedule)
                     }
                 case .schedule:
@@ -108,6 +133,53 @@ struct PaymentFlowView: View {
             }
         }
         .animation(.easeInOut(duration: 0.3), value: showConfirmation)
+        .overlay { ScrimSheetHost(center: scrimSheetCenter) }
+        .environment(\.scrimSheetCenter, scrimSheetCenter)
+        .foregroundScrimSheet(isPresented: $showCountryPicker, size: .fitted) {
+            OptionPickerSheet(
+                title: "Country",
+                options: ["Switzerland", "Germany", "Austria", "France", "Italy", "Liechtenstein"],
+                selected: country,
+                onSelect: { country = $0 },
+                onClose: { showCountryPicker = false }
+            )
+        }
+        .foregroundScrimSheet(isPresented: $showCurrencyPicker, size: .fitted) {
+            CurrencyPickerSheet(
+                selectedCode: draft.currency,
+                onSelect: { draft.currency = $0 },
+                onClose: { showCurrencyPicker = false }
+            )
+        }
+        .foregroundScrimSheet(isPresented: $showDebitPicker, size: .fitted) {
+            AccountPickerSheet(
+                title: "Debit account",
+                accounts: Account.allAccounts,
+                selectedID: draft.debitAccount.id,
+                onSelect: { draft.debitAccount = $0 },
+                onClose: { showDebitPicker = false }
+            )
+        }
+        .overlay {
+            BasicDialogOverlay(isPresented: $showExitConfirm, onScrimTap: dismissExitConfirm) {
+                PaymentExitConfirmDialog(
+                    onContinue: dismissExitConfirm,
+                    onDiscard: {
+                        showExitConfirm = false
+                        isPresented = false
+                    }
+                )
+            }
+        }
+        .animation(.easeInOut(duration: 0.2), value: showExitConfirm)
+    }
+
+    private func promptExit() {
+        showExitConfirm = true
+    }
+
+    private func dismissExitConfirm() {
+        showExitConfirm = false
     }
 
     private func advance(to step: PaymentStep) {

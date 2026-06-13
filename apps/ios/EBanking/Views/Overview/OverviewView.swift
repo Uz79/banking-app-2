@@ -5,16 +5,17 @@ struct OverviewView: View {
     @Binding var showInternalTransfer: Bool
     @Binding var selectedRecipient: Recipient?
 
-    @State private var selectedAccount: Account?
-    @State private var showInvestment = false
+    @EnvironmentObject private var tabBar: TabBarCoordinator
+    @State private var topShadow = false
     let group = AccountGroup.investments
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $tabBar.overviewPath) {
             VStack(spacing: 0) {
                 CustomNavBar(title: "Overview")
+                    .topChromeShadow(topShadow)
 
-                EdgeShadowScroll {
+                EdgeShadowScroll(topShadow: $topShadow) {
                     VStack(spacing: Space._4) {
                         ActionButtonsRow(onPay: {
                             selectedRecipient = nil
@@ -35,16 +36,24 @@ struct OverviewView: View {
             #if os(iOS)
             .navigationBarHidden(true)
             #endif
-            .navigationDestination(item: $selectedAccount) { account in
-                AccountDetailView(
-                    account: account,
-                    showPaymentFlow: $showPaymentFlow,
-                    showInternalTransfer: $showInternalTransfer,
-                    selectedRecipient: $selectedRecipient
-                )
-            }
-            .navigationDestination(isPresented: $showInvestment) {
-                InvestmentProductDetailsView()
+            .navigationDestination(for: OverviewRoute.self) { route in
+                switch route {
+                case .account(let account):
+                    AccountDetailView(
+                        account: account,
+                        showPaymentFlow: $showPaymentFlow,
+                        showInternalTransfer: $showInternalTransfer,
+                        selectedRecipient: $selectedRecipient
+                    )
+                case .investment:
+                    InvestmentProductDetailsView()
+                case .allBookings(let account):
+                    AllBookingsView(account: account)
+                case .position(let id):
+                    if let position = tabBar.position(byID: id) {
+                        DetailsOfPositionView(position: position)
+                    }
+                }
             }
         }
     }
@@ -66,9 +75,9 @@ struct OverviewView: View {
                     amount: account.formattedBalance
                 ) {
                     if account.id == "3" {   // Deposit → investment product
-                        showInvestment = true
+                        tabBar.overviewPath.append(OverviewRoute.investment)
                     } else {
-                        selectedAccount = account
+                        tabBar.overviewPath.append(OverviewRoute.account(account))
                     }
                 }
 
@@ -93,7 +102,7 @@ struct OverviewView: View {
                     .frame(width: 24, height: 24)
                     .foregroundColor(AppColor.foreground)
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: Space._1) {
                     Text(product.name)
                         .textSmall()
                         .foregroundColor(AppColor.foreground)
@@ -139,9 +148,6 @@ struct OverviewView: View {
             }
 
             ShowAllButton("Show all")
-                .background(AppColor.showAllBg)
-                .clipShape(RoundedRectangle(cornerRadius: Radius.small))
-                .padding(.horizontal, Space._3)
         }
     }
 }
@@ -152,4 +158,6 @@ struct OverviewView: View {
         showInternalTransfer: .constant(false),
         selectedRecipient: .constant(nil)
     )
+    .environmentObject(TabBarCoordinator())
+    .environmentObject(ScrollEdgeModel())
 }

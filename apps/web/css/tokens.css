@@ -167,7 +167,7 @@ html[data-theme="light"] {
   --color-btn-tonal-pressed: #C6CBE2;
 
   --color-icon-circle-fill: var(--color-fg);
-  --color-overlay-scrim: rgba(0, 21, 126, 0.45);
+  --color-overlay-scrim: color-mix(in srgb, var(--color-overlay-tint) 45%, transparent);
   --color-nav-elevated-shadow: rgba(0, 0, 0, 0.06);
   --color-modal-elevated-shadow: rgba(0, 0, 0, 0.12);
 
@@ -216,7 +216,7 @@ html[data-theme="dark"] {
   --color-btn-tonal-pressed: #1C2F8C;
 
   --color-icon-circle-fill: #FFFFFF;
-  --color-overlay-scrim: rgba(0, 21, 126, 0.62);
+  --color-overlay-scrim: color-mix(in srgb, var(--color-overlay-tint) 62%, transparent);
   --color-nav-elevated-shadow: rgba(0, 0, 0, 0.35);
   --color-modal-elevated-shadow: rgba(0, 0, 0, 0.45);
 

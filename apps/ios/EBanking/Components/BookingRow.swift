@@ -32,7 +32,7 @@ struct BookingRow: View {
             }
         }
         .padding(.horizontal, Space._3)
-        .padding(.vertical, Space._1)
+        .padding(.vertical, Space._2)
     }
 }
 
@@ -60,7 +60,7 @@ struct BookingGroupSection: View {
                 }
             }
             .padding(.horizontal, Space._3)
-            .padding(.vertical, Space._1)
+            .padding(.vertical, Space._2)
 
             ForEach(group.bookings) { booking in
                 if let onSelect {
@@ -113,6 +113,6 @@ struct PendingPaymentRow: View {
             }
         }
         .padding(.horizontal, Space._3)
-        .padding(.vertical, Space._1)
+        .padding(.vertical, Space._2)
     }
 }

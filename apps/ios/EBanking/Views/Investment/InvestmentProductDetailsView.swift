@@ -2,15 +2,22 @@ import SwiftUI
 
 struct InvestmentProductDetailsView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var tabBar: TabBarCoordinator
     @State private var range = "3m"
+    @State private var topShadow = false
 
     var body: some View {
         VStack(spacing: 0) {
-            CustomNavBar(title: "Deposit", showBack: true, onBack: { dismiss() })
+            CustomNavBar(
+                title: InvestmentProduct.depositName,
+                subtitle: InvestmentProduct.depositNumber,
+                showBack: true,
+                onBack: { dismiss() }
+            )
+                .topChromeShadow(topShadow)
 
-            EdgeShadowScroll {
+            EdgeShadowScroll(topShadow: $topShadow) {
                 VStack(alignment: .leading, spacing: Space._4) {
-                    header
                     actionButtons
                     performanceCard
                     positionsCard
@@ -26,36 +33,10 @@ struct InvestmentProductDetailsView: View {
         #endif
     }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(InvestmentProduct.depositName)
-                .font(AppFont.font(size: AppFont.Size.h6, weight: .medium))
-                .foregroundColor(AppColor.foreground)
-            Text(InvestmentProduct.depositNumber)
-                .textSmall()
-                .foregroundColor(AppColor.foregroundSecondary)
-        }
-    }
-
     private var actionButtons: some View {
         HStack(spacing: Space._2) {
-            Button(action: {}) {
-                Text("Trade")
-                    .textSmall().fontWeight(.medium)
-                    .foregroundColor(AppColor.Button.secondaryFg)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, Space._2)
-                    .overlay(Capsule().stroke(AppColor.Button.secondaryBorder, lineWidth: 1))
-            }
-            Button(action: {}) {
-                Text("Details")
-                    .textSmall().fontWeight(.medium)
-                    .foregroundColor(AppColor.Button.tonalFg)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, Space._2)
-                    .background(AppColor.Button.tonalBg)
-                    .clipShape(Capsule())
-            }
+            SecondaryButton(title: "Trade", size: .regular, action: {})
+            SecondaryButton(title: "Details", size: .regular, action: {})
         }
     }
 
@@ -69,17 +50,11 @@ struct InvestmentProductDetailsView: View {
                     .textSmall()
                     .foregroundColor(AppColor.foregroundSecondary)
             }
-            HStack(spacing: Space._2) {
-                Text("+ \(formatAmount(InvestmentProduct.changeAbs)) \(InvestmentProduct.currency)")
-                Text("•").foregroundColor(AppColor.foregroundDisabled)
-                Text(String(format: "+ %.2f %%", InvestmentProduct.changePct))
-            }
-            .textSmall()
-            .foregroundColor(AppColor.foreground)
-
-            Text(InvestmentProduct.asOf)
-                .captionStyle()
-                .foregroundColor(AppColor.foregroundSecondary)
+            PerformanceCardMetaRow(
+                changeAbsolute: "+ \(formatAmount(InvestmentProduct.changeAbs)) \(InvestmentProduct.currency)",
+                changePercent: String(format: "+ %.2f %%", InvestmentProduct.changePct),
+                date: InvestmentProduct.asOf
+            )
 
             PerformanceChart(
                 values: InvestmentProduct.series,
@@ -117,14 +92,14 @@ struct InvestmentProductDetailsView: View {
     }
 
     private var positionsCard: some View {
-        VStack(alignment: .leading, spacing: Space._1) {
+        VStack(alignment: .leading, spacing: SectionCardMetrics.headerToBody) {
             Text("Positions").textSmall().foregroundColor(AppColor.foregroundSecondary)
                 .padding(.horizontal, Space._3)
 
             VStack(spacing: 0) {
                 ForEach(InvestmentPosition.samples) { position in
-                    NavigationLink {
-                        DetailsOfPositionView(position: position)
+                    Button {
+                        tabBar.overviewPath.append(OverviewRoute.position(position.id))
                     } label: {
                         positionRow(position)
                     }
@@ -135,10 +110,7 @@ struct InvestmentProductDetailsView: View {
                 }
                 Divider().padding(.horizontal, Space._3)
                 ShowAllButton("Show all")
-                    .padding(.horizontal, Space._3)
-                    .padding(.vertical, Space._1)
             }
-            .padding(.vertical, Space._2)
             .background(AppColor.background)
             .clipShape(RoundedRectangle(cornerRadius: Radius.regular))
         }
@@ -146,7 +118,7 @@ struct InvestmentProductDetailsView: View {
 
     private func positionRow(_ p: InvestmentPosition) -> some View {
         HStack(spacing: Space._3) {
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: Space._1) {
                 Text(p.name).textSmall().fontWeight(.medium)
                     .foregroundColor(AppColor.foreground)
                 Text("\(p.formattedChange) • \(p.formattedChangePct)")
@@ -172,4 +144,6 @@ struct InvestmentProductDetailsView: View {
 
 #Preview {
     NavigationStack { InvestmentProductDetailsView() }
+        .environmentObject(TabBarCoordinator())
+        .environmentObject(ScrollEdgeModel())
 }

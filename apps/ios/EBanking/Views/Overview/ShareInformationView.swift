@@ -8,6 +8,7 @@ import CoreImage.CIFilterBuiltins
 /// a QR code of the account payment info + the fields it encodes.
 struct ShareInformationView: View {
     let account: Account
+    var onClose: (() -> Void)?
     @Environment(\.dismiss) private var dismiss
 
     private var owner: String { AppSettings.shared.persona.name }
@@ -20,7 +21,7 @@ struct ShareInformationView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            CustomNavBar(title: "Share information", showClose: true, onClose: { dismiss() })
+            CustomNavBar(title: "Share information", showClose: true, onClose: close)
 
             ScrollView {
                 VStack(spacing: Space._4) {
@@ -34,10 +35,11 @@ struct ShareInformationView: View {
             }
         }
         .background(AppColor.backgroundSecondary)
-        #if os(iOS)
-        .presentationDetents([.large])
-        .presentationDragIndicator(.visible)
-        #endif
+        .clipShape(RoundedRectangle(cornerRadius: Radius.regular, style: .continuous))
+    }
+
+    private func close() {
+        if let onClose { onClose() } else { dismiss() }
     }
 
     private var qrCard: some View {
