@@ -40,8 +40,9 @@
 
     function isFooterVisible() {
       if (!footer) return false;
-      if (footer.style.display === 'none') return false;
-      var position = window.getComputedStyle(footer).position;
+      var cs = window.getComputedStyle(footer);
+      if (cs.display === 'none' || cs.visibility === 'hidden') return false;
+      var position = cs.position;
       if (position === 'fixed' || position === 'sticky') return true;
       return footer.offsetParent !== null;
     }

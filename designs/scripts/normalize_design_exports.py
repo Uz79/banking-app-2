@@ -529,6 +529,32 @@ def screen_breakpoint_from_suffix(suffix: str) -> Optional[str]:
     return None
 
 
+def parse_screen_size_variant_export(stem: str) -> Optional[Tuple[str, str]]:
+    """
+    Parse Figma screen exports like:
+      "Screen Size=desktop, Variant=A"
+      "Screen Size = mobile, Variant = B"
+    Returns: (variant_key, breakpoint_key) e.g. ("a", "desktop-default")
+    """
+    parts = [p.strip() for p in stem.split(",")]
+    if len(parts) < 2:
+        return None
+    attrs: Dict[str, str] = {}
+    for p in parts:
+        m = re.match(r"^\s*([^=]+?)\s*=\s*(.+?)\s*$", p)
+        if not m:
+            return None
+        attrs[m.group(1).strip().lower()] = m.group(2).strip()
+    size_raw = attrs.get("screen size") or attrs.get("size")
+    variant_raw = attrs.get("variant")
+    if not size_raw or not variant_raw:
+        return None
+    breakpoint = screen_breakpoint_from_suffix(size_raw)
+    if breakpoint is None:
+        return None
+    return (kebab(variant_raw), breakpoint)
+
+
 def parse_component_export_filename(name: str) -> Optional[Tuple[str, str]]:
     """
     Parse filenames like:
@@ -841,12 +867,16 @@ def normalize_screens(*, dry_run: bool) -> List[Tuple[Path, Path]]:
         for f in list(screen_dir.iterdir()):
             if not f.is_file() or f.suffix.lower() not in {".svg", ".png"}:
                 continue
-            if " - " not in f.name:
-                continue
-            base, suffix_ext = f.name.split(" - ", 1)
-            variant_key = kebab(base)
-            breakpoint = screen_breakpoint_from_suffix(suffix_ext)
-            if breakpoint is None:
+            variant_key: Optional[str] = None
+            breakpoint: Optional[str] = None
+            parsed_attrs = parse_screen_size_variant_export(f.stem)
+            if parsed_attrs:
+                variant_key, breakpoint = parsed_attrs
+            elif " - " in f.name:
+                base, suffix_ext = f.name.split(" - ", 1)
+                variant_key = kebab(base)
+                breakpoint = screen_breakpoint_from_suffix(suffix_ext)
+            if variant_key is None or breakpoint is None:
                 continue
             dest = screen_dir / "variants" / variant_key / breakpoint / f"default{f.suffix.lower()}"
             if move_with_archive(

@@ -139,7 +139,7 @@
       status: 'executed',
       message: 'Interest credit Q2 2026'
     },
-    'deposit top-up': {
+    'custody account top-up': {
       type: 'internal',
       title: 'Internal Account Transfer',
       amount: '+5\'000.00',
@@ -151,13 +151,13 @@
         icon: '#i-anchor'
       },
       credit: {
-        name: 'Deposit',
+        name: 'Custody account',
         iban: '123,456.78',
         balance: "CHF 20'000.00",
         icon: '#i-life-buoy'
       },
       status: 'executed',
-      message: 'Monthly deposit top-up'
+      message: 'Monthly Custody account top-up'
     }
   };
 

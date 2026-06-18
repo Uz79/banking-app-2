@@ -10,3 +10,4 @@ Raster flows that span multiple views. Screen manifests may reference these via 
 | `internal-account-transfer-flow.png` | Internal account transfer overlay. |
 | `show-payment-details-flow.png` | Booking row → payment details modal. |
 | `share-account-information-flow.png` | Share account information sheet. |
+| `show-position-details-flow.png` | Details of position → **Buy/Sell** → trade flow step 1 modal (`designs/screens/trade-flow-step-1`). |

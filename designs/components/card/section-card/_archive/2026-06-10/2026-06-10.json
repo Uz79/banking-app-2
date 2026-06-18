@@ -7,10 +7,16 @@
   ],
   "assets": {
     "variants": {
+      "my-positions": {
+        "default": "variants/my-positions/default.svg"
+      },
       "positions": {
         "default": "variants/positions/default.svg",
         "default-3": "variants/positions/default-3.svg",
         "default-2": "variants/positions/default-2.svg"
+      },
+      "key-figures": {
+        "default": "variants/key-figures/default.svg"
       },
       "performance": {
         "default": "variants/performance/default.svg",

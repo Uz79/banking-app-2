@@ -1,10 +1,11 @@
 {
   "tokenSetOrder": [
-    "brand",
-    "alias",
-    "mapped/light",
-    "mapped/dark",
-    "responsive/desktop",
-    "responsive/mobile"
+    "mapped/Light",
+    "mapped/Dark",
+    "brand/brand",
+    "alias/alias",
+    "responsive/Mobile",
+    "responsive/Desktop",
+    "test/Mode 1"
   ]
 }

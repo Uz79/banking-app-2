@@ -3,7 +3,6 @@ import SwiftUI
 struct InvestmentProductDetailsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var tabBar: TabBarCoordinator
-    @State private var range = "3m"
     @State private var topShadow = false
 
     var body: some View {
@@ -41,54 +40,7 @@ struct InvestmentProductDetailsView: View {
     }
 
     private var performanceCard: some View {
-        VStack(alignment: .leading, spacing: Space._3) {
-            HStack(alignment: .firstTextBaseline, spacing: Space._2) {
-                Text(formatAmount(InvestmentProduct.balance))
-                    .font(AppFont.font(size: AppFont.Size.h5, weight: .bold))
-                    .foregroundColor(AppColor.foreground)
-                Text(InvestmentProduct.currency)
-                    .textSmall()
-                    .foregroundColor(AppColor.foregroundSecondary)
-            }
-            PerformanceCardMetaRow(
-                changeAbsolute: "+ \(formatAmount(InvestmentProduct.changeAbs)) \(InvestmentProduct.currency)",
-                changePercent: String(format: "+ %.2f %%", InvestmentProduct.changePct),
-                date: InvestmentProduct.asOf
-            )
-
-            PerformanceChart(
-                values: InvestmentProduct.series,
-                yLabels: InvestmentProduct.yLabels,
-                xLabels: InvestmentProduct.xLabels,
-                ranges: InvestmentProduct.ranges,
-                selectedRange: $range
-            )
-
-            Divider()
-
-            HStack(spacing: 0) {
-                summaryItem("Invested", InvestmentProduct.invested)
-                Divider().frame(height: 36)
-                summaryItem("Cash", InvestmentProduct.cash)
-            }
-        }
-        .padding(Space._3)
-        .background(AppColor.background)
-        .clipShape(RoundedRectangle(cornerRadius: Radius.regular))
-    }
-
-    private func summaryItem(_ label: String, _ amount: Double) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(label).captionStyle().foregroundColor(AppColor.foregroundSecondary)
-            HStack(spacing: 6) {
-                Text(InvestmentProduct.currency).captionStyle()
-                    .foregroundColor(AppColor.foregroundSecondary)
-                Text(formatAmount(amount)).textSmall().fontWeight(.bold)
-                    .foregroundColor(AppColor.foreground)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, Space._2)
+        DepositPerformanceCard(showsToolbar: false, initialRange: "3m")
     }
 
     private var positionsCard: some View {

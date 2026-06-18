@@ -27,6 +27,7 @@
 
   var STORAGE_KEY  = 'uzBankWebPaymentState';
   var MAX_BOOKINGS = 5;
+  var SCHEMA_VERSION = 2;
 
   // Household account in CHF — this is the *registered* end-of-yesterday
   // balance, the "settled" number shown in the account list everywhere.
@@ -146,12 +147,64 @@
 
   /* ── Persistence ─────────────────────────────────────────────────── */
 
+  function seedQuantityForSymbol(symbol) {
+    var sum = 0;
+    for (var i = 0; i < symbol.length; i++) {
+      sum += symbol.charCodeAt(i);
+    }
+    return 5 + (sum % 46);
+  }
+
+  function defaultPositions() {
+    return {
+      ABB: {
+        symbol: 'ABB',
+        name: 'ABB Ltd',
+        isin: 'CH0012221711',
+        exchange: 'SWX',
+        quantity: 5
+      },
+      AAPL: { symbol: 'AAPL', name: 'Apple Inc.', quantity: seedQuantityForSymbol('AAPL') },
+      MSFT: { symbol: 'MSFT', name: 'Microsoft Corporation', quantity: seedQuantityForSymbol('MSFT') },
+      NVDA: { symbol: 'NVDA', name: 'NVIDIA Corporation', quantity: seedQuantityForSymbol('NVDA') },
+      SAP: { symbol: 'SAP', name: 'SAP SE', quantity: seedQuantityForSymbol('SAP') },
+      TM: { symbol: 'TM', name: 'Toyota Motor Corporation', quantity: seedQuantityForSymbol('TM') }
+    };
+  }
+
   function defaultState() {
     return {
-      schemaVersion: 1,
+      schemaVersion: SCHEMA_VERSION,
       household: INITIAL_HOUSEHOLD,
-      bookings: []   // { id, recipientName, currency, amount (positive number), dateISO }
+      bookings: [],
+      positions: defaultPositions()
     };
+  }
+
+  function normalizePositions(raw) {
+    var base = defaultPositions();
+    if (!raw || typeof raw !== 'object') return base;
+    Object.keys(base).forEach(function (symbol) {
+      if (raw[symbol] && typeof raw[symbol].quantity === 'number') {
+        base[symbol].quantity = raw[symbol].quantity;
+      }
+      if (raw[symbol] && raw[symbol].name) {
+        base[symbol].name = raw[symbol].name;
+      }
+    });
+    Object.keys(raw).forEach(function (symbol) {
+      if (base[symbol]) return;
+      var entry = raw[symbol];
+      if (!entry || typeof entry.quantity !== 'number') return;
+      base[symbol] = {
+        symbol: symbol,
+        name: entry.name || symbol,
+        isin: entry.isin || '',
+        exchange: entry.exchange || '',
+        quantity: entry.quantity
+      };
+    });
+    return base;
   }
 
   function loadState() {
@@ -159,24 +212,37 @@
       var raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return defaultState();
       var parsed = JSON.parse(raw);
-      if (!parsed || parsed.schemaVersion !== 1) return defaultState();
-      // The registered yesterday-end balance is a CONSTANT in this prototype.
-      // We deliberately ignore any `household` value that may have been
-      // persisted by an older version of this module (which decremented it
-      // on commit) — bookings are the only thing worth restoring.
+      if (!parsed) return defaultState();
       var b = Array.isArray(parsed.bookings) ? parsed.bookings : [];
-      return { schemaVersion: 1, household: INITIAL_HOUSEHOLD, bookings: b.slice(-MAX_BOOKINGS) };
+      var cap = MAX_BOOKINGS * 4;
+      if (parsed.schemaVersion === SCHEMA_VERSION) {
+        return {
+          schemaVersion: SCHEMA_VERSION,
+          household: INITIAL_HOUSEHOLD,
+          bookings: b.slice(-cap),
+          positions: normalizePositions(parsed.positions)
+        };
+      }
+      if (parsed.schemaVersion === 1) {
+        return {
+          schemaVersion: SCHEMA_VERSION,
+          household: INITIAL_HOUSEHOLD,
+          bookings: b.slice(-cap),
+          positions: defaultPositions()
+        };
+      }
+      return defaultState();
     } catch (e) {
       return defaultState();
     }
   }
 
   function saveState(state) {
-    // Only persist bookings — household is constant, recomputed at load.
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        schemaVersion: 1,
-        bookings: state.bookings
+        schemaVersion: SCHEMA_VERSION,
+        bookings: state.bookings,
+        positions: state.positions
       }));
     } catch (e) {}
   }
@@ -208,13 +274,40 @@
     } catch (e) { /* ignore in environments without CustomEvent */ }
   }
 
+  function accountRunningBalance(accountKey) {
+    var key = accountKey || 'household';
+    var base = key === 'savings' ? SAVINGS : INITIAL_HOUSEHOLD;
+    if (key === 'household') {
+      base -= STATIC_TODAY_OUTFLOW;
+    }
+    state.bookings.forEach(function (b) {
+      if ((b.accountKey || 'household') !== key) return;
+      var amt = typeof b.amount === 'number' ? b.amount : 0;
+      if (b.direction === 'in') base += amt;
+      else base -= amt;
+    });
+    return Math.round(base * 100) / 100;
+  }
+
+  function clonePositions(positions) {
+    var out = {};
+    Object.keys(positions || {}).forEach(function (symbol) {
+      out[symbol] = Object.assign({}, positions[symbol]);
+    });
+    return out;
+  }
+
   function getState() {
     // Sum of all dynamic (state-driven) bookings — these are all "today"
     // since the prototype doesn't simulate day rollover.
     var dynamicTodayOutflow = state.bookings.reduce(function (sum, b) {
+      if ((b.accountKey || 'household') !== 'household') return sum;
+      if (b.direction === 'in') return sum;
       return sum + (typeof b.amount === 'number' ? b.amount : 0);
     }, 0);
     var todayBalance = state.household - STATIC_TODAY_OUTFLOW - dynamicTodayOutflow;
+    var householdRunning = accountRunningBalance('household');
+    var savingsRunning = accountRunningBalance('savings');
 
     // Return a defensive shallow clone so external code can't mutate the
     // internal store directly.
@@ -223,10 +316,15 @@
       yesterdayBalance: YESTERDAY_BALANCE,
       todayBalance: Math.round(todayBalance * 100) / 100,
       staticTodayOutflow: STATIC_TODAY_OUTFLOW,
+      accountBalances: {
+        household: householdRunning,
+        savings: savingsRunning
+      },
       // Page-specific sums of "registered" balances. They reflect the
       // settled (yesterday-end) state and don't shift with today's bookings.
       overviewAccountsTotal:        state.household + OVERVIEW_OTHER_TOTAL,
       accountDetailsAccountsTotal:  state.household + ACCOUNT_DETAILS_OTHER_TOTAL,
+      positions: clonePositions(state.positions),
       bookings: state.bookings.map(function (b) {
         var row = {
           id: b.id,
@@ -243,9 +341,17 @@
         if (b.toKey) row.toKey = b.toKey;
         if (b.fromName) row.fromName = b.fromName;
         if (b.toName) row.toName = b.toName;
+        if (b.symbol) row.symbol = b.symbol;
+        if (b.quantity != null) row.quantity = b.quantity;
         return row;
       })
     };
+  }
+
+  function getPosition(symbol) {
+    if (!symbol) return null;
+    var pos = state.positions && state.positions[symbol];
+    return pos ? Object.assign({}, pos) : null;
   }
 
   /* ── Recipient picker ────────────────────────────────────────────── */
@@ -370,6 +476,59 @@
     dispatchChange();
   }
 
+  /**
+   * Record a buy/sell trade: debits/credits debtor account via bookings ledger
+   * and updates Custody account position quantity.
+   */
+  function commitTradeOrder(order) {
+    if (!order || typeof order.totalAmount !== 'number' || order.totalAmount <= 0) return;
+    if (typeof order.quantity !== 'number' || order.quantity <= 0) return;
+    if (!order.symbol) return;
+
+    var side = order.side === 'sell' ? 'sell' : 'buy';
+    var debtorKey = order.debtorKey || 'household';
+    var ts = order.dateISO || new Date().toISOString();
+    var suffix = Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+    var label = (side === 'sell' ? 'Sell ' : 'Buy ') + order.symbol;
+
+    state.bookings.push({
+      id: 'trade_' + suffix,
+      recipientName: label,
+      currency: order.currency || 'CHF',
+      amount: order.totalAmount,
+      dateISO: ts,
+      accountKey: debtorKey,
+      icon: side === 'sell' ? 'i-minus' : 'i-plus',
+      direction: side === 'sell' ? 'in' : 'out',
+      kind: 'trade',
+      symbol: order.symbol,
+      quantity: order.quantity
+    });
+
+    var cap = MAX_BOOKINGS * 4;
+    if (state.bookings.length > cap) {
+      state.bookings.splice(0, state.bookings.length - cap);
+    }
+
+    if (!state.positions) state.positions = defaultPositions();
+    var existing = state.positions[order.symbol] || {
+      symbol: order.symbol,
+      name: order.name || order.symbol,
+      isin: order.isin || '',
+      exchange: order.exchange || '',
+      quantity: 0
+    };
+    if (order.name) existing.name = order.name;
+    if (order.isin) existing.isin = order.isin;
+    if (order.exchange) existing.exchange = order.exchange;
+    existing.quantity = side === 'sell'
+      ? Math.max(0, (existing.quantity || 0) - order.quantity)
+      : (existing.quantity || 0) + order.quantity;
+    state.positions[order.symbol] = existing;
+
+    dispatchChange();
+  }
+
   function reset() {
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
     state = defaultState();
@@ -384,8 +543,10 @@
     getRecipients:       getRecipients,
     pickRandomRecipient: pickRandomRecipient,
     getState:            getState,
+    getPosition:         getPosition,
     commitPayment:       commitPayment,
     commitInternalTransfer: commitInternalTransfer,
+    commitTradeOrder:    commitTradeOrder,
     updatePayment:       updatePayment,
     reset:               reset,
     formatMoney:         formatMoney

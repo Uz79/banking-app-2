@@ -34,7 +34,6 @@
   <meta name="format-detection" content="telephone=no">
   <meta name="color-scheme" content="dark light">
   <title>UZ Bank – Payments</title>
-  <script src="js/storage-migrate.js"></script>
   <script>
     /* Boot: apply saved theme + colour-override before paint.
        The colour override stores only { bg, fg }; we derive every other
@@ -68,6 +67,9 @@
         function sa(c, a){ return 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + a + ')'; }
         function ba(a){ return 'rgba(0,0,0,' + a + ')'; }
         var bgE = isDark ? 0.22 : 0.07, fgE = isDark ? 0.06 : 0.22;
+        var brandPrimaryHex = isDark ? o.bg : o.fg;
+        var brandPrimaryRgb = isDark ? bg : fg;
+        var white = { r: 255, g: 255, b: 255 };
 
         var tokens = {
           'color-bg': o.bg,
@@ -88,11 +90,11 @@
           'color-btn-primary-fg': o.bg,
           'color-btn-primary-hover': mix(fg, bg, fgE),
           'color-btn-primary-pressed': mix(fg, bg, Math.min(0.45, fgE * 1.75)),
-          'color-btn-secondary-bg': 'transparent',
-          'color-btn-secondary-border': o.fg,
-          'color-btn-secondary-fg': o.fg,
-          'color-btn-secondary-hover': fa(0.1),
-          'color-btn-secondary-pressed': fa(0.2),
+          'color-btn-secondary-bg': isDark ? o.bg : '#ffffff',
+          'color-btn-secondary-border': isDark ? o.fg : brandPrimaryHex,
+          'color-btn-secondary-fg': isDark ? o.fg : brandPrimaryHex,
+          'color-btn-secondary-hover': isDark ? mix(bg, fg, 0.1) : mix(white, brandPrimaryRgb, 0.1),
+          'color-btn-secondary-pressed': isDark ? mix(bg, fg, 0.2) : mix(white, brandPrimaryRgb, 0.2),
           'color-btn-tonal-bg': mix(bg, fg, isDark ? 0.28 : 0.08),
           'color-btn-tonal-border': mix(bg, fg, isDark ? 0.28 : 0.08),
           'color-btn-tonal-fg': o.fg,
@@ -115,7 +117,6 @@
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/typography.css">
   <link rel="stylesheet" href="css/styles.css">
-  <script src="js/shell-nav-boot.js"></script>
 </head>
 <body class="body" data-screen="payments" data-page="payments">
 <div class="app">
@@ -154,17 +155,17 @@
     <div class="main-content__inner">
       <!-- ── PAYMENTS ── -->
       <section class="view view--active view--payments" data-view="payments">
-        <header class="view__nav" data-scroll-edge-nav>
-          <button type="button" class="view__nav-btn view__nav-btn--leading view__nav-btn--hidden" aria-hidden="true" tabindex="-1">
-            <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
-          </button>
-          <h1 class="page-title view__nav-title">Payments</h1>
-          <button type="button" class="view__nav-btn view__nav-btn--trailing view__nav-btn--hidden" aria-hidden="true" tabindex="-1">
-            <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>
-          </button>
-        </header>
-
         <div class="view__main">
+          <header class="view__nav" data-scroll-edge-nav>
+            <button type="button" class="view__nav-btn view__nav-btn--leading view__nav-btn--hidden" aria-hidden="true" tabindex="-1">
+              <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
+            </button>
+            <h1 class="page-title view__nav-title">Payments</h1>
+            <button type="button" class="view__nav-btn view__nav-btn--trailing view__nav-btn--hidden" aria-hidden="true" tabindex="-1">
+              <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>
+            </button>
+          </header>
+
           <div class="action-buttons">
             <button class="action-button" type="button">
               <span class="action-button__circle">
@@ -293,7 +294,7 @@
 
     </div>
   </main>
-  <nav class="tab-bar">
+  <nav class="tab-bar" data-scroll-edge-footer>
     <a class="tab-bar__item" href="overview.html">
       <span class="tab-bar__icon-wrap">
         <svg class="tab-bar__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
@@ -578,6 +579,8 @@
   </div>
 </div>
 
+
+
 <!-- ===== INTERNAL ACCOUNT TRANSFER FLOW (hash: #iat/<step>) ===== -->
 <div id="uz-iat-overlay" class="modal-overlay" aria-hidden="true">
   <div class="modal-shell modal-shell--offscreen modal-shell--no-transition">
@@ -774,10 +777,6 @@
   </div>
 </div>
 
-
-
-<script src="js/document-ready.js"></script>
-<script src="js/shell-nav.js"></script>
 <script src="js/analytics.js"></script>
 <script src="js/dialog-focus.js"></script>
 <script src="js/form-field-sheet.js"></script>
@@ -786,8 +785,8 @@
 <script src="js/data-render.js"></script>
 <script src="js/scroll-edge-chrome.js"></script>
 <script src="js/payment-overlay.js"></script>
-<script src="js/iat-overlay.js"></script>
 <script src="js/app-mp.js"></script>
+<script src="js/iat-overlay.js"></script>
 <div id="uzbank-icon-defs" aria-hidden="true" class="uzbank-icon-defs">
 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden;pointer-events:none">
 <symbol id="i-anchor" viewBox="0 0 24 24">
@@ -834,9 +833,17 @@
 <path d="M15 14L20 9L15 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M4 20V13C4 11.9391 4.42143 10.9217 5.17157 10.1716C5.92172 9.42143 6.93913 9 8 9H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </symbol>
+<symbol id="i-coffee" viewBox="0 0 24 24">
+<path d="M18 8h1a4 4 0 010 8h-1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6 1v3M10 1v3M14 1v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
 <symbol id="i-credit-card" viewBox="0 0 24 24">
 <path d="M21 4H3C1.89543 4 1 4.89543 1 6V18C1 19.1046 1.89543 20 3 20H21C22.1046 20 23 19.1046 23 18V6C23 4.89543 22.1046 4 21 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M1 10H23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-dollar-sign" viewBox="0 0 24 24">
+<path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </symbol>
 <symbol id="i-edit-2" viewBox="0 0 24 24">
 <path d="M16 3L21 8L8 21H3V16L16 3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -904,6 +911,22 @@
 <symbol id="i-trending-up" viewBox="0 0 24 24">
 <path d="M23 6L13.5 15.5L8.5 10.5L1 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M17 6H23V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-trending-down" viewBox="0 0 24 24">
+<path d="M23 18L13.5 8.5L8.5 13.5L1 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17 18H23V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-trash" viewBox="0 0 24 24">
+<path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-trash-2" viewBox="0 0 24 24">
+<path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </symbol>
 <symbol id="i-user" viewBox="0 0 24 24">
 <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

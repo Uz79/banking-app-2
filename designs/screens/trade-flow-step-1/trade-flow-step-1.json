@@ -1,0 +1,22 @@
+{
+  "name": "trade-flow-step-1",
+  "category": "flow",
+  "description": "Trade flow step 1 — order entry modal (account, quantity, amount) opened from position Buy/Sell.",
+  "interactionStates": [
+    "default"
+  ],
+  "assets": {
+    "variants": {
+      "desktop-default": {
+        "default": "variants/desktop-default/default.svg"
+      },
+      "mobile-default": {
+        "default": "variants/mobile-default/default.svg"
+      }
+    }
+  },
+  "notes": [
+    "Modal overlay with close (X); not a full app shell screen.",
+    "Source inbox: Trade Flow 1st Step - desktop|mobile."
+  ]
+}

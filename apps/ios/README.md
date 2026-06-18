@@ -27,7 +27,7 @@ bundles the asset catalog and Profile Pro fonts.)
 | Payment details (tap a booking) | `Views/Payments/PaymentDetailView.swift` |
 | Payments (pending, recurring, recipients) | `Views/Payments/PaymentsView.swift` |
 | All bookings & payments | `Views/Bookings/AllBookingsView.swift` |
-| Investment product details (Deposit + chart) | `Views/Investment/InvestmentProductDetailsView.swift` |
+| Investment product details (Custody account + chart) | `Views/Investment/InvestmentProductDetailsView.swift` |
 | Details of position | `Views/Investment/DetailsOfPositionView.swift` |
 | Share information (QR) | `Views/Overview/ShareInformationView.swift` |
 | Profile (colour theme / legibility / persona) | `Views/Profile/*` |

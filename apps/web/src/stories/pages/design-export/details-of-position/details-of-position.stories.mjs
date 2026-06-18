@@ -27,19 +27,27 @@ export const DesignExport = {
       .de-img--screen { max-height: 85vh; object-fit: contain; object-position: top center; }
     </style>
     <div class="de-wrap">
-      <p class="de-desc">Position detail shell screen (key figures + holdings list).</p>
-<h4 class="de-variant">desktop-default</h4>
+      <p class="de-desc">Position detail shell screen with persona-driven layout variants (key figures + holdings list).</p>
+<h4 class="de-variant">a</h4>
 <div class="de-grid de-grid--screen">
 <figure class="de-item">
-  <img class="de-img de-img--screen" src="/designs/screens/details-of-position/variants/desktop-default/default.svg" alt="desktop-default / default" loading="lazy" />
-  <figcaption class="de-cap">desktop-default / default</figcaption>
+  <img class="de-img de-img--screen" src="/designs/screens/details-of-position/variants/a/desktop-default/default.svg" alt="a / desktop-default" loading="lazy" />
+  <figcaption class="de-cap">a / desktop-default</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img de-img--screen" src="/designs/screens/details-of-position/variants/a/mobile-default/default.svg" alt="a / mobile-default" loading="lazy" />
+  <figcaption class="de-cap">a / mobile-default</figcaption>
 </figure>
 </div>
-<h4 class="de-variant">mobile-default</h4>
+<h4 class="de-variant">b</h4>
 <div class="de-grid de-grid--screen">
 <figure class="de-item">
-  <img class="de-img de-img--screen" src="/designs/screens/details-of-position/variants/mobile-default/default.svg" alt="mobile-default / default" loading="lazy" />
-  <figcaption class="de-cap">mobile-default / default</figcaption>
+  <img class="de-img de-img--screen" src="/designs/screens/details-of-position/variants/b/mobile-default/default.svg" alt="b / mobile-default" loading="lazy" />
+  <figcaption class="de-cap">b / mobile-default</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img de-img--screen" src="/designs/screens/details-of-position/variants/b/desktop-default/default.svg" alt="b / desktop-default" loading="lazy" />
+  <figcaption class="de-cap">b / desktop-default</figcaption>
 </figure>
 </div>
     </div>

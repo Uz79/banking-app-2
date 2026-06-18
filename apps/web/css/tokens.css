@@ -118,8 +118,8 @@
   --trim-bottom-caption: 4.98px;
   --ps-caption: 0.5rem;
 
-  /* Tight row gap for stacked trimmed labels — Figma space/2 (8dp) */
-  --text-row-gap: var(--space-1);
+  /* Tight row gap for stacked trimmed labels — fixed 8dp (immune to space-scale shifts) */
+  --text-row-gap: 0.5rem;
 
   --btn-pad-y-sm: 0;
   --btn-pad-x-sm: var(--space-2);
@@ -154,7 +154,7 @@ html[data-theme="light"] {
   --color-btn-primary-hover: #39499B;
   --color-btn-primary-pressed: #1C2F8C;
 
-  --color-btn-secondary-bg: rgba(0, 21, 126, 0);
+  --color-btn-secondary-bg: #FFFFFF;
   --color-btn-secondary-border: #00157E;
   --color-btn-secondary-fg: #00157E;
   --color-btn-secondary-hover: rgba(0, 21, 126, 0.1);
@@ -203,7 +203,7 @@ html[data-theme="dark"] {
   --color-btn-primary-hover: #F1F2F8;
   --color-btn-primary-pressed: #E3E5F1;
 
-  --color-btn-secondary-bg: rgba(255, 255, 255, 0);
+  --color-btn-secondary-bg: #00157E;
   --color-btn-secondary-border: #FFFFFF;
   --color-btn-secondary-fg: #FFFFFF;
   --color-btn-secondary-hover: rgba(255, 255, 255, 0.1);

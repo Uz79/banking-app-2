@@ -1,17 +1,19 @@
 {
   "name": "details-of-position",
   "category": "shell",
-  "description": "Position detail shell screen (key figures + holdings list).",
+  "description": "Position detail shell screen with persona-driven layout variants (key figures + holdings list).",
   "interactionStates": [
     "default"
   ],
   "assets": {
     "variants": {
-      "desktop-default": {
-        "default": "variants/desktop-default/default.svg"
+      "a": {
+        "desktop-default": "variants/a/desktop-default/default.svg",
+        "mobile-default": "variants/a/mobile-default/default.svg"
       },
-      "mobile-default": {
-        "default": "variants/mobile-default/default.svg"
+      "b": {
+        "mobile-default": "variants/b/mobile-default/default.svg",
+        "desktop-default": "variants/b/desktop-default/default.svg"
       }
     }
   },
@@ -27,7 +29,18 @@
     }
   },
   "notes": [
-    "Figma exports: 'Details of Position - desktop' → variants/desktop-default/; 'Details of Position - mobile' → variants/mobile-default/.",
-    "Key figures and my-positions blocks use card/section-card variants key-figures and my-positions."
-  ]
+    "Figma exports: Screen Size=desktop|mobile, Variant=A|B.",
+    "Normalized paths: variants/<a|b>/<desktop-default|mobile-default>/default.svg.",
+    "Variant a \u2192 Persona A (Beatrice Mueller, data-persona=beatrice); variant b \u2192 Persona B (Max Maximus, data-persona=max)."
+  ],
+  "personaVariants": {
+    "a": {
+      "persona": "beatrice",
+      "label": "Persona A (Beatrice Mueller)"
+    },
+    "b": {
+      "persona": "max",
+      "label": "Persona B (Max Maximus)"
+    }
+  }
 }

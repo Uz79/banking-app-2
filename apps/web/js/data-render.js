@@ -36,13 +36,14 @@
 
   function renderHouseholdBalance(state) {
     var formatted = fmt(state.household);
+    var running = state.accountBalances && state.accountBalances.household;
 
-    // overview.html: <a class="product-item" data-account="household">…<span class="product-item__value">10'000.00</span></a>
+    // overview.html: running balance after today's bookings (payments + trades)
     document.querySelectorAll('[data-account="household"] .product-item__value').forEach(function (el) {
-      el.textContent = formatted;
+      el.textContent = running != null ? fmt(running) : formatted;
     });
 
-    // account-details.html: first carousel slide is Household
+    // account-details.html: first carousel slide is Household (registered balance)
     var firstSlide = document.querySelector('.carousel__slides .carousel__slide:first-child .list-item__value');
     if (firstSlide) firstSlide.textContent = formatted;
 
@@ -58,6 +59,13 @@
           return;
         }
         el.textContent = 'CHF ' + formatted;
+      });
+    }
+
+    var savingsRunning = state.accountBalances && state.accountBalances.savings;
+    if (savingsRunning != null) {
+      document.querySelectorAll('[data-account="savings"] .product-item__value').forEach(function (el) {
+        el.textContent = fmt(savingsRunning);
       });
     }
   }

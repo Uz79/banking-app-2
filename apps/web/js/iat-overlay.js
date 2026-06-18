@@ -29,7 +29,7 @@
     },
     deposit: {
       key: 'deposit',
-      name: 'Deposit',
+      name: 'Custody account',
       iban: '123,456.78',
       balance: "20'000.00",
       currency: 'CHF',

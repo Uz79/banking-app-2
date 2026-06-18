@@ -4,7 +4,7 @@
   "entry": "overview.html",
   "screens": [
     { "id": "overview", "path": "overview.html", "title": "Overview" },
-    { "id": "investment-product-details", "path": "investment-product-details.html", "title": "Deposit" },
+    { "id": "investment-product-details", "path": "investment-product-details.html", "title": "Custody account" },
     { "id": "details-of-position", "path": "details-of-position.html", "title": "Position details" },
     { "id": "account-details", "path": "account-details.html", "title": "Account details" },
     { "id": "payments", "path": "payments.html", "title": "Payments" },

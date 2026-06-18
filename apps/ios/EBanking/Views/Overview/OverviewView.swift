@@ -26,6 +26,7 @@ struct OverviewView: View {
 
                         accountsSection
                         otherProductsSection
+                        depositPerformanceSection
                         offersSection
                     }
                     .padding(.horizontal, Space._3)
@@ -74,7 +75,7 @@ struct OverviewView: View {
                     currency: account.currency,
                     amount: account.formattedBalance
                 ) {
-                    if account.id == "3" {   // Deposit → investment product
+                    if account.id == "3" {   // Custody account → investment product
                         tabBar.overviewPath.append(OverviewRoute.investment)
                     } else {
                         tabBar.overviewPath.append(OverviewRoute.account(account))
@@ -86,6 +87,17 @@ struct OverviewView: View {
                         .padding(.horizontal, Space._3)
                 }
             }
+        }
+    }
+
+    // MARK: - Custody account performance
+
+    private var depositPerformanceSection: some View {
+        DepositPerformanceCard(
+            showsToolbar: true,
+            initialRange: "Max"
+        ) {
+            tabBar.overviewPath.append(OverviewRoute.investment)
         }
     }
 

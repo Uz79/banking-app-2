@@ -150,6 +150,9 @@
     }
     var bgE = isDark ? 0.22 : 0.07;
     var fgE = isDark ? 0.06 : 0.22;
+    var brandPrimaryHex = isDark ? bgHex : fgHex;
+    var brandPrimaryRgb = isDark ? bg : fg;
+    var white = { r: 255, g: 255, b: 255 };
     var tokens = {
       'color-bg': bgHex,
       'color-bg-secondary': mix(bg, fg, bgE),
@@ -169,11 +172,11 @@
       'color-btn-primary-fg': bgHex,
       'color-btn-primary-hover': mix(fg, bg, fgE),
       'color-btn-primary-pressed': mix(fg, bg, Math.min(0.45, fgE * 1.75)),
-      'color-btn-secondary-bg': 'transparent',
-      'color-btn-secondary-border': fgHex,
-      'color-btn-secondary-fg': fgHex,
-      'color-btn-secondary-hover': fa(0.1),
-      'color-btn-secondary-pressed': fa(0.2),
+      'color-btn-secondary-bg': isDark ? bgHex : '#ffffff',
+      'color-btn-secondary-border': isDark ? fgHex : brandPrimaryHex,
+      'color-btn-secondary-fg': isDark ? fgHex : brandPrimaryHex,
+      'color-btn-secondary-hover': isDark ? mix(bg, fg, 0.1) : mix(white, brandPrimaryRgb, 0.1),
+      'color-btn-secondary-pressed': isDark ? mix(bg, fg, 0.2) : mix(white, brandPrimaryRgb, 0.2),
       'color-btn-tonal-bg': mix(bg, fg, isDark ? 0.28 : 0.08),
       'color-btn-tonal-border': mix(bg, fg, isDark ? 0.28 : 0.08),
       'color-btn-tonal-fg': fgHex,
@@ -337,6 +340,9 @@
       var t = document.documentElement.getAttribute('data-theme');
       return t === 'light' || t === 'dark' ? t : 'dark';
     }
+
+    var savedPair = readOverridePair();
+    if (savedPair) applyDerivedTokensFromPair(savedPair.bg, savedPair.fg);
 
     applyTheme(getTheme());
 
@@ -560,6 +566,17 @@
       }
     });
 
+    document.addEventListener('click', function (e) {
+      var bookingsBtn = e.target.closest('[data-action="show-all-bookings"]');
+      if (!bookingsBtn) return;
+      document.dispatchEvent(
+        new CustomEvent('uz:more-functions-action', {
+          bubbles: true,
+          detail: { action: 'show-all-bookings' }
+        })
+      );
+    });
+
     document.addEventListener('uz:more-functions-action', function (e) {
       var d = e.detail || {};
       var action = d.action;
@@ -612,15 +629,11 @@
 
       var bindOptions = {
         nav: '[data-scroll-edge-nav]',
+        footer: '.tab-bar',
         getScrollEl: function () {
           return mainContent;
         }
       };
-
-      /* Mobile / tablet tab bar: bottom content-indication shadow when scroll continues below. */
-      if (window.matchMedia('(max-width: 1279px)').matches && app.querySelector('.tab-bar')) {
-        bindOptions.footer = '.tab-bar';
-      }
 
       window.UZBankScrollEdgeChrome.bind(app, bindOptions);
     }

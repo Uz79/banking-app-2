@@ -34,7 +34,7 @@
     },
     {
       icon: 'i-trending-up',
-      name: 'Deposit',
+      name: 'Custody account',
       iban: '123,456,78',
       amount: "CHF 20'000.00",
       sheetCur: 'CHF',
@@ -96,9 +96,10 @@
     var overlays = document.querySelectorAll('.modal-overlay');
     for (var i = 0; i < overlays.length; i++) {
       if (overlays[i].id === 'uz-iat-overlay') continue;
+      if (overlays[i].id === 'uz-trade-overlay') continue;
       if (overlays[i].querySelector('.modal--payment-flow')) return overlays[i];
     }
-    return document.querySelector('.modal-overlay');
+    return null;
   }
 
   function getIatOverlay() {
@@ -773,7 +774,7 @@
 
     var card = e.target.closest && e.target.closest('.debit-account');
     if (!card || !root.contains(card)) return;
-    if (root.id === 'uz-iat-overlay') return;
+    if (root.id === 'uz-iat-overlay' || root.id === 'uz-trade-overlay') return;
     e.preventDefault();
     e.stopPropagation();
     openDebitSheet(card);

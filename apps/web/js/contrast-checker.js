@@ -134,6 +134,9 @@
 
     var bgElev = isDark ? 0.22 : 0.07;
     var fgElev = isDark ? 0.06 : 0.22;
+    var brandPrimaryHex = isDark ? bgHex : fgHex;
+    var brandPrimaryRgb = isDark ? bg : fg;
+    var white = { r: 255, g: 255, b: 255 };
 
     return {
       // Surfaces
@@ -166,12 +169,12 @@
       'color-btn-primary-hover': mix(fg, bg, fgElev),
       'color-btn-primary-pressed': mix(fg, bg, Math.min(0.45, fgElev * 1.75)),
 
-      // Buttons — secondary (outline) + tonal (filled tint)
-      'color-btn-secondary-bg':     'transparent',
-      'color-btn-secondary-border': fgHex,
-      'color-btn-secondary-fg':     fgHex,
-      'color-btn-secondary-hover':  fgAlpha(0.1),
-      'color-btn-secondary-pressed': fgAlpha(0.2),
+      // Buttons — secondary: light = white chip + primary stroke; dark = primary fill + white stroke (Figma mapped/button/secondary)
+      'color-btn-secondary-bg':     isDark ? bgHex : '#ffffff',
+      'color-btn-secondary-border': isDark ? fgHex : brandPrimaryHex,
+      'color-btn-secondary-fg':     isDark ? fgHex : brandPrimaryHex,
+      'color-btn-secondary-hover':  isDark ? mix(bg, fg, 0.1) : mix(white, brandPrimaryRgb, 0.1),
+      'color-btn-secondary-pressed': isDark ? mix(bg, fg, 0.2) : mix(white, brandPrimaryRgb, 0.2),
 
       'color-btn-tonal-bg':     mix(bg, fg, isDark ? 0.28 : 0.08),
       'color-btn-tonal-border': mix(bg, fg, isDark ? 0.28 : 0.08),

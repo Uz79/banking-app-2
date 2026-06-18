@@ -27,19 +27,27 @@ export const DesignExport = {
       .de-img--screen { max-height: 85vh; object-fit: contain; object-position: top center; }
     </style>
     <div class="de-wrap">
-      <p class="de-desc">Investment product details shell screen (performance + positions).</p>
-<h4 class="de-variant">desktop-default</h4>
+      <p class="de-desc">Investment product details shell screen with persona-driven layout variants (performance + positions).</p>
+<h4 class="de-variant">a</h4>
 <div class="de-grid de-grid--screen">
 <figure class="de-item">
-  <img class="de-img de-img--screen" src="/designs/screens/investment-product-details/variants/desktop-default/default.svg" alt="desktop-default / default" loading="lazy" />
-  <figcaption class="de-cap">desktop-default / default</figcaption>
+  <img class="de-img de-img--screen" src="/designs/screens/investment-product-details/variants/a/desktop-default/default.svg" alt="a / desktop-default" loading="lazy" />
+  <figcaption class="de-cap">a / desktop-default</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img de-img--screen" src="/designs/screens/investment-product-details/variants/a/mobile-default/default.svg" alt="a / mobile-default" loading="lazy" />
+  <figcaption class="de-cap">a / mobile-default</figcaption>
 </figure>
 </div>
-<h4 class="de-variant">mobile-default</h4>
+<h4 class="de-variant">b</h4>
 <div class="de-grid de-grid--screen">
 <figure class="de-item">
-  <img class="de-img de-img--screen" src="/designs/screens/investment-product-details/variants/mobile-default/default.svg" alt="mobile-default / default" loading="lazy" />
-  <figcaption class="de-cap">mobile-default / default</figcaption>
+  <img class="de-img de-img--screen" src="/designs/screens/investment-product-details/variants/b/desktop-default/default.svg" alt="b / desktop-default" loading="lazy" />
+  <figcaption class="de-cap">b / desktop-default</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img de-img--screen" src="/designs/screens/investment-product-details/variants/b/mobile-default/default.svg" alt="b / mobile-default" loading="lazy" />
+  <figcaption class="de-cap">b / mobile-default</figcaption>
 </figure>
 </div>
     </div>

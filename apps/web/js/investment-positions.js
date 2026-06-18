@@ -48,6 +48,12 @@
   }
 
   function quantityForSymbol(symbol) {
+    if (window.UZBankPayState && typeof window.UZBankPayState.getPosition === 'function') {
+      var stored = window.UZBankPayState.getPosition(symbol);
+      if (stored && typeof stored.quantity === 'number') {
+        return stored.quantity;
+      }
+    }
     var sum = 0;
     for (var i = 0; i < symbol.length; i++) {
       sum += symbol.charCodeAt(i);
@@ -167,7 +173,7 @@
         '<div class="list-item__body type-stack-tight">' +
           '<span class="list-item__title type-sm type-bold type-trim">' + escapeHtml(position.name) + '</span>' +
           '<span class="list-item__subtitle type-xs type-trim">' + escapeHtml(position.subtitle) + '</span>' +
-          '<span class="list-item__performance type-sm type-trim">' +
+          '<span class="list-item__performance">' +
             '<svg class="list-item__performance-icon" aria-hidden="true" focusable="false"><use href="#' + trendIcon + '"/></svg>' +
             '<span class="list-item__performance-values">' +
               '<span class="list-item__performance-value">' + changeSign + formatMoney(position.changeChf) + ' CHF</span>' +
@@ -181,7 +187,7 @@
             '<span class="list-item__value type-sm type-bold">' + formatMoney(position.priceChf) + '</span>' +
           '</div>' +
           '<span class="list-item__quantity type-xs type-trim">pcs. ' + position.quantity + '</span>' +
-          '<div class="list-item__total type-sm type-trim">' +
+          '<div class="list-item__total">' +
             '<span class="list-item__currency type-xs">CHF</span>' +
             '<span class="list-item__value type-sm">' + formatMoney(position.totalChf) + '</span>' +
           '</div>' +
@@ -234,4 +240,10 @@
   } else {
     initPositions();
   }
+
+  document.addEventListener('uzbank:state-changed', function () {
+    var container = document.querySelector('[data-positions-list]');
+    if (!container || container.getAttribute('aria-busy') === 'true') return;
+    fetchQuotes().then(renderPositions);
+  });
 })();

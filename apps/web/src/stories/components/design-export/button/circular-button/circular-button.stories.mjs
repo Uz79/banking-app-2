@@ -37,18 +37,6 @@ export const DesignExport = {
   <figcaption class="de-cap">regular-filledtonal / hover</figcaption>
 </figure>
 <figure class="de-item">
-  <img class="de-img" src="/designs/components/button/circular-button/variants/regular-filledtonal/pressed 2.svg" alt="regular-filledtonal / pressed 2" loading="lazy" />
-  <figcaption class="de-cap">regular-filledtonal / pressed 2</figcaption>
-</figure>
-<figure class="de-item">
-  <img class="de-img" src="/designs/components/button/circular-button/variants/regular-filledtonal/default 2.svg" alt="regular-filledtonal / default 2" loading="lazy" />
-  <figcaption class="de-cap">regular-filledtonal / default 2</figcaption>
-</figure>
-<figure class="de-item">
-  <img class="de-img" src="/designs/components/button/circular-button/variants/regular-filledtonal/hover 2.svg" alt="regular-filledtonal / hover 2" loading="lazy" />
-  <figcaption class="de-cap">regular-filledtonal / hover 2</figcaption>
-</figure>
-<figure class="de-item">
   <img class="de-img" src="/designs/components/button/circular-button/variants/regular-filledtonal/pressed.svg" alt="regular-filledtonal / pressed" loading="lazy" />
   <figcaption class="de-cap">regular-filledtonal / pressed</figcaption>
 </figure>
@@ -68,27 +56,8 @@ export const DesignExport = {
   <figcaption class="de-cap">regular-secondary / hover</figcaption>
 </figure>
 <figure class="de-item">
-  <img class="de-img" src="/designs/components/button/circular-button/variants/regular-secondary/pressed 2.svg" alt="regular-secondary / pressed 2" loading="lazy" />
-  <figcaption class="de-cap">regular-secondary / pressed 2</figcaption>
-</figure>
-<figure class="de-item">
   <img class="de-img" src="/designs/components/button/circular-button/variants/regular-secondary/pressed.svg" alt="regular-secondary / pressed" loading="lazy" />
   <figcaption class="de-cap">regular-secondary / pressed</figcaption>
-</figure>
-</div>
-<h4 class="de-variant">regular-filled-tonal</h4>
-<div class="de-grid">
-<figure class="de-item">
-  <img class="de-img" src="/designs/components/button/circular-button/variants/regular-filled-tonal/focus.svg" alt="regular-filled-tonal / focus" loading="lazy" />
-  <figcaption class="de-cap">regular-filled-tonal / focus</figcaption>
-</figure>
-<figure class="de-item">
-  <img class="de-img" src="/designs/components/button/circular-button/variants/regular-filled-tonal/default.svg" alt="regular-filled-tonal / default" loading="lazy" />
-  <figcaption class="de-cap">regular-filled-tonal / default</figcaption>
-</figure>
-<figure class="de-item">
-  <img class="de-img" src="/designs/components/button/circular-button/variants/regular-filled-tonal/hover.svg" alt="regular-filled-tonal / hover" loading="lazy" />
-  <figcaption class="de-cap">regular-filled-tonal / hover</figcaption>
 </figure>
 </div>
 <h4 class="de-variant">regular-primary</h4>
@@ -104,10 +73,6 @@ export const DesignExport = {
 <figure class="de-item">
   <img class="de-img" src="/designs/components/button/circular-button/variants/regular-primary/hover.svg" alt="regular-primary / hover" loading="lazy" />
   <figcaption class="de-cap">regular-primary / hover</figcaption>
-</figure>
-<figure class="de-item">
-  <img class="de-img" src="/designs/components/button/circular-button/variants/regular-primary/pressed 2.svg" alt="regular-primary / pressed 2" loading="lazy" />
-  <figcaption class="de-cap">regular-primary / pressed 2</figcaption>
 </figure>
 <figure class="de-item">
   <img class="de-img" src="/designs/components/button/circular-button/variants/regular-primary/pressed.svg" alt="regular-primary / pressed" loading="lazy" />

@@ -80,7 +80,7 @@ struct DetailsOfPositionView: View {
 
     private var myPositionsCard: some View {
         DataCard(title: "My positions") {
-            dataRow("Account", "Deposit \(InvestmentProduct.depositNumber)")
+            dataRow("Account", "Custody account \(InvestmentProduct.depositNumber)")
             dataDivider
             dataRow("Acquisition price", "\(position.currency) \(formatAmount(position.acquisitionPrice))")
             dataDivider
