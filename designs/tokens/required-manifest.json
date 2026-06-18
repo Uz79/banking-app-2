@@ -64,5 +64,9 @@
       "ref": "{color.neutral.white}",
       "reason": "themeBlock: icon circle fill (dark)"
     }
-  ]
+  ],
+  "engineeringDefaults": {
+    "leadingTrim": "Default true when Figma omits typography.leadingTrim — required for cap-height trim stacks.",
+    "textRowGap": "Fixed 0.5rem (8dp) — do not alias to space/N; space scale shifts break product-item and position stacks."
+  }
 }

@@ -1,15 +1,22 @@
 # Details of position
 
-Position detail surface — key figures summary, tab bar (Overview / Bookings), and full holdings list.
+Position detail surface — key figures summary, performance chart, and holdings list.
+
+Two **persona layout variants** reflect different Buy/Sell control patterns (Profile → Persona):
+
+| Persona | Buy/Sell (A) | Buy/Sell (B) |
+|---------|--------------|--------------|
+| Beatrice (A) | Circular action buttons — **search** (Buy), **eye** (Sell) | — |
+| Max (B) | — | Secondary pill buttons — **plus** (Buy), **minus** (Sell, filled primary) |
 
 ## Variants
 
-| Variant | Figma export | Assets |
-|---------|--------------|--------|
-| `desktop-default` | Details of Position - desktop | `variants/desktop-default/default.svg` |
-| `mobile-default` | Details of Position - mobile | `variants/mobile-default/default.svg` |
+| Variant | Persona | Desktop | Mobile |
+|---------|---------|---------|--------|
+| `a` | Persona A — Beatrice Mueller (`data-persona="beatrice"`) | `variants/a/desktop-default/default.svg` | `variants/a/mobile-default/default.svg` |
+| `b` | Persona B — Max Maximus (`data-persona="max"`) | `variants/b/desktop-default/default.svg` | `variants/b/mobile-default/default.svg` |
 
-Place new Figma exports in the variant folders as `default.svg` / `default.png` (do not leave Title Case files at screen root).
+Figma frame attrs: `Screen Size=desktop|mobile, Variant=A|B` → normalized as above.
 
 ## States
 

@@ -150,3 +150,124 @@ struct PerformanceChart: View {
         }
     }
 }
+
+/// Custody account performance card (web `.performance-card` on Overview and product details).
+struct DepositPerformanceCard: View {
+    var showsToolbar: Bool = false
+    var initialRange: String = "Max"
+    var onDetails: (() -> Void)?
+
+    @State private var range: String
+
+    init(
+        showsToolbar: Bool = false,
+        initialRange: String = "Max",
+        onDetails: (() -> Void)? = nil
+    ) {
+        self.showsToolbar = showsToolbar
+        self.initialRange = initialRange
+        self.onDetails = onDetails
+        _range = State(initialValue: initialRange)
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Space._3) {
+            if showsToolbar {
+                toolbar
+            }
+
+            HStack(alignment: .firstTextBaseline, spacing: Space._2) {
+                Text(formatAmount(InvestmentProduct.balance))
+                    .font(AppFont.font(size: AppFont.Size.h5, weight: .bold))
+                    .foregroundColor(AppColor.foreground)
+                Text(InvestmentProduct.currency)
+                    .textSmall()
+                    .foregroundColor(AppColor.foregroundSecondary)
+            }
+
+            PerformanceCardMetaRow(
+                changeAbsolute: "+ \(formatAmount(InvestmentProduct.changeAbs)) \(InvestmentProduct.currency)",
+                changePercent: String(format: "+ %.2f %%", InvestmentProduct.changePct),
+                date: InvestmentProduct.asOf
+            )
+
+            PerformanceChart(
+                values: InvestmentProduct.series,
+                yLabels: InvestmentProduct.yLabels,
+                xLabels: InvestmentProduct.xLabels,
+                ranges: InvestmentProduct.ranges,
+                selectedRange: $range
+            )
+
+            Divider()
+
+            HStack(spacing: 0) {
+                summaryItem("Invested", InvestmentProduct.invested)
+                Divider().frame(height: 36)
+                summaryItem("Cash", InvestmentProduct.cash)
+            }
+        }
+        .padding(Space._3)
+        .background(AppColor.background)
+        .clipShape(RoundedRectangle(cornerRadius: Radius.regular))
+    }
+
+    private var toolbar: some View {
+        HStack(alignment: .center, spacing: Space._2) {
+            Button {
+                onDetails?()
+            } label: {
+                HStack(spacing: Space._3) {
+                    Image("icon24-gitlab")
+                        .renderingMode(.template)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(AppColor.foreground)
+                    Text("\(InvestmentProduct.depositName) - \(InvestmentProduct.depositNumber)")
+                        .textSmall()
+                        .fontWeight(.medium)
+                        .foregroundColor(AppColor.foreground)
+                        .lineLimit(1)
+                }
+            }
+            .buttonStyle(.plain)
+
+            Spacer(minLength: Space._2)
+
+            if let onDetails {
+                Button(action: onDetails) {
+                    HStack(spacing: Space._1) {
+                        Text("Details")
+                            .font(AppFont.font(size: AppFont.Size.textSm, weight: .medium))
+                        Image("icon24-arrow-right")
+                            .renderingMode(.template)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 24, height: 24)
+                    }
+                    .foregroundColor(AppColor.Button.tonalFg)
+                    .padding(.horizontal, Space._2)
+                    .frame(minHeight: 32)
+                    .background(AppColor.Button.tonalBg)
+                    .clipShape(RoundedRectangle(cornerRadius: Radius.small))
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    private func summaryItem(_ label: String, _ amount: Double) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(label).captionStyle().foregroundColor(AppColor.foregroundSecondary)
+            HStack(spacing: 6) {
+                Text(InvestmentProduct.currency).captionStyle()
+                    .foregroundColor(AppColor.foregroundSecondary)
+                Text(formatAmount(amount)).textSmall().fontWeight(.bold)
+                    .foregroundColor(AppColor.foreground)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, Space._2)
+    }
+}

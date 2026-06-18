@@ -1,6 +1,6 @@
 import Foundation
 
-/// An investment position (equity) held in the Deposit product.
+/// An investment position (equity) held in the Custody account product.
 struct InvestmentPosition: Identifiable {
     let id: String          // symbol
     let name: String
@@ -65,9 +65,9 @@ struct InvestmentPosition: Identifiable {
     ]
 }
 
-/// Deposit / investment product summary shown on the product-details screen.
+/// Custody account / investment product summary shown on the product-details screen.
 enum InvestmentProduct {
-    static let depositName = "Deposit"
+    static let depositName = "Custody account"
     static let depositNumber = "123.456.78"
     static let currency = "CHF"
     static let balance = 20_000.00

@@ -204,6 +204,8 @@
             </button>
           </header>
 
+          <div class="overview__primary">
+
           <div class="action-buttons">
             <button class="action-button" type="button">
               <span class="action-button__circle">
@@ -259,17 +261,17 @@
                 </span>
               </div>
               <div class="divider"></div>
-              <div class="product-item">
+              <a class="product-item" href="investment-product-details.html" data-account="deposit">
                 <svg class="product-item__icon" aria-hidden="true" focusable="false"><use href="#i-life-buoy"/></svg>
                 <div class="product-item__info type-stack-tight">
-                  <span class="product-item__name type-sm type-trim">Deposit</span>
+                  <span class="product-item__name type-sm type-trim">Custody account</span>
                   <span class="product-item__iban type-xs type-trim">123.456.78</span>
                 </div>
                 <span class="product-item__amount">
                   <span class="product-item__currency">CHF</span>
                   <span class="product-item__value">20'000.00</span>
                 </span>
-              </div>
+              </a>
               <div class="divider"></div>
               <div class="product-item">
                 <svg class="product-item__icon" aria-hidden="true" focusable="false"><use href="#i-anchor"/></svg>
@@ -304,11 +306,107 @@
               </div>
             </div>
           </div>
+
+          </div>
+
         </div>
 
         <!-- Overview right sidebar (desktop) -->
         <aside class="view__sidebar">
-          <div class="section-card">
+          <!-- Custody account performance (Overview preview) -->
+          <div class="section-card section-card--performance">
+            <div class="section-card__body performance-card">
+              <div class="performance-card__toolbar">
+                <a class="performance-card__product" href="investment-product-details.html">
+                  <svg class="performance-card__product-icon" aria-hidden="true" focusable="false"><use href="#i-gitlab"/></svg>
+                  <span class="performance-card__product-title">Custody account - 123.456.78</span>
+                </a>
+                <a class="performance-card__details-btn uz-btn uz-btn--tonal uz-btn--sm" href="investment-product-details.html">
+                  <span>Details</span>
+                  <svg class="uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
+                </a>
+              </div>
+              <header class="performance-card__header">
+                <div class="performance-card__balance">
+                  <span class="performance-card__balance-value">20'000.00</span>
+                  <span class="performance-card__balance-currency">CHF</span>
+                </div>
+              </header>
+              <div class="performance-card__meta">
+                <p class="performance-card__change">
+                  <span>+ 980.39 CHF</span>
+                  <span class="performance-card__change-sep" aria-hidden="true">&bull;</span>
+                  <span>+ 5.13 %</span>
+                </p>
+                <time class="performance-card__date" datetime="2026-05-05">05.May 2026</time>
+              </div>
+
+              <div class="performance-card__chart" aria-hidden="true">
+                <svg class="performance-card__chart-svg" viewBox="0 0 388 164" xmlns="http://www.w3.org/2000/svg" data-performance-chart>
+                  <defs>
+                    <linearGradient id="performance-chart-fill" x1="194" y1="8" x2="194" y2="132" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="currentColor" stop-opacity="0.2"/>
+                      <stop offset="1" stop-color="currentColor" stop-opacity="0"/>
+                    </linearGradient>
+                    <filter id="performance-chart-tooltip-shadow" class="performance-card__chart-tooltip-shadow" filterUnits="objectBoundingBox" x="-0.08" y="-0.12" width="1.16" height="1.45" color-interpolation-filters="sRGB">
+                      <feDropShadow dx="0" dy="2" stdDeviation="6"/>
+                    </filter>
+                  </defs>
+                  <text class="performance-card__chart-axis performance-card__chart-axis--y" x="384" y="32" text-anchor="end">60</text>
+                  <text class="performance-card__chart-axis performance-card__chart-axis--y" x="384" y="64" text-anchor="end">40</text>
+                  <text class="performance-card__chart-axis performance-card__chart-axis--y" x="384" y="96" text-anchor="end">20</text>
+                  <text class="performance-card__chart-axis performance-card__chart-axis--y" x="384" y="132" text-anchor="end">0</text>
+                  <path class="performance-card__chart-area" data-performance-chart-area d="M0 74 L29 67 L57 70 L85 54 L113 62 L141 50 L169 60 L197 44 L225 52 L253 40 L281 50 L309 46 L337 54 L352 48 V132 H0 Z" fill="url(#performance-chart-fill)"/>
+                  <path class="performance-card__chart-line" data-performance-chart-line d="M0 74 L29 67 L57 70 L85 54 L113 62 L141 50 L169 60 L197 44 L225 52 L253 40 L281 50 L309 46 L337 54 L352 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path class="performance-card__chart-line-hit" data-performance-chart-line-hit d="M0 74 L29 67 L57 70 L85 54 L113 62 L141 50 L169 60 L197 44 L225 52 L253 40 L281 50 L309 46 L337 54 L352 48" fill="none" stroke="transparent" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+                  <g class="performance-card__chart-hover" data-performance-chart-hover hidden>
+                    <line class="performance-card__chart-marker" data-performance-chart-marker x1="197" y1="44" x2="197" y2="132" stroke="currentColor" stroke-opacity="0.7" stroke-width="0.5" stroke-dasharray="2 2"/>
+                    <circle class="performance-card__chart-dot" data-performance-chart-dot cx="197" cy="44" r="7" fill="var(--color-bg)" stroke="currentColor" stroke-width="2"/>
+                    <rect class="performance-card__chart-tooltip" data-performance-chart-tooltip filter="url(#performance-chart-tooltip-shadow)" x="67" y="8" width="260" height="43" rx="8"/>
+                    <text class="performance-card__chart-tooltip-value" data-performance-chart-tooltip-value x="83" y="35" text-anchor="start">25'000.00</text>
+                    <text class="performance-card__chart-tooltip-date" data-performance-chart-tooltip-date x="311" y="35" text-anchor="end">05.May 2026</text>
+                  </g>
+                  <text class="performance-card__chart-axis performance-card__chart-axis--x" data-performance-chart-x-label x="24" y="152">Feb</text>
+                  <text class="performance-card__chart-axis performance-card__chart-axis--x" data-performance-chart-x-label x="120" y="152">Feb</text>
+                  <text class="performance-card__chart-axis performance-card__chart-axis--x" data-performance-chart-x-label x="216" y="152">Mai</text>
+                  <text class="performance-card__chart-axis performance-card__chart-axis--x" data-performance-chart-x-label x="312" y="152">Aug</text>
+                </svg>
+              </div>
+
+              <div class="performance-card__range" role="group" aria-label="Performance time range" data-performance-range>
+                <button type="button" class="performance-card__range-chip" data-range="1w" aria-pressed="false">1w</button>
+                <button type="button" class="performance-card__range-chip" data-range="1m" aria-pressed="false">1m</button>
+                <button type="button" class="performance-card__range-chip" data-range="3m" aria-pressed="false">3m</button>
+                <button type="button" class="performance-card__range-chip" data-range="ytd" aria-pressed="false">ytd</button>
+                <button type="button" class="performance-card__range-chip performance-card__range-chip--active" data-range="max" aria-pressed="true">Max</button>
+              </div>
+
+              <div class="performance-card__summary">
+                <div class="performance-card__summary-row">
+                  <span class="performance-card__summary-icon uz-btn uz-btn--sm uz-btn--icon-only-filledtonal" aria-hidden="true">
+                    <svg class="uz-btn__icon" focusable="false"><use href="#i-coffee"/></svg>
+                  </span>
+                  <span class="performance-card__summary-label">Invested</span>
+                  <span class="performance-card__summary-amount">
+                    <span class="performance-card__summary-currency">CHF</span>
+                    <span class="performance-card__summary-value">15'000.00</span>
+                  </span>
+                </div>
+                <div class="performance-card__summary-row">
+                  <span class="performance-card__summary-icon uz-btn uz-btn--sm uz-btn--icon-only-filledtonal" aria-hidden="true">
+                    <svg class="uz-btn__icon" focusable="false"><use href="#i-dollar-sign"/></svg>
+                  </span>
+                  <span class="performance-card__summary-label">Cash</span>
+                  <span class="performance-card__summary-amount">
+                    <span class="performance-card__summary-currency">CHF</span>
+                    <span class="performance-card__summary-value">5'000.00</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card section-card--overview-offers">
             <div class="section-card__header">
               <span class="section-card__title">Offers</span>
             </div>
@@ -331,14 +429,14 @@
                 <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
               </div>
               <div class="divider"></div>
-              <div class="list-item">
+              <a class="list-item" href="investment-product-details.html">
                 <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-trending-up"/></svg>
                 <div class="list-item__content type-stack-tight">
                   <span class="list-item__title type-sm type-trim">Investment</span>
                   <span class="list-item__subtitle type-xs type-trim">Fonds, trading, asset management</span>
                 </div>
                 <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
-              </div>
+              </a>
               <button class="show-all-btn uz-btn uz-btn--tonal uz-btn--sm" type="button">
                 <span>Show all</span>
                 <svg class="show-all-btn__icon uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
@@ -517,7 +615,7 @@
               </div>
             </div>
 
-            <button class="show-all-btn uz-btn uz-btn--tonal uz-btn--sm" type="button">
+            <button class="show-all-btn uz-btn uz-btn--tonal uz-btn--sm" type="button" data-action="show-all-bookings">
               <span>Show all bookings</span>
               <svg class="show-all-btn__icon uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
             </button>
@@ -1032,7 +1130,7 @@
   </main>
 
   <!-- ===== MOBILE TAB BAR ===== -->
-  <nav class="tab-bar">
+  <nav class="tab-bar" data-scroll-edge-footer>
     <a class="tab-bar__item tab-bar__item--active" data-view="overview">
       <span class="tab-bar__icon-wrap tab-bar__icon-wrap--active">
         <svg class="tab-bar__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>

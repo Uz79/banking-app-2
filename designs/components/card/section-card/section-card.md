@@ -34,7 +34,7 @@ Place new exports under `variants/<slug>/` as `default.svg` and `default.png`. D
 
 Single bordered card (420×480) with toolbar, balance, chart, range chips, and invested/cash rows inside `.section-card__body`:
 
-- **Toolbar** — `.performance-card__toolbar`: coffee icon + `Deposit - …` product label + tonal **Details** (top-right).
+- **Toolbar** — `.performance-card__toolbar`: coffee icon + `Custody account - …` product label + tonal **Details** (top-right).
 - **Balance** — `.performance-card__header` / `__balance` (Details is not beside the balance).
 - **Chart** — fluid width; tooltip fixed size; range chips left-aligned with `space/2` (8dp) gap.
 

@@ -2,14 +2,16 @@
 
 Investment account details surface — performance chart, positions table, and product actions.
 
+Two **persona layout variants** reflect different information density / action patterns selected in Profile → Persona.
+
 ## Variants
 
-| Variant | Figma export | Assets |
-|---------|--------------|--------|
-| `desktop-default` | Details of Investment Product - desktop | `variants/desktop-default/default.svg` |
-| `mobile-default` | Details of Investment Product - mobile | `variants/mobile-default/default.svg` |
+| Variant | Persona | Desktop | Mobile |
+|---------|---------|---------|--------|
+| `a` | Persona A — Beatrice Mueller (`data-persona="beatrice"`) | `variants/a/desktop-default/default.svg` | `variants/a/mobile-default/default.svg` |
+| `b` | Persona B — Max Maximus (`data-persona="max"`) | `variants/b/desktop-default/default.svg` | `variants/b/mobile-default/default.svg` |
 
-Place new Figma exports in the variant folders as `default.svg` / `default.png` (do not leave Title Case files at screen root).
+Figma frame attrs: `Screen Size=desktop|mobile, Variant=A|B` → normalized as above.
 
 ## States
 

@@ -110,7 +110,7 @@ export const Implementation = {
                   <div class="product-item">
                     <svg class="product-item__icon" aria-hidden="true" focusable="false"><use href="#i-life-buoy"/></svg>
                     <div class="product-item__info">
-                      <span class="product-item__name">Deposit</span>
+                      <span class="product-item__name">Custody account</span>
                       <span class="product-item__iban">123.456.78</span>
                     </div>
                     <span class="product-item__amount">

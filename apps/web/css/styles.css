@@ -178,6 +178,7 @@ html:has(body.body--payment-open) {
     overscroll-behavior: contain;
     overscroll-behavior-x: none;
     -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -465,7 +466,7 @@ html:has(body.body--payment-open) {
   width: 100%;
   display: flex;
   background-color: var(--color-bg-sidebar);
-  padding: var(--space-2) 0 var(--space-4) 0;
+  padding: var(--space-2) 0 calc(var(--space-4) + env(safe-area-inset-bottom, 0px)) 0;
   box-shadow: none;
   transition: box-shadow 0.15s ease;
   z-index: 50;
@@ -815,6 +816,16 @@ html:has(body.body--payment-open) {
     max-width: none;
   }
 
+  /* Overview / Payments / Account details: fixed 4rem columns — do not stretch flex children. */
+  .body[data-screen='overview'] .view--active.view--overview .action-button,
+  .body[data-screen='payments'] .view--active.view--payments .action-button,
+  .body[data-screen='account-details'] .action-button {
+    flex: 0 0 auto;
+    width: var(--action-button-container-width);
+    min-width: var(--action-button-container-width);
+    max-width: var(--action-button-container-width);
+  }
+
   .body[data-screen='overview'] .view--active.view--overview,
   .body[data-screen='payments'] .view--active.view--payments {
     display: flex;
@@ -901,7 +912,10 @@ html:has(body.body--payment-open) {
 .product-item {
   display: flex;
   align-items: center;
-  padding: var(--space-2) var(--space-3);
+  /* wealth-overview-account: 56dp row = 16dp vertical inset + trimmed sm/xs stack (see list-item design) */
+  padding-block: calc(var(--space-3) + var(--trim-top-text-sm))
+    calc(var(--space-3) + var(--trim-bottom-text-xs));
+  padding-inline: var(--space-3);
   gap: var(--space-3);
   cursor: pointer;
   border-radius: var(--radius-small);
@@ -1122,7 +1136,9 @@ html:has(body.body--payment-open) {
 .list-item {
   display: flex;
   align-items: center;
-  padding: var(--space-2) var(--space-3);
+  padding-block: calc(var(--space-3) + var(--trim-top-text-sm))
+    calc(var(--space-3) + var(--trim-bottom-text-xs));
+  padding-inline: var(--space-3);
   gap: var(--space-3);
   cursor: pointer;
   border-radius: var(--radius-small);
@@ -1206,7 +1222,8 @@ html:has(body.body--payment-open) {
  * Hug height: padding-block + content (icon / text-stack / amount). No fixed row height. */
 .list-item--group-account {
   align-items: center;
-  padding-block: var(--space-3); /* 16dp vertical inset */
+  padding-block: calc(var(--space-3) + var(--trim-top-text-sm))
+    calc(var(--space-3) + var(--trim-bottom-text-xs)); /* 16dp vertical inset + trim compensation */
   padding-inline: 0;
   gap: 0;
   width: 100%;
@@ -2059,6 +2076,7 @@ a.show-all-btn {
 @media (min-width: 1024px) {
   .modal-shell:has(> .modal--payment-flow),
   .modal-shell:has(> .modal--iat-flow),
+  .modal-shell:has(> .modal--trade-flow),
   .modal-shell:has(> .modal--account-information),
   .modal-shell:has(> .modal--share-information),
   .modal-shell:has(> .modal--payment-details) {
@@ -2069,6 +2087,7 @@ a.show-all-btn {
 
   .modal-shell:has(> .modal--payment-flow) > .modal,
   .modal-shell:has(> .modal--iat-flow) > .modal,
+  .modal-shell:has(> .modal--trade-flow) > .modal,
   .modal-shell:has(> .modal--account-information) > .modal,
   .modal-shell:has(> .modal--share-information) > .modal,
   .modal-shell:has(> .modal--payment-details) > .modal {
@@ -2079,6 +2098,7 @@ a.show-all-btn {
 
   .modal--payment-flow .modal__nav,
   .modal--iat-flow .modal__nav,
+  .modal--trade-flow .modal__nav,
   .modal--account-information .modal__nav,
   .modal--share-information .modal__nav,
   .modal--payment-details .modal__nav {
@@ -2088,6 +2108,7 @@ a.show-all-btn {
 
   .modal--payment-flow .modal__footer,
   .modal--iat-flow .modal__footer,
+  .modal--trade-flow .modal__footer,
   .modal--account-information .modal__footer--account-information,
   .modal--share-information .modal__footer,
   .modal--payment-details .modal__footer {
@@ -2321,6 +2342,7 @@ a.show-all-btn {
 
 .modal--payment-flow,
 .modal--iat-flow,
+.modal--trade-flow,
 .modal--account-information,
 .modal--share-information,
 .modal--payment-details {
@@ -2332,6 +2354,8 @@ a.show-all-btn {
 .modal--payment-flow .modal__footer,
 .modal--iat-flow .modal__nav,
 .modal--iat-flow .modal__footer,
+.modal--trade-flow .modal__nav,
+.modal--trade-flow .modal__footer,
 .modal--account-information .modal__nav,
 .modal--account-information .modal__footer--account-information,
 .modal--share-information .modal__nav,
@@ -2349,6 +2373,7 @@ a.show-all-btn {
 
 .modal--payment-flow .modal__nav,
 .modal--iat-flow .modal__nav,
+.modal--trade-flow .modal__nav,
 .modal--account-information .modal__nav,
 .modal--share-information .modal__nav,
 .modal--payment-details .modal__nav,
@@ -2358,6 +2383,7 @@ a.show-all-btn {
 
 .modal--payment-flow .modal__footer,
 .modal--iat-flow .modal__footer,
+.modal--trade-flow .modal__footer,
 .modal--account-information .modal__footer--account-information,
 .modal--share-information .modal__footer,
 .modal--payment-details .modal__footer,
@@ -2632,6 +2658,31 @@ a.show-all-btn {
   gap: var(--space-1);
 }
 
+/* Interactive fields reserve 16dp under the control for helper/error text (Figma 88dp frame). */
+.form-field:not(.form-field--readonly):not(.form-field--no-footer):not(:has(.debit-account)):not(:has(.form-field__optional-row)):not(:has(.form-field__error-row)):not(:has(.form-field__footer))::after {
+  content: "";
+  display: block;
+  min-height: 1rem;
+  flex-shrink: 0;
+}
+
+.form-field__footer {
+  min-height: 1rem;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.form-field__error-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-1);
+  margin: 0;
+  min-height: 1rem;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-error, #ff0095);
+}
+
 .form-field__label {
   font-size: var(--fs-text-sm);
   line-height: var(--lh-text);
@@ -2741,7 +2792,9 @@ a.show-all-btn {
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  height: 2.5rem;
   min-height: 2.5rem;
+  position: relative;
   padding: var(--space-1) var(--space-2);
   border: none;
   border-radius: var(--radius-small);
@@ -2785,7 +2838,15 @@ a.show-all-btn {
   color: var(--color-fg-disabled);
 }
 
+.form-field__text-wrap:has(.form-field__clear:not(.form-field__clear--hidden)) .form-field__input {
+  padding-inline-end: 2rem;
+}
+
 .form-field__clear {
+  position: absolute;
+  right: var(--space-1);
+  top: 50%;
+  transform: translateY(-50%);
   flex-shrink: 0;
   width: 2rem;
   height: 2rem;
@@ -2809,8 +2870,64 @@ a.show-all-btn {
 }
 
 .form-field__clear--hidden {
-  visibility: hidden;
-  pointer-events: none;
+  display: none;
+}
+
+/* Text field — optional informative row (default-informative) */
+.form-field--informative .form-field__optional-row,
+.form-field > .form-field__optional-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-1);
+  margin: 0;
+  min-height: 1rem;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.form-field__optional-icon {
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.125rem;
+  color: var(--color-btn-primary-bg);
+}
+
+.form-field__optional-icon > use {
+  fill: none;
+}
+
+.form-field__text-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  border: 0.0625rem solid var(--color-separator);
+  border-radius: var(--radius-small);
+  background-color: var(--color-bg);
+}
+
+.form-field__text-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 1.5rem;
+}
+
+.form-field__text-row-label {
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.form-field__text-row-value {
+  font-size: var(--fs-text-sm);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+  text-align: right;
 }
 
 .form-field__clear-icon {
@@ -2824,16 +2941,18 @@ a.show-all-btn {
 .form-field__select-wrap {
   position: relative;
   display: block;
+  height: 2.5rem;
 }
 
 .form-field__select {
   width: 100%;
+  height: 2.5rem;
   min-height: 2.5rem;
-  padding: var(--space-1) 2.25rem var(--space-1) var(--space-2);
+  padding: 0 2.25rem 0 var(--space-2);
   border: none;
   border-radius: var(--radius-small);
   font-size: var(--fs-text-md);
-  line-height: var(--lh-text);
+  line-height: 2.5rem;
   color: var(--color-fg);
   background-color: var(--color-input-surface);
   box-shadow: inset 0 0 0 var(--input-stroke-px, 1px) var(--color-input-stroke);
@@ -2900,7 +3019,9 @@ a.show-all-btn {
 
 .amount-input {
   display: flex;
+  height: 2.5rem;
   min-height: 2.5rem;
+  position: relative;
   border: none;
   border-radius: var(--radius-regular);
   padding: var(--space-2) var(--space-4);
@@ -2963,7 +3084,14 @@ a.show-all-btn {
   background: transparent;
 }
 
+.amount-input:has(.amount-input__clear:not(.amount-input__clear--hidden)) .amount-input__value {
+  padding-inline-end: 2rem;
+}
+
 .amount-input__clear {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   flex-shrink: 0;
   width: 2rem;
   height: 2rem;
@@ -2978,6 +3106,14 @@ a.show-all-btn {
   transition: background-color 0.15s ease;
 }
 
+.amount-input:not(.amount-input--no-currency) .amount-input__clear {
+  right: var(--space-4);
+}
+
+.amount-input--no-currency .amount-input__clear {
+  right: var(--space-2);
+}
+
 .amount-input__clear:hover {
   background-color: var(--color-surface-state-hover);
 }
@@ -2987,8 +3123,21 @@ a.show-all-btn {
 }
 
 .amount-input__clear--hidden {
-  visibility: hidden;
-  pointer-events: none;
+  display: none;
+}
+
+/* Amount field without currency selector (quantity / unit price) */
+.amount-input--no-currency {
+  /* Match select-field / text-field control height (designs/components/form-field) */
+  height: 2.5rem;
+  min-height: 2.5rem;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-small);
+}
+
+.amount-input--no-currency .amount-input__value {
+  text-align: right;
+  font-weight: var(--fw-medium);
 }
 
 .amount-input__clear-icon {
@@ -3404,12 +3553,12 @@ button.debit-account:focus-visible {
 }
 
 .uz-btn--secondary:hover {
-  background-color: var(--color-btn-secondary-hover);
+  background-color: color-mix(in srgb, var(--color-btn-secondary-fg) 10%, var(--color-btn-secondary-bg));
 }
 
 .uz-btn--secondary:active,
 .uz-btn--secondary.uz-btn--pressed {
-  background-color: var(--color-btn-secondary-pressed);
+  background-color: color-mix(in srgb, var(--color-btn-secondary-fg) 20%, var(--color-btn-secondary-bg));
 }
 
 .uz-btn--tonal {
@@ -3676,6 +3825,15 @@ button.debit-account:focus-visible {
   font-size: var(--fs-text-md);
 }
 
+#uz-trade-overlay > .confirmation-overlay {
+  z-index: 10;
+}
+
+#uz-trade-overlay .confirmation-dialog .confirmation-dialog__footer {
+  margin-bottom: var(--space-4);
+  font-size: var(--fs-text-md);
+}
+
 /* ── Icons: central sprite + <use>. currentColor for stroke; default SVG fill
    is black — set fill:none on hosts so stroke-only glyphs stay hollow (paths
    that need fill keep fill="currentColor" in the sprite). */
@@ -3695,6 +3853,7 @@ button.debit-account:focus-visible {
 .form-field__edit-icon,
 .form-field__calendar-icon,
 .form-field__clear-icon,
+.form-field__optional-icon,
 .amount-input__chevron,
 .amount-input__clear-icon,
 .debit-account__icon,
@@ -3711,7 +3870,9 @@ button.debit-account:focus-visible {
 .expander__chevron,
 .payment-details__edit-icon,
 .payment-details__account-icon,
-.payment-details__download-icon {
+.payment-details__download-icon,
+.cc-theme-card__trash-icon,
+.cc-theme-card__icon {
   display: block;
   flex-shrink: 0;
   color: var(--color-fg);
@@ -3771,7 +3932,9 @@ button.debit-account:focus-visible {
 .expander__chevron > use,
 .payment-details__edit-icon > use,
 .payment-details__account-icon > use,
-.payment-details__download-icon > use {
+.payment-details__download-icon > use,
+.cc-theme-card__trash-icon > use,
+.cc-theme-card__icon > use {
   fill: none;
   width: 100%;
   height: 100%;
@@ -4091,6 +4254,12 @@ a.action-button {
 }
 
 a.product-item {
+  text-decoration: none;
+  color: inherit;
+  box-sizing: border-box;
+}
+
+a.list-item {
   text-decoration: none;
   color: inherit;
   box-sizing: border-box;
@@ -5159,7 +5328,9 @@ a.btn-primary {
   width: 1.25rem;
   height: 1.25rem;
   display: block;
+  color: var(--color-fg);
   fill: none;
+  overflow: visible;
 }
 
 .cc-theme-card__row {
@@ -6547,13 +6718,15 @@ dialog.basic-dialog-payment-exit.basic-dialog-payment-exit--closing[open] .basic
 
 /* debit-account as full-width control inside IAT forms */
 .modal--iat-flow .form .debit-account,
-.modal--payment-flow .form .debit-account {
+.modal--payment-flow .form .debit-account,
+.modal--trade-flow .form .debit-account {
   width: 100%;
 }
 
-/* ── body scroll lock when IAT open ──────────────────────────── */
+/* ── body scroll lock when IAT / trade open ──────────────────── */
 
-body.body--iat-open {
+body.body--iat-open,
+body.body--trade-open {
   overflow: hidden;
 }
 
@@ -6900,12 +7073,15 @@ body.body--iat-open {
   font-weight: var(--fw-bold);
 }
 
+/* position — designs/components/list-item/list-item/variants/position (88dp row)
+ * Row spacing: same trim stack as product-item / wealth-overview-account (8dp via .type-stack-tight). */
 .list-item--position {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   margin-inline: 0;
-  padding-block: var(--space-3);
+  padding-block: calc(var(--space-3) + var(--trim-top-text-sm))
+    calc(var(--space-3) + var(--trim-bottom-text-xs));
   padding-inline: var(--space-3);
   gap: var(--space-3);
   width: 100%;
@@ -6924,10 +7100,6 @@ body.body--iat-open {
   min-width: 0;
 }
 
-.list-item--position .list-item__body.type-stack-tight {
-  justify-content: center;
-}
-
 .list-item__end--position {
   flex: 0 0 auto;
   flex-shrink: 0;
@@ -6937,7 +7109,6 @@ body.body--iat-open {
 
 .list-item--position .list-item__end--position.type-stack-tight {
   flex: 0 0 auto;
-  justify-content: center;
 }
 
 .list-item--position .list-item__title {
@@ -6949,10 +7120,28 @@ body.body--iat-open {
   color: var(--color-fg-label);
 }
 
-.list-item--position .list-item__performance {
+/* Position row 3 — 8dp below trimmed xs row 2; 24dp row height (left icon defines the band). */
+.list-item--position .type-stack-tight > .type-xs.type-trim + .list-item__performance,
+.list-item--position .type-stack-tight > .list-item__quantity.type-xs.type-trim + .list-item__total {
+  margin-block-start: calc(
+    var(--text-row-gap) - var(--trim-bottom-text-xs)
+  );
+}
+
+.list-item--position .list-item__performance,
+.list-item--position .list-item__total {
   display: flex;
   align-items: center;
+  min-height: 1.5rem;
+  margin-block: 0;
+}
+
+.list-item--position .list-item__performance {
   gap: var(--space-1);
+}
+
+.list-item--position .list-item__total {
+  justify-content: flex-end;
 }
 
 .list-item--position .list-item__performance-icon {
@@ -6976,7 +7165,7 @@ body.body--iat-open {
 
 .list-item--position .list-item__performance-value {
   display: inline;
-  font-size: var(--fs-text-sm);
+  font-size: var(--fs-text-xs);
   font-weight: var(--fw-regular);
   line-height: var(--lh-text);
   color: var(--color-fg);
@@ -6987,20 +7176,20 @@ body.body--iat-open {
 }
 
 .list-item--position .list-item__price.type-trim,
-.list-item--position .list-item__total.type-trim {
+.list-item--position .list-item__total {
   text-align: right;
 }
 
 .list-item--position .list-item__price.type-trim .list-item__currency,
 .list-item--position .list-item__price.type-trim .list-item__value,
-.list-item--position .list-item__total.type-trim .list-item__currency,
-.list-item--position .list-item__total.type-trim .list-item__value {
+.list-item--position .list-item__total .list-item__currency,
+.list-item--position .list-item__total .list-item__value {
   display: inline;
   margin-block: 0;
 }
 
 .list-item--position .list-item__price.type-trim .list-item__currency,
-.list-item--position .list-item__total.type-trim .list-item__currency {
+.list-item--position .list-item__total .list-item__currency {
   margin-inline-end: var(--space-1);
 }
 
@@ -7030,9 +7219,28 @@ body.body--iat-open {
   width: 100%;
 }
 
+/* Persona B (Max): standard-button/small-secondary function bar — variant b */
+.action-buttons--investment.action-buttons--standard {
+  display: none;
+  gap: var(--space-4);
+}
+
+.action-buttons--investment.action-buttons--standard .uz-btn {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+:root[data-persona="max"] .action-buttons--investment.action-buttons--circular {
+  display: none;
+}
+
+:root[data-persona="max"] .action-buttons--investment.action-buttons--standard {
+  display: flex;
+}
+
 @media (max-width: 1023px) {
-  .body[data-screen="investment-product-details"] .action-buttons--investment .action-button,
-  .body[data-screen="details-of-position"] .action-buttons--investment .action-button {
+  .body[data-screen="investment-product-details"] .action-buttons--investment.action-buttons--circular .action-button,
+  .body[data-screen="details-of-position"] .action-buttons--investment.action-buttons--circular .action-button {
     flex: 0 0 auto;
     width: var(--action-button-container-width);
     min-width: var(--action-button-container-width);
@@ -7321,5 +7529,131 @@ html.shell-nav-pending [data-shell-reveal="when-ready"],
 .main-content__inner--exit-forward,
 .main-content__inner--exit-back {
   animation: none !important;
+}
+
+/* ==========================================================================
+ * Trade flow step 1 — designs/screens/trade-flow-step-1
+ * Entry: Details of position → Buy/Sell → js/trade-flow-overlay.js
+ * ========================================================================== */
+
+.modal--trade-flow {
+  overflow: hidden;
+  border-radius: var(--radius-regular);
+}
+
+.modal--trade-flow .modal__body {
+  position: static;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  overscroll-behavior-x: none;
+  -webkit-overflow-scrolling: touch;
+  flex: 1 1 0%;
+  min-height: 0;
+}
+
+.modal--trade-flow .modal__nav {
+  padding-bottom: var(--space-2);
+}
+
+.modal__title-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  max-width: calc(100% - 5.5rem);
+  text-align: center;
+}
+
+.modal__subtitle {
+  font-size: var(--fs-text-sm);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.modal--trade-flow .form {
+  gap: var(--space-3);
+}
+
+.trade-flow__context {
+  padding: var(--space-2);
+  border: 0.0625rem solid color-mix(in srgb, var(--color-fg) 20%, transparent);
+  border-radius: var(--radius-small);
+  background-color: var(--color-bg-secondary);
+}
+
+.trade-flow__context-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-1);
+  margin: 0 0 var(--space-2);
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.trade-flow__context-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.trade-flow__order-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+  align-items: start;
+}
+
+.trade-flow__order-row--single {
+  grid-template-columns: 1fr;
+}
+
+.trade-flow__order-row .form-field {
+  min-width: 0;
+}
+
+.trade-flow__order-row .form-field__select,
+.trade-flow__order-row .amount-input--no-currency {
+  height: 2.5rem;
+  min-height: 2.5rem;
+}
+
+.trade-flow__summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-block: var(--space-1);
+}
+
+.trade-flow__summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 1.5rem;
+}
+
+.trade-flow__summary-label {
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.trade-flow__summary-value {
+  font-size: var(--fs-text-sm);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+  text-align: right;
+}
+
+.modal--trade-flow .segmented--full {
+  margin-bottom: 0;
+}
+
+#uz-trade-overlay .modal-shell {
+  position: relative;
 }
 

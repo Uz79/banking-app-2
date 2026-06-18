@@ -33,7 +33,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="format-detection" content="telephone=no">
   <meta name="color-scheme" content="dark light">
-  <title>UZ Bank – Deposit</title>
+  <title>UZ Bank – Custody account</title>
   <script src="js/storage-migrate.js"></script>
   <script>
     /* Boot: apply saved theme + colour-override before paint.
@@ -68,6 +68,9 @@
         function sa(c, a){ return 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + a + ')'; }
         function ba(a){ return 'rgba(0,0,0,' + a + ')'; }
         var bgE = isDark ? 0.22 : 0.07, fgE = isDark ? 0.06 : 0.22;
+        var brandPrimaryHex = isDark ? o.bg : o.fg;
+        var brandPrimaryRgb = isDark ? bg : fg;
+        var white = { r: 255, g: 255, b: 255 };
 
         var tokens = {
           'color-bg': o.bg,
@@ -88,11 +91,11 @@
           'color-btn-primary-fg': o.bg,
           'color-btn-primary-hover': mix(fg, bg, fgE),
           'color-btn-primary-pressed': mix(fg, bg, Math.min(0.45, fgE * 1.75)),
-          'color-btn-secondary-bg': 'transparent',
-          'color-btn-secondary-border': o.fg,
-          'color-btn-secondary-fg': o.fg,
-          'color-btn-secondary-hover': fa(0.1),
-          'color-btn-secondary-pressed': fa(0.2),
+          'color-btn-secondary-bg': isDark ? o.bg : '#ffffff',
+          'color-btn-secondary-border': isDark ? o.fg : brandPrimaryHex,
+          'color-btn-secondary-fg': isDark ? o.fg : brandPrimaryHex,
+          'color-btn-secondary-hover': isDark ? mix(bg, fg, 0.1) : mix(white, brandPrimaryRgb, 0.1),
+          'color-btn-secondary-pressed': isDark ? mix(bg, fg, 0.2) : mix(white, brandPrimaryRgb, 0.2),
           'color-btn-tonal-bg': mix(bg, fg, isDark ? 0.28 : 0.08),
           'color-btn-tonal-border': mix(bg, fg, isDark ? 0.28 : 0.08),
           'color-btn-tonal-fg': o.fg,
@@ -159,7 +162,7 @@
               <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
             </a>
             <div class="view__nav-title-stack" data-shell-reveal>
-              <h1 class="page-title view__nav-title">Deposit</h1>
+              <h1 class="page-title view__nav-title">Custody account</h1>
               <p class="view__nav-meta">123.456.78</p>
             </div>
             <button type="button" class="view__nav-btn view__nav-btn--trailing view__nav-btn--hidden" aria-hidden="true" tabindex="-1">
@@ -169,7 +172,7 @@
 
           <div class="investment-product-details__grid">
             <div class="investment-product-details__left">
-              <div class="action-buttons action-buttons--investment">
+              <div class="action-buttons action-buttons--investment action-buttons--circular">
                 <button class="action-button" type="button">
                   <span class="action-button__circle">
                     <svg class="action-button__icon" aria-hidden="true" focusable="false"><use href="#i-search"/></svg>
@@ -181,6 +184,16 @@
                     <svg class="action-button__icon" aria-hidden="true" focusable="false"><use href="#i-eye"/></svg>
                   </span>
                   <span class="action-button__label">Details</span>
+                </button>
+              </div>
+              <div class="action-buttons action-buttons--investment action-buttons--standard">
+                <button type="button" class="uz-btn uz-btn--secondary uz-btn--sm">
+                  <svg class="uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-search"/></svg>
+                  Trade
+                </button>
+                <button type="button" class="uz-btn uz-btn--secondary uz-btn--sm">
+                  <svg class="uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-eye"/></svg>
+                  Details
                 </button>
               </div>
 
@@ -284,7 +297,7 @@
       </section>
     </div>
   </main>
-  <nav class="tab-bar">
+  <nav class="tab-bar" data-scroll-edge-footer>
     <a class="tab-bar__item" href="overview.html">
       <span class="tab-bar__icon-wrap">
         <svg class="tab-bar__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
@@ -315,6 +328,7 @@
 <script src="js/analytics.js"></script>
 <script src="js/scroll-edge-chrome.js"></script>
 <script src="js/app-mp.js"></script>
+<script src="js/payment-state.js"></script>
 <script src="js/investment-product-details.js"></script>
 <script src="js/investment-positions.js"></script>
 <div id="uzbank-icon-defs" aria-hidden="true" class="uzbank-icon-defs">

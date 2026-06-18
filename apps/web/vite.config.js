@@ -10,6 +10,8 @@ const dir = dirname(fileURLToPath(import.meta.url));
 export default {
   root: dir,
   server: {
+    port: 5174,
+    strictPort: true,
     open: '/overview.html',
     proxy: {
       '/api/yahoo': {

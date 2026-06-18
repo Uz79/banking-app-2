@@ -13,28 +13,18 @@
       "regular-filledtonal": {
         "default": "variants/regular-filledtonal/default.svg",
         "hover": "variants/regular-filledtonal/hover.svg",
-        "pressed 2": "variants/regular-filledtonal/pressed 2.svg",
-        "default 2": "variants/regular-filledtonal/default 2.svg",
-        "hover 2": "variants/regular-filledtonal/hover 2.svg",
         "pressed": "variants/regular-filledtonal/pressed.svg"
       },
       "regular-secondary": {
         "focus": "variants/regular-secondary/focus.svg",
         "default": "variants/regular-secondary/default.svg",
         "hover": "variants/regular-secondary/hover.svg",
-        "pressed 2": "variants/regular-secondary/pressed 2.svg",
         "pressed": "variants/regular-secondary/pressed.svg"
-      },
-      "regular-filled-tonal": {
-        "focus": "variants/regular-filled-tonal/focus.svg",
-        "default": "variants/regular-filled-tonal/default.svg",
-        "hover": "variants/regular-filled-tonal/hover.svg"
       },
       "regular-primary": {
         "focus": "variants/regular-primary/focus.svg",
         "default": "variants/regular-primary/default.svg",
         "hover": "variants/regular-primary/hover.svg",
-        "pressed 2": "variants/regular-primary/pressed 2.svg",
         "pressed": "variants/regular-primary/pressed.svg"
       }
     }

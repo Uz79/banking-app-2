@@ -19,7 +19,7 @@
     TM: { regularMarketPrice: 193.6, regularMarketChange: -1.24, regularMarketChangePercent: -0.64, regularMarketDayHigh: 196.1, regularMarketDayLow: 191.8 }
   };
 
-  var DEPOSIT_ACCOUNT_LABEL = 'Deposit 123.456.78';
+  var DEPOSIT_ACCOUNT_LABEL = 'Custody account 123.456.78';
 
   /** USD close on 14 Feb 2025 (deposit opening month) — StatMuse / market data. */
   var ACQUISITION_PRICE_USD = {
@@ -109,6 +109,14 @@
     var dayHigh = parseFloat(params.get('dayHigh'));
     var dayLow = parseFloat(params.get('dayLow'));
 
+    if (window.UZBankPayState && typeof window.UZBankPayState.getPosition === 'function') {
+      var stored = window.UZBankPayState.getPosition(symbol);
+      if (stored) {
+        if (stored.name) name = stored.name;
+        if (typeof stored.quantity === 'number') quantity = stored.quantity;
+      }
+    }
+
     var position = {
       symbol: symbol,
       name: name,
@@ -181,6 +189,7 @@
   }
 
   function hydratePage(position) {
+    window.__UZ_POSITION__ = position;
     document.title = 'UZ Bank – ' + position.name;
 
     setText('[data-position-title]', position.name);
@@ -240,6 +249,11 @@
       if (!quote) return;
       var updated = readPositionFromUrl();
       hydratePage(applyQuoteToPosition(updated, quote));
+    });
+
+    document.addEventListener('uzbank:state-changed', function () {
+      var refreshed = readPositionFromUrl();
+      hydratePage(refreshed);
     });
   }
 

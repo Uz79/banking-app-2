@@ -21,7 +21,7 @@
       balance: "25'000.00",
     },
     deposit: {
-      title: 'Deposit',
+      title: 'Custody account',
       iban: '123,456.78',
       icon: 'i-life-buoy',
       currency: 'CHF',

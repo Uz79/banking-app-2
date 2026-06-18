@@ -53,7 +53,7 @@ extension Account {
         currency: "CHF", balance: 25_000.00, icon: "icon24-shield"
     )
     static let deposit = Account(
-        id: "3", name: "Deposit",
+        id: "3", name: "Custody account",
         iban: "123.456.78",
         currency: "CHF", balance: 20_000.00, icon: "icon24-gitlab"
     )

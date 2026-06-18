@@ -394,6 +394,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  document.addEventListener('click', function (e) {
+    var bookingsBtn = e.target.closest('[data-action="show-all-bookings"]');
+    if (!bookingsBtn) return;
+    document.dispatchEvent(
+      new CustomEvent('uz:more-functions-action', {
+        bubbles: true,
+        detail: { action: 'show-all-bookings' }
+      })
+    );
+  });
+
   document.addEventListener('uz:more-functions-action', function (e) {
     var d = e.detail || {};
     var action = d.action;

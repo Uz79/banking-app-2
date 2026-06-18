@@ -68,6 +68,9 @@
         function sa(c, a){ return 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + a + ')'; }
         function ba(a){ return 'rgba(0,0,0,' + a + ')'; }
         var bgE = isDark ? 0.22 : 0.07, fgE = isDark ? 0.06 : 0.22;
+        var brandPrimaryHex = isDark ? o.bg : o.fg;
+        var brandPrimaryRgb = isDark ? bg : fg;
+        var white = { r: 255, g: 255, b: 255 };
 
         var tokens = {
           'color-bg': o.bg,
@@ -88,11 +91,11 @@
           'color-btn-primary-fg': o.bg,
           'color-btn-primary-hover': mix(fg, bg, fgE),
           'color-btn-primary-pressed': mix(fg, bg, Math.min(0.45, fgE * 1.75)),
-          'color-btn-secondary-bg': 'transparent',
-          'color-btn-secondary-border': o.fg,
-          'color-btn-secondary-fg': o.fg,
-          'color-btn-secondary-hover': fa(0.1),
-          'color-btn-secondary-pressed': fa(0.2),
+          'color-btn-secondary-bg': isDark ? o.bg : '#ffffff',
+          'color-btn-secondary-border': isDark ? o.fg : brandPrimaryHex,
+          'color-btn-secondary-fg': isDark ? o.fg : brandPrimaryHex,
+          'color-btn-secondary-hover': isDark ? mix(bg, fg, 0.1) : mix(white, brandPrimaryRgb, 0.1),
+          'color-btn-secondary-pressed': isDark ? mix(bg, fg, 0.2) : mix(white, brandPrimaryRgb, 0.2),
           'color-btn-tonal-bg': mix(bg, fg, isDark ? 0.28 : 0.08),
           'color-btn-tonal-border': mix(bg, fg, isDark ? 0.28 : 0.08),
           'color-btn-tonal-fg': o.fg,
@@ -169,18 +172,28 @@
 
           <div class="details-of-position__grid">
             <div class="details-of-position__left">
-              <div class="action-buttons action-buttons--investment">
-                <button class="action-button" type="button">
+              <div class="action-buttons action-buttons--investment action-buttons--circular">
+                <button class="action-button" type="button" data-trade-action="buy">
                   <span class="action-button__circle">
                     <svg class="action-button__icon" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg>
                   </span>
                   <span class="action-button__label">Buy</span>
                 </button>
-                <button class="action-button" type="button">
+                <button class="action-button" type="button" data-trade-action="sell">
                   <span class="action-button__circle">
                     <svg class="action-button__icon" aria-hidden="true" focusable="false"><use href="#i-minus"/></svg>
                   </span>
                   <span class="action-button__label">Sell</span>
+                </button>
+              </div>
+              <div class="action-buttons action-buttons--investment action-buttons--standard">
+                <button type="button" class="uz-btn uz-btn--secondary uz-btn--sm" data-trade-action="buy">
+                  <svg class="uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg>
+                  Buy
+                </button>
+                <button type="button" class="uz-btn uz-btn--secondary uz-btn--sm" data-trade-action="sell">
+                  <svg class="uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-minus"/></svg>
+                  Sell
                 </button>
               </div>
 
@@ -261,7 +274,7 @@
                   <dl class="data-card__rows" data-position-my-positions>
                     <div class="data-card__row">
                       <dt class="data-card__label">Account</dt>
-                      <dd class="data-card__value">Deposit 123.456.78</dd>
+                      <dd class="data-card__value">Custody account 123.456.78</dd>
                     </div>
                     <div class="data-card__row">
                       <dt class="data-card__label">Acquisition price</dt>
@@ -314,7 +327,7 @@
       </section>
     </div>
   </main>
-  <nav class="tab-bar">
+  <nav class="tab-bar" data-scroll-edge-footer>
     <a class="tab-bar__item" href="overview.html">
       <span class="tab-bar__icon-wrap">
         <svg class="tab-bar__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
@@ -340,13 +353,196 @@
 
 </div>
 
+<!-- Trade flow step 1 (designs/screens/trade-flow-step-1) -->
+<div id="uz-trade-overlay" class="modal-overlay" aria-hidden="true">
+  <div class="modal-shell modal-shell--offscreen modal-shell--no-transition">
+    <div class="modal modal--trade-flow">
+
+      <div class="modal__nav">
+        <button class="modal__back modal__back--hidden" type="button" aria-hidden="true" tabindex="-1">
+          <svg class="modal__back-icon" role="img" aria-label="" focusable="false"><use href="#i-arrow-left"/></svg>
+        </button>
+        <div class="modal__title-stack">
+          <span class="modal__title" id="uz-trade-title">Buy</span>
+          <span class="modal__subtitle" id="uz-trade-meta">ABB Ltd | CH0012221711 | SWX</span>
+        </div>
+        <button class="modal__close" type="button" id="uz-trade-close" aria-label="Close trade flow">
+          <svg class="modal__close-icon" role="img" aria-label="" focusable="false"><use href="#i-x"/></svg>
+        </button>
+      </div>
+
+      <div class="modal__body" data-scroll-edge>
+        <div class="form trade-flow">
+
+          <div class="form-field">
+            <span class="form-field__label">Amount</span>
+            <div class="amount-input amount-input--no-currency">
+              <input
+                class="amount-input__value"
+                type="text"
+                inputmode="numeric"
+                id="uz-trade-amount"
+                value="100"
+                aria-label="Amount"
+              />
+              <button type="button" class="amount-input__clear amount-input__clear--hidden" aria-label="Clear amount">
+                <svg class="amount-input__clear-icon" aria-hidden="true" focusable="false"><use href="#i-x-circle"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="trade-flow__context">
+            <p class="trade-flow__context-header">
+              <svg class="form-field__optional-icon" aria-hidden="true" focusable="false"><use href="#i-info"/></svg>
+              <span>Stock split 1</span>
+            </p>
+            <div class="trade-flow__context-rows">
+                <div class="form-field__text-row">
+                  <span class="form-field__text-row-label">Price</span>
+                  <span class="form-field__text-row-value" id="uz-trade-price">CHF 1'008.50</span>
+                </div>
+                <div class="form-field__text-row">
+                  <span class="form-field__text-row-label">Expected total price</span>
+                  <span class="form-field__text-row-value" id="uz-trade-total">CHF 100'850.00</span>
+                </div>
+                <div class="form-field__text-row">
+                  <span class="form-field__text-row-label">Available in Household account</span>
+                  <span class="form-field__text-row-value" id="uz-trade-available">CHF 10'000.00</span>
+                </div>
+                <div class="form-field__text-row">
+                  <span class="form-field__text-row-label">In Custody account</span>
+                  <span class="form-field__text-row-value" id="uz-trade-in-depot">pcs. 5</span>
+                </div>
+              </div>
+            </div>
+
+          <div class="trade-flow__order-row" id="uz-trade-order-row">
+            <div class="form-field">
+              <span class="form-field__label">Order type</span>
+              <div class="form-field__select-wrap">
+                <select class="form-field__select" id="uz-trade-order-type" name="orderType" aria-label="Order type">
+                  <option value="limit" selected>Limit</option>
+                  <option value="market">Market</option>
+                </select>
+                <span class="form-field__select-icon" aria-hidden="true">
+                  <svg class="form-field__select-chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+                </span>
+              </div>
+            </div>
+
+            <div class="form-field" id="uz-trade-limit-field">
+              <span class="form-field__label">Limit</span>
+              <div class="amount-input amount-input--no-currency">
+                <input
+                  class="amount-input__value"
+                  type="text"
+                  inputmode="decimal"
+                  id="uz-trade-limit"
+                  value="1'008.50"
+                  aria-label="Limit price"
+                />
+                <button type="button" class="amount-input__clear amount-input__clear--hidden" aria-label="Clear limit">
+                  <svg class="amount-input__clear-icon" aria-hidden="true" focusable="false"><use href="#i-x-circle"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="segmented segmented--full" role="group" aria-label="Order duration" id="uz-trade-duration">
+            <button type="button" class="segmented__option segmented__option--active" data-duration="daily">Daily order</button>
+            <button type="button" class="segmented__option" data-duration="gtc">GTC</button>
+            <button type="button" class="segmented__option" data-duration="until">Execute until</button>
+          </div>
+
+          <div class="form-field" id="uz-trade-until-field" hidden>
+            <span class="form-field__label">Execute until</span>
+            <div class="form-field__row form-field__row--bordered">
+              <span class="form-field__value" id="uz-trade-until-date">31.05.2026</span>
+              <svg class="form-field__calendar-icon" aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg>
+            </div>
+          </div>
+
+          <div class="form-field form-field--no-footer">
+            <span class="form-field__label">Custody account</span>
+            <button class="debit-account" type="button" id="uz-trade-depot-btn" aria-label="Select Custody account">
+              <svg class="debit-account__icon" aria-hidden="true" focusable="false"><use href="#i-life-buoy"/></svg>
+              <div class="debit-account__info type-stack-tight">
+                <span class="debit-account__name" id="uz-trade-depot-name">Custody account</span>
+                <span class="debit-account__iban" id="uz-trade-depot-iban">123.456.78</span>
+              </div>
+              <div class="debit-account__end">
+                <span class="debit-account__amount">
+                  <span class="debit-account__amount-currency" id="uz-trade-depot-currency">CHF</span>
+                  <span class="debit-account__amount-value" id="uz-trade-depot-balance">20'000.00</span>
+                </span>
+                <svg class="debit-account__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+              </div>
+            </button>
+          </div>
+
+          <div class="form-field form-field--no-footer">
+            <span class="form-field__label">Debit account</span>
+            <button class="debit-account" type="button" id="uz-trade-debtor-btn" aria-label="Select debit account">
+              <svg class="debit-account__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
+              <div class="debit-account__info type-stack-tight">
+                <span class="debit-account__name" id="uz-trade-debtor-name">Household</span>
+                <span class="debit-account__iban" id="uz-trade-debtor-iban">CH35 0900 0000 2470 2920 1</span>
+              </div>
+              <div class="debit-account__end">
+                <span class="debit-account__amount">
+                  <span class="debit-account__amount-currency" id="uz-trade-debtor-currency">CHF</span>
+                  <span class="debit-account__amount-value" id="uz-trade-debtor-balance">10'000.00</span>
+                </span>
+                <svg class="debit-account__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+              </div>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="modal__footer">
+        <button class="uz-btn uz-btn--primary uz-btn--md uz-btn--block" type="button" id="uz-trade-confirm">Confirm</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="confirmation-overlay" id="uz-trade-confirmation" aria-hidden="true">
+    <div class="confirmation-dialog">
+      <div class="confirmation-dialog__icon" aria-hidden="true">
+        <svg class="confirmation-dialog__icon-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2"/>
+          <path d="M15 24L21 30L33 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="confirmation-dialog__text" id="uz-trade-conf-lead">Your order to buy</span>
+      <div class="confirmation-dialog__amount">
+        <span class="confirmation-dialog__currency" id="uz-trade-conf-currency">CHF</span>
+        <span class="confirmation-dialog__sum" id="uz-trade-conf-amount">100'850.00</span>
+      </div>
+      <div class="confirmation-dialog__recipient">
+        <span></span>
+        <span class="confirmation-dialog__recipient-name" id="uz-trade-conf-detail">100 pcs. ABB Ltd</span>
+      </div>
+      <span class="confirmation-dialog__footer">will be executed now</span>
+      <button class="uz-btn uz-btn--primary uz-btn--md uz-btn--block" type="button" id="uz-trade-conf-btn">Confirm</button>
+    </div>
+  </div>
+</div>
+
 <script src="js/document-ready.js"></script>
 <script src="js/shell-nav.js"></script>
 <script src="js/analytics.js"></script>
 <script src="js/scroll-edge-chrome.js"></script>
+<script src="js/payment-exit-confirm.js"></script>
+<script src="js/form-field-sheet.js"></script>
+<script src="js/payment-state.js"></script>
+<script src="js/data-render.js"></script>
 <script src="js/app-mp.js"></script>
 <script src="js/investment-product-details.js"></script>
 <script src="js/details-of-position.js"></script>
+<script src="js/trade-flow-overlay.js"></script>
 <div id="uzbank-icon-defs" aria-hidden="true" class="uzbank-icon-defs">
 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden;pointer-events:none">
 <symbol id="i-anchor" viewBox="0 0 24 24">
@@ -425,6 +621,11 @@
 <symbol id="i-home" viewBox="0 0 24 24">
 <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-info" viewBox="0 0 16 16">
+<circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="2" fill="none"/>
+<path d="M8 11V8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+<circle cx="8" cy="5.25" r="0.75" fill="currentColor"/>
 </symbol>
 <symbol id="i-life-buoy" viewBox="0 0 24 24">
 <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

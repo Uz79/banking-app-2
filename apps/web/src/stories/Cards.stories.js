@@ -119,7 +119,7 @@ export const CardAccountsInvestment = {
           <a class="product-item" href="#" data-account="deposit">
             <svg class="product-item__icon" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg>
             <div class="product-item__info type-stack-tight">
-              <span class="product-item__name type-sm type-trim">Deposit</span>
+              <span class="product-item__name type-sm type-trim">Custody account</span>
               <span class="product-item__iban type-xs type-trim">123.456.78</span>
             </div>
             <span class="product-item__amount">

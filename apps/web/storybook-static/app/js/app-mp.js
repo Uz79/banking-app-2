@@ -179,7 +179,7 @@
       'color-btn-tonal-fg': fgHex,
       'color-btn-tonal-hover': mix(bg, fg, isDark ? 0.38 : 0.14),
       'color-btn-tonal-pressed': mix(bg, fg, isDark ? 0.48 : 0.22),
-      'color-overlay-scrim': sa(isDark ? bg : fg, isDark ? 0.62 : 0.45),
+      'color-overlay-tint': fgHex,
       'color-nav-elevated-shadow': ba(isDark ? 0.35 : 0.06),
       'color-modal-elevated-shadow': ba(isDark ? 0.45 : 0.12),
       'color-surface-state-hover': fa(0.1),
@@ -324,9 +324,15 @@
 
   global.UZBankApplyTheme = applyTheme;
 
-  (global.onDocumentReady || function (fn) {
-    document.addEventListener('DOMContentLoaded', fn);
-  })(function () {
+  function onDocumentReady(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn);
+    } else {
+      fn();
+    }
+  }
+
+  onDocumentReady(function () {
     function getTheme() {
       var t = document.documentElement.getAttribute('data-theme');
       return t === 'light' || t === 'dark' ? t : 'dark';
@@ -346,7 +352,14 @@
       return carouselSlides.children.length;
     }
 
-    var SLIDE_ACCOUNTS = ['household', 'savings', 'deposit'];
+    var SLIDE_ACCOUNTS = carouselSlides
+      ? Array.prototype.map
+          .call(carouselSlides.children, function (slide) {
+            return slide.getAttribute('data-account-key');
+          })
+          .filter(Boolean)
+      : [];
+    if (!SLIDE_ACCOUNTS.length) SLIDE_ACCOUNTS = ['household', 'savings'];
     window.__UZ_ACTIVE_ACCOUNT__ = SLIDE_ACCOUNTS[0];
 
     // On overview: store which account was tapped before navigating away
@@ -560,12 +573,9 @@
       function go(page) {
         window.location.href = prefix + page;
       }
-      if (action === 'internal-account-transfer') {
-        if (typeof window.__UZ_IAT_OPEN === 'function') {
-          window.__UZ_IAT_OPEN();
-        } else {
-          go('payments.html');
-        }
+      if (action === 'show-all-bookings') {
+        var accountKey = window.__UZ_ACTIVE_ACCOUNT__ || 'savings';
+        go('all-bookings-and-payments.html?account=' + encodeURIComponent(accountKey));
         return;
       }
       if (action === 'change-category') {
@@ -583,19 +593,32 @@
 
     function bindMainScrollChrome() {
       var screen = document.body.getAttribute('data-screen');
-      if (screen !== 'overview' && screen !== 'payments' && screen !== 'account-details') return;
+      if (
+        screen !== 'overview' &&
+        screen !== 'payments' &&
+        screen !== 'account-details' &&
+        screen !== 'profile' &&
+        screen !== 'investment-product-details' &&
+        screen !== 'details-of-position'
+      ) {
+        return;
+      }
 
       var mainContent = document.querySelector('.main-content');
+      var app = document.querySelector('.app');
       var view = document.querySelector('.view--active');
-      if (!mainContent || !view || !window.UZBankScrollEdgeChrome) return;
+      if (!mainContent || !app || !view || !window.UZBankScrollEdgeChrome) return;
       if (!view.querySelector('[data-scroll-edge-nav]')) return;
 
-      window.UZBankScrollEdgeChrome.bind(view, {
+      var bindOptions = {
         nav: '[data-scroll-edge-nav]',
+        footer: '.tab-bar',
         getScrollEl: function () {
           return mainContent;
         }
-      });
+      };
+
+      window.UZBankScrollEdgeChrome.bind(app, bindOptions);
     }
 
     bindMainScrollChrome();

@@ -111,9 +111,11 @@ function trimPx(value) {
   return `${Number(value).toFixed(3).replace(/\.?0+$/, "")}px`;
 }
 
+/** Figma often omits leadingTrim — default on (engineering; required for trim stacks). */
 function isLeadingTrimEnabled(node) {
   const v = node?.leadingTrim?.value;
-  return v === true || v === "true";
+  if (v === false || v === "false") return false;
+  return true;
 }
 
 function fontWeightKey(node) {
@@ -294,6 +296,14 @@ function typographyClassesCss(vars) {
     .map(({ className }) => `.type-${className}.type-trim`)
     .join(",\n");
 
+  const trimStylesBlock = trimStyles
+    ? `${trimStyles} {
+  display: block;
+  margin-block-start: calc(-1 * var(--text-trim-top));
+  margin-block-end: calc(-1 * var(--text-trim-bottom));
+}`
+    : "";
+
   return `${GENERATED_BANNER}/* Bundled semantic text styles */
 
 ${typeRules}
@@ -313,12 +323,7 @@ ${typeRules}
   margin-block-end: calc(-1 * var(--text-trim-bottom, 0px));
 }
 
-${trimStyles} {
-  display: block;
-  margin-block-start: calc(-1 * var(--text-trim-top));
-  margin-block-end: calc(-1 * var(--text-trim-bottom));
-}
-
+${trimStylesBlock ? `\n${trimStylesBlock}\n` : ""}
 /* Stacked trimmed lines — .type-stack-tight + .type-trim; row gap via trim-aware margins */
 .type-stack-tight {
   display: flex;
@@ -600,8 +605,8 @@ ${typographySizeCss(mob, "mobile")}
   /* Leading trim — Profile Pro cap → baseline (computed from brand font-metrics) */
 ${typographyTrimCss(mob)}
 
-  /* Tight row gap for stacked trimmed labels — Figma space/2 (8dp) */
-  --text-row-gap: var(--space-1);
+  /* Tight row gap for stacked trimmed labels — fixed 8dp (immune to space-scale shifts) */
+  --text-row-gap: 0.5rem;
 
   --btn-pad-y-sm: 0;
   --btn-pad-x-sm: var(--space-2);
@@ -648,4 +653,4 @@ fs.writeFileSync(typographyOutFile, typographyClassesCss(mob), "utf8");
 console.log(`Wrote ${outFile}`);
 console.log(`Wrote ${typographyOutFile}`);
 console.log(`  --trim-top-text-sm: ${trimPx(mob.textSm.trimTop)}`);
-console.log(`  --text-row-gap: var(--space-1)`);
+console.log(`  --text-row-gap: 0.5rem`);

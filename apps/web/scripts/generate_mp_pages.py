@@ -101,7 +101,7 @@ def tabbar(active: str, prefix: str = "") -> str:
     </a>
 """
 
-    return f"""  <nav class="tab-bar">
+    return f"""  <nav class="tab-bar" data-scroll-edge-footer>
 {item('overview', 'overview.html', 'icon24-home.svg', 'Overview')}
 {item('payments', 'payments.html', 'icon24-payments.svg', 'Payments')}
 {item('profile', 'profile.html', 'icon24-user.svg', 'Profile')}
@@ -247,7 +247,7 @@ def product_links_overview(html: str) -> str:
         count=1,
     )
     html = re.sub(
-        r'(<a class="product-item" href="account-details.html" data-account="savings">[\s\S]*?</span>\s*)</div>(\s*<div class="divider"></div>\s*<div class="product-item">\s*<svg class="product-item__icon"[^>]*>[\s\S]*?</svg>)',
+        r'(<a class="product-item" href="account-details.html" data-account="savings">[\s\S]*?</span>\s*)</div>(\s*<div class="divider"></div>\s*<a class="product-item" href="investment-product-details.html")',
         r"\1</a>\2",
         html,
         count=1,
@@ -305,7 +305,10 @@ account_sec = account_back_link(account_sec)
         "",
         include_payment_modal=True,
         overlay_after_modal="\n" + IAT_OVERLAY.strip() + "\n",
-        extra_body_scripts='<script src="js/iat-overlay.js"></script>\n',
+        extra_body_scripts=(
+            '<script src="js/iat-overlay.js"></script>\n'
+            '<script src="js/investment-product-details.js"></script>\n'
+        ),
     ),
     encoding="utf-8",
 )
