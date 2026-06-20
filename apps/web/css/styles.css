@@ -2649,7 +2649,7 @@ a.show-all-btn {
   padding: var(--space-3);
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-3); /* 16dp — designs/screens/payment-flow-recipient */
 }
 
 .form-field {
@@ -2795,7 +2795,7 @@ a.show-all-btn {
   height: 2.5rem;
   min-height: 2.5rem;
   position: relative;
-  padding: var(--space-1) var(--space-2);
+  padding: 0 var(--space-2);
   border: none;
   border-radius: var(--radius-small);
   background-color: var(--color-input-surface);
@@ -2822,24 +2822,50 @@ a.show-all-btn {
   flex: 1;
   min-width: 0;
   min-height: 0;
+  height: 2.5rem;
   padding: 0;
   margin: 0;
   border: none;
   border-radius: 0;
   background: transparent;
   font-size: var(--fs-text-md);
-  line-height: var(--lh-text);
+  line-height: 2.5rem;
   color: var(--color-fg);
   outline: none;
   font-family: var(--font-family);
+}
+
+
+/* iOS Safari zooms focused inputs when font-size < 16px — keep form controls at least 16px on touch. */
+@media (hover: none) and (pointer: coarse) {
+  .form-field__input,
+  .form-field__select,
+  .amount-input__value,
+  .recipient-search__input {
+    font-size: max(16px, var(--fs-text-md));
+  }
 }
 
 .form-field__text-wrap .form-field__input::placeholder {
   color: var(--color-fg-disabled);
 }
 
+.form-field__text-wrap:has(.form-field__clear:not(.form-field__clear--hidden)) {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: var(--space-1);
+  align-items: center;
+}
+
 .form-field__text-wrap:has(.form-field__clear:not(.form-field__clear--hidden)) .form-field__input {
-  padding-inline-end: 2rem;
+  padding-inline-end: 0;
+}
+
+.form-field__text-wrap:has(.form-field__clear:not(.form-field__clear--hidden)) .form-field__clear {
+  position: static;
+  transform: none;
+  top: auto;
+  right: auto;
 }
 
 .form-field__clear {
@@ -3024,7 +3050,7 @@ a.show-all-btn {
   position: relative;
   border: none;
   border-radius: var(--radius-regular);
-  padding: var(--space-2) var(--space-4);
+  padding: 0 var(--space-4);
   align-items: center;
   background-color: var(--color-input-surface);
   box-shadow: inset 0 0 0 var(--input-stroke-px, 1px) var(--color-input-stroke);
@@ -3073,19 +3099,40 @@ a.show-all-btn {
 .amount-input__value {
   flex: 1;
   min-width: 0;
+  height: 2.5rem;
   text-align: right;
   border: none;
   outline: none;
   font-size: var(--fs-text-md);
   font-weight: var(--fw-medium);
-  line-height: var(--lh-text);
+  line-height: 2.5rem;
   color: var(--color-fg);
   font-family: var(--font-family);
   background: transparent;
 }
 
-.amount-input:has(.amount-input__clear:not(.amount-input__clear--hidden)) .amount-input__value {
-  padding-inline-end: 2rem;
+.amount-input--no-currency:has(.amount-input__clear:not(.amount-input__clear--hidden)) {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: var(--space-1);
+  align-items: center;
+}
+
+.amount-input:not(.amount-input--no-currency):has(.amount-input__clear:not(.amount-input__clear--hidden)) {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+}
+
+.amount-input:not(.amount-input--no-currency):has(.amount-input__clear:not(.amount-input__clear--hidden)) .amount-input__clear {
+  margin-inline-start: var(--space-1);
+}
+
+.amount-input:has(.amount-input__clear:not(.amount-input__clear--hidden)) .amount-input__clear {
+  position: static;
+  transform: none;
+  top: auto;
+  right: auto;
 }
 
 .amount-input__clear {
@@ -3131,7 +3178,7 @@ a.show-all-btn {
   /* Match select-field / text-field control height (designs/components/form-field) */
   height: 2.5rem;
   min-height: 2.5rem;
-  padding: var(--space-1) var(--space-2);
+  padding: 0 var(--space-2);
   border-radius: var(--radius-small);
 }
 
@@ -3260,7 +3307,7 @@ button.debit-account:focus-visible {
  * Token --color-segmented-track-bg should stay a real colour (not “transparent track”). */
 .segmented {
   display: flex;
-  align-items: stretch;
+  align-items: center;
   gap: var(--space-1);
   padding: 0.125rem;
   border-radius: var(--radius-small);
@@ -3279,7 +3326,7 @@ button.debit-account:focus-visible {
 
 .segmented--sm .segmented__option {
   min-height: 2rem;
-  padding-block: 0;
+  height: 2rem;
 }
 
 /* Regular — 44dp track (Figma Type=Regular). */
@@ -3289,16 +3336,19 @@ button.debit-account:focus-visible {
 
 .segmented--regular .segmented__option {
   min-height: calc(2.75rem - 0.25rem);
-  padding-block: 0;
+  height: calc(2.75rem - 0.25rem);
 }
 
 .segmented__option {
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-height: 2rem;
-  padding: var(--space-1) var(--space-2);
+  padding: 0 var(--space-2);
   font-size: var(--fs-text-sm);
   font-weight: var(--fw-medium);
-  line-height: var(--lh-text);
+  line-height: 1.25;
   text-align: center;
   border-radius: var(--radius-small);
   cursor: pointer;
@@ -6118,6 +6168,7 @@ dialog.form-sheet.form-sheet--closing[open] .form-sheet__panel {
 
 @media (hover: none) and (pointer: coarse) {
   .form-sheet__row:focus,
+  .form-sheet__nav-close:focus,
   dialog.basic-dialog-payment-exit .uz-btn:focus {
     outline: none;
   }
@@ -7576,27 +7627,9 @@ html.shell-nav-pending [data-shell-reveal="when-ready"],
   gap: var(--space-3);
 }
 
-.trade-flow__context {
-  padding: var(--space-2);
-  border: 0.0625rem solid color-mix(in srgb, var(--color-fg) 20%, transparent);
-  border-radius: var(--radius-small);
+.modal--trade-flow .form-field__text-rows {
+  border-color: color-mix(in srgb, var(--color-fg) 20%, transparent);
   background-color: var(--color-bg-secondary);
-}
-
-.trade-flow__context-header {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-1);
-  margin: 0 0 var(--space-2);
-  font-size: var(--fs-text-sm);
-  line-height: var(--lh-text);
-  color: var(--color-fg-secondary);
-}
-
-.trade-flow__context-rows {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
 }
 
 .trade-flow__order-row {
