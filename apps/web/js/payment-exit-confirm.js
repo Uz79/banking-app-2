@@ -28,10 +28,8 @@
       '<button type="button" class="uz-btn uz-btn--primary uz-btn--md uz-btn--block" data-payment-exit-leave>Discard</button>' +
       '</div></div>';
 
-    dialog.addEventListener('click', function (e) {
-      if (e.target !== dialog) return;
-      pendingFn = null;
-      dialog.close();
+    dialog.addEventListener('cancel', function (e) {
+      e.preventDefault();
     });
 
     dialog.querySelector('[data-payment-exit-stay]').addEventListener('click', function () {

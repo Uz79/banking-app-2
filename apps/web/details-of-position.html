@@ -374,7 +374,7 @@
       <div class="modal__body" data-scroll-edge>
         <div class="form trade-flow">
 
-          <div class="form-field">
+          <div class="form-field form-field--informative">
             <span class="form-field__label">Amount</span>
             <div class="amount-input amount-input--no-currency">
               <input
@@ -389,32 +389,30 @@
                 <svg class="amount-input__clear-icon" aria-hidden="true" focusable="false"><use href="#i-x-circle"/></svg>
               </button>
             </div>
-          </div>
-
-          <div class="trade-flow__context">
-            <p class="trade-flow__context-header">
+            <p class="form-field__optional-row">
               <svg class="form-field__optional-icon" aria-hidden="true" focusable="false"><use href="#i-info"/></svg>
               <span>Stock split 1</span>
             </p>
-            <div class="trade-flow__context-rows">
-                <div class="form-field__text-row">
-                  <span class="form-field__text-row-label">Price</span>
-                  <span class="form-field__text-row-value" id="uz-trade-price">CHF 1'008.50</span>
-                </div>
-                <div class="form-field__text-row">
-                  <span class="form-field__text-row-label">Expected total price</span>
-                  <span class="form-field__text-row-value" id="uz-trade-total">CHF 100'850.00</span>
-                </div>
-                <div class="form-field__text-row">
-                  <span class="form-field__text-row-label">Available in Household account</span>
-                  <span class="form-field__text-row-value" id="uz-trade-available">CHF 10'000.00</span>
-                </div>
-                <div class="form-field__text-row">
-                  <span class="form-field__text-row-label">In Custody account</span>
-                  <span class="form-field__text-row-value" id="uz-trade-in-depot">pcs. 5</span>
-                </div>
-              </div>
+          </div>
+
+          <div class="form-field__text-rows">
+            <div class="form-field__text-row">
+              <span class="form-field__text-row-label">Price</span>
+              <span class="form-field__text-row-value" id="uz-trade-price">CHF 1'008.50</span>
             </div>
+            <div class="form-field__text-row">
+              <span class="form-field__text-row-label">Expected total price</span>
+              <span class="form-field__text-row-value" id="uz-trade-total">CHF 100'850.00</span>
+            </div>
+            <div class="form-field__text-row">
+              <span class="form-field__text-row-label">Available in Household account</span>
+              <span class="form-field__text-row-value" id="uz-trade-available">CHF 10'000.00</span>
+            </div>
+            <div class="form-field__text-row">
+              <span class="form-field__text-row-label">In Custody account</span>
+              <span class="form-field__text-row-value" id="uz-trade-in-depot">pcs. 5</span>
+            </div>
+          </div>
 
           <div class="trade-flow__order-row" id="uz-trade-order-row">
             <div class="form-field">
@@ -448,7 +446,7 @@
             </div>
           </div>
 
-          <div class="segmented segmented--full" role="group" aria-label="Order duration" id="uz-trade-duration">
+          <div class="segmented segmented--regular segmented--full" role="group" aria-label="Order duration" id="uz-trade-duration">
             <button type="button" class="segmented__option segmented__option--active" data-duration="daily">Daily order</button>
             <button type="button" class="segmented__option" data-duration="gtc">GTC</button>
             <button type="button" class="segmented__option" data-duration="until">Execute until</button>
@@ -536,6 +534,7 @@
 <script src="js/analytics.js"></script>
 <script src="js/scroll-edge-chrome.js"></script>
 <script src="js/payment-exit-confirm.js"></script>
+<script src="js/dialog-focus.js"></script>
 <script src="js/form-field-sheet.js"></script>
 <script src="js/payment-state.js"></script>
 <script src="js/data-render.js"></script>

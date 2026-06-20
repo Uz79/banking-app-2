@@ -106,6 +106,10 @@
     return document.getElementById('uz-iat-overlay');
   }
 
+  function getTradeOverlay() {
+    return document.getElementById('uz-trade-overlay');
+  }
+
   function getModal() {
     return getPaymentModal();
   }
@@ -798,6 +802,7 @@
   function init() {
     initOverlay(getPaymentModal());
     initOverlay(getIatOverlay());
+    initOverlay(getTradeOverlay());
   }
 
   bindMoreFunctionsSheet();
