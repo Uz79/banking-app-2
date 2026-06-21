@@ -610,7 +610,7 @@
           if (amt.select) amt.select();
         }
       } else if (targetSeg === 'schedule') {
-        var dateRow = stepEl.querySelector('.form-field__row--bordered');
+        var dateRow = stepEl.querySelector('.form-field__date-wrap');
         if (dateRow && dateRow.focus) {
           if (!dateRow.getAttribute('tabindex')) dateRow.setAttribute('tabindex', '-1');
           dateRow.focus();

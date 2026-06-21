@@ -122,7 +122,9 @@ html[data-theme="dark"] {
 }
 
 /* Block page scroll while any flow overlay is open (payment, account information, share). */
-html:has(body.body--payment-open) {
+html:has(body.body--payment-open),
+html:has(body.body--trade-open),
+html:has(body.body--iat-open) {
   overflow: hidden;
 }
 
@@ -1969,8 +1971,9 @@ a.show-all-btn {
   pointer-events: none;
 }
 
-.modal-overlay--active {
+.modal-overlay.modal-overlay--active {
   display: flex;
+  overflow-x: clip;
 }
 
 /* Keep scrim visible after fade-in (animation alone can reset when body scroll-lock toggles). */
@@ -2493,7 +2496,7 @@ a.show-all-btn {
   padding: 0;
   min-height: 0;
   font-family: var(--font-family);
-  font-size: var(--fs-text-md);
+  font-size: max(16px, var(--fs-text-md));
   line-height: var(--lh-text);
   color: var(--color-fg);
   outline: none;
@@ -2696,21 +2699,57 @@ a.show-all-btn {
   border-bottom: 0.0625rem solid var(--color-separator);
 }
 
-.form-field__row--bordered {
-  border: 0.0625rem solid var(--color-fg);
+.form-field__date-wrap,
+.form-field__row.form-field__row--bordered {
+  /* Date field — designs/components/form-field/date-field (matches text/select control chrome) */
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 2.5rem;
+  min-height: 2.5rem;
+  padding: 0 var(--space-2);
+  padding-bottom: 0;
+  border: none;
+  border-bottom: none;
   border-radius: var(--radius-small);
-  padding: var(--space-2);
-  border-bottom: 0.0625rem solid var(--color-fg);
+  background-color: var(--color-input-surface);
+  box-shadow: inset 0 0 0 var(--input-stroke-px, 1px) var(--color-input-stroke);
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-.form-field__row--bordered:hover {
+.form-field__date-wrap:hover:not(:focus-within),
+.form-field__row.form-field__row--bordered:hover:not(:focus-within) {
   background-color: var(--color-surface-state-hover);
 }
 
-.form-field__row--bordered:active {
+.form-field__date-wrap:active:not(:focus-within),
+.form-field__row.form-field__row--bordered:active:not(:focus-within) {
   background-color: var(--color-surface-state-pressed);
+}
+
+.form-field__date-wrap:focus-within,
+.form-field__date-wrap:focus-visible,
+.form-field__row.form-field__row--bordered:focus-within,
+.form-field__row.form-field__row--bordered:focus-visible {
+  background-color: var(--color-input-surface);
+  box-shadow: inset 0 0 0 var(--input-stroke-focus-px, 2px) var(--color-input-stroke-focus);
+  outline: none;
+}
+
+.form-field__date-wrap .form-field__value,
+.form-field__row.form-field__row--bordered .form-field__value {
+  font-size: max(16px, var(--fs-text-md));
+  font-weight: var(--fw-regular);
+  line-height: 2.5rem;
+}
+
+.form-field__date-wrap .form-field__calendar-icon,
+.form-field__row.form-field__row--bordered .form-field__calendar-icon {
+  flex-shrink: 0;
+  color: var(--color-fg);
 }
 
 .form-field__value {
@@ -2828,23 +2867,14 @@ a.show-all-btn {
   border: none;
   border-radius: 0;
   background: transparent;
-  font-size: var(--fs-text-md);
+  /* max(16px) prevents iOS Safari auto-zoom on focus when legibility scales fs-text-md below 16px */
+  font-size: max(16px, var(--fs-text-md));
   line-height: 2.5rem;
   color: var(--color-fg);
   outline: none;
   font-family: var(--font-family);
 }
 
-
-/* iOS Safari zooms focused inputs when font-size < 16px — keep form controls at least 16px on touch. */
-@media (hover: none) and (pointer: coarse) {
-  .form-field__input,
-  .form-field__select,
-  .amount-input__value,
-  .recipient-search__input {
-    font-size: max(16px, var(--fs-text-md));
-  }
-}
 
 .form-field__text-wrap .form-field__input::placeholder {
   color: var(--color-fg-disabled);
@@ -2977,7 +3007,7 @@ a.show-all-btn {
   padding: 0 2.25rem 0 var(--space-2);
   border: none;
   border-radius: var(--radius-small);
-  font-size: var(--fs-text-md);
+  font-size: max(16px, var(--fs-text-md));
   line-height: 2.5rem;
   color: var(--color-fg);
   background-color: var(--color-input-surface);
@@ -3049,7 +3079,7 @@ a.show-all-btn {
   min-height: 2.5rem;
   position: relative;
   border: none;
-  border-radius: var(--radius-regular);
+  border-radius: var(--radius-small);
   padding: 0 var(--space-4);
   align-items: center;
   background-color: var(--color-input-surface);
@@ -3103,7 +3133,7 @@ a.show-all-btn {
   text-align: right;
   border: none;
   outline: none;
-  font-size: var(--fs-text-md);
+  font-size: max(16px, var(--fs-text-md));
   font-weight: var(--fw-medium);
   line-height: 2.5rem;
   color: var(--color-fg);
@@ -3466,10 +3496,11 @@ button.debit-account:focus-visible {
   gap: var(--space-2);
   width: 100%;
   margin: 0;
-  padding: var(--btn-pad-y-md) var(--btn-pad-x-md);
+  min-height: 2.5rem;
+  padding: 0 var(--btn-pad-x-md);
   background-color: var(--color-btn-primary-bg);
   color: var(--color-btn-primary-fg);
-  border-radius: var(--radius-regular);
+  border-radius: var(--radius-small);
   border: 0.0625rem solid var(--color-btn-primary-bg);
   cursor: pointer;
   font-size: var(--fs-text-md);
@@ -3518,7 +3549,7 @@ button.debit-account:focus-visible {
   line-height: var(--lh-text);
   text-decoration: none;
   text-align: center;
-  border-radius: var(--radius-regular);
+  border-radius: var(--radius-small);
   border-style: solid;
   border-width: 0.0625rem;
   cursor: pointer;
@@ -3565,12 +3596,14 @@ button.debit-account:focus-visible {
 }
 
 .uz-btn--md {
-  padding: var(--btn-pad-y-md) var(--btn-pad-x-md);
+  min-height: 2.5rem;
+  padding: 0 var(--btn-pad-x-md);
   font-size: var(--fs-text-md);
 }
 
 .uz-btn--lg {
-  padding: var(--btn-pad-y-lg) var(--btn-pad-x-lg);
+  min-height: 3rem;
+  padding: 0 var(--btn-pad-x-lg);
   font-size: var(--fs-text-lg);
 }
 
@@ -3599,7 +3632,6 @@ button.debit-account:focus-visible {
   background-color: var(--color-btn-secondary-bg);
   color: var(--color-btn-secondary-fg);
   border-color: var(--color-btn-secondary-border);
-  border-radius: var(--radius-small);
 }
 
 .uz-btn--secondary:hover {
