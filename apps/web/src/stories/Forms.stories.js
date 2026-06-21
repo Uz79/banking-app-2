@@ -79,7 +79,7 @@ export const FormFieldDate = {
     <div style="padding:1rem;max-width:28rem;">
       <div class="form-field">
         <span class="form-field__label">Execute on</span>
-        <div class="form-field__row form-field__row--bordered">
+        <div class="form-field__date-wrap">
           <span class="form-field__value">31.05.2026</span>
           <svg class="form-field__calendar-icon" aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg>
         </div>
@@ -501,7 +501,7 @@ export const ScheduleForm = {
         </div>
         <div class="form-field">
           <span class="form-field__label">Execute on</span>
-          <div class="form-field__row form-field__row--bordered">
+          <div class="form-field__date-wrap">
             <span class="form-field__value">31.05.2026</span>
             <svg class="form-field__calendar-icon" aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg>
           </div>
