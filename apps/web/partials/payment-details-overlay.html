@@ -1,0 +1,128 @@
+<!-- Payment details overlay (designs/screens/payment-details) -->
+<div id="uz-payment-details-overlay" class="modal-overlay" aria-hidden="true">
+  <div class="modal-shell modal-shell--offscreen modal-shell--no-transition">
+    <div class="modal modal--payment-details pd--domestic">
+
+      <div class="modal__nav">
+        <span class="modal__title" id="uz-pd-title">Domestic Payment</span>
+        <button type="button" class="modal__close uz-pd-close" aria-label="Close payment details">
+          <svg class="modal__close-icon" role="img" aria-label="" focusable="false"><use href="#i-x"/></svg>
+        </button>
+      </div>
+
+      <div class="modal__body">
+        <div class="payment-details" id="uz-payment-details">
+
+          <div class="payment-details__amount-hero">
+            <div class="payment-details__amount-row">
+              <span class="payment-details__amount-value" id="uz-pd-amount">-100.00</span>
+              <span class="payment-details__amount-currency" id="uz-pd-currency">CHF</span>
+              <button class="payment-details__edit-btn pd-domestic-only" type="button" aria-label="Edit amount" data-pd-edit="amount">
+                <svg class="payment-details__edit-icon" aria-hidden="true" focusable="false"><use href="#i-edit-2"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="payment-details__to pd-domestic-only">
+            <span class="payment-details__to-label">to</span>
+            <div class="payment-details__to-body">
+              <span class="payment-details__to-value" id="uz-pd-to-value">Apple<br>Rennweg 43<br>8001 Zürich</span>
+            </div>
+          </div>
+
+          <div class="payment-details__accounts pd-internal-only">
+            <span class="payment-details__account-label">from</span>
+            <div class="payment-details__account-item" id="uz-pd-debit">
+              <svg id="uz-pd-debit-icon" class="payment-details__account-icon" aria-hidden="true" focusable="false"><use href="#i-anchor"/></svg>
+              <div class="payment-details__account-info">
+                <span class="payment-details__account-name" id="uz-pd-debit-name">Savings account</span>
+                <span class="payment-details__account-iban" id="uz-pd-debit-iban">CH35 0900 0000 2470 2920 2</span>
+              </div>
+              <span class="payment-details__account-balance" id="uz-pd-debit-balance">
+                <span class="payment-details__account-balance-currency" id="uz-pd-debit-balance-currency">CHF</span>
+                <span class="payment-details__account-balance-value" id="uz-pd-debit-balance-value">25'000.00</span>
+              </span>
+            </div>
+
+            <span class="payment-details__account-label">to</span>
+            <div class="payment-details__account-item" id="uz-pd-credit">
+              <svg id="uz-pd-credit-icon" class="payment-details__account-icon" aria-hidden="true" focusable="false"><use href="#i-scissors"/></svg>
+              <div class="payment-details__account-info">
+                <span class="payment-details__account-name" id="uz-pd-credit-name">Private account</span>
+                <span class="payment-details__account-iban" id="uz-pd-credit-iban">CH35 0900 0000 2470 2920 1</span>
+              </div>
+              <span class="payment-details__account-balance" id="uz-pd-credit-balance">
+                <span class="payment-details__account-balance-currency" id="uz-pd-credit-balance-currency">CHF</span>
+                <span class="payment-details__account-balance-value" id="uz-pd-credit-balance-value">10'000.00</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="payment-details__rule pd-internal-only"></div>
+
+          <div class="payment-details__function-bar pd-domestic-only">
+            <div class="payment-details__function-bar__rule"></div>
+            <div class="payment-details__function-bar__actions pd-pending-only">
+              <button class="payment-details__fn-btn" type="button" aria-label="Edit payment" data-pd-edit="amount">
+                <svg class="payment-details__fn-icon" aria-hidden="true" focusable="false"><use href="#i-edit-2"/></svg>
+                <span class="payment-details__fn-label">Edit</span>
+              </button>
+              <button class="payment-details__fn-btn" type="button" aria-label="Delete payment">
+                <svg class="payment-details__fn-icon" aria-hidden="true" focusable="false"><use href="#i-trash-2"/></svg>
+                <span class="payment-details__fn-label">Delete</span>
+              </button>
+              <button class="payment-details__fn-btn" type="button" aria-label="Copy payment">
+                <svg class="payment-details__fn-icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg>
+                <span class="payment-details__fn-label">Copy</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="payment-details__info-rows">
+            <div class="payment-details__info-row">
+              <span class="payment-details__info-label">Status</span>
+              <span class="chip chip--sm" id="uz-pd-status-chip">
+                <svg id="uz-pd-status-icon" class="chip__icon" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg>
+                <span class="chip__label" id="uz-pd-status-text">Pending</span>
+              </span>
+            </div>
+            <div class="payment-details__info-row">
+              <span class="payment-details__info-label">Booking confirmation</span>
+              <button class="payment-details__download" type="button" aria-label="Download booking confirmation">
+                <svg class="payment-details__download-icon" aria-hidden="true" focusable="false"><use href="#i-download"/></svg>
+                <span>Download</span>
+              </button>
+            </div>
+            <div class="payment-details__info-row">
+              <span class="payment-details__info-label">Signed</span>
+              <span class="payment-details__info-value">Yes</span>
+            </div>
+          </div>
+
+          <button class="expander" type="button" aria-expanded="false" id="uz-pd-further-toggle">
+            <span class="expander__leading">
+              <svg class="expander__leading-icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+            </span>
+            <span class="expander__content">
+              <span class="expander__title">Further options</span>
+            </span>
+            <svg class="expander__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+          </button>
+
+          <div class="payment-details__further-content" id="uz-pd-further-content" hidden>
+            <div class="payment-details__message-row">
+              <span class="payment-details__info-label">Message</span>
+              <span class="payment-details__info-value" id="uz-pd-message-value"></span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="modal__footer">
+        <button class="uz-btn uz-btn--primary uz-btn--md uz-btn--block uz-pd-confirm" type="button">Confirm</button>
+      </div>
+
+    </div>
+  </div>
+</div>
