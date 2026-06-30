@@ -442,6 +442,29 @@
       };
     }
 
+    if (booking.kind === 'trade') {
+      var fmtTrade = window.UZBankPayState && window.UZBankPayState.formatMoney
+        ? window.UZBankPayState.formatMoney
+        : function (n) { return String(n); };
+      var tradeSign = booking.direction === 'in' ? '+' : '-';
+      var pos = booking.symbol && window.UZBankPayState && window.UZBankPayState.getPosition
+        ? window.UZBankPayState.getPosition(booking.symbol)
+        : null;
+      var tradeTo = pos && pos.name
+        ? pos.name + (pos.isin ? '\n' + pos.isin : '')
+        : (booking.recipientName || booking.symbol || '');
+
+      return {
+        type: 'domestic',
+        title: 'Trade',
+        amount: tradeSign + fmtTrade(booking.amount),
+        currency: booking.currency || 'CHF',
+        to: tradeTo,
+        status: 'executed',
+        message: booking.quantity ? booking.quantity + ' pcs.' : null
+      };
+    }
+
     return null;
   }
 

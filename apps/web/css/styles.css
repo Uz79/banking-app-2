@@ -4044,6 +4044,7 @@ button.debit-account:focus-visible {
 .expander__leading-icon,
 .expander__chevron,
 .payment-details__edit-icon,
+.payment-details__fn-icon,
 .payment-details__account-icon,
 .payment-details__download-icon,
 .cc-theme-card__trash-icon,
@@ -4106,6 +4107,7 @@ button.debit-account:focus-visible {
 .expander__leading-icon > use,
 .expander__chevron > use,
 .payment-details__edit-icon > use,
+.payment-details__fn-icon > use,
 .payment-details__account-icon > use,
 .payment-details__download-icon > use,
 .cc-theme-card__trash-icon > use,
@@ -6674,6 +6676,12 @@ dialog.basic-dialog-payment-exit.basic-dialog-payment-exit--closing[open] .basic
 
 .payment-details__fn-btn:hover  { background-color: var(--color-btn-tonal-hover); }
 .payment-details__fn-btn:active { background-color: var(--color-btn-tonal-pressed); }
+
+.payment-details__fn-icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
 
 .payment-details__fn-label {
   font-size: var(--fs-text-xs);
