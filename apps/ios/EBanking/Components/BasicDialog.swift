@@ -15,7 +15,7 @@ struct BasicDialogSurface<Actions: View>: View {
                 .foregroundColor(AppColor.foreground)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
-                .padding(.bottom, Space._3)
+                .padding(.bottom, Space._2)
 
             Text(message)
                 .font(AppFont.font(size: AppFont.Size.textMd, weight: .regular))
@@ -23,14 +23,14 @@ struct BasicDialogSurface<Actions: View>: View {
                 .multilineTextAlignment(.center)
                 .lineSpacing(4)
                 .frame(maxWidth: .infinity)
-                .padding(.bottom, Space._5)
+                .padding(.bottom, Space._3)
 
             VStack(spacing: Space._3) {
                 actions()
             }
         }
-        .padding(.vertical, Space._5)
-        .padding(.horizontal, Space._4)
+        .padding(.vertical, Space._3)
+        .padding(.horizontal, Space._3)
         .background(AppColor.background)
         .clipShape(RoundedRectangle(cornerRadius: Radius.regular, style: .continuous))
         .overlay {
