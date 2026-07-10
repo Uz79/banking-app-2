@@ -1,0 +1,160 @@
+{
+  "global": "BankingAppUI",
+  "pkg": "@banking-app/ui",
+  "pkgDir": "/Users/uz-macbookpro-m4/Documents/GitHub/banking-app/packages/ui",
+  "extraEntries": [
+    "./.design-sync/theme-root.jsx"
+  ],
+  "exported": [
+    "ActionBar",
+    "Button",
+    "Card",
+    "CardAmount",
+    "Carousel",
+    "Chip",
+    "Dialog",
+    "Expander",
+    "GroupAccountListItem",
+    "IconButton",
+    "ListItem",
+    "NavBar",
+    "SegmentedControl",
+    "SelectField",
+    "TabControl",
+    "TextField",
+    "ThemeRoot"
+  ],
+  "storybookStatic": null,
+  "keyRecipe": 7,
+  "cfgSliceGlobal": "40171f6742608e4ddd34f4c8acd1fe64784d5cc534cef223483c9dc2fb76a6e1",
+  "components": [
+    {
+      "name": "ActionBar",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "e62768c7b5d123d3",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "Button",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "23eb532d37ae1718",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "Card",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "5ffc42012ea43e61",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "CardAmount",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "f609be99a05ac794",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "Carousel",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "06df259dcd088235",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "Chip",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "78108978d75c390c",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "Dialog",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "ba010b19b15fceac",
+      "cfgSlice": "ceacb45176a9ad07990c6cb39e36ed88ac4a225beb7ff736f41c24740da6649c",
+      "stories": []
+    },
+    {
+      "name": "Expander",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "a65074ced0439119",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "GroupAccountListItem",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "445c604987774997",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "IconButton",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "9d0c72b081ca3f5d",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "ListItem",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "617a24f811d69795",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "NavBar",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "3acc721d3e975066",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "SegmentedControl",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "aab5e00464e46f5a",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "SelectField",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "ef100bb94b4ba993",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "TabControl",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "69f0ec91618a80e8",
+      "cfgSlice": "35f94c4269be790fbe157137538e687921e701b2b8994082ae2672a549c25e1c",
+      "stories": []
+    },
+    {
+      "name": "TextField",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "ea94114cddc1896e",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    }
+  ]
+}
