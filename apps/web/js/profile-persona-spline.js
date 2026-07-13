@@ -7,8 +7,11 @@
  * The scene Start event always plays kneeling. We must wait for that,
  * then force the card's target clip and re-assert briefly so Start
  * cannot leave both cards on the same pose.
+ *
+ * Runtime is loaded from jsDelivr (not a bare `@splinetool/runtime` import)
+ * so it works on static Vercel hosts without Vite module resolution.
  */
-import { Application } from '@splinetool/runtime';
+import { Application } from 'https://cdn.jsdelivr.net/npm/@splinetool/runtime@1.12.98/build/runtime.js';
 
 const SCENE_URL = 'https://prod.spline.design/OIHKF-gR8HScan6O/scene.splinecode';
 
@@ -158,6 +161,11 @@ async function mountCard(card) {
       if (!ok) {
         console.warn('[profile-persona-spline] failed to lock pose', pose);
       }
+      stage.classList.add('profile-persona-card__stage--ready');
+    } else {
+      stage.classList.add('profile-persona-card__stage--error');
+      const fallback = stage.querySelector('.profile-persona-card__stage-fallback');
+      if (fallback) fallback.textContent = '3D unavailable';
     }
   } catch (err) {
     console.warn('[profile-persona-spline] failed to load scene', err);
