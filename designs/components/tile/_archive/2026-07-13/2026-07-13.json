@@ -1,0 +1,41 @@
+{
+  "name": "tile",
+  "category": "card",
+  "description": "Compact content tile with label, primary name, and secondary detail line (e.g. IBAN).",
+  "interactionStates": [
+    "default"
+  ],
+  "assets": {
+    "variants": {
+      "default": {
+        "default": "variants/default/default.svg"
+      }
+    },
+    "overview": "variants/default/default.png"
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground",
+        "foregroundSecondary": "mapped/light.foreground.foreground-disabled",
+        "border": "mapped/light.border.border-subtle",
+        "surface": "mapped/light.background.background-elevated"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground",
+        "foregroundSecondary": "mapped/dark.foreground.foreground-disabled",
+        "border": "mapped/dark.border.border-subtle",
+        "surface": "mapped/dark.background.background-elevated"
+      }
+    }
+  },
+  "accessibility": {
+    "needsAccessibleName": true,
+    "keyboardFocusable": false
+  },
+  "notes": [
+    "Single default export from Figma (Tile.svg / Tile.png).",
+    "Structure: eyebrow label + name + detail line on a rounded surface with subtle border."
+  ]
+}

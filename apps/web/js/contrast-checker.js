@@ -154,7 +154,7 @@
       'color-separator':          fgAlpha(0.10),
       'color-show-all-bg':        fgAlpha(0.10),
       'color-nav-item-active-bg': fgAlpha(0.10),
-      'color-segmented-track-bg': fgAlpha(0.05),
+      'color-segmented-track-bg': fgAlpha(isDark ? 0.08 : 0.05),
 
       // Inputs — same semantics as tokens.css (stroke @ 70% FG; focus = solid FG)
       'color-input-stroke':       fgAlpha(0.7),

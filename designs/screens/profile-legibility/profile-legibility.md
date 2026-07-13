@@ -1,11 +1,14 @@
 # Profile — legibility
 
-Text size / legibility controls.
+Text size / legibility controls on the Profile screen.
 
 ## Variants
 
-- `default-default` — Vector snapshot + overview PNG.
+| Variant | Figma | Path |
+|---------|-------|------|
+| `desktop-default` | Profile - Legibility - Desktop | `variants/desktop-default/default.svg` (+ png) |
+| `mobile-default` | Profile - Legibility - Mobile | `variants/mobile-default/default.svg` (+ png) |
 
 ## States
 
-- `default`: exported snapshot from Figma (see also `interactionStates` in JSON).
+- `default` — resting snapshot

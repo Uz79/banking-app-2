@@ -1,0 +1,45 @@
+{
+  "name": "tile",
+  "category": "card",
+  "description": "Compact content tile with label, primary name, and secondary detail line (e.g. IBAN).",
+  "interactionStates": [
+    "default"
+  ],
+  "assets": {
+    "variants": {
+      "default": {
+        "default": "variants/default/default.svg"
+      },
+      "selected": {
+        "default": "variants/selected/default.svg"
+      }
+    },
+    "overview": "variants/default/default.png"
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground",
+        "foregroundSecondary": "mapped/light.foreground.foreground-disabled",
+        "border": "mapped/light.border.border-subtle",
+        "surface": "mapped/light.background.background-elevated"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground",
+        "foregroundSecondary": "mapped/dark.foreground.foreground-disabled",
+        "border": "mapped/dark.border.border-subtle",
+        "surface": "mapped/dark.background.background-elevated"
+      }
+    }
+  },
+  "accessibility": {
+    "needsAccessibleName": true,
+    "keyboardFocusable": true
+  },
+  "notes": [
+    "Figma Case=Default | Selected — unselected vs selected tile.",
+    "Figma State=Default — only resting state exported currently.",
+    "PNG companions live next to SVG as default.png."
+  ]
+}
