@@ -222,6 +222,15 @@
     large: { size: 'large', fontScale: 1.16, spaceScale: 1.14, persona: 'beatrice' }
   };
 
+  var FONT_FAMILIES = {
+    'profile-pro': "'Profile Pro', sans-serif",
+    'dm-sans': "'DM Sans', sans-serif",
+    inter: "'Inter', sans-serif",
+    'space-grotesk': "'Space Grotesk', sans-serif",
+    'source-serif-4': "'Source Serif 4', serif",
+    georgia: "Georgia, 'Times New Roman', serif"
+  };
+
   var APPEARANCE_VAR_NAMES = [
     'space-1', 'space-2', 'space-3', 'space-4', 'space-5', 'space-6',
     'space-7', 'space-8', 'space-9', 'space-10', 'space-11', 'space-12',
@@ -235,6 +244,11 @@
     return Math.max(min, Math.min(max, n));
   }
 
+  function normalizeFontFamily(raw) {
+    var key = String(raw || '').trim();
+    return FONT_FAMILIES[key] ? key : 'profile-pro';
+  }
+
   function readAppearance() {
     try {
       var parsed = JSON.parse(global.localStorage.getItem(APPEARANCE_KEY) || '{}');
@@ -242,10 +256,11 @@
         size: parsed.size === 'small' || parsed.size === 'large' ? parsed.size : 'regular',
         fontScale: normalizeScale(parsed.fontScale, 1, 0.85, 1.25),
         spaceScale: normalizeScale(parsed.spaceScale, 1, 0.8, 1.25),
-        persona: parsed.persona === 'beatrice' || parsed.persona === 'max' ? parsed.persona : 'custom'
+        persona: parsed.persona === 'beatrice' || parsed.persona === 'max' ? parsed.persona : 'custom',
+        fontFamily: normalizeFontFamily(parsed.fontFamily)
       };
     } catch (err) {
-      return { size: 'regular', fontScale: 1, spaceScale: 1, persona: 'custom' };
+      return { size: 'regular', fontScale: 1, spaceScale: 1, persona: 'custom', fontFamily: 'profile-pro' };
     }
   }
 
@@ -266,6 +281,7 @@
     var settings = Object.assign({}, current, next || {});
     settings.fontScale = normalizeScale(settings.fontScale, 1, 0.85, 1.25);
     settings.spaceScale = normalizeScale(settings.spaceScale, 1, 0.8, 1.25);
+    settings.fontFamily = normalizeFontFamily(settings.fontFamily);
     if (settings.fontScale < 0.96 || settings.spaceScale < 0.94) settings.size = 'small';
     else if (settings.fontScale > 1.08 || settings.spaceScale > 1.08) settings.size = 'large';
     else settings.size = 'regular';
@@ -281,8 +297,10 @@
     });
     style.setProperty('--appearance-font-scale', String(settings.fontScale));
     style.setProperty('--appearance-space-scale', String(settings.spaceScale));
+    style.setProperty('--font-family', FONT_FAMILIES[settings.fontFamily]);
     document.documentElement.setAttribute('data-legibility', settings.size);
     document.documentElement.setAttribute('data-persona', settings.persona || 'custom');
+    document.documentElement.setAttribute('data-font-family', settings.fontFamily);
 
     try { global.localStorage.setItem(APPEARANCE_KEY, JSON.stringify(settings)); } catch (err2) {}
     try {
@@ -299,6 +317,7 @@
   global.UZBankAppearance = {
     key: APPEARANCE_KEY,
     presets: APPEARANCE_PRESETS,
+    fonts: FONT_FAMILIES,
     read: readAppearance,
     apply: applyAppearance,
     applyPreset: applyAppearancePreset
@@ -614,7 +633,6 @@
         screen !== 'overview' &&
         screen !== 'payments' &&
         screen !== 'account-details' &&
-        screen !== 'profile' &&
         screen !== 'investment-product-details' &&
         screen !== 'details-of-position'
       ) {

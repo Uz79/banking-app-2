@@ -1,19 +1,15 @@
 {
   "name": "slider",
-  "category": "slider",
+  "category": "selection-control",
   "description": "Slider input for selecting a numeric value along a range.",
   "interactionStates": [
-    "default",
-    "hover",
-    "pressed",
-    "focus",
-    "disabled"
+    "default"
   ],
   "assets": {
-    "overview": "variants/default-default/default.svg",
+    "overview": "variants/default/default.svg",
     "variants": {
-      "default-default": {
-        "default": "variants/default-default/default.svg"
+      "default": {
+        "default": "variants/default/default.svg"
       }
     }
   },
@@ -36,6 +32,7 @@
     "keyboardFocusable": true
   },
   "notes": [
-    "Only a single default export is available for this component currently."
+    "Single default export. Thumb is a pill (rounded rect), not a circle.",
+    "Previous circular-thumb export archived under _archive/2026-07-13/."
   ]
 }

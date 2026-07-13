@@ -1,15 +1,18 @@
 {
   "name": "profile-persona",
   "category": "profile",
-  "description": "Profile persona / avatar selection.",
+  "description": "Profile settings tab: User type / persona selection.",
   "interactionStates": [
     "default"
   ],
   "assets": {
     "overview": "overview.png",
     "variants": {
-      "default-default": {
-        "default": "variants/default-default/default.svg"
+      "desktop-default": {
+        "default": "variants/desktop-default/default.svg"
+      },
+      "mobile-default": {
+        "default": "variants/mobile-default/default.svg"
       }
     }
   },
@@ -24,5 +27,8 @@
       }
     }
   },
-  "notes": []
+  "notes": [
+    "Figma label is Profile - User Type; folder remains profile-persona.",
+    "Figma: Profile - User Type - Desktop|Mobile → variants/<desktop|mobile>-default/default.svg (+ png)."
+  ]
 }

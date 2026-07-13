@@ -440,14 +440,19 @@
     /** designs/components/menu/menu-countries — flat list (same order as <option>). */
     var isCountry = id === 'recipient-country';
 
+    var isFontSelect = selectEl.id === 'profileFontFamily' || selectEl.hasAttribute('data-font-select');
+
     function appendOptionRow(opt) {
       var btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'form-sheet__row form-sheet__row--country';
+      btn.className =
+        'form-sheet__row ' + (isFontSelect ? 'form-sheet__row--font' : 'form-sheet__row--country');
       btn.setAttribute('role', 'option');
       btn.setAttribute('aria-selected', opt.selected ? 'true' : 'false');
       btn.textContent = opt.textContent;
       btn.dataset.value = opt.value;
+      var sampleFont = opt.getAttribute('data-font-family');
+      if (sampleFont) btn.style.fontFamily = sampleFont;
       btn.addEventListener('click', function () {
         selectEl.value = opt.value;
         selectEl.dispatchEvent(new Event('input', { bubbles: true }));
@@ -799,10 +804,32 @@
     }
   }
 
+  function bindPageSelects() {
+    if (!customMenusEnabled()) return;
+    document.querySelectorAll('select.form-field__select').forEach(function (sel) {
+      var wrap = sel.closest('.form-field__select-wrap');
+      if (!wrap) return;
+      bindSelectNativeBlock(sel);
+      if (wrap.querySelector('.form-field__select-sheet-trigger')) return;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'form-field__select-sheet-trigger';
+      btn.setAttribute('aria-haspopup', 'listbox');
+      btn.setAttribute('aria-label', 'Choose ' + getTitleForSelect(sel));
+      wrap.appendChild(btn);
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        openSelectSheet(sel);
+      });
+    });
+  }
+
   function init() {
     initOverlay(getPaymentModal());
     initOverlay(getIatOverlay());
     initOverlay(getTradeOverlay());
+    bindPageSelects();
   }
 
   bindMoreFunctionsSheet();

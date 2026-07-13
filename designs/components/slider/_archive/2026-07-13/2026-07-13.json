@@ -1,0 +1,41 @@
+{
+  "name": "slider",
+  "category": "slider",
+  "description": "Slider input for selecting a numeric value along a range.",
+  "interactionStates": [
+    "default",
+    "hover",
+    "pressed",
+    "focus",
+    "disabled"
+  ],
+  "assets": {
+    "overview": "variants/default-default/default.svg",
+    "variants": {
+      "default-default": {
+        "default": "variants/default-default/default.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.pill",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground",
+        "foregroundSecondary": "mapped/light.foreground.foreground-disabled"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground",
+        "foregroundSecondary": "mapped/dark.foreground.foreground-disabled"
+      }
+    }
+  },
+  "accessibility": {
+    "role": "slider",
+    "needsAccessibleName": true,
+    "keyboardFocusable": true
+  },
+  "notes": [
+    "Only a single default export is available for this component currently."
+  ]
+}
