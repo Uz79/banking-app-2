@@ -5003,11 +5003,7 @@ a.btn-primary {
   text-align: left;
   font-family: inherit;
   cursor: pointer;
-  transition: border-color 0.15s, box-shadow 0.15s, transform 0.05s;
-}
-
-.profile-persona-card:hover {
-  border-color: color-mix(in srgb, var(--color-fg) 40%, transparent);
+  transition: box-shadow 0.15s, transform 0.05s;
 }
 
 .profile-persona-card:active {
@@ -5019,7 +5015,9 @@ a.btn-primary {
   outline-offset: 0.125rem;
 }
 
-.profile-persona-card--active {
+/* No hover stroke — keep thin rest vs strong selected contrast (Figma). */
+.profile-persona-card--active,
+.profile-persona-card--active:hover {
   border: 2px solid var(--color-fg);
 }
 

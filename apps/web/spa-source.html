@@ -898,9 +898,14 @@
                         <span class="visually-hidden" id="profileFontScaleValue">100%</span>
                       </div>
 
-                      <!-- Space scale still driven by presets; keep sync target for appearance API -->
-                      <input type="range" id="profileSpaceScale" min="0.80" max="1.25" step="0.01" value="1" data-appearance-range="spaceScale" class="visually-hidden" tabindex="-1" aria-hidden="true">
-                      <span class="visually-hidden" id="profileSpaceScaleValue">100%</span>
+                      <div class="profile-font-slider">
+                        <div class="profile-font-slider__labels">
+                          <span>Small paddings</span>
+                          <span>Big paddings</span>
+                        </div>
+                        <input type="range" id="profileSpaceScale" min="0.80" max="1.25" step="0.01" value="1" data-appearance-range="spaceScale" class="profile-font-slider__input cc-color-slider" aria-label="Padding size">
+                        <span class="visually-hidden" id="profileSpaceScaleValue">100%</span>
+                      </div>
                     </div>
 
                     <div class="profile-legibility-preview" aria-label="Legibility preview">
