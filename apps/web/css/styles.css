@@ -1030,13 +1030,16 @@ html:has(body.body--iat-open) {
   }
 }
 
-/* Account details / overview: 24dp gap between circular action buttons (Figma space/4). */
+/* Overview / Payments / Account details: 24dp gap between circular action buttons
+   (Figma Button Stack `space/5` → 24px = --space-4). Keep screens in sync. */
 .body[data-screen="account-details"] .action-buttons,
-.body[data-screen="overview"] .action-buttons {
+.body[data-screen="overview"] .action-buttons,
+.body[data-screen="payments"] .action-buttons {
   gap: var(--space-4);
 }
 
-.body[data-screen="overview"] .action-buttons {
+.body[data-screen="overview"] .action-buttons,
+.body[data-screen="payments"] .action-buttons {
   justify-content: center;
   width: 100%;
   max-width: 100%;
