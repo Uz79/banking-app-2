@@ -29,16 +29,31 @@ export const DesignExport = {
 <h4 class="de-variant">default-default</h4>
 <div class="de-grid">
 <figure class="de-item">
-  <img class="de-img" src="/designs/components/form-field/select-field/variants/default-default/focus.svg" alt="default-default / focus" loading="lazy" />
-  <figcaption class="de-cap">default-default / focus</figcaption>
-</figure>
-<figure class="de-item">
   <img class="de-img" src="/designs/components/form-field/select-field/variants/default-default/default.svg" alt="default-default / default" loading="lazy" />
   <figcaption class="de-cap">default-default / default</figcaption>
 </figure>
 <figure class="de-item">
   <img class="de-img" src="/designs/components/form-field/select-field/variants/default-default/hover.svg" alt="default-default / hover" loading="lazy" />
   <figcaption class="de-cap">default-default / hover</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/form-field/select-field/variants/default-default/focus.svg" alt="default-default / focus" loading="lazy" />
+  <figcaption class="de-cap">default-default / focus</figcaption>
+</figure>
+</div>
+<h4 class="de-variant">small-default</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/form-field/select-field/variants/small-default/default.svg" alt="small-default / default" loading="lazy" />
+  <figcaption class="de-cap">small-default / default</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/form-field/select-field/variants/small-default/hover.svg" alt="small-default / hover" loading="lazy" />
+  <figcaption class="de-cap">small-default / hover</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/form-field/select-field/variants/small-default/focus.svg" alt="small-default / focus" loading="lazy" />
+  <figcaption class="de-cap">small-default / focus</figcaption>
 </figure>
 </div>
     </div>

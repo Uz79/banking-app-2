@@ -217,9 +217,9 @@
   /* ── App-wide appearance scale (Profile > Legibility / Persona) ─── */
 
   var APPEARANCE_PRESETS = {
-    small: { size: 'small', fontScale: 0.9, spaceScale: 0.86, persona: 'max' },
-    regular: { size: 'regular', fontScale: 1, spaceScale: 1, persona: 'custom' },
-    large: { size: 'large', fontScale: 1.16, spaceScale: 1.14, persona: 'beatrice' }
+    small: { size: 'small', fontScale: 0.9, spaceScale: 0.86, persona: 'power' },
+    regular: { size: 'regular', fontScale: 1, spaceScale: 1, persona: 'standard' },
+    large: { size: 'large', fontScale: 1.16, spaceScale: 1.14, persona: 'novice' }
   };
 
   var FONT_FAMILIES = {
@@ -244,6 +244,14 @@
     return Math.max(min, Math.min(max, n));
   }
 
+  /* Persona profile from Profile > User Type. 'beatrice' / 'max' are the two-card
+     version's values; keep reading them so stored settings carry over. */
+  var PERSONA_ALIASES = { beatrice: 'novice', max: 'power', novice: 'novice', standard: 'standard', power: 'power' };
+
+  function normalizePersona(raw) {
+    return PERSONA_ALIASES[raw] || 'custom';
+  }
+
   function normalizeFontFamily(raw) {
     var key = String(raw || '').trim();
     return FONT_FAMILIES[key] ? key : 'profile-pro';
@@ -256,7 +264,7 @@
         size: parsed.size === 'small' || parsed.size === 'large' ? parsed.size : 'regular',
         fontScale: normalizeScale(parsed.fontScale, 1, 0.85, 1.25),
         spaceScale: normalizeScale(parsed.spaceScale, 1, 0.8, 1.25),
-        persona: parsed.persona === 'beatrice' || parsed.persona === 'max' ? parsed.persona : 'custom',
+        persona: normalizePersona(parsed.persona),
         fontFamily: normalizeFontFamily(parsed.fontFamily)
       };
     } catch (err) {
@@ -282,6 +290,7 @@
     settings.fontScale = normalizeScale(settings.fontScale, 1, 0.85, 1.25);
     settings.spaceScale = normalizeScale(settings.spaceScale, 1, 0.8, 1.25);
     settings.fontFamily = normalizeFontFamily(settings.fontFamily);
+    settings.persona = normalizePersona(settings.persona);
     if (settings.fontScale < 0.96 || settings.spaceScale < 0.94) settings.size = 'small';
     else if (settings.fontScale > 1.08 || settings.spaceScale > 1.08) settings.size = 'large';
     else settings.size = 'regular';
@@ -607,7 +616,9 @@
         }
       } catch (err1) {}
       function go(page) {
-        window.location.href = prefix + page;
+        /* Through the shell so the page transition plays (js/shell-nav.js) */
+        if (window.UZShellNav) window.UZShellNav.go(prefix + page);
+        else window.location.href = prefix + page;
       }
       if (action === 'show-all-bookings') {
         var accountKey = window.__UZ_ACTIVE_ACCOUNT__ || 'savings';
@@ -634,7 +645,10 @@
         screen !== 'payments' &&
         screen !== 'account-details' &&
         screen !== 'investment-product-details' &&
-        screen !== 'details-of-position'
+        screen !== 'details-of-position' &&
+        screen !== 'design-system' &&
+        screen !== 'motion-specimens' &&
+        screen !== 'components'
       ) {
         return;
       }

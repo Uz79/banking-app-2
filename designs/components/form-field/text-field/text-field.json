@@ -2,6 +2,20 @@
   "name": "text-field",
   "category": "form-field",
   "description": "Text input field for entering short textual values.",
+  "sizes": [
+    "regular",
+    "small"
+  ],
+  "types": [
+    "default",
+    "readonly"
+  ],
+  "cases": [
+    "default",
+    "error",
+    "informative",
+    "multiple-text-rows"
+  ],
   "interactionStates": [
     "default",
     "hover",
@@ -10,16 +24,9 @@
   "assets": {
     "variants": {
       "default-default": {
-        "focus": "variants/default-default/focus.svg",
         "default": "variants/default-default/default.svg",
-        "hover": "variants/default-default/hover.svg"
-      },
-      "readonly-multiple-text-rows": {
-        "default": "variants/readonly-multiple-text-rows/default.svg",
-        "default 2": "variants/readonly-multiple-text-rows/default 2.svg"
-      },
-      "readonly-informative": {
-        "default": "variants/readonly-informative/default.svg"
+        "hover": "variants/default-default/hover.svg",
+        "focus": "variants/default-default/focus.svg"
       },
       "default-error": {
         "default": "variants/default-error/default.svg"
@@ -29,6 +36,17 @@
       },
       "readonly-default": {
         "default": "variants/readonly-default/default.svg"
+      },
+      "readonly-informative": {
+        "default": "variants/readonly-informative/default.svg"
+      },
+      "readonly-multiple-text-rows": {
+        "default": "variants/readonly-multiple-text-rows/default.svg"
+      },
+      "small-default-default": {
+        "default": "variants/small-default-default/default.svg",
+        "hover": "variants/small-default-default/hover.svg",
+        "focus": "variants/small-default-default/focus.svg"
       }
     },
     "overview": "overview.png"
@@ -82,6 +100,8 @@
   },
   "notes": [
     "Figma exports `Pressed` are stored as `focus.svg` for consistency.",
-    "Variant slugs follow `Type-Case` in kebab-case (e.g. `Type=ReadOnly`, `Case=Informative` \u2192 `readonly-informative`)."
+    "Regular size keeps Type-Case slugs (e.g. Type=Default, Case=Error → default-error).",
+    "Non-regular sizes use Size-Type-Case (e.g. Size=Small, Type=Default, Case=Default → small-default-default).",
+    "Previous variants archived under _archive/2026-08-13/."
   ]
 }

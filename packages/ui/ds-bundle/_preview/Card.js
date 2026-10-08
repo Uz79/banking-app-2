@@ -89,8 +89,16 @@ var __dsPreview = (() => {
   // .design-sync/previews/Card.tsx
   var Card_exports = {};
   __export(Card_exports, {
-    Basic: () => Basic,
-    WithAmount: () => WithAmount
+    CardAccountsInvestment: () => CardAccountsInvestment,
+    CardHeaderTitleOnly: () => CardHeaderTitleOnly,
+    CardHeaderWithTotal: () => CardHeaderWithTotal,
+    CardOffers: () => CardOffers,
+    ConfigurableProductItem: () => ConfigurableProductItem,
+    ConfigurableSectionCard: () => ConfigurableSectionCard,
+    ListItemGroupAccount: () => ListItemGroupAccount,
+    ListItemWithChevron: () => ListItemWithChevron,
+    ProductItemSingle: () => ProductItemSingle,
+    SectionCardOtherProducts: () => SectionCardOtherProducts
   });
   init_define_import_meta_env();
 
@@ -106,11 +114,48 @@ var __dsPreview = (() => {
 
   // .design-sync/previews/Card.tsx
   var import_jsx_runtime = __toESM(require_react_shim(), 1);
-  function Basic() {
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.Card, { title: "Recent activity", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { style: { margin: 0 }, children: "You have 3 pending transfers awaiting approval." }) });
+  var previewFrameStyle = { padding: "1rem", maxWidth: "28rem" };
+  function PreviewFrame({ children }) {
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: previewFrameStyle, children });
   }
-  function WithAmount() {
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.Card, { title: "Checking account", headerEnd: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.CardAmount, { currency: "USD", value: "4,281.06" }), children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { style: { margin: 0 }, children: "Available balance as of today." }) });
+  function ConfigurableProductItem() {
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PreviewFrame, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.GroupAccountListItem, { icon: "home", title: "Household", subtitle: "CH35 0900 0000 2470 2920 1", currency: "CHF", value: "10'570.00", ariaLabel: "Household" }) });
+  }
+  function ConfigurableSectionCard() {
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PreviewFrame, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.Card, { title: "Accounts & investment", headerEnd: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.CardAmount, { currency: "CHF", value: "65'570.00" }), children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.GroupAccountListItem, { icon: "home", title: "Household", subtitle: "CH35 0900 0000 2470 2920 1", currency: "CHF", value: "10'570.00", ariaLabel: "Household" }) }) });
+  }
+  function CardAccountsInvestment() {
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PreviewFrame, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(ds_exports.Card, { title: "Accounts & investment", headerEnd: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.CardAmount, { currency: "CHF", value: "65'570.00" }), children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.GroupAccountListItem, { icon: "home", title: "Household", subtitle: "CH35 0900 0000 2470 2920 1", currency: "CHF", value: "10'570.00", ariaLabel: "Household" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.GroupAccountListItem, { icon: "shield", title: "Savings account", subtitle: "CH35 0900 0000 2470 2920 2", currency: "CHF", value: "25'000.00", ariaLabel: "Savings account" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.GroupAccountListItem, { icon: "clock", title: "Custody account", subtitle: "123.456.78", currency: "CHF", value: "20'000.00", ariaLabel: "Custody account" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.GroupAccountListItem, { icon: "trending-up", title: "Retirement savings 3a", subtitle: "7740205-08", currency: "CHF", value: "10'000.00", ariaLabel: "Retirement savings 3a" })
+    ] }) });
+  }
+  function ProductItemSingle() {
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PreviewFrame, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.GroupAccountListItem, { icon: "home", title: "Household", subtitle: "CH35 0900 0000 2470 2920 1", currency: "CHF", value: "10'570.00", ariaLabel: "Household" }) });
+  }
+  function SectionCardOtherProducts() {
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PreviewFrame, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.Card, { title: "Other products", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.ListItem, { icon: "credit-card", title: "VISA Gold", subtitle: "available CHF 4'700.00" }) }) });
+  }
+  function ListItemGroupAccount() {
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PreviewFrame, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.GroupAccountListItem, { icon: "anchor", title: "Savings account", subtitle: "CH35 0900 0000 2470 2920 2", currency: "CHF", value: "25'000.00", static: true, ariaLabel: "Savings account" }) });
+  }
+  function ListItemWithChevron() {
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PreviewFrame, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.ListItem, { icon: "shield", title: "Accounts", subtitle: "Private & saving accounts", chevron: true }) });
+  }
+  function CardOffers() {
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PreviewFrame, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(ds_exports.Card, { title: "Offers", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.ListItem, { icon: "shield", title: "Accounts", subtitle: "Private & saving accounts", chevron: true }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.ListItem, { icon: "credit-card", title: "Cards", subtitle: "Order new cards, monitor", chevron: true }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.ListItem, { icon: "trending-up", title: "Investment", subtitle: "Funds, trading, asset management", chevron: true })
+    ] }) });
+  }
+  function CardHeaderWithTotal() {
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PreviewFrame, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.Card, { title: "Accounts & investment", headerEnd: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.CardAmount, { currency: "CHF", value: "65'570.00" }), children: null }) });
+  }
+  function CardHeaderTitleOnly() {
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PreviewFrame, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ds_exports.Card, { title: "Other products", children: null }) });
   }
   return __toCommonJS(Card_exports);
 })();

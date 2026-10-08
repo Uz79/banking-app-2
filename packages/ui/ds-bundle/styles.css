@@ -2,3 +2,9 @@
 @import "./tokens/typography.css";
 @import "./fonts/fonts.css";
 @import "./_ds_bundle.css";
+
+/* Preview pages inherit browser default (Times) unless body sets the DS font. */
+html,
+body {
+  font-family: var(--font-family);
+}

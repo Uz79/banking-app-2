@@ -152,6 +152,33 @@
 <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </symbol>
+<symbol id="i-box" viewBox="0 0 24 24">
+<path d="M12.89 1.44991L20.89 5.44991C21.2233 5.61548 21.5037 5.87073 21.6998 6.18695C21.8959 6.50317 21.9999 6.86782 22 7.23991V16.7699C21.9999 17.142 21.8959 17.5066 21.6998 17.8229C21.5037 18.1391 21.2233 18.3943 20.89 18.5599L12.89 22.5599C12.6122 22.6989 12.3058 22.7713 11.995 22.7713C11.6843 22.7713 11.3779 22.6989 11.1 22.5599L3.10005 18.5599C2.76718 18.3922 2.4878 18.1348 2.29344 17.8167C2.09907 17.4987 1.99745 17.1326 2.00005 16.7599V7.23991C2.00025 6.86782 2.10424 6.50317 2.30033 6.18695C2.49642 5.87073 2.77684 5.61548 3.11005 5.44991L11.11 1.44991C11.3866 1.31248 11.6912 1.24097 12 1.24097C12.3089 1.24097 12.6135 1.31248 12.89 1.44991V1.44991Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2.31982 6.15991L11.9998 10.9999L21.6798 6.15991" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 22.76V11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-cpu" viewBox="0 0 24 24">
+<g clip-path="url(#i-cpu-clip0_164_49008)">
+<path d="M18 4H6C4.89543 4 4 4.89543 4 6V18C4 19.1046 4.89543 20 6 20H18C19.1046 20 20 19.1046 20 18V6C20 4.89543 19.1046 4 18 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15 9H9V15H15V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9 1V4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15 1V4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9 20V23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15 20V23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20 9H23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20 14H23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M1 9H4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M1 14H4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="i-cpu-clip0_164_49008">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+</symbol>
+<symbol id="i-key" viewBox="0 0 24 24">
+<path d="M11.3891 11.6109L15.5 7.5L19 4L21 2M11.3891 11.6109C12.3844 12.6062 13 13.9812 13 15.5C13 18.5376 10.5376 21 7.5 21C4.46244 21 2 18.5376 2 15.5C2 12.4624 4.46244 10 7.5 10C9.01878 10 10.3938 10.6156 11.3891 11.6109ZM15.5 7.5L18.5 10.5L22 6.99999L19 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
 </svg>
 </div>
 <div class="app">
@@ -796,43 +823,60 @@
 
             <div class="profile-panel profile-panel--active" id="profilePanelPersona" role="tabpanel" aria-labelledby="profileTabPersona" data-profile-panel="persona">
               <section class="profile-design-panel profile-persona" aria-labelledby="personaQuestion">
-                <header class="profile-design-panel__header profile-persona__header">
-                  <h2 class="profile-persona__question" id="personaQuestion">Which user type are you?</h2>
-                  <p class="profile-design-panel__subtitle">Read carefully the 2 persona descriptions and choose.</p>
-                </header>
+                <div class="profile-persona__layout">
+                  <div class="profile-persona__controls">
+                    <header class="profile-persona__header">
+                      <h2 class="profile-persona__heading" id="personaQuestion">Which user type are you?</h2>
+                      <p class="profile-persona__hint">Move the sliders in order to set your profile ...</p>
+                    </header>
 
-                <div class="profile-persona-grid" role="radiogroup" aria-label="User type presets">
-                  <button type="button" class="profile-persona-card" data-persona="beatrice" data-persona-pose="few" role="radio" aria-checked="false" aria-label="Beat Müller, the novice financial user">
-                    <span class="profile-persona-card__label">The novice financial user</span>
-                    <span class="profile-persona-card__radio" aria-hidden="true"><span class="profile-persona-card__radio-dot"></span></span>
-                    <span class="profile-persona-card__stage" data-persona-stage>
-                      <span class="profile-persona-card__stage-fallback" aria-hidden="true">Loading 3D…</span>
-                    </span>
-                    <span class="profile-persona-card__glass">
-                      <span class="profile-persona-card__name">Beat Müller</span>
-                      <span class="profile-persona-card__description">
-                        <span>unerfahren bzw. wenig Kenntnisse</span>
-                        <span>wenige Bankprodukte</span>
-                        <span>übersichtlich = einfach</span>
-                      </span>
-                    </span>
-                  </button>
+                    <div class="profile-persona-sliders">
+                      <div class="profile-persona-slider">
+                        <label class="profile-persona-slider__label" for="personaKnowledge">
+                          <svg class="profile-persona-slider__icon" aria-hidden="true" focusable="false"><use href="#i-key"/></svg>
+                          <span>Financial knowledge</span>
+                        </label>
+                        <input type="range" id="personaKnowledge" min="0" max="100" step="1" value="20" data-persona-slider="knowledge" class="cc-color-slider cc-color-slider--compact profile-persona-slider__input">
+                        <div class="profile-persona-slider__range" aria-hidden="true"><span>low</span><span>high</span></div>
+                      </div>
+                      <div class="profile-persona-slider">
+                        <label class="profile-persona-slider__label" for="personaProducts">
+                          <svg class="profile-persona-slider__icon" aria-hidden="true" focusable="false"><use href="#i-box"/></svg>
+                          <span>Banking products</span>
+                        </label>
+                        <input type="range" id="personaProducts" min="0" max="100" step="1" value="20" data-persona-slider="products" class="cc-color-slider cc-color-slider--compact profile-persona-slider__input">
+                        <div class="profile-persona-slider__range" aria-hidden="true"><span>few</span><span>many</span></div>
+                      </div>
+                      <div class="profile-persona-slider">
+                        <label class="profile-persona-slider__label" for="personaDigital">
+                          <svg class="profile-persona-slider__icon" aria-hidden="true" focusable="false"><use href="#i-cpu"/></svg>
+                          <span>Digital affinity</span>
+                        </label>
+                        <input type="range" id="personaDigital" min="0" max="100" step="1" value="20" data-persona-slider="digital" class="cc-color-slider cc-color-slider--compact profile-persona-slider__input">
+                        <div class="profile-persona-slider__range" aria-hidden="true"><span>low</span><span>high</span></div>
+                      </div>
+                    </div>
 
-                  <button type="button" class="profile-persona-card" data-persona="max" data-persona-pose="many" role="radio" aria-checked="false" aria-label="Max Maximus, the experienced financial user">
-                    <span class="profile-persona-card__label">The experienced financial user</span>
-                    <span class="profile-persona-card__radio" aria-hidden="true"><span class="profile-persona-card__radio-dot"></span></span>
-                    <span class="profile-persona-card__stage" data-persona-stage>
-                      <span class="profile-persona-card__stage-fallback" aria-hidden="true">Loading 3D…</span>
-                    </span>
-                    <span class="profile-persona-card__glass">
-                      <span class="profile-persona-card__name">Max Maximus</span>
-                      <span class="profile-persona-card__description">
-                        <span>erfahren bzw. viel Kenntnisse</span>
-                        <span>viele Bankprodukte</span>
-                        <span>übersichtlich = grosse Informationsdichte gut überschauen können</span>
-                      </span>
-                    </span>
-                  </button>
+                    <p class="profile-persona__title" data-persona-title aria-live="polite">Newbie</p>
+                    <div class="profile-persona__story">
+                      <p class="profile-persona__story-title" data-persona-story-title>This is a story about Beat</p>
+                      <p class="profile-persona__story-text" data-persona-story></p>
+                    </div>
+                  </div>
+
+                  <div class="profile-persona__showcase">
+                    <header class="profile-persona__header">
+                      <h3 class="profile-persona__heading">UI Preview</h3>
+                      <p class="profile-persona__hint" data-persona-preview-text></p>
+                    </header>
+                    <div class="profile-persona__scene">
+                      <div class="profile-persona-preview" data-persona-preview role="region" aria-label="UI preview" tabindex="0"></div>
+                      <div class="profile-persona-stage" data-persona-stage>
+                        <span class="profile-persona-stage__fallback" aria-hidden="true">Loading 3D…</span>
+                        <span class="profile-persona-stage__name" data-persona-name aria-hidden="true">Beat</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </section>
             </div>
@@ -1417,6 +1461,8 @@
 <script src="js/form-field-sheet.js"></script>
 <script src="js/payment-exit-confirm.js"></script>
 <script src="js/app.js"></script>
-<script type="module" src="js/profile-persona-spline.js"></script>
+<script src="js/profile-persona.js"></script>
+<script type="module" src="js/profile-persona-character.js"></script>
+<script src="js/nav-button-motion.js"></script>
 </body>
 </html>

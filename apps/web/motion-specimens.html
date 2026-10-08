@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <script>
+  (function (m, a, z, e) {
+    var s, t, u, v;
+    try {
+      t = m.sessionStorage.getItem('maze-us');
+    } catch (err) {}
+
+    if (!t) {
+      t = new Date().getTime();
+      try {
+        m.sessionStorage.setItem('maze-us', t);
+      } catch (err) {}
+    }
+
+    u = document.currentScript || (function () {
+      var w = document.getElementsByTagName('script');
+      return w[w.length - 1];
+    })();
+    v = u && u.nonce;
+
+    s = a.createElement('script');
+    s.src = z + '?apiKey=' + e;
+    s.async = true;
+    if (v) s.setAttribute('nonce', v);
+    a.getElementsByTagName('head')[0].appendChild(s);
+    m.mazeUniversalSnippetApiKey = e;
+  })(window, document, 'https://snippet.maze.co/maze-universal-loader.js', 'd2a9ecc0-0e29-4eb5-8fd3-b510d3b42063');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="color-scheme" content="dark light">
+  <title>UZ Bank – Motion specimens</title>
+  <script>
+    /* Boot: apply saved theme + colour-override before paint.
+       The colour override stores only { bg, fg }; we derive every other
+       --color-* role here so all pages get the full custom palette without
+       a single visible flash of the default theme.
+       This logic mirrors deriveTokens() in js/contrast-checker.js. */
+    (function () {
+      try {
+        var t = localStorage.getItem('uzBankWebTheme');
+        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+        var raw = localStorage.getItem('uzBankWebColorOverride');
+        if (!raw) return;
+        var o = JSON.parse(raw);
+        if (!o || !/^#[0-9a-f]{6}$/i.test(o.bg) || !/^#[0-9a-f]{6}$/i.test(o.fg)) return;
+
+        function rgb(h) {
+          return { r: parseInt(h.slice(1,3),16), g: parseInt(h.slice(3,5),16), b: parseInt(h.slice(5,7),16) };
+        }
+        function hex(r,g,b) {
+          function p(x){ return Math.round(x).toString(16).padStart(2,'0'); }
+          return '#' + p(r) + p(g) + p(b);
+        }
+        function lum(c) {
+          function l(x){ x/=255; return x<=0.03928 ? x/12.92 : Math.pow((x+0.055)/1.055, 2.4); }
+          return 0.2126*l(c.r) + 0.7152*l(c.g) + 0.0722*l(c.b);
+        }
+        var bg = rgb(o.bg), fg = rgb(o.fg);
+        var isDark = lum(bg) < lum(fg);
+        function mix(a,b,t){ return hex(a.r+(b.r-a.r)*t, a.g+(b.g-a.g)*t, a.b+(b.b-a.b)*t); }
+        function fa(a){ return 'rgba(' + fg.r + ',' + fg.g + ',' + fg.b + ',' + a + ')'; }
+        function sa(c, a){ return 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + a + ')'; }
+        function ba(a){ return 'rgba(0,0,0,' + a + ')'; }
+        var bgE = isDark ? 0.22 : 0.07, fgE = isDark ? 0.06 : 0.22;
+        var brandPrimaryHex = isDark ? o.bg : o.fg;
+        var brandPrimaryRgb = isDark ? bg : fg;
+        var white = { r: 255, g: 255, b: 255 };
+
+        var tokens = {
+          'color-bg': o.bg,
+          'color-bg-secondary': mix(bg, fg, bgE),
+          'color-bg-sidebar': o.bg,
+          'color-fg': o.fg,
+          'color-fg-secondary': mix(fg, bg, fgE),
+          'color-fg-label': fa(0.7),
+          'color-fg-disabled': fa(0.4),
+          'color-separator': fa(0.10),
+          'color-show-all-bg': fa(0.10),
+          'color-nav-item-active-bg': fa(0.10),
+          'color-segmented-track-bg': fa(0.05),
+          'color-input-stroke': fa(0.7),
+          'color-input-stroke-focus': o.fg,
+          'color-icon-circle-fill': o.fg,
+          'color-btn-primary-bg': o.fg,
+          'color-btn-primary-fg': o.bg,
+          'color-btn-primary-hover': mix(fg, bg, fgE),
+          'color-btn-primary-pressed': mix(fg, bg, Math.min(0.45, fgE * 1.75)),
+          'color-btn-secondary-bg': isDark ? o.bg : '#ffffff',
+          'color-btn-secondary-border': isDark ? o.fg : brandPrimaryHex,
+          'color-btn-secondary-fg': isDark ? o.fg : brandPrimaryHex,
+          'color-btn-secondary-hover': isDark ? mix(bg, fg, 0.1) : mix(white, brandPrimaryRgb, 0.1),
+          'color-btn-secondary-pressed': isDark ? mix(bg, fg, 0.2) : mix(white, brandPrimaryRgb, 0.2),
+          'color-btn-tonal-bg': mix(bg, fg, isDark ? 0.28 : 0.08),
+          'color-btn-tonal-border': mix(bg, fg, isDark ? 0.28 : 0.08),
+          'color-btn-tonal-fg': o.fg,
+          'color-btn-tonal-hover': mix(bg, fg, isDark ? 0.38 : 0.14),
+          'color-btn-tonal-pressed': mix(bg, fg, isDark ? 0.48 : 0.22),
+          'color-overlay-tint': o.fg,
+          'color-nav-elevated-shadow': ba(isDark ? 0.35 : 0.06),
+          'color-modal-elevated-shadow': ba(isDark ? 0.45 : 0.12),
+          'color-surface-state-hover': fa(0.1),
+          'color-surface-state-pressed': fa(0.2),
+          'color-action-circle-state-hover': isDark ? 'rgba(0, 21, 126, 0.1)' : 'rgba(255, 255, 255, 0.12)',
+          'color-action-circle-state-pressed': isDark ? 'rgba(0, 21, 126, 0.2)' : 'rgba(255, 255, 255, 0.22)'
+        };
+        var s = document.documentElement.style;
+        for (var k in tokens) s.setProperty('--' + k, tokens[k]);
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/typography.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/admin-boot.js" data-guard></script>
+  <script src="js/section-build-boot.js"></script>
+  <style>
+    /* ==========================================================================
+       Motion specimens — documentation page
+       Chrome uses the design system only (tokens.css, typography.css, styles.css).
+       Stages marked "In use" run the real motion code from css/styles.css and
+       js/nav-button-motion.js, so what you see here is what ships in the app.
+       ========================================================================== */
+    :root {
+      --ms-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace; /* no mono in the DS: code only */
+      --ms-surface: var(--color-bg);
+      --ms-line: var(--color-separator);
+      --ms-accent-soft: var(--color-segmented-track-bg);
+    }
+
+    .ms-page { padding-bottom: var(--space-9); }
+
+    .ms-toolbar { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; justify-content: space-between; margin-bottom: var(--space-6); }
+    .ms-toolbar a { color: var(--color-fg); font-size: var(--fs-text-sm); }
+
+    .ms-header { display: grid; grid-template-columns: 1fr auto; gap: var(--space-3) var(--space-5); align-items: end;
+      padding-bottom: var(--space-4); border-bottom: 1px solid var(--ms-line); margin-bottom: var(--space-4); }
+    .ms-header .ms-title { margin: 0; font-size: var(--fs-h3); line-height: var(--lh-h3); font-weight: var(--fw-bold); color: var(--color-fg); letter-spacing: -0.01em; }
+    .ms-header p { grid-column: 1 / -1; margin: 0; max-width: 60ch; color: var(--color-fg-secondary); font-size: var(--fs-text-md); line-height: var(--lh-text); }
+    .ms-count { text-align: right; color: var(--color-fg-label); font-size: var(--fs-text-xs); line-height: var(--lh-caption); }
+    .ms-count b { display: block; font-size: var(--fs-h4); line-height: var(--lh-h4); font-weight: var(--fw-bold); color: var(--color-fg); }
+
+    .ms-index { display: flex; flex-wrap: wrap; gap: var(--space-1); margin: 0 0 var(--space-7); padding: 0; list-style: none; }
+    .ms-index a { display: inline-flex; gap: var(--space-1); align-items: baseline; padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-pill); background: var(--ms-surface); color: var(--color-fg); text-decoration: none; font-size: var(--fs-text-sm); line-height: var(--lh-text); }
+    .ms-index a span { color: var(--color-fg-label); font-size: var(--fs-text-xs); }
+    .ms-index a:hover { background: var(--color-surface-state-hover); }
+
+    .ms-specimen { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: var(--space-4) var(--space-5);
+      align-items: start; margin-bottom: var(--space-8); scroll-margin-top: var(--space-4); }
+    @media (max-width: 900px) { .ms-specimen { grid-template-columns: 1fr; } }
+
+    .ms-head { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-3); }
+    .ms-no { font-size: var(--fs-text-sm); color: var(--color-fg-label); font-variant-numeric: tabular-nums; }
+    .ms-head h2 { margin: 0; font-size: var(--fs-h5); line-height: var(--lh-h5); font-weight: var(--fw-medium); color: var(--color-fg); }
+    .ms-tags { display: flex; flex-wrap: wrap; gap: var(--space-1); margin-left: auto; }
+    .ms-tag { font-size: var(--fs-text-xs); line-height: 1; padding: 0.4rem 0.6rem; border-radius: var(--radius-pill);
+      background: var(--ms-surface); color: var(--color-fg-secondary); }
+    .ms-tag--live { background: var(--color-btn-primary-bg); color: var(--color-btn-primary-fg); }
+
+    .ms-stage-col { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
+    .ms-stage { position: relative; aspect-ratio: 16 / 10; max-width: 100%; border-radius: var(--radius-regular); overflow: hidden;
+      background: var(--ms-surface); color: var(--color-fg); }
+    .ms-controls { display: flex; flex-wrap: wrap; gap: var(--space-1); align-items: center; }
+    .ms-controls p { margin: 0 auto 0 0; font-size: var(--fs-text-xs); line-height: var(--lh-text); color: var(--color-fg-label); max-width: 34ch; }
+
+    .ms-anatomy { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+    .ms-label { margin: 0 0 var(--space-1); font-size: var(--fs-text-xs); line-height: var(--lh-caption); font-weight: var(--fw-medium);
+      color: var(--color-fg-label); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    .ms-timeline { position: relative; }
+    .ms-label-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); margin-bottom: var(--space-1); }
+    .ms-label-row .ms-label { margin: 0; }
+    .ms-track { display: flex; height: 2.25rem; border-radius: var(--radius-small); overflow: hidden; background: var(--ms-surface); }
+    .ms-seg { display: flex; align-items: center; justify-content: center; min-width: 0; overflow: hidden; white-space: nowrap;
+      font-size: var(--fs-text-xs); color: var(--color-fg-label); border-right: 1px solid var(--ms-line); }
+    .ms-seg:last-child { border-right: 0; }
+    .ms-seg--act { background: var(--color-btn-tonal-hover); color: var(--color-fg); }
+    html[data-theme="dark"] .ms-seg--act { background: var(--color-btn-tonal-bg); }
+    .ms-playhead { position: absolute; top: 0; height: 2.25rem; width: 2px; left: 0; border-radius: 1px; background: var(--color-fg);
+      animation: ms-playhead var(--dur) linear infinite; }
+    @keyframes ms-playhead { from { left: 0; } to { left: calc(100% - 2px); } }
+    .ms-ticks { display: flex; justify-content: space-between; margin-top: 0.375rem; font-size: var(--fs-text-xs); color: var(--color-fg-label); font-variant-numeric: tabular-nums; }
+
+    .ms-dl { display: grid; grid-template-columns: auto 1fr; gap: var(--space-1) var(--space-3); margin: 0; font-size: var(--fs-text-sm); line-height: var(--lh-text); }
+    .ms-dl dt { color: var(--color-fg-label); }
+    .ms-dl dd { margin: 0; color: var(--color-fg); }
+    .ms-list { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.375rem; font-size: var(--fs-text-sm); line-height: var(--lh-text); color: var(--color-fg); }
+    .ms-list li::marker { color: var(--color-fg-label); }
+
+    code { font-family: var(--ms-mono); font-size: 0.9em; }
+    .ms-code { position: relative; }
+    .ms-code pre { margin: 0; padding: var(--space-6) var(--space-3) var(--space-3); overflow-x: auto; border-radius: var(--radius-regular);
+      background: var(--ms-surface); color: var(--color-fg); font: 0.78rem/1.6 var(--ms-mono); }
+    .ms-code .uz-btn { position: absolute; top: var(--space-1); right: var(--space-1); }
+    .ms-src { font-size: var(--fs-text-sm); line-height: var(--lh-text); color: var(--color-fg-secondary); }
+    .ms-src a { color: var(--color-fg); }
+    .ms-next { border-top: 1px dashed var(--ms-line); padding-top: var(--space-4); color: var(--color-fg-secondary); font-size: var(--fs-text-sm); max-width: 62ch; }
+
+    .ms-paused .ms-playhead,
+    .ms-paused .ms-stage *,
+    .ms-paused .ms-stage { animation-play-state: paused !important; }
+
+    /* ---------- No. 001 · Grab-and-drag hint ---------- */
+    .s1-stage { cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; perspective: 900px;
+      background: linear-gradient(90deg, var(--ms-surface) 0 18%, var(--color-btn-tonal-hover) 18% 82%, var(--ms-surface) 82%); }
+    html[data-theme="dark"] .s1-stage { background: linear-gradient(90deg, var(--color-bg) 0 18%, var(--color-btn-tonal-bg) 18% 82%, var(--color-bg) 82%); }
+    .s1-stage.is-dragging { cursor: grabbing; }
+    .s1-slab { position: absolute; inset: 18% 30% 30%; border-radius: var(--radius-regular); transform-style: preserve-3d;
+      background: linear-gradient(160deg, var(--color-fg-secondary), var(--color-fg)); box-shadow: 0 1.5rem 3rem -1rem var(--color-modal-elevated-shadow);
+      transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .s1-stage.is-dragging .s1-slab { transition: none; }
+    .s1-hint { position: absolute; left: 50%; bottom: 9%; translate: -50% 0; display: flex; align-items: center; gap: var(--space-2);
+      padding: 0.5rem var(--space-3); border-radius: var(--radius-pill); background: var(--color-bg); color: var(--color-fg);
+      box-shadow: 0 0.375rem 1.25rem -0.5rem var(--color-modal-elevated-shadow); transition: opacity 0.35s ease, transform 0.35s ease; pointer-events: none; }
+    .s1-hint.is-gone { opacity: 0; transform: translateY(0.5rem) scale(0.96); }
+    .ms-chev { width: 0.75rem; height: 0.75rem; stroke: currentColor; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .s1-hand { position: relative; width: 1.375rem; height: 1.375rem; animation: s1-drag var(--dur, 2.4s) cubic-bezier(0.45, 0, 0.25, 1) infinite; }
+    .s1-hand svg { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .s1-hand .s1-open { animation: s1-open var(--dur, 2.4s) linear infinite; }
+    .s1-hand .s1-grab { animation: s1-grab var(--dur, 2.4s) linear infinite; }
+    @keyframes s1-drag { 0%, 28% { transform: translateX(0) scale(1); } 36% { transform: translateX(0) scale(0.9); }
+      62% { transform: translateX(-7px) scale(0.9); } 70% { transform: translateX(-7px) scale(1); } 90%, 100% { transform: translateX(0) scale(1); } }
+    @keyframes s1-open { 0%, 28% { opacity: 1; } 33%, 64% { opacity: 0; } 69%, 100% { opacity: 1; } }
+    @keyframes s1-grab { 0%, 28% { opacity: 0; } 33%, 64% { opacity: 1; } 69%, 100% { opacity: 0; } }
+
+    /* ---------- No. 002 · Focus-mode choreography ---------- */
+    /* Ink = the dark scene, paper = the light object — both derived from the theme (incl. Profile colour override) */
+    .s2-stage { container-type: inline-size; --k: 1; background: var(--color-bg); --s2-ink: var(--color-fg); --s2-paper: var(--color-bg); }
+    html[data-theme="dark"] .s2-stage { background: var(--color-bg-secondary); --s2-ink: var(--color-bg); --s2-paper: var(--color-fg); }
+    .s2-hero { position: absolute; left: 6%; top: 14%; width: 36%; display: flex; flex-direction: column; gap: 2cqw; pointer-events: none; }
+    .s2-hero > * { transition: opacity calc(0.4s * var(--k)) ease, transform calc(0.4s * var(--k)) cubic-bezier(0.2, 0.8, 0.2, 1);
+      transition-delay: calc((0.9s + var(--i) * 0.07s) * var(--k)); }
+    .s2-stage.is-focus .s2-hero > * { opacity: 0; transform: translateY(-1.2cqw); transition-duration: calc(0.3s * var(--k)); transition-delay: calc(var(--i) * 0.03s * var(--k)); }
+    .s2-by { font-size: 1.4cqw; color: var(--color-fg-label); }
+    .s2-h { margin: 0; font-size: 4cqw; line-height: 1.05; font-weight: var(--fw-bold); color: var(--color-fg); }
+    .s2-p { margin: 0; font-size: 1.45cqw; line-height: 1.5; color: var(--color-fg-secondary); }
+    .s2-badge { align-self: flex-start; font-size: 1.15cqw; font-weight: var(--fw-medium); padding: 0.4cqw 0.9cqw; border-radius: var(--radius-pill);
+      background: var(--color-btn-primary-bg); color: var(--color-btn-primary-fg); }
+    .s2-price { font-size: 3.2cqw; font-weight: var(--fw-bold); color: var(--color-fg); }
+    .s2-panel { position: absolute; top: 0; bottom: 0; left: 46%; right: 0; cursor: pointer; perspective: 90cqw;
+      background: radial-gradient(120% 90% at 40% 30%, color-mix(in srgb, var(--s2-ink) 78%, var(--s2-paper)), var(--s2-ink) 75%);
+      transition: left calc(0.8s * var(--k)) cubic-bezier(0.65, 0, 0.25, 1) calc(0.25s * var(--k)), right calc(0.8s * var(--k)) cubic-bezier(0.65, 0, 0.25, 1) calc(0.25s * var(--k)); }
+    .s2-stage.is-focus .s2-panel { left: 0; right: 30%; cursor: default; transition-delay: calc(0.3s * var(--k)); }
+    .s2-obj { position: absolute; left: 50%; top: 46%; width: 22cqw; height: 18cqw; margin: -9cqw 0 0 -11cqw; transform-style: preserve-3d;
+      transform: rotateX(-14deg) rotateY(-28deg); transition: transform calc(0.8s * var(--k)) cubic-bezier(0.65, 0, 0.25, 1) calc(0.25s * var(--k)); }
+    .s2-stage.is-focus .s2-obj { transform: rotateX(-20deg) rotateY(-48deg) scale(1.08); transition-delay: calc(0.3s * var(--k)); }
+    .s2-face { position: absolute; inset: 0; border-radius: 0.4cqw; }
+    .s2-front { background: linear-gradient(160deg, var(--s2-paper), color-mix(in srgb, var(--s2-paper) 88%, var(--s2-ink))); transform: translateZ(11cqw); }
+    .s2-side { width: 22cqw; background: linear-gradient(160deg, color-mix(in srgb, var(--s2-paper) 75%, var(--s2-ink)), color-mix(in srgb, var(--s2-paper) 55%, var(--s2-ink))); transform: rotateY(90deg) translateZ(11cqw); }
+    .s2-top { height: 22cqw; background: color-mix(in srgb, var(--s2-paper) 94%, var(--s2-ink)); transform: rotateX(90deg) translateZ(11cqw); }
+    .s2-front::before, .s2-front::after { content: ""; position: absolute; left: 12%; right: 12%; height: 9%; border-radius: 0.3cqw; background: color-mix(in srgb, var(--s2-ink) 70%, var(--s2-paper)); }
+    .s2-front::before { top: 22%; background: var(--s2-ink); }
+    .s2-front::after { top: 58%; }
+    .s2-pillslot { position: absolute; left: 50%; bottom: 6%; translate: -50% 0; display: grid; }
+    .s2-pillslot > * { grid-area: 1 / 1; justify-self: center; display: flex; align-items: center; gap: 1.4cqw; white-space: nowrap;
+      padding: 0.8cqw 1.8cqw; border-radius: var(--radius-pill); background: var(--s2-paper); color: var(--s2-ink); font-size: 1.3cqw; font-weight: var(--fw-medium); }
+    .s2-pillslot .ms-chev { width: 1.1cqw; height: 1.1cqw; }
+    .s2-pillslot .s1-hand { width: 2cqw; height: 2cqw; }
+    .s2-hint { transition: opacity calc(0.3s * var(--k)), transform calc(0.3s * var(--k)) cubic-bezier(0.2, 0.8, 0.2, 1); transition-delay: calc(1.4s * var(--k)); }
+    .s2-stage.is-focus .s2-hint { opacity: 0; transform: translateY(1cqw); transition-duration: calc(0.2s * var(--k)); transition-delay: 0s; }
+    .s2-level { gap: 3cqw; padding-inline: 2.4cqw; opacity: 0; transform: translateY(1cqw); transition: opacity calc(0.25s * var(--k)), transform calc(0.25s * var(--k)); }
+    .s2-stage.is-focus .s2-level { opacity: 1; transform: none; transition-duration: calc(0.3s * var(--k)); transition-delay: calc(1.1s * var(--k)); }
+    .s2-close { position: absolute; left: 3.5%; top: 50%; margin-top: -2.3cqw; width: 4.6cqw; height: 4.6cqw; padding: 0; border: 0; border-radius: 50%;
+      display: grid; place-items: center; background: var(--s2-paper); color: var(--s2-ink); cursor: pointer; opacity: 0; transform: scale(0.5); pointer-events: none;
+      transition: opacity calc(0.25s * var(--k)), transform calc(0.25s * var(--k)); }
+    .s2-close svg { width: 1.8cqw; height: 1.8cqw; }
+    .s2-stage.is-focus .s2-close { opacity: 1; transform: none; pointer-events: auto;
+      transition: opacity calc(0.3s * var(--k)), transform calc(0.4s * var(--k)) cubic-bezier(0.3, 1.5, 0.5, 1); transition-delay: calc(1s * var(--k)); }
+    .s2-detail { position: absolute; right: 4%; top: 18%; width: 23%; display: flex; flex-direction: column; gap: 1.3cqw; pointer-events: none; }
+    .s2-detail > * { opacity: 0; transform: translateY(1cqw); transition: opacity calc(0.25s * var(--k)), transform calc(0.25s * var(--k)); }
+    .s2-stage.is-focus .s2-detail > * { opacity: 1; transform: none; transition-duration: calc(0.45s * var(--k)); transition-delay: calc((1.3s + var(--i) * 0.08s) * var(--k)); }
+    .s2-detail h4 { margin: 0; font-size: 3cqw; line-height: 1; font-weight: var(--fw-bold); color: var(--color-fg); }
+    .s2-row { display: grid; grid-template-columns: 2.4cqw 1fr auto; gap: 0.8cqw; padding-top: 0.8cqw; border-top: 1px solid var(--ms-line);
+      font-size: 1.2cqw; color: var(--color-fg); }
+    .s2-row span:first-child, .s2-row span:last-child { color: var(--color-fg-label); font-variant-numeric: tabular-nums; }
+
+    .s2-tabs { display: flex; gap: var(--space-1); margin-bottom: var(--space-2); }
+    /* toggled buttons: the design system's toggled state (aria-pressed) */
+    .s2-gantt { position: relative; display: flex; flex-direction: column; gap: 0.375rem; }
+    .s2-grow { display: grid; grid-template-columns: 7.5rem 1fr; align-items: center; gap: var(--space-1); }
+    .s2-grow > span { font-size: var(--fs-text-xs); color: var(--color-fg-label); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .s2-gtrack { position: relative; height: 0.875rem; border-radius: var(--radius-small); background: var(--ms-surface); }
+    .s2-gbar { position: absolute; top: 2px; bottom: 2px; border-radius: 2px; background: var(--color-fg-secondary); opacity: 0.45; }
+    .s2-gbar--move { background: var(--color-fg); opacity: 1; }
+    .s2-glayer { position: absolute; inset: 0 0 0 8.25rem; pointer-events: none; }
+    .s2-ghead { position: absolute; top: -3px; bottom: -3px; width: 2px; left: 0; opacity: 0; border-radius: 1px; background: var(--color-fg); }
+    .s2-gticks { position: relative; height: 1rem; margin: 0.375rem 0 0 8.25rem; font-size: var(--fs-text-xs); color: var(--color-fg-label); font-variant-numeric: tabular-nums; }
+    .s2-gticks span { position: absolute; translate: -50% 0; white-space: nowrap; }
+    .s2-gticks span:first-child { translate: 0 0; }
+    .s2-gticks span:last-child { translate: -100% 0; }
+    .s2-legend { display: flex; gap: var(--space-3); margin-top: var(--space-1); font-size: var(--fs-text-xs); color: var(--color-fg-label); }
+    .s2-legend i { display: inline-block; width: 0.625rem; height: 0.625rem; margin-right: 0.375rem; border-radius: 2px; vertical-align: -1px; background: var(--color-fg-secondary); opacity: 0.45; }
+    .s2-legend i.s2-move { background: var(--color-fg); opacity: 1; }
+
+    /* ---------- Real-component stages (003 · 004 · 005 · 006) ---------- */
+    .ms-sheet { position: absolute; inset: 12% 14%; display: flex; flex-direction: column; border-radius: var(--radius-regular);
+      background: var(--color-bg); box-shadow: 0 0.5rem 2rem var(--color-modal-elevated-shadow); overflow: hidden; }
+    html[data-theme="dark"] .ms-sheet { background: var(--color-bg-secondary); }
+    .ms-sheet__nav { position: relative; display: flex; align-items: center; justify-content: center; min-height: 3.5rem; padding: 0 var(--space-1); }
+    .ms-sheet__title { font-size: var(--fs-text-md); line-height: var(--lh-text); font-weight: var(--fw-medium); color: var(--color-fg); }
+    .ms-sheet__body { flex: 1; display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-2) var(--space-3) var(--space-3); }
+    .ms-skel { height: 0.75rem; border-radius: var(--radius-small); background: var(--color-segmented-track-bg); }
+    .ms-sheet .modal__close { top: 0; bottom: 0; margin: auto 0; right: var(--space-1); color: var(--color-fg); }
+    .ms-sheet .view__nav-btn { left: var(--space-1); color: var(--color-fg); }
+    .ms-sheet__nav:has(+ .step-indicator) { padding-bottom: var(--space-1); }
+    .ms-sheet__nav--stack { flex-direction: column; }
+    .s7-foot { display: flex; gap: var(--space-1); padding: 0 var(--space-3) var(--space-3); }
+    .s7-foot .uz-btn { flex: 1; }
+
+    /* ---------- No. 009 · Arrow nudge ---------- */
+    .s9-stage { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); padding: var(--space-3); align-content: center; }
+    .s9-col { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-2); border-radius: var(--radius-regular); border: 1px solid var(--ms-line); }
+    .s9-col small { font-size: var(--fs-text-xs); line-height: var(--lh-caption); color: var(--color-fg-label); margin-bottom: var(--space-1); }
+    .s9-col .show-all-btn { width: 100%; margin: 0; }
+    .s9-nav { position: relative; display: flex; align-items: center; justify-content: center; min-height: 3rem; font-size: var(--fs-text-sm); font-weight: var(--fw-medium); color: var(--color-fg); }
+    .s9-nav .view__nav-btn { left: 0; color: var(--color-fg); }
+    @media (max-width: 600px) { .s9-stage { grid-template-columns: 1fr; aspect-ratio: auto; } }
+
+    /* ---------- No. 008 · Wiggle ---------- */
+    .s8-stage { display: flex; flex-direction: column; justify-content: center; gap: var(--space-2); padding: var(--space-3) var(--space-4); }
+    @media (max-width: 600px) { .s8-stage { aspect-ratio: auto; } }
+    .s8-search { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3);
+      border: 1px solid var(--color-input-stroke); border-radius: var(--radius-small); background: var(--color-input-surface);
+      color: var(--color-fg-label); font-size: var(--fs-text-md); }
+    .s8-search .recipient-search__icon-svg { width: 1.5rem; height: 1.5rem; color: var(--color-fg); flex-shrink: 0; }
+    .s8-pencils { display: flex; flex-direction: column; }
+    .s8-row { display: grid; grid-template-columns: 7rem 1fr auto; align-items: center; gap: var(--space-2); padding: var(--space-1) 0;
+      border-bottom: 1px solid var(--ms-line); font-size: var(--fs-text-sm); color: var(--color-fg); }
+    .s8-row span { color: var(--color-fg-label); }
+    .s8-row b { font-weight: var(--fw-medium); }
+    .s8-row svg { width: 1.5rem; height: 1.5rem; }
+    .s8-msg { --s8-accent: #FF0095; display: grid; grid-template-columns: auto 1fr auto; gap: var(--space-1) var(--space-2); padding: var(--space-3);
+      border: 1px solid var(--s8-accent); border-radius: var(--radius-regular); background: var(--color-bg); color: var(--s8-accent); }
+    html[data-theme="dark"] .s8-msg { --s8-accent: #FF7AC6; background: var(--color-bg-secondary); }
+    .s8-msg .status-message__icon { display: flex; }
+    .s8-msg .status-message__icon svg { width: 1.5rem; height: 1.5rem; }
+    .s8-msg b { font-size: var(--fs-text-sm); line-height: var(--lh-text); }
+    .s8-msg p { grid-column: 2; margin: 0; font-size: var(--fs-text-xs); line-height: var(--lh-text); }
+    .s8-msg small { font-size: var(--fs-text-xs); white-space: nowrap; }
+
+    .s5-stage .ms-sheet { transform: translateX(110%); transition: transform calc(0.35s * var(--k, 1)) cubic-bezier(0.22, 1, 0.36, 1); }
+    .s5-stage.is-open .ms-sheet { transform: none; }
+
+    .s6-stage { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-3); padding: var(--space-3); }
+    .s6-card { width: min(88%, 24rem); display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-3);
+      border-radius: var(--radius-regular); background: var(--color-bg-secondary); }
+    html[data-theme="dark"] .s6-card { background: var(--color-bg-secondary); }
+    .s6-card small { font-size: var(--fs-text-xs); line-height: var(--lh-caption); color: var(--color-fg-label); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ms-playhead, .s1-hand, .s1-hand svg { animation: none; }
+      .s1-hand .s1-grab { opacity: 0; }
+      .s2-stage { --k: 0.02; }
+      .s5-stage .ms-sheet { transition: none; }
+    }
+  </style>
+</head>
+<body class="body" data-screen="motion-specimens" data-page="motion-specimens">
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar__logo"><a href="overview.html">UZ Bank</a></div>
+    <nav class="sidebar__nav">
+      <a class="sidebar__nav-item" href="overview.html">
+        <svg class="sidebar__nav-icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
+        <span>Overview</span>
+      </a>
+      <a class="sidebar__nav-item" href="payments.html">
+        <svg class="sidebar__nav-icon" aria-hidden="true" focusable="false"><use href="#i-payments"/></svg>
+        <span>Payments</span>
+      </a>
+      <a class="sidebar__nav-item" href="profile.html">
+        <svg class="sidebar__nav-icon" aria-hidden="true" focusable="false"><use href="#i-user"/></svg>
+        <span>Profile</span>
+      </a>
+      <a class="sidebar__nav-item sidebar__nav-item--active admin-only" href="design-system.html" aria-current="page">
+        <svg class="sidebar__nav-icon" aria-hidden="true" focusable="false"><use href="#i-layers"/></svg>
+        <span>Design system</span>
+      </a>
+
+    </nav>
+    <div class="sidebar__footer">
+      <div class="segmented segmented--theme" role="group" aria-label="Theme">
+        <button type="button" class="segmented__option" data-set-theme="light">Light</button>
+        <button type="button" class="segmented__option segmented__option--active" data-set-theme="dark">Dark</button>
+      </div>
+      <div class="sidebar__logout">
+        <button class="sidebar__logout-btn" type="button" data-analytics="logout_click">
+          <svg class="sidebar__logout-icon" aria-hidden="true" focusable="false"><use href="#i-corner-up-right"/></svg>
+          <span>Logout</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="main-content__inner">
+      <!-- ── MOTION (design system, admin) ── -->
+      <section class="view view--active view--motion-specimens" data-view="motion-specimens">
+        <div class="view__main">
+          <div class="view__sticky-header" data-scroll-edge-nav data-status-host>
+            <header class="view__nav">
+              <a class="view__nav-btn view__nav-btn--leading view__back" href="design-system.html" aria-label="Back to Design system">
+                <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
+              </a>
+              <h1 class="page-title view__nav-title">Motion</h1>
+              <button type="button" class="view__nav-btn view__nav-btn--trailing view__nav-btn--hidden" aria-hidden="true" tabindex="-1">
+                <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>
+              </button>
+            </header>
+          </div>
+          <div class="ms-page">
+
+
+
+  <header class="ms-header">
+    <h2 class="ms-title">Motion specimens</h2>
+    <div class="ms-count"><b>09</b>specimens</div>
+    <p>Micro-animations collected from sites worth learning from, plus our own. Each one is rebuilt live with its timeline, why it works and the core code. Specimens tagged <em>In use</em> run the real code from <code>css/styles.css</code> and <code>js/nav-button-motion.js</code>.</p>
+  </header>
+
+  <ul class="ms-index">
+    <li><a href="#grab-hint"><span>001</span>Grab-and-drag hint</a></li>
+    <li><a href="#focus-swap"><span>002</span>Focus-mode choreography</a></li>
+    <li><a href="#close-btn"><span>003</span>Spin-and-collapse close</a></li>
+    <li><a href="#back-arrow"><span>004</span>Slide-through back arrow</a></li>
+    <li><a href="#close-enter"><span>005</span>Close button build-up</a></li>
+    <li><a href="#proceed"><span>006</span>Proceed button</a></li>
+    <li><a href="#step-indicator"><span>007</span>Step indicator</a></li>
+    <li><a href="#wiggle"><span>008</span>Wiggle</a></li>
+    <li><a href="#arrow-nudge"><span>009</span>Arrow nudge</a></li>
+  </ul>
+
+  <!-- ===================================================== 001 -->
+  <section class="ms-specimen" id="grab-hint" style="--dur:2.4s">
+    <div class="ms-head">
+      <span class="ms-no">No. 001</span>
+      <h2>Grab-and-drag gesture hint</h2>
+      <div class="ms-tags"><span class="ms-tag">Affordance</span><span class="ms-tag">Idle loop</span><span class="ms-tag">Icon swap</span></div>
+    </div>
+    <div class="ms-stage-col">
+      <div class="ms-stage s1-stage" id="s1-stage" role="img" aria-label="A card you can drag sideways. A pill below shows a hand that closes into a fist and drags left, then lets go.">
+        <div class="s1-slab" id="s1-slab"></div>
+        <div class="s1-hint" id="s1-hint" aria-hidden="true">
+          <svg class="ms-chev" viewBox="0 0 12 12"><path d="M7.5 2 3.5 6l4 4"/></svg>
+          <div class="s1-hand">
+            <svg class="s1-open" viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-4 0"/><path d="M14 10V4a2 2 0 0 0-4 0v2"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-6-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
+            <svg class="s1-grab" viewBox="0 0 24 24"><path d="M18 11.5V9a2 2 0 0 0-4 0v1.4"/><path d="M14 10V8a2 2 0 0 0-4 0v2"/><path d="M10 9.9V9a2 2 0 0 0-4 0v5"/><path d="M6 14a2 2 0 0 0-4 0"/><path d="M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-4a8 8 0 0 1-8-8 2 2 0 1 1 4 0"/></svg>
+          </div>
+          <svg class="ms-chev" viewBox="0 0 12 12"><path d="M4.5 2l4 4-4 4"/></svg>
+        </div>
+      </div>
+      <div class="ms-controls">
+        <p>Drag the stage. The hint steps aside, then returns after 2.5 s idle.</p>
+        <button class="uz-btn uz-btn--secondary uz-btn--sm" type="button" data-slow="grab-hint" aria-pressed="false">Slow-mo ×0.25</button>
+        <button class="uz-btn uz-btn--secondary uz-btn--sm" type="button" data-pause="grab-hint" aria-pressed="false">Pause</button>
+      </div>
+    </div>
+    <div class="ms-anatomy">
+      <div>
+        <p class="ms-label">Timeline · one 2.4 s loop</p>
+        <div class="ms-timeline" style="--dur:inherit">
+          <div class="ms-track">
+            <div class="ms-seg" style="flex:28">rest</div>
+            <div class="ms-seg ms-seg--act" style="flex:8">grab</div>
+            <div class="ms-seg ms-seg--act" style="flex:26">drag ←</div>
+            <div class="ms-seg ms-seg--act" style="flex:8">let go</div>
+            <div class="ms-seg" style="flex:20">return</div>
+            <div class="ms-seg" style="flex:10"></div>
+          </div>
+          <div class="ms-playhead"></div>
+        </div>
+        <div class="ms-ticks"><span>0.0</span><span>0.6</span><span>1.2</span><span>1.8</span><span>2.4 s</span></div>
+      </div>
+      <dl class="ms-dl">
+        <dt>Trigger</dt><dd>Idle loop on load, until the first drag</dd>
+        <dt>Moves</dt><dd>Open hand → fist (scale 0.9), ~7 px drift left, release, ease back</dd>
+        <dt>Chevrons</dt><dd>Static. They name the axis, the hand acts it out</dd>
+        <dt>Easing</dt><dd><code>cubic-bezier(.45,0,.25,1)</code> · estimated from the recording</dd>
+      </dl>
+      <div>
+        <p class="ms-label">Why it works</p>
+        <ul class="ms-list">
+          <li>It shows the verb instead of writing "drag to rotate". No reading, no language.</li>
+          <li>The open-to-fist swap is the grip moment. That beat sells "grab" more than the movement does.</li>
+          <li>Tiny travel and a long rest keep it calm enough to sit in the viewport without nagging.</li>
+          <li>The pill sits on top of the interactive area, so the cue points at where to act.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="ms-label">Core CSS</p>
+        <div class="ms-code">
+<pre id="code1">.hand { animation: drag 2.4s cubic-bezier(.45,0,.25,1) infinite; }
+.hand .open { animation: open 2.4s linear infinite; }
+.hand .grab { animation: grab 2.4s linear infinite; }
+
+@keyframes drag {
+  0%, 28%  { transform: translateX(0)    scale(1);  }
+  36%      { transform: translateX(0)    scale(.9); }
+  62%      { transform: translateX(-7px) scale(.9); }
+  70%      { transform: translateX(-7px) scale(1);  }
+  90%,100% { transform: translateX(0)    scale(1);  }
+}
+@keyframes open { 0%,28% {opacity:1} 33%,64% {opacity:0} 69%,100% {opacity:1} }
+@keyframes grab { 0%,28% {opacity:0} 33%,64% {opacity:1} 69%,100% {opacity:0} }
+
+/* hide after first interaction */
+.hint.gone { opacity: 0; transform: translateY(8px) scale(.96); }</pre>
+          <button class="uz-btn uz-btn--tonal uz-btn--sm" type="button" data-copy="code1">Copy</button>
+        </div>
+      </div>
+      <p class="ms-src"><a href="https://threejs-journey.com/" target="_blank" rel="noopener">threejs-journey.com</a> · spotted 1 Oct 2026 · rebuilt from a screen recording</p>
+    </div>
+  </section>
+
+  <!-- ===================================================== 002 -->
+  <section class="ms-specimen" id="focus-swap">
+    <div class="ms-head">
+      <span class="ms-no">No. 002</span>
+      <h2>Focus-mode choreography</h2>
+      <div class="ms-tags"><span class="ms-tag">Layout transition</span><span class="ms-tag">Stagger</span><span class="ms-tag">Click</span></div>
+    </div>
+    <div class="ms-stage-col">
+      <div class="ms-stage s2-stage" id="s2-stage">
+        <div class="s2-hero" aria-hidden="true">
+          <div class="s2-by" style="--i:0">by a course author</div>
+          <h3 class="s2-h" style="--i:1">Learn to build worlds in 3D</h3>
+          <p class="s2-p" style="--i:2">Everything you need in one place. Hours of video from beginner to advanced web 3D.</p>
+          <span class="s2-badge" style="--i:3">New chapter</span>
+          <div class="s2-by" style="--i:4">12,400 students</div>
+          <div class="s2-price" style="--i:5">CHF 120</div>
+        </div>
+        <div class="s2-panel" id="s2-panel" role="button" tabindex="0" aria-label="Open level 07 details">
+          <div class="s2-obj"><div class="s2-face s2-top"></div><div class="s2-face s2-side"></div><div class="s2-face s2-front"></div></div>
+          <div class="s2-pillslot" aria-hidden="true">
+            <div class="s2-hint">
+              <svg class="ms-chev" viewBox="0 0 12 12"><path d="M7.5 2 3.5 6l4 4"/></svg>
+              <div class="s1-hand">
+                <svg class="s1-open" viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-4 0"/><path d="M14 10V4a2 2 0 0 0-4 0v2"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-6-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
+                <svg class="s1-grab" viewBox="0 0 24 24"><path d="M18 11.5V9a2 2 0 0 0-4 0v1.4"/><path d="M14 10V8a2 2 0 0 0-4 0v2"/><path d="M10 9.9V9a2 2 0 0 0-4 0v5"/><path d="M6 14a2 2 0 0 0-4 0"/><path d="M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-4a8 8 0 0 1-8-8 2 2 0 1 1 4 0"/></svg>
+              </div>
+              <svg class="ms-chev" viewBox="0 0 12 12"><path d="M4.5 2l4 4-4 4"/></svg>
+            </div>
+            <div class="s2-level">
+              <svg class="ms-chev" viewBox="0 0 12 12"><path d="M7.5 2 3.5 6l4 4"/></svg>
+              <span>Level 07</span>
+              <svg class="ms-chev" viewBox="0 0 12 12"><path d="M4.5 2l4 4-4 4"/></svg>
+            </div>
+          </div>
+        </div>
+        <button class="s2-close" id="s2-close" type="button" aria-label="Close level details" tabindex="-1">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg>
+        </button>
+        <div class="s2-detail" aria-hidden="true">
+          <h4 style="--i:0">Extra</h4>
+          <div class="s2-by" style="--i:1">4 lessons · 4 h 37 min</div>
+          <p class="s2-p" style="--i:2">Polish the scene and keep it fast on every device.</p>
+          <div class="s2-row" style="--i:3"><span>01</span><span>Lighting</span><span>58m</span></div>
+          <div class="s2-row" style="--i:4"><span>02</span><span>Loading screen</span><span>41m</span></div>
+          <div class="s2-row" style="--i:5"><span>03</span><span>HTML overlays</span><span>1h 12m</span></div>
+        </div>
+      </div>
+      <div class="ms-controls">
+        <p>Click the scene to open, × to close.</p>
+        <button class="uz-btn uz-btn--secondary uz-btn--sm" type="button" id="s2-slow" aria-pressed="false">Slow-mo ×0.25</button>
+        <button class="uz-btn uz-btn--secondary uz-btn--sm" type="button" id="s2-replay">Play both</button>
+      </div>
+    </div>
+    <div class="ms-anatomy">
+      <div>
+        <p class="ms-label">Sequence</p>
+        <div class="s2-tabs" role="group" aria-label="Direction">
+          <button class="uz-btn uz-btn--secondary uz-btn--sm" type="button" id="s2-open" aria-pressed="true">Open · 2.2 s</button>
+          <button class="uz-btn uz-btn--secondary uz-btn--sm" type="button" id="s2-closetab" aria-pressed="false">Close · 1.7 s</button>
+        </div>
+        <div class="s2-gantt" id="s2-gantt"></div>
+        <div class="s2-gticks" id="s2-gticks"></div>
+        <div class="s2-legend"><span><i></i>fade</span><span><i class="s2-move"></i>moves</span></div>
+      </div>
+      <dl class="ms-dl">
+        <dt>Trigger</dt><dd>Click on the 3D scene or the hint pill</dd>
+        <dt>Order</dt><dd>Old content leaves → scene travels → controls arrive → new content staggers in</dd>
+        <dt>Mover</dt><dd>Only the scene panel changes position. Everything else only fades and shifts a few px</dd>
+        <dt>Stagger</dt><dd>30 ms when leaving, 70–80 ms when arriving · estimated from the recording</dd>
+      </dl>
+      <div>
+        <p class="ms-label">Why it works</p>
+        <ul class="ms-list">
+          <li>It runs as a relay, not all at once. Each beat starts as the last one settles, so there's only ever one thing to watch.</li>
+          <li>Exits are short and go first. Entrances are slower and come last. Leaving costs nothing, arriving gets attention.</li>
+          <li>One element travels. The scene keeps its identity and position in your head, so you never lose your place.</li>
+          <li>The camera turns while the panel slides. It reads as the object turning toward you, not a box being pushed aside.</li>
+          <li>The pill stays put and changes its job: the hint becomes the level switcher.</li>
+          <li>Closing mirrors opening but runs faster. Going back should feel cheaper than exploring.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="ms-label">Core CSS · the delay lives on the state you're going to</p>
+        <div class="ms-code">
+<pre id="code2">/* hero: leave first and fast, come back last */
+.hero > *        { transition: opacity .4s, transform .4s;
+                   transition-delay: calc(.9s + var(--i) * 70ms); }
+.focus .hero > * { opacity: 0; transform: translateY(-8px);
+                   transition-duration: .3s;
+                   transition-delay: calc(var(--i) * 30ms); }
+
+/* the one mover */
+.panel        { left: 46%; right: 0;
+                transition: left .8s cubic-bezier(.65,0,.25,1) .25s,
+                            right .8s cubic-bezier(.65,0,.25,1) .25s; }
+.focus .panel { left: 0; right: 30%; transition-delay: .3s; }
+
+/* details: arrive last, top to bottom */
+.details > *        { opacity: 0; transform: translateY(8px);
+                      transition: opacity .25s, transform .25s; }
+.focus .details > * { opacity: 1; transform: none;
+                      transition-duration: .45s;
+                      transition-delay: calc(1.3s + var(--i) * 80ms); }</pre>
+          <button class="uz-btn uz-btn--tonal uz-btn--sm" type="button" data-copy="code2">Copy</button>
+        </div>
+      </div>
+      <p class="ms-src"><a href="https://threejs-journey.com/" target="_blank" rel="noopener">threejs-journey.com</a> · spotted 1 Oct 2026 · rebuilt from a screen recording</p>
+    </div>
+  </section>
+
+  <!-- ===================================================== 003 -->
+  <section class="ms-specimen" id="close-btn">
+    <div class="ms-head">
+      <span class="ms-no">No. 003</span>
+      <h2>Spin-and-collapse close button</h2>
+      <div class="ms-tags"><span class="ms-tag">Hover</span><span class="ms-tag">Click</span><span class="ms-tag ms-tag--live">In use</span></div>
+    </div>
+    <div class="ms-stage-col">
+      <div class="ms-stage" id="s3-stage">
+        <div class="ms-sheet">
+          <div class="ms-sheet__nav">
+            <span class="ms-sheet__title">Payment</span>
+            <button class="modal__close" type="button" id="s3-close"><svg class="modal__close-icon" role="img" aria-label="Close (demo)" focusable="false"><use href="#i-x"/></svg></button>
+          </div>
+          <div class="ms-sheet__body"><div class="ms-skel" style="width:70%"></div><div class="ms-skel" style="width:90%"></div><div class="ms-skel" style="width:55%"></div></div>
+        </div>
+      </div>
+      <div class="ms-controls">
+        <p>Hover to spin. Click to collapse; the demo sheet stays, so the button pops back like at the "Discard?" prompt.</p>
+        <button class="uz-btn uz-btn--secondary uz-btn--sm" type="button" data-slow="close-btn" aria-pressed="false">Slow-mo ×0.25</button>
+      </div>
+    </div>
+    <div class="ms-anatomy">
+      <dl class="ms-dl">
+        <dt>Hover</dt><dd>× turns 90° in 0.45 s with a slight overshoot. Rotated 90°, an × looks the same, so it lands back on ×</dd>
+        <dt>Click</dt><dd>Icon shrinks first (≈0.17 s), then the button collapses to a dot and vanishes (0.28 s, accelerating)</dd>
+        <dt>Easing</dt><dd>Spin <code>cubic-bezier(.34,1.45,.64,1)</code>, collapse <code>cubic-bezier(.55,0,.75,0)</code></dd>
+        <dt>Tokens</dt><dd><code>--close-spin-duration</code>, <code>--close-spin-ease</code>, <code>--close-collapse-duration</code>, <code>--close-collapse-ease</code></dd>
+      </dl>
+      <div>
+        <p class="ms-label">Why it works</p>
+        <ul class="ms-list">
+          <li>The spin confirms on hover that this thing reacts, without changing what it means.</li>
+          <li>On click, the button removes itself first. You see the result of your action at the spot you clicked.</li>
+          <li>Two-stage collapse (icon, then shape) reads as deliberate rather than a flicker.</li>
+          <li>Collapse uses ease-in: it accelerates away, which suits something leaving.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="ms-label">Applied in banking-app</p>
+        <ul class="ms-list">
+          <li>Every button whose direct icon is the shared <code>#i-x</code> symbol, via <code>:has()</code>. No markup changes.</li>
+          <li>Collapse runs 0.28 s, the same as the sheet's own close, so both finish together.</li>
+          <li>If the panel stays open (the "Discard transfer?" prompt), the button pops back in.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="ms-label">Core CSS · css/styles.css › Close button motion</p>
+        <div class="ms-code">
+<pre id="code3">:is(button, a):has(> svg > use[href="#i-x"]) > svg {
+  transition: transform var(--close-spin-duration) var(--close-spin-ease);
+}
+:is(button, a):has(> svg > use[href="#i-x"]):hover > svg {
+  transform: rotate(90deg);
+}
+
+:is(button, a).is-dismissing {
+  animation: uz-close-collapse var(--close-collapse-duration)
+             var(--close-collapse-ease) forwards;
+}
+:is(button, a).is-dismissing > svg {
+  animation: uz-close-icon-out calc(var(--close-collapse-duration) * .6)
+             ease-in forwards;
+}
+@keyframes uz-close-collapse {
+  35%  { transform: scale(.94); }
+  85%  { transform: scale(.12); opacity: 1; }
+  100% { transform: scale(0);   opacity: 0; }
+}</pre>
+          <button class="uz-btn uz-btn--tonal uz-btn--sm" type="button" data-copy="code3">Copy</button>
+        </div>
+      </div>
+      <p class="ms-src"><a href="https://threejs-journey.com/" target="_blank" rel="noopener">threejs-journey.com</a> · spotted 1 Oct 2026 · click handling in <code>js/nav-button-motion.js</code></p>
+    </div>
+  </section>
+
+  <!-- ===================================================== 004 -->
+  <section class="ms-specimen" id="back-arrow">
+    <div class="ms-head">
+      <span class="ms-no">No. 004</span>
+      <h2>Slide-through back arrow</h2>
+      <div class="ms-tags"><span class="ms-tag">Hover</span><span class="ms-tag">Click</span><span class="ms-tag">Own design</span><span class="ms-tag ms-tag--live">In use</span></div>
+    </div>
+    <div class="ms-stage-col">
+      <div class="ms-stage" id="s4-stage">
+        <div class="ms-sheet">
+          <div class="ms-sheet__nav">
+            <button class="view__nav-btn view__back" type="button" id="s4-back" aria-label="Back (demo)"><svg class="view__nav-btn-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="#i-arrow-left"/></svg></button>
+            <span class="ms-sheet__title" id="s4-title">Step 3 · Summary</span>
+          </div>
+          <div class="step-indicator" aria-hidden="true"><span class="step-indicator__seg is-filled"></span><span class="step-indicator__seg is-filled"></span><span class="step-indicator__seg is-filled"></span></div>
+          <div class="ms-sheet__body"><div class="ms-skel" style="width:80%"></div><div class="ms-skel" style="width:60%"></div></div>
+        </div>
+      </div>
+      <div class="ms-controls">
+        <p>Hover to nudge. Click to step back; it loops 3 → 1.</p>
+        <button class="uz-btn uz-btn--secondary uz-btn--sm" type="button" data-slow="back-arrow" aria-pressed="false">Slow-mo ×0.25</button>
+      </div>
+    </div>
+    <div class="ms-anatomy">
+      <dl class="ms-dl">
+        <dt>Hover</dt><dd>Arrow leans 3 px the way it points, with a springy overshoot (0.35 s)</dd>
+        <dt>Click</dt><dd>Exits 12 px left and fades (ease-in), jumps right, slides back in (ease-out, slight overshoot). 0.42 s total</dd>
+        <dt>Lands</dt><dd>On the hover position via <code>--back-x</code>, so there is no jump when the animation ends under the cursor</dd>
+        <dt>Applies to</dt><dd><code>.modal__back</code> (previous step in flows) and <code>.view__back</code> (page back)</dd>
+        <dt>Idle</dt><dd>Breathes left with the shared Arrow nudge (No. 009), paused while pointed at. The nudge uses <code>translate</code>, the hover lean and step-back use <code>transform</code>, so they add up</dd>
+      </dl>
+      <div>
+        <p class="ms-label">Why it works</p>
+        <ul class="ms-list">
+          <li>The hover nudge previews the direction. The button says "back" before you click.</li>
+          <li>On click the arrow travels the way the content goes, so the motion matches the step change.</li>
+          <li>Back usually stays on screen. Re-entering from the other side resets it for the next tap instead of removing it.</li>
+          <li>Small distances (3 px, 12 px) keep it quick for repeated use in multi-step flows.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="ms-label">Core CSS · css/styles.css › Back button motion</p>
+        <div class="ms-code">
+<pre id="code4">:is(.modal__back, .view__back) { --back-x: 0px; }
+:is(.modal__back, .view__back):hover { --back-x: var(--back-nudge); } /* -3px */
+:is(.modal__back, .view__back) > svg {
+  transform: translateX(var(--back-x));
+  transition: transform .35s var(--back-nudge-ease);
+}
+
+.is-stepping-back > svg { animation: uz-back-step var(--back-step-duration) linear; }
+@keyframes uz-back-step {
+  0%   { transform: translateX(var(--back-x)); opacity: 1;
+         animation-timing-function: cubic-bezier(.55,0,1,.45); }
+  35%  { transform: translateX(-12px); opacity: 0; }
+  36%  { transform: translateX(12px);  opacity: 0;
+         animation-timing-function: cubic-bezier(.2,.9,.3,1.15); }
+  100% { transform: translateX(var(--back-x)); opacity: 1; }
+}</pre>
+          <button class="uz-btn uz-btn--tonal uz-btn--sm" type="button" data-copy="code4">Copy</button>
+        </div>
+      </div>
+      <p class="ms-src">Own design, made to pair with No. 003 · click handling in <code>js/nav-button-motion.js</code></p>
+    </div>
+  </section>
+
+  <!-- ===================================================== 005 -->
+  <section class="ms-specimen" id="close-enter">
+    <div class="ms-head">
+      <span class="ms-no">No. 005</span>
+      <h2>Close button build-up</h2>
+      <div class="ms-tags"><span class="ms-tag">View transition</span><span class="ms-tag">Pairs with 003</span><span class="ms-tag ms-tag--live">In use</span></div>
+    </div>
+    <div class="ms-stage-col">
+      <div class="ms-stage s5-stage" id="s5-stage" role="img" aria-label="A sheet slides in; once it lands, a dot appears and grows into the close button, the × spinning in a beat later.">
+        <div class="ms-sheet">
+          <div class="ms-sheet__nav">
+            <span class="ms-sheet__title">Amount &amp; recipient</span>
+            <button class="modal__close" type="button" id="s5-close" tabindex="-1" aria-hidden="true"><svg class="modal__close-icon" focusable="false"><use href="#i-x"/></svg></button>
+          </div>
+          <div class="ms-sheet__body"><div class="ms-skel" style="width:65%"></div><div class="ms-skel" style="width:85%"></div><div class="ms-skel" style="width:40%"></div></div>
+        </div>
+      </div>
+      <div class="ms-controls">
+        <p>The sheet slides in, then the button builds up.</p>
+        <button class="uz-btn uz-btn--secondary uz-btn--sm" type="button" data-slow="close-enter" aria-pressed="false">Slow-mo ×0.25</button>
+        <button class="uz-btn uz-btn--secondary uz-btn--sm" type="button" id="s5-replay">Replay</button>
+      </div>
+    </div>
+    <div class="ms-anatomy">
+      <dl class="ms-dl">
+        <dt>Trigger</dt><dd>The sheet has finished its slide-in, not when it starts</dd>
+        <dt>Button</dt><dd>Separator-tinted dot → 108 % → 100 %, 0.4 s ease-in-out, from 0.3 s. The tint fades to transparent</dd>
+        <dt>Icon</dt><dd>× spins in from −180° while scaling 0 → 100 % with an overshoot, 70 ms behind the button</dd>
+        <dt>Relation</dt><dd>No. 003 played in reverse: the exit shrinks icon first, the entrance grows the button first</dd>
+      </dl>
+      <div>
+        <p class="ms-label">Why it works</p>
+        <ul class="ms-list">
+          <li>The control arrives after the content has settled, so nothing competes with the view transition.</li>
+          <li>A late close button doesn't hurt: nobody wants to close a view in its first 300 ms.</li>
+          <li>Entrance and exit mirror each other. The button feels like one object that appears and disappears.</li>
+          <li>Button first, icon second reads as "container, then content".</li>
+        </ul>
+      </div>
+      <div>
+        <p class="ms-label">Applied in banking-app</p>
+        <ul class="ms-list">
+          <li>Every sheet opens by removing <code>.modal-shell--offscreen</code>. One observer catches that and adds <code>.is-entering</code> to the close button inside.</li>
+          <li>Fill mode <code>backwards</code> only, so the hover spin from No. 003 still works afterwards.</li>
+          <li>A click mid-entrance jumps the entrance to its end, then the collapse plays.</li>
+          <li>Spec: Figma Des-Sys-Test-IV › Animations Transitions, node 345:6080.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="ms-label">Core CSS · css/styles.css › Close button motion</p>
+        <div class="ms-code">
+<pre id="code5">:is(button, a).is-entering {
+  border-radius: 50%;
+  animation: uz-close-enter var(--close-enter-duration) ease-in-out
+             var(--close-enter-delay) backwards;
+}
+:is(button, a).is-entering > svg {
+  animation: uz-close-icon-enter var(--close-enter-icon-duration)
+             cubic-bezier(.2,.9,.3,1.2)
+             calc(var(--close-enter-delay) + var(--close-enter-icon-lag)) backwards;
+}
+@keyframes uz-close-enter {
+  0%   { transform: scale(0);    opacity: 0; background-color: var(--close-enter-fill); }
+  10%  { transform: scale(.08);  opacity: 1; }   /* the dot */
+  60%  { transform: scale(1.08); }               /* overshoot */
+  100% { transform: scale(1);    background-color: transparent; }
+}
+@keyframes uz-close-icon-enter {
+  from { transform: rotate(-180deg) scale(0); }
+  to   { transform: rotate(0deg)    scale(1); }
+}</pre>
+          <button class="uz-btn uz-btn--tonal uz-btn--sm" type="button" data-copy="code5">Copy</button>
+        </div>
+      </div>
+      <p class="ms-src"><a href="https://threejs-journey.com/" target="_blank" rel="noopener">threejs-journey.com</a> · spotted 1 Oct 2026 · built to Claudius's Figma spec, 2 Oct 2026</p>
+    </div>
+  </section>
+
+  <!-- ===================================================== 006 -->
+  <section class="ms-specimen" id="proceed" style="--dur:2s">
+    <div class="ms-head">
+      <span class="ms-no">No. 006</span>
+      <h2>Proceed button in multi-step flows</h2>
+      <div class="ms-tags"><span class="ms-tag">Idle loop</span><span class="ms-tag">Own design</span><span class="ms-tag ms-tag--live">In use</span></div>
+    </div>
+    <div class="ms-stage-col">
+      <div class="ms-stage s6-stage" id="s6-stage">
+        <div class="s6-card">
+          <small>Step 2 of 3 · Amount &amp; recipient</small>
+          <button class="uz-btn uz-btn--primary uz-btn--md uz-btn--block uz-btn--proceed uz-btn--proceed-next" type="button">
+            <span class="uz-btn__label">Confirm</span>
+            <svg class="uz-btn__icon uz-btn__icon--trailing" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
+          </button>
+        </div>
+        <div class="s6-card">
+          <small>Step 3 of 3 · Summary</small>
+          <button class="uz-btn uz-btn--primary uz-btn--md uz-btn--block uz-btn--proceed uz-btn--proceed-final" type="button">
+            <span class="uz-btn__label">Execute</span>
+          </button>
+        </div>
+      </div>
+      <div class="ms-controls">
+        <p>Both loop permanently. Hover pauses them.</p>
+        <button class="uz-btn uz-btn--secondary uz-btn--sm" type="button" data-slow="proceed" aria-pressed="false">Slow-mo ×0.25</button>
+        <button class="uz-btn uz-btn--secondary uz-btn--sm" type="button" data-pause="proceed" aria-pressed="false">Pause</button>
+      </div>
+    </div>
+    <div class="ms-anatomy">
+      <div>
+        <p class="ms-label">Timeline · one 2 s loop, same for both</p>
+        <div class="ms-timeline" style="--dur:inherit">
+          <div class="ms-track">
+            <div class="ms-seg ms-seg--act" style="flex:38">out · quick</div>
+            <div class="ms-seg" style="flex:62">back · slow</div>
+          </div>
+          <div class="ms-playhead"></div>
+        </div>
+        <div class="ms-ticks"><span>0.0</span><span>0.5</span><span>1.0</span><span>1.5</span><span>2.0 s</span></div>
+      </div>
+      <dl class="ms-dl">
+        <dt>Steps between</dt><dd>Only the trailing arrow-right moves: out 6 px, then drifts back. The arrow says "there's more after this"</dd>
+        <dt>Last step</dt><dd>Only the pulse: a 4 dp ring in the button's own colour grows on every side, then contracts. No arrow, because this step executes the whole flow</dd>
+        <dt>Rhythm</dt><dd>Out quick (38 %, 0.76 s), back slow (62 %, 1.24 s). No overshoot, no hold</dd>
+        <dt>Easing</dt><dd>Out <code>cubic-bezier(.3,0,.2,1)</code>, back <code>cubic-bezier(.45,0,.4,1)</code>. Both slow into their end, so no turn hits hard</dd>
+        <dt>Tokens</dt><dd><code>--proceed-cycle</code> 2 s, <code>--proceed-grow</code> 4px, <code>--proceed-nudge</code> 6px. The arrow uses the shared keyframes of No. 009</dd>
+      </dl>
+      <div>
+        <p class="ms-label">Why it works</p>
+        <ul class="ms-list">
+          <li>Two different signals for two different promises: the arrow means "next step", the pulse means "this one does it".</li>
+          <li>A quick outward beat catches the eye; the long return lets it settle, so the loop breathes rather than nags.</li>
+          <li>Every turning point decelerates. Earlier versions returned at full speed and overshot, and read as hitting and bouncing.</li>
+          <li>The pulse is a box-shadow ring, not a scale, so the label stays perfectly still and readable.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="ms-label">Applied in banking-app</p>
+        <ul class="ms-list">
+          <li>Payment, internal account transfer and buy &amp; sell flows. <code>js/cta-pulse.js</code> marks the button as <code>--proceed-next</code> or <code>--proceed-final</code> and adds the arrow.</li>
+          <li>The flows rewrite the label from Confirm to Execute. An observer re-classifies the button when that happens.</li>
+          <li>Hover pauses the loop and hands over to the hover style. Disabled buttons and reduced motion stay still.</li>
+          <li>History: v1 scale + state layer → v2 symmetric breathing → v3 split, slow out / quick back (hit hard) → v4 soft turns → v5 reversed: quick out, slow back.</li>
+          <li>The arrow motion became a rule for every directional arrow in the app — see No. 009 Arrow nudge.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="ms-label">Core CSS · css/styles.css › Proceed button</p>
+        <div class="ms-code">
+<pre id="code6">:root { --proceed-cycle: 2000ms; --proceed-grow: 4px; --proceed-nudge: 6px; }
+
+/* steps in between: the arrow — shared Arrow nudge (No. 009) */
+.uz-btn--proceed-next .uz-btn__icon--trailing {
+  --arrow-dir: 1;
+  --arrow-nudge: var(--proceed-nudge);
+  animation: uz-arrow-nudge var(--proceed-cycle) infinite;
+}
+
+/* last step: the pulse */
+.uz-btn--proceed-final {
+  --proceed-ring: var(--color-btn-primary-bg);
+  animation: uz-proceed-pulse var(--proceed-cycle) infinite;
+}
+@keyframes uz-proceed-pulse {
+  0%   { box-shadow: 0 0 0 0 var(--proceed-ring);
+         animation-timing-function: cubic-bezier(.3,0,.2,1); }
+  38%  { box-shadow: 0 0 0 var(--proceed-grow) var(--proceed-ring);
+         animation-timing-function: cubic-bezier(.45,0,.4,1); }
+  100% { box-shadow: 0 0 0 0 var(--proceed-ring); }
+}</pre>
+          <button class="uz-btn uz-btn--tonal uz-btn--sm" type="button" data-copy="code6">Copy</button>
+        </div>
+      </div>
+      <p class="ms-src">Own design for the UZ Bank banking app · tuned with Claudius, 7 Oct 2026 · not in Figma yet</p>
+    </div>
+  </section>
+
+  <!-- ===================================================== 007 -->
+  <section class="ms-specimen" id="step-indicator">
+    <div class="ms-head">
+      <span class="ms-no">No. 007</span>
+      <h2>Step indicator in multi-step flows</h2>
+      <div class="ms-tags"><span class="ms-tag">Progress</span><span class="ms-tag">Own design</span><span class="ms-tag ms-tag--live">In use</span></div>
+    </div>
+    <div class="ms-stage-col">
+      <div class="ms-stage" id="s7-stage">
+        <div class="ms-sheet">
+          <div class="ms-sheet__nav">
+            <span class="ms-sheet__title" id="s7-title">Recipient</span>
+          </div>
+          <div class="step-indicator" id="s7-ind" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" aria-valuetext="Step 1 of 4: Recipient">
+            <span class="step-indicator__seg is-filled" aria-hidden="true"></span><span class="step-indicator__seg" aria-hidden="true"></span><span class="step-indicator__seg" aria-hidden="true"></span><span class="step-indicator__seg" aria-hidden="true"></span>
+          </div>
+          <div class="ms-sheet__body"><div class="ms-skel" style="width:70%"></div><div class="ms-skel" style="width:45%"></div></div>
+          <div class="s7-foot">
+            <button class="uz-btn uz-btn--secondary uz-btn--sm" type="button" id="s7-prev">Back</button>
+            <button class="uz-btn uz-btn--primary uz-btn--sm" type="button" id="s7-next">Confirm</button>
+          </div>
+        </div>
+      </div>
+      <div class="ms-controls">
+        <p>Step through the payment flow's four steps.</p>
+        <button class="uz-btn uz-btn--secondary uz-btn--sm" type="button" data-slow="step-indicator" aria-pressed="false">Slow-mo ×0.25</button>
+      </div>
+    </div>
+    <div class="ms-anatomy">
+      <dl class="ms-dl">
+        <dt>Anatomy</dt><dd>One segment per step (22 × 4 dp, 6 dp apart), centred 8 dp under the flow title. Filled up to and including the current step</dd>
+        <dt>Forward</dt><dd>The next segment fills left → right, 360 ms, the app's entry curve <code>cubic-bezier(.22,1,.36,1)</code></dd>
+        <dt>Back</dt><dd>The segment you leave empties right → left, 240 ms, <code>cubic-bezier(.45,0,.55,1)</code>. Leaving is quicker than arriving</dd>
+        <dt>Opening</dt><dd>No animation on first paint or when the sheet reopens: the state is simply there</dd>
+        <dt>Colours</dt><dd>Filled <code>--color-fg</code>, empty <code>--color-separator</code>, so it works in both themes</dd>
+        <dt>Tokens</dt><dd><code>--step-seg-width</code>, <code>--step-seg-height</code>, <code>--step-seg-gap</code>, <code>--step-fill-*</code>, <code>--step-empty-*</code></dd>
+      </dl>
+      <div>
+        <p class="ms-label">Why it works</p>
+        <ul class="ms-list">
+          <li>People see how long the flow is before they commit, and how much is left at every step.</li>
+          <li>The fill travels in the reading direction, the same way the back arrow (No. 004) and the proceed arrow (No. 006) point.</li>
+          <li>Segments, not a bar: each step is a countable unit that matches a screen.</li>
+          <li>It sits under the title, so title and progress read as one line of information.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="ms-label">Applied in banking-app</p>
+        <ul class="ms-list">
+          <li>Payment: Recipient · Amount · Time schedule · Summary → 4 segments. The recipient search before it is a pre-flow step: no indicator there, and closing it skips the "Discard payment?" dialog because nothing has been chosen yet. The indicator appears with the first segment filling once a recipient is picked.</li>
+          <li>Internal account transfer: Amount &amp; recipient · Time schedule · Summary → 3 segments.</li>
+          <li>Buy &amp; sell has a single step, so it gets none.</li>
+          <li><code>js/step-indicator.js</code> only watches which <code>.modal__step</code> is active, so the flow scripts are untouched. Screen readers get a progressbar with "Step 2 of 4: Amount".</li>
+          <li>Not in Figma yet.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="ms-label">Core CSS · css/styles.css › Step indicator</p>
+        <div class="ms-code">
+<pre id="code7">.step-indicator { display: flex; justify-content: center; gap: var(--step-seg-gap); }
+.step-indicator__seg {
+  position: relative; overflow: hidden;
+  width: var(--step-seg-width); height: var(--step-seg-height);
+  border-radius: calc(var(--step-seg-height) / 2);
+  background-color: var(--color-separator);
+}
+.step-indicator__seg::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  background-color: var(--color-fg);
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform var(--step-fill-duration) var(--step-fill-ease);
+}
+.step-indicator__seg.is-filled::after { transform: scaleX(1); }
+
+/* back: the leaving segment empties, quicker */
+.step-indicator--back .step-indicator__seg::after {
+  transition-duration: var(--step-empty-duration);
+  transition-timing-function: var(--step-empty-ease);
+}</pre>
+          <button class="uz-btn uz-btn--tonal uz-btn--sm" type="button" data-copy="code7">Copy</button>
+        </div>
+      </div>
+      <p class="ms-src">Own design for the UZ Bank banking app · added 7 Oct 2026</p>
+    </div>
+  </section>
+
+  <!-- ===================================================== 008 -->
+  <section class="ms-specimen" id="wiggle">
+    <div class="ms-head">
+      <span class="ms-no">No. 008</span>
+      <h2>Wiggle — attention cue</h2>
+      <div class="ms-tags"><span class="ms-tag">Attention</span><span class="ms-tag">Own design</span><span class="ms-tag ms-tag--live">In use</span></div>
+    </div>
+    <div class="ms-stage-col">
+      <div class="ms-stage s8-stage" id="s8-stage">
+        <div class="s8-search">
+          <svg class="recipient-search__icon-svg" id="s8-search-icon" aria-hidden="true" focusable="false"><use href="#i-search"/></svg>
+          <span>Enter IBAN, name or account number</span>
+        </div>
+        <div class="s8-pencils">
+          <div class="s8-row"><span>Amount</span><b>CHF 500.00</b><svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-edit-2"/></svg></div>
+          <div class="s8-row"><span>Execution date</span><b>Today</b><svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-edit-2"/></svg></div>
+          <div class="s8-row"><span>Recipient</span><b>Hans Meyer</b><svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-edit-2"/></svg></div>
+        </div>
+        <div class="s8-msg">
+          <span class="status-message__icon" aria-hidden="true"><svg id="s8-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+          <b>Open payment!</b>
+          <small>since 04.10.2026</small>
+          <p>There's an unpaid bill on this account. Pay it now to avoid reminder fees.</p>
+        </div>
+      </div>
+      <div class="ms-controls">
+        <p>One wiggle, one pivot: every icon turns around the centre of its 24 × 24 box. Grouped pencils go one at a time, in a random order.</p>
+        <button class="uz-btn uz-btn--secondary uz-btn--sm" type="button" data-slow="wiggle" aria-pressed="false">Slow-mo ×0.25</button>
+        <button class="uz-btn uz-btn--secondary uz-btn--sm" type="button" id="s8-play">Play</button>
+      </div>
+    </div>
+    <div class="ms-anatomy">
+      <div>
+        <p class="ms-label">Timeline · one wiggle, 0.72 s</p>
+        <div class="ms-timeline" style="--dur:0.72s">
+          <div class="ms-track">
+            <div class="ms-seg ms-seg--act" style="flex:14">−14°</div>
+            <div class="ms-seg ms-seg--act" style="flex:18">+10°</div>
+            <div class="ms-seg" style="flex:18">−7°</div>
+            <div class="ms-seg" style="flex:18">+4°</div>
+            <div class="ms-seg" style="flex:16">−1°</div>
+            <div class="ms-seg" style="flex:16">0</div>
+          </div>
+          <div class="ms-playhead"></div>
+        </div>
+        <div class="ms-ticks"><span>0</span><span>0.18</span><span>0.36</span><span>0.54</span><span>0.72 s</span></div>
+      </div>
+      <dl class="ms-dl">
+        <dt>Motion</dt><dd>Rotation only: −14° → +10.5° → −7° → +4° → −1.4° → 0. Each swing smaller, every turn eased (<code>cubic-bezier(.33,0,.67,1)</code>), so it rings out instead of stopping</dd>
+        <dt>Pivot</dt><dd>General rule: always the centre of the icon container (50 % 50 % of the 24 × 24 box), so the whole vector rotates around one point — never a part of the drawing</dd>
+        <dt>Several</dt><dd>A group plays one at a time, in a <strong>random order</strong> each round: the next starts <code>--wiggle-sequence-gap</code> (120 ms) after the previous has settled</dd>
+        <dt>When</dt><dd>Shortly after the element has arrived, then again after 1.5 s of rest (counted from the moment the last icon has settled) while nobody reacts, at most 3 rounds. The status message is the exception: it keeps wiggling as long as it is there</dd>
+        <dt>Stops</dt><dd>For good on interaction: focus or typing in the search, any tap or key press in a flow sheet. The message only skips a round while it is hovered or focused</dd>
+        <dt>Tokens</dt><dd><code>--wiggle-duration</code> 720 ms, <code>--wiggle-angle</code> 14°, <code>--wiggle-rest</code> 1.5 s, <code>--wiggle-search-delay</code> 700 ms, <code>--wiggle-step-delay</code> 500 ms, <code>--wiggle-sequence-gap</code> 120 ms</dd>
+      </dl>
+      <div>
+        <p class="ms-label">Why it works</p>
+        <ul class="ms-list">
+          <li>Movement in the periphery is the strongest cue we have; a small rotation catches the eye without moving the layout.</li>
+          <li>It rings out rather than shaking: decreasing swings read as "something happened here", not as an error.</li>
+          <li>One pivot for every icon: turning around the centre keeps the icon in its place, so it reads as a nudge, not as a drawing that moves.</li>
+          <li>Random order in a group: no field looks more important than another, and the eye doesn't learn a pattern to ignore.</li>
+          <li>One motion for one meaning: wherever the app wants a first look, it uses this wiggle.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="ms-label">Applied in banking-app</p>
+        <ul class="ms-list">
+          <li>Payment recipient search: the magnifier, starting 0.7 s after the sheet has landed (after the close button build-up, No. 005).</li>
+          <li>Status message: the bell / state icon, from the moment its content has landed and permanently after that (also when it is restored on another view). It replaces the earlier error-only icon pulse, for all three states.</li>
+          <li>Payment and internal account transfer flows: the edit pencils of the read-only fields on <strong>every step</strong> (recipient, amount, schedule, summary) — one at a time, random order, never together. Starts 0.5 s after the step is shown; any tap or key press in the sheet ends it until the next step.</li>
+          <li>Booking details (domestic, pending): the pencil next to the amount, same schedule, 0.5 s after the sheet is open.</li>
+          <li><code>js/wiggle.js</code> holds the schedule (<code>UZWiggle.play</code> / <code>UZWiggle.attend</code>); the keyframes are in <code>css/styles.css</code> › Wiggle.</li>
+          <li>Reduced motion: no wiggle. Not in Figma yet.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="ms-label">Core CSS · css/styles.css › Wiggle</p>
+        <div class="ms-code">
+<pre id="code8">.uz-wiggle {
+  transform-box: border-box;   /* the icon's own 24 × 24 box … */
+  transform-origin: 50% 50%;   /* … rotating around its centre */
+  animation: uz-wiggle var(--wiggle-duration) both;
+}
+@keyframes uz-wiggle {   /* every segment: cubic-bezier(.33,0,.67,1) */
+  0%   { transform: rotate(0deg); }
+  14%  { transform: rotate(calc(var(--wiggle-angle) * -1)); }
+  32%  { transform: rotate(calc(var(--wiggle-angle) * .75)); }
+  50%  { transform: rotate(calc(var(--wiggle-angle) * -.5)); }
+  68%  { transform: rotate(calc(var(--wiggle-angle) * .28)); }
+  84%  { transform: rotate(calc(var(--wiggle-angle) * -.1)); }
+  100% { transform: rotate(0deg); }
+}</pre>
+          <button class="uz-btn uz-btn--tonal uz-btn--sm" type="button" data-copy="code8">Copy</button>
+        </div>
+      </div>
+      <p class="ms-src">Own design for the UZ Bank banking app · added 7 Oct 2026</p>
+    </div>
+  </section>
+
+  <!-- ===================================================== 009 -->
+  <section class="ms-specimen" id="arrow-nudge" style="--dur:2s">
+    <div class="ms-head">
+      <span class="ms-no">No. 009</span>
+      <h2>Arrow nudge — every arrow points the way</h2>
+      <div class="ms-tags"><span class="ms-tag">Idle loop</span><span class="ms-tag">Navigation</span><span class="ms-tag">Own design</span><span class="ms-tag ms-tag--live">In use</span></div>
+    </div>
+    <div class="ms-stage-col">
+      <div class="ms-stage s9-stage" id="s9-stage">
+        <div class="s9-col">
+          <small>Forward · deeper level → right</small>
+          <button class="uz-btn uz-btn--tonal uz-btn--sm" type="button"><span>Details</span><svg class="uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg></button>
+          <button class="show-all-btn uz-btn uz-btn--tonal uz-btn--sm" type="button"><span>Show all</span><svg class="show-all-btn__icon uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg></button>
+          <button class="uz-btn uz-btn--primary uz-btn--sm uz-btn--proceed uz-btn--proceed-next" type="button"><span class="uz-btn__label">Confirm</span><svg class="uz-btn__icon uz-btn__icon--trailing" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg></button>
+        </div>
+        <div class="s9-col">
+          <small>Back · previous step or higher level → left</small>
+          <div class="s9-nav"><button class="view__nav-btn view__back" type="button" aria-label="Back (demo)"><svg class="view__nav-btn-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="#i-arrow-left"/></svg></button>Account details</div>
+          <div class="s9-nav"><button class="modal__back" type="button" aria-label="Previous step (demo)" style="position:absolute;left:0"><svg class="modal__back-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="#i-arrow-left"/></svg></button>Recipient</div>
+        </div>
+      </div>
+      <div class="ms-controls">
+        <p>All arrows breathe on the same 2 s loop. Hover one to pause it.</p>
+        <button class="uz-btn uz-btn--secondary uz-btn--sm" type="button" data-slow="arrow-nudge" aria-pressed="false">Slow-mo ×0.25</button>
+        <button class="uz-btn uz-btn--secondary uz-btn--sm" type="button" data-pause="arrow-nudge" aria-pressed="false">Pause</button>
+      </div>
+    </div>
+    <div class="ms-anatomy">
+      <div>
+        <p class="ms-label">Timeline · one 2 s loop</p>
+        <div class="ms-timeline" style="--dur:inherit">
+          <div class="ms-track">
+            <div class="ms-seg ms-seg--act" style="flex:38">out · quick</div>
+            <div class="ms-seg" style="flex:62">back · slow</div>
+          </div>
+          <div class="ms-playhead"></div>
+        </div>
+        <div class="ms-ticks"><span>0.0</span><span>0.5</span><span>1.0</span><span>1.5</span><span>2.0 s</span></div>
+      </div>
+      <dl class="ms-dl">
+        <dt>Rule</dt><dd>Every arrow that leads somewhere moves the way it points: forward / deeper level → right, back / previous step / higher level → left</dd>
+        <dt>Motion</dt><dd>6 px out in 38 % of the loop (<code>cubic-bezier(.3,0,.2,1)</code>), back in 62 % (<code>cubic-bezier(.45,0,.4,1)</code>). Soft turns, no overshoot, no hold</dd>
+        <dt>Forward</dt><dd>Any button or link whose direct icon is <code>#i-arrow-right</code>: Details, Show all, … The proceed button (No. 006) uses the same keyframes with its own cycle token</dd>
+        <dt>Back</dt><dd><code>.view__back</code> (page back) and <code>.modal__back</code> (previous flow step)</dd>
+        <dt>Hover</dt><dd>Pauses the loop; the control's own hover takes over. Disabled and reduced motion: still</dd>
+        <dt>Not included</dt><dd>List-row chevrons (Offers rows) and carousel prev/next — many rows moving at once would be noise</dd>
+        <dt>Tokens</dt><dd><code>--arrow-nudge</code> 6px, <code>--arrow-cycle</code> 2 s, <code>--arrow-dir</code> 1 / −1</dd>
+      </dl>
+      <div>
+        <p class="ms-label">Why it works</p>
+        <ul class="ms-list">
+          <li>The arrow already says where you'll go; the motion says it a second time without words, in the direction of the page transition (Tectonics carousel: deeper = right, back = left).</li>
+          <li>One motion for one meaning across the app: the proceed arrow, Details, Show all and the back arrows all speak the same language.</li>
+          <li>Quick out catches the eye, the slow return lets it settle, so a page full of arrows still feels calm.</li>
+          <li>It uses the individual <code>translate</code> property, so it never fights the hover lean or the click step-back of the back arrow (No. 004).</li>
+        </ul>
+      </div>
+      <div>
+        <p class="ms-label">Core CSS · css/styles.css › Arrow nudge</p>
+        <div class="ms-code">
+<pre id="code9">:root { --arrow-nudge: 6px; --arrow-cycle: 2000ms; }
+
+@keyframes uz-arrow-nudge {
+  0%   { translate: 0 0;
+         animation-timing-function: cubic-bezier(.3,0,.2,1); }   /* out: quick */
+  38%  { translate: calc(var(--arrow-nudge) * var(--arrow-dir, 1)) 0;
+         animation-timing-function: cubic-bezier(.45,0,.4,1); }  /* back: slow */
+  100% { translate: 0 0; }
+}
+
+/* forward / deeper: Details, Show all, … */
+:is(a, button):not(.uz-btn--proceed):has(> svg > use[href="#i-arrow-right"]) > svg {
+  --arrow-dir: 1;
+  animation: uz-arrow-nudge var(--arrow-cycle) infinite;
+}
+
+/* back / higher level: page back and previous flow step */
+:is(.view__back, .modal__back) > svg {
+  --arrow-dir: -1;
+  animation: uz-arrow-nudge var(--arrow-cycle) infinite;
+}
+
+/* pointing at it pauses the loop */
+:is(a, button):has(> svg > use[href="#i-arrow-right"]):hover > svg,
+:is(.view__back, .modal__back):hover > svg { animation-play-state: paused; }</pre>
+          <button class="uz-btn uz-btn--tonal uz-btn--sm" type="button" data-copy="code9">Copy</button>
+        </div>
+      </div>
+      <p class="ms-src">Own design for the UZ Bank banking app · from the proceed arrow (No. 006) · added 7 Oct 2026 · not in Figma yet</p>
+    </div>
+  </section>
+
+  <p class="ms-next">Next specimen: send a screen recording and the URL, and it gets added here with its own live rebuild.</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+  <nav class="tab-bar" data-scroll-edge-footer>
+    <a class="tab-bar__item" href="overview.html">
+      <span class="tab-bar__icon-wrap">
+        <svg class="tab-bar__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
+      </span>
+      <span class="tab-bar__label">Overview</span>
+    </a>
+
+    <a class="tab-bar__item" href="payments.html">
+      <span class="tab-bar__icon-wrap">
+        <svg class="tab-bar__icon" aria-hidden="true" focusable="false"><use href="#i-payments"/></svg>
+      </span>
+      <span class="tab-bar__label">Payments</span>
+    </a>
+
+    <a class="tab-bar__item" href="profile.html">
+      <span class="tab-bar__icon-wrap">
+        <svg class="tab-bar__icon" aria-hidden="true" focusable="false"><use href="#i-user"/></svg>
+      </span>
+      <span class="tab-bar__label">Profile</span>
+    </a>
+    <a class="tab-bar__item tab-bar__item--active admin-only" href="design-system.html" aria-current="page">
+      <span class="tab-bar__icon-wrap tab-bar__icon-wrap--active">
+        <svg class="tab-bar__icon" aria-hidden="true" focusable="false"><use href="#i-layers"/></svg>
+      </span>
+      <span class="tab-bar__label">Design</span>
+    </a>
+
+  </nav>
+
+</div>
+
+<script src="js/analytics.js"></script>
+<script src="js/payment-state.js"></script>
+<script src="js/data-render.js"></script>
+<script src="js/scroll-edge-chrome.js"></script>
+<script src="js/app-mp.js"></script>
+<script src="js/form-field-sheet.js"></script>
+<div id="uzbank-icon-defs" aria-hidden="true" class="uzbank-icon-defs">
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden;pointer-events:none">
+<symbol id="i-anchor" viewBox="0 0 24 24">
+<path d="M12 8C13.6569 8 15 6.65685 15 5C15 3.34315 13.6569 2 12 2C10.3431 2 9 3.34315 9 5C9 6.65685 10.3431 8 12 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 22V8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5 12H2C2 14.6522 3.05357 17.1957 4.92893 19.0711C6.8043 20.9464 9.34784 22 12 22C14.6522 22 17.1957 20.9464 19.0711 19.0711C20.9464 17.1957 22 14.6522 22 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-arrow-left" viewBox="0 0 24 24">
+<path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-arrow-right" viewBox="0 0 24 24">
+<path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 5L19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-calendar" viewBox="0 0 24 24">
+<path d="M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-camera" viewBox="0 0 24 24">
+<path d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 3H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 17C14.2091 17 16 15.2091 16 13C16 10.7909 14.2091 9 12 9C9.79086 9 8 10.7909 8 13C8 15.2091 9.79086 17 12 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-chevron-down" viewBox="0 0 24 24">
+<path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-chevron-left" viewBox="0 0 24 24">
+<path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-chevron-right" viewBox="0 0 24 24">
+<path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-clock" viewBox="0 0 24 24">
+<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-copy" viewBox="0 0 24 24">
+<rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2" fill="none"/>
+<path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-corner-up-right" viewBox="0 0 24 24">
+<path d="M15 14L20 9L15 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4 20V13C4 11.9391 4.42143 10.9217 5.17157 10.1716C5.92172 9.42143 6.93913 9 8 9H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-coffee" viewBox="0 0 24 24">
+<path d="M18 8h1a4 4 0 010 8h-1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6 1v3M10 1v3M14 1v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-credit-card" viewBox="0 0 24 24">
+<path d="M21 4H3C1.89543 4 1 4.89543 1 6V18C1 19.1046 1.89543 20 3 20H21C22.1046 20 23 19.1046 23 18V6C23 4.89543 22.1046 4 21 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M1 10H23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-dollar-sign" viewBox="0 0 24 24">
+<path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-edit-2" viewBox="0 0 24 24">
+<path d="M16 3L21 8L8 21H3V16L16 3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-eye" viewBox="0 0 24 24">
+<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+</symbol>
+<symbol id="i-gitlab" viewBox="0 0 24 24">
+<g clip-path="url(#i-gitlab-clip0_207_82042)">
+<path d="M22.65 14.39L12 22.13L1.35002 14.39C1.20725 14.285 1.10134 14.1375 1.04746 13.9687C0.993572 13.7998 0.99447 13.6183 1.05002 13.45L2.27002 9.66996L4.71002 2.15996C4.73369 2.09877 4.77136 2.04397 4.82002 1.99996C4.89926 1.92758 5.0027 1.88745 5.11002 1.88745C5.21734 1.88745 5.32078 1.92758 5.40002 1.99996C5.45141 2.04963 5.48927 2.11158 5.51002 2.17996L7.95002 9.66996H16.05L18.49 2.15996C18.5137 2.09877 18.5514 2.04397 18.6 1.99996C18.6793 1.92758 18.7827 1.88745 18.89 1.88745C18.9973 1.88745 19.1008 1.92758 19.18 1.99996C19.2314 2.04963 19.2693 2.11158 19.29 2.17996L21.73 9.68996L23 13.45C23.0505 13.6234 23.0438 13.8086 22.9807 13.9779C22.9177 14.1473 22.8017 14.2918 22.65 14.39Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="i-gitlab-clip0_207_82042">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+</symbol>
+<symbol id="i-home" viewBox="0 0 24 24">
+<path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-life-buoy" viewBox="0 0 24 24">
+<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4.92999 4.93005L9.16999 9.17005" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14.83 14.83L19.07 19.07" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14.83 9.17005L19.07 4.93005" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14.83 9.17001L18.36 5.64001" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4.92999 19.07L9.16999 14.83" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-more-horizontal" viewBox="0 0 24 24">
+<path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M19 13C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11C18.4477 11 18 11.4477 18 12C18 12.5523 18.4477 13 19 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5 13C5.55228 13 6 12.5523 6 12C6 11.4477 5.55228 11 5 11C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-payments" viewBox="0 0 24 24">
+<path d="M7 22L2 17M2 17L7 12M2 17H14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17 12L22 7M22 7L17 2M22 7H10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-plus" viewBox="0 0 24 24">
+<path d="M12 5V19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-repeat" viewBox="0 0 24 24">
+<path d="M17 1L21 5L17 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3 11V9C3 7.93913 3.42143 6.92172 4.17157 6.17157C4.92172 5.42143 5.93913 5 7 5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7 23L3 19L7 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M21 13V15C21 16.0609 20.5786 17.0783 19.8284 17.8284C19.0783 18.5786 18.0609 19 17 19H3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-rotate-ccw" viewBox="0 0 24 24">
+<path d="M1 4V10H7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3.51 15C4.15839 16.8404 5.38734 18.4202 7.01166 19.5014C8.63598 20.5826 10.5677 21.1066 12.5157 20.9945C14.4637 20.8824 16.3226 20.1402 17.8121 18.8798C19.3017 17.6194 20.3413 15.909 20.7742 14.0064C21.2072 12.1038 21.0101 10.112 20.2126 8.33111C19.4152 6.55025 18.0605 5.0768 16.3528 4.13277C14.6451 3.18874 12.6769 2.82527 10.7447 3.09713C8.81245 3.36898 7.02091 4.26143 5.64 5.64001L1 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-search" viewBox="0 0 24 24">
+<circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+<path d="M20 20L16.5 16.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+</symbol>
+<symbol id="i-shield" viewBox="0 0 24 24">
+<path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-sunrise-logo" viewBox="0 0 24 24">
+<path d="M12.001 1C9.82526 0.999814 7.69841 1.64482 5.88932 2.85344C4.08024 4.06207 2.67019 5.78002 1.83752 7.79005C1.00484 9.80009 0.786918 12.0119 1.21131 14.1458C1.63573 16.2797 2.6834 18.2397 4.22184 19.7782C5.76025 21.3166 7.72037 22.3643 9.85423 22.7887C11.9881 23.2131 14.1999 22.9952 16.2099 22.1625C18.22 21.3298 19.9379 19.9198 21.1466 18.1107C22.3552 16.3016 23.0002 14.1747 23 11.9991C22.997 9.08282 21.8372 6.28694 19.7752 4.22485C17.7131 2.16278 14.9172 1.00299 12.001 1ZM12.001 3.25853C13.4685 3.25777 14.9126 3.62674 16.2 4.3314C17.4873 5.03604 18.5764 6.05367 19.3666 7.2903C20.1569 8.52692 20.6229 9.94272 20.7215 11.407C20.8202 12.8712 20.5484 14.3368 19.9312 15.6683H4.06973C3.45251 14.3367 3.18068 12.8711 3.27942 11.4067C3.37813 9.94241 3.8442 8.52658 4.63454 7.28992C5.42493 6.05325 6.51413 5.03566 7.8016 4.33106C9.08904 3.62647 10.5333 3.25761 12.001 3.25853Z" fill="currentColor"/>
+</symbol>
+<symbol id="i-trending-up" viewBox="0 0 24 24">
+<path d="M23 6L13.5 15.5L8.5 10.5L1 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17 6H23V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-trending-down" viewBox="0 0 24 24">
+<path d="M23 18L13.5 8.5L8.5 13.5L1 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17 18H23V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-trash" viewBox="0 0 24 24">
+<path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-trash-2" viewBox="0 0 24 24">
+<path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-user" viewBox="0 0 24 24">
+<path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-x-circle" viewBox="0 0 24 24">
+<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15 9L9 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+<symbol id="i-layers" viewBox="0 0 24 24">
+<path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+<path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+<path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/><rect x="14" y="4" width="4" height="16" rx="1" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4L19 12L7 20V4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24">
+<path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
+</svg>
+</div>
+<script src="js/nav-button-motion.js"></script>
+<script src="js/cta-pulse.js"></script>
+<script src="js/step-indicator.js"></script>
+<script src="js/wiggle.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/section-build-motion.js"></script>
+<script src="js/shell-nav.js"></script>
+<script>
+(function () {
+  'use strict';
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* Copy buttons */
+  document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var pre = document.getElementById(btn.dataset.copy);
+      var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1500); };
+      var select = function () { var r = document.createRange(); r.selectNodeContents(pre); var s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+      if (navigator.clipboard) navigator.clipboard.writeText(pre.textContent).then(done).catch(select); else select();
+    });
+  });
+
+  /* Slow-mo: scales the real motion tokens of each specimen ×4 */
+  var SLOW = {
+    'grab-hint':   { '--dur': ['2.4s', '9.6s'] },
+    'close-btn':   { '--close-spin-duration': ['0.45s', '1.8s'], '--close-collapse-duration': ['0.28s', '1.12s'] },
+    'back-arrow':  { '--back-step-duration': ['0.42s', '1.68s'] },
+    'close-enter': { '--k': ['1', '4'], '--close-enter-delay': ['0.3s', '1.2s'], '--close-enter-duration': ['0.4s', '1.6s'],
+                     '--close-enter-icon-lag': ['70ms', '280ms'], '--close-enter-icon-duration': ['0.32s', '1.28s'] },
+    'proceed':     { '--dur': ['2s', '8s'], '--proceed-cycle': ['2000ms', '8000ms'] },
+    'step-indicator': { '--step-fill-duration': ['360ms', '1440ms'], '--step-empty-duration': ['240ms', '960ms'] },
+    'arrow-nudge': { '--dur': ['2s', '8s'], '--arrow-cycle': ['2000ms', '8000ms'], '--proceed-cycle': ['2000ms', '8000ms'] },
+    'wiggle':      { '--dur': ['0.72s', '2.88s'], '--wiggle-duration': ['720ms', '2880ms'] }
+  };
+  document.querySelectorAll('[data-slow]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var on = btn.getAttribute('aria-pressed') !== 'true';
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      var spec = document.getElementById(btn.dataset.slow);
+      var vars = SLOW[btn.dataset.slow];
+      Object.keys(vars).forEach(function (k) { spec.style.setProperty(k, vars[k][on ? 1 : 0]); });
+      if (btn.dataset.slow === 'close-enter') replay5();
+    });
+  });
+  document.querySelectorAll('[data-pause]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var on = btn.getAttribute('aria-pressed') !== 'true';
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.textContent = on ? 'Play' : 'Pause';
+      document.getElementById(btn.dataset.pause).classList.toggle('ms-paused', on);
+    });
+  });
+
+  /* 001 · drag the slab */
+  (function () {
+    var stage = document.getElementById('s1-stage'), slab = document.getElementById('s1-slab'), hint = document.getElementById('s1-hint');
+    var rot = -18, startX = 0, startRot = 0, down = false, idle;
+    function apply() { slab.style.transform = 'rotateY(' + rot + 'deg) rotateX(6deg)'; }
+    apply();
+    stage.addEventListener('pointerdown', function (e) {
+      down = true; startX = e.clientX; startRot = rot;
+      stage.setPointerCapture(e.pointerId); stage.classList.add('is-dragging');
+      hint.classList.add('is-gone'); clearTimeout(idle);
+    });
+    stage.addEventListener('pointermove', function (e) {
+      if (!down) return;
+      rot = Math.max(-60, Math.min(60, startRot + (e.clientX - startX) * 0.35)); apply();
+    });
+    function end() { if (!down) return; down = false; stage.classList.remove('is-dragging'); idle = setTimeout(function () { hint.classList.remove('is-gone'); }, 2500); }
+    stage.addEventListener('pointerup', end);
+    stage.addEventListener('pointercancel', end);
+  })();
+
+  /* 002 · focus mode + sequence chart */
+  (function () {
+    var mock = document.getElementById('s2-stage'), panel = document.getElementById('s2-panel'), closeBtn = document.getElementById('s2-close');
+    var gantt = document.getElementById('s2-gantt'), ticks = document.getElementById('s2-gticks');
+    var tabOpen = document.getElementById('s2-open'), tabClose = document.getElementById('s2-closetab');
+    var k = 1, head = null, timer;
+    var seq = {
+      open: { total: 2.2, rows: [['Hint pill', 0, .2], ['Hero text', 0, .45], ['Scene + camera', .3, 1.1, 1], ['Close button', 1.0, 1.4], ['Level pill', 1.1, 1.4], ['Details', 1.3, 2.15]] },
+      close: { total: 1.7, rows: [['Details', 0, .25], ['Close + level', 0, .25], ['Scene + camera', .25, 1.05, 1], ['Hero text', .9, 1.65], ['Hint pill', 1.4, 1.7]] }
+    };
+    function draw(dir) {
+      var s = seq[dir];
+      tabOpen.setAttribute('aria-pressed', dir === 'open');
+      tabClose.setAttribute('aria-pressed', dir === 'close');
+      gantt.innerHTML = s.rows.map(function (r) {
+        return '<div class="s2-grow"><span>' + r[0] + '</span><div class="s2-gtrack"><div class="s2-gbar' + (r[3] ? ' s2-gbar--move' : '') +
+          '" style="left:' + (r[1] / s.total * 100) + '%;width:' + ((r[2] - r[1]) / s.total * 100) + '%"></div></div></div>';
+      }).join('') + '<div class="s2-glayer"><div class="s2-ghead"></div></div>';
+      head = gantt.querySelector('.s2-ghead');
+      var marks = [];
+      for (var t = 0; t <= s.total + 1e-6; t += .5) marks.push(t);
+      ticks.innerHTML = marks.map(function (t, i) { return '<span style="left:' + (t / s.total * 100) + '%">' + t.toFixed(1) + (i === marks.length - 1 ? ' s' : '') + '</span>'; }).join('');
+    }
+    function sweep(dir) {
+      draw(dir);
+      if (reduce.matches) return;
+      head.animate([{ left: '0%', opacity: 1 }, { left: 'calc(100% - 2px)', opacity: 1 }, { left: 'calc(100% - 2px)', opacity: 0 }],
+        { duration: seq[dir].total * 1000 * k + 300, easing: 'linear', fill: 'forwards' });
+    }
+    function setFocus(on) {
+      if (mock.classList.contains('is-focus') === on) return;
+      mock.classList.toggle('is-focus', on);
+      closeBtn.tabIndex = on ? 0 : -1;
+      panel.tabIndex = on ? -1 : 0;
+      sweep(on ? 'open' : 'close');
+    }
+    panel.addEventListener('click', function () { setFocus(true); });
+    panel.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFocus(true); } });
+    closeBtn.addEventListener('click', function () { setFocus(false); panel.focus({ preventScroll: true }); });
+    tabOpen.addEventListener('click', function () { draw('open'); });
+    tabClose.addEventListener('click', function () { draw('close'); });
+    var slow = document.getElementById('s2-slow');
+    slow.addEventListener('click', function () {
+      var on = slow.getAttribute('aria-pressed') !== 'true';
+      slow.setAttribute('aria-pressed', on ? 'true' : 'false');
+      k = on ? 4 : 1; mock.style.setProperty('--k', k);
+    });
+    document.getElementById('s2-replay').addEventListener('click', function () {
+      clearTimeout(timer);
+      var run = function () { setFocus(true); timer = setTimeout(function () { setFocus(false); }, (seq.open.total + 1.2) * 1000 * k); };
+      if (mock.classList.contains('is-focus')) { setFocus(false); timer = setTimeout(run, (seq.close.total + .4) * 1000 * k); }
+      else run();
+    });
+    draw('open');
+  })();
+
+  /* 003 · the demo sheet never closes, so nav-button-motion.js restores the button.
+     Its click handler runs in the capture phase; nothing else to do here. */
+
+  /* 004 · step title follows the real back-button click (motion: nav-button-motion.js) */
+  (function () {
+    var stage = document.getElementById('s4-stage'), title = document.getElementById('s4-title');
+    var dots = [].slice.call(stage.querySelectorAll('.step-indicator__seg'));
+    var names = ['Amount & recipient', 'Schedule', 'Summary'], step = 3;
+    document.getElementById('s4-back').addEventListener('click', function () {
+      step = step > 1 ? step - 1 : 3;
+      var slow = document.querySelector('[data-slow="back-arrow"]').getAttribute('aria-pressed') === 'true';
+      setTimeout(function () {
+        title.textContent = 'Step ' + step + ' · ' + names[step - 1];
+        dots.forEach(function (d, i) { d.classList.toggle('is-filled', i < step); });
+      }, slow ? 600 : 150);
+    });
+  })();
+
+  /* 005 · sheet slides in, then the real .is-entering build-up */
+  var stage5 = document.getElementById('s5-stage'), close5 = document.getElementById('s5-close');
+  function replay5() {
+    stage5.classList.remove('is-open');
+    close5.classList.remove('is-entering');
+    void stage5.offsetWidth;
+    requestAnimationFrame(function () {
+      stage5.classList.add('is-open');
+      close5.classList.add('is-entering');
+    });
+  }
+  close5.addEventListener('animationend', function (e) { if (e.target === close5) close5.classList.remove('is-entering'); });
+  document.getElementById('s5-replay').addEventListener('click', replay5);
+  if ('IntersectionObserver' in window) {
+    var seen = false;
+    new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting && !seen) { seen = true; replay5(); }
+    }, { threshold: 0.5 }).observe(stage5);
+  } else { replay5(); }
+  /* 007 · step indicator — same classes the real component uses */
+  (function () {
+    var ind = document.getElementById('s7-ind'), title = document.getElementById('s7-title');
+    var segs = [].slice.call(ind.children), next = document.getElementById('s7-next');
+    var names = ['Recipient', 'Amount', 'Time schedule', 'Summary'], cur = 0;
+    function go(i) {
+      ind.classList.toggle('step-indicator--back', i < cur);
+      cur = i;
+      segs.forEach(function (s, k) { s.classList.toggle('is-filled', k <= i); });
+      title.textContent = names[i];
+      next.textContent = i === names.length - 1 ? 'Execute' : 'Confirm';
+      ind.setAttribute('aria-valuenow', i + 1);
+      ind.setAttribute('aria-valuetext', 'Step ' + (i + 1) + ' of 4: ' + names[i]);
+    }
+    next.addEventListener('click', function () { go(cur < 3 ? cur + 1 : 0); });
+    document.getElementById('s7-prev').addEventListener('click', function () { if (cur > 0) go(cur - 1); });
+  })();
+  /* 008 · wiggle — real class + real schedule from js/wiggle.js */
+  (function () {
+    var icons = [document.getElementById('s8-search-icon'), document.getElementById('s8-bell')];
+    var pencils = [].slice.call(document.querySelectorAll('#s8-stage .form-field__edit-icon'));
+    var stopPencils = null;
+    document.getElementById('s8-play').addEventListener('click', function () {
+      icons.forEach(function (i) { window.UZWiggle && UZWiggle.play(i); });
+      if (window.UZWiggle) { if (stopPencils) stopPencils(); stopPencils = UZWiggle.attend(pencils, { delay: 0, times: 1 }); }
+    });
+    if ('IntersectionObserver' in window && window.UZWiggle) {
+      var seen = false;
+      new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting && !seen) { seen = true; UZWiggle.attend(icons[0], { delay: 300 }); UZWiggle.attend(icons[1], { delay: 500, times: Infinity }); stopPencils = UZWiggle.attend(pencils, { delay: 700 }); }
+      }, { threshold: 0.6 }).observe(document.getElementById('s8-stage'));
+    }
+  })();
+  /* Pause / play icon button next to every timeline — synced with the text Pause button */
+  (function () {
+    function setPaused(spec, on) {
+      spec.classList.toggle('ms-paused', on);
+      spec.querySelectorAll('[data-pause]').forEach(function (b) {
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        b.textContent = on ? 'Play' : 'Pause';
+      });
+      spec.querySelectorAll('.ms-tl-toggle').forEach(function (b) {
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        b.setAttribute('aria-label', on ? 'Play animation' : 'Pause animation');
+        b.querySelector('use').setAttribute('href', on ? '#i-play' : '#i-pause');
+      });
+    }
+    document.querySelectorAll('.ms-timeline').forEach(function (tl) {
+      var label = tl.parentElement.querySelector(':scope > .ms-label');
+      var spec = tl.closest('.ms-specimen');
+      if (!label || !spec) return;
+      var row = document.createElement('div');
+      row.className = 'ms-label-row';
+      label.replaceWith(row);
+      row.appendChild(label);
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'uz-btn uz-btn--sm uz-btn--icon-only-secondary ms-tl-toggle';
+      btn.setAttribute('aria-pressed', 'false');
+      btn.setAttribute('aria-label', 'Pause animation');
+      btn.innerHTML = '<svg class="uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-pause"/></svg>';
+      btn.addEventListener('click', function () { setPaused(spec, !spec.classList.contains('ms-paused')); });
+      row.appendChild(btn);
+    });
+    // The text Pause buttons drive the same state, so both stay in sync
+    document.querySelectorAll('[data-pause]').forEach(function (b) {
+      b.addEventListener('click', function (e) {
+        e.stopImmediatePropagation();
+        var spec = document.getElementById(b.dataset.pause);
+        setPaused(spec, !spec.classList.contains('ms-paused'));
+      }, true);
+    });
+  })();
+})();
+</script>
+</body>
+</html>

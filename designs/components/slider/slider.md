@@ -6,7 +6,9 @@ Slider input for selecting a value from a bounded range.
 
 | Variant | Path | Description |
 |---------|------|-------------|
-| `default` | `variants/default/default.svg` | Track + filled range + pill thumb + value label |
+| `regular-default` | `variants/regular-default/default.svg` | Regular-size slider with track, filled range, pill thumb, and value label |
+| `small-default` | `variants/small-default/default.svg` | Compact slider with the same visual structure |
+| `x-small-default` | `variants/x-small-default/default.svg` | Extra-compact slider with the same visual structure |
 
 ## States
 
@@ -16,6 +18,7 @@ Slider input for selecting a value from a bounded range.
 
 - Thumb is a **pill** (rounded rectangle), not a circle.
 - Track uses primary foreground at reduced opacity; filled range and thumb use solid primary.
+- `small` and `x-small` are size variants, not interaction states.
 
 ## Accessibility
 

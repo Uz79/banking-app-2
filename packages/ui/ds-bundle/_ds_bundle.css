@@ -272,6 +272,7 @@
   margin-bottom: var(--section-card-header-gap-to-body, 0.25rem);
 }
 .section-card__title {
+  font-family: var(--font-family);
   font-size: var(--fs-text-sm);
   line-height: var(--lh-text);
   color: var(--color-fg-secondary);
@@ -282,11 +283,13 @@
   align-items: baseline;
 }
 .section-card__currency {
+  font-family: var(--font-family);
   font-size: var(--fs-text-xs);
   line-height: var(--lh-text);
   color: var(--color-fg-secondary);
 }
 .section-card__value {
+  font-family: var(--font-family);
   font-size: var(--fs-text-sm);
   font-weight: var(--fw-bold);
   line-height: var(--lh-text);
@@ -1019,11 +1022,13 @@
   padding-right: var(--space-3);
 }
 .list-item--group-account .list-item__currency {
+  font-family: var(--font-family);
   font-size: var(--fs-text-xs);
   line-height: var(--lh-text);
   color: var(--color-fg-label);
 }
 .list-item--group-account .list-item__value {
+  font-family: var(--font-family);
   font-size: var(--fs-text-sm);
   font-weight: var(--fw-bold);
   line-height: var(--lh-text);

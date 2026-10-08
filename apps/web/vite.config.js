@@ -33,6 +33,9 @@ export default {
         accountInformation: resolve(dir, 'account-information.html'),
         investmentProductDetails: resolve(dir, 'investment-product-details.html'),
         detailsOfPosition: resolve(dir, 'details-of-position.html'),
+        designSystem: resolve(dir, 'design-system.html'),        // admin only
+        motionSpecimens: resolve(dir, 'motion-specimens.html'),  // admin only
+        components: resolve(dir, 'components.html'),             // admin only
       },
     },
   },

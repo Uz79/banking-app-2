@@ -118,7 +118,8 @@
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/typography.css">
   <link rel="stylesheet" href="css/styles.css">
-  <script src="js/shell-nav-boot.js"></script>
+  <script src="js/admin-boot.js"></script>
+  <script src="js/section-build-boot.js"></script>
 </head>
 <body class="body" data-screen="details-of-position" data-page="details-of-position">
 <div class="app">
@@ -136,6 +137,10 @@
       <a class="sidebar__nav-item" href="profile.html">
         <svg class="sidebar__nav-icon" aria-hidden="true" focusable="false"><use href="#i-user"/></svg>
         <span>Profile</span>
+      </a>
+      <a class="sidebar__nav-item admin-only" href="design-system.html">
+        <svg class="sidebar__nav-icon" aria-hidden="true" focusable="false"><use href="#i-layers"/></svg>
+        <span>Design system</span>
       </a>
 
     </nav>
@@ -348,6 +353,12 @@
       </span>
       <span class="tab-bar__label">Profile</span>
     </a>
+    <a class="tab-bar__item admin-only" href="design-system.html">
+      <span class="tab-bar__icon-wrap">
+        <svg class="tab-bar__icon" aria-hidden="true" focusable="false"><use href="#i-layers"/></svg>
+      </span>
+      <span class="tab-bar__label">Design</span>
+    </a>
 
   </nav>
 
@@ -530,6 +541,7 @@
 </div>
 
 <script src="js/document-ready.js"></script>
+<script src="js/section-build-motion.js"></script>
 <script src="js/shell-nav.js"></script>
 <script src="js/analytics.js"></script>
 <script src="js/scroll-edge-chrome.js"></script>
@@ -688,11 +700,21 @@
 <path d="M15 9L9 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </symbol>
+<symbol id="i-layers" viewBox="0 0 24 24">
+<path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+<path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+<path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</symbol>
 <symbol id="i-x" viewBox="0 0 24 24">
 <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </symbol>
 </svg>
 </div>
+<script src="js/nav-button-motion.js"></script>
+<script src="js/cta-pulse.js"></script>
+<script src="js/step-indicator.js"></script>
+<script src="js/wiggle.js"></script>
+<script src="js/admin.js"></script>
 </body>
 </html>

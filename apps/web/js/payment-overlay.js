@@ -1023,6 +1023,12 @@
         hideConfirmationVisual();
         closeModal();
       }
+      // Recipient search is a pre-flow step: nothing has been chosen yet, so there
+      // is nothing to discard — close straight away (edit mode never starts here).
+      if (STEPS[currentStep] === 'recipient-search' && !editingBookingId && !editingStaticRow) {
+        runExitFromFlow();
+        return;
+      }
       promptExitFlow(runExitFromFlow);
     });
   }
