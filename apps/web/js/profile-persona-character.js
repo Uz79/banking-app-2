@@ -112,15 +112,18 @@ function readTheme() {
   const bg = cssColor('--color-bg');
   const fg = cssColor('--color-fg');
   const tint = cssColor('--color-overlay-tint');
-  const bgL = toOklch(bg), fgL = toOklch(fg);
+  /* Multi-color themes set --color-fg-interactive to the primary accent. */
+  const ink = cssColor('--color-fg-interactive');
+  const bgL = toOklch(bg), fgL = toOklch(fg), inkL = toOklch(ink);
   const dark = bgL.L < 0.5;
   const hued = bgL.C > fgL.C ? bgL : fgL;
   const hue = hued.C >= 0.03 ? hued.h : FALLBACK_HUE;
   const tintAmount = hued.C >= 0.03 ? NEUTRAL_TINT : 0;
   return {
-    key: [bg, fg, tint].join('|'),
+    key: [bg, fg, tint, ink].join('|'),
     dark,
     hue,
+    accentHue: inkL.C >= 0.03 ? inkL.h : hue,
     tintAmount,
     range: dark ? [0.24, 0.86] : [0.32, 0.97],
     anchorL: dark ? 0.6035 : 0.521, /* accent step: 600 on dark, 700 on light */
@@ -325,7 +328,7 @@ async function mountStage(stage, { interactive = true } = {}) {
         for (let x = cx * cell; x < (cx + 1) * cell; x++) {
           const i = y * w + x;
           const L = Math.min(0.97, Math.max(0.12, p.L[i] + shift));
-          const [r, g, b] = oklchToRGB(L, 0.22 * (1 - L), theme.hue);
+          const [r, g, b] = oklchToRGB(L, 0.22 * (1 - L), theme.accentHue);
           out[i * 4] = r; out[i * 4 + 1] = g; out[i * 4 + 2] = b;
         }
   }
@@ -549,9 +552,9 @@ async function mountStage(stage, { interactive = true } = {}) {
   if (fallback) fallback.hidden = true;
 }
 
-/* Main views and the account / custody account detail views show the same character, smaller (1× vs Profile's 1.5×),
+/* Main views and the account / custody account / position detail views show the same character, smaller (1× vs Profile's 1.5×),
    in the same corner. It reads the saved recipe; it cannot be edited there. */
-const AMBIENT_SCREENS = ['overview', 'payments', 'account-details', 'investment-product-details'];
+const AMBIENT_SCREENS = ['overview', 'payments', 'account-details', 'investment-product-details', 'details-of-position'];
 
 function mountAmbient() {
   const main = document.querySelector('.main-content');

@@ -3,215 +3,71 @@
  * Theme toggle, carousel on account details, trivial toggles.
  * Payment UI lives in payment-overlay.js (modal + #pay/… hash / history).
  *
- * Colour override key (uzBankWebColorOverride) stores only { bg, fg }; every
- * other --color-* role is derived from that pair (see deriveTokens in
- * contrast-checker.js). Legacy WebApp_* keys are migrated in storage-migrate.js.
+ * Colours: Profile > Theme (js/theme-engine.js) stores the finished --color-*
+ * tokens for both shells in uzBankWebColorTokens. Here we only apply them (on
+ * load and on the sidebar Light/Dark switch). No entry = tokens.css (UZ Bank).
+ * Legacy WebApp_* keys are migrated in storage-migrate.js.
  */
 (function (global) {
   'use strict';
 
   var THEME_KEY = 'uzBankWebTheme';
-  var OVERRIDE_KEY = 'uzBankWebColorOverride';
+  var TOKEN_CACHE_KEY = 'uzBankWebColorTokens';
+  var THEME_OVERRIDE_KEY = 'uzBankWebColorOverride_v2';
   var APPEARANCE_KEY = 'uzBankWebAppearance';
 
-  /** Same BG/FG as tokens.css / contrast-checker CANONICAL. */
-  var CANONICAL_PAIR = {
-    light: { bg: '#ffffff', fg: '#00157e' },
-    dark: { bg: '#00157e', fg: '#ffffff' }
-  };
-
-  function normalizeHex6(raw) {
-    if (!raw || typeof raw !== 'string') return null;
-    var hex = raw.replace(/^#/, '').trim();
-    if (hex.length === 3) hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-    return hex.length === 6 && /^[a-f\d]{6}$/i.test(hex) ? '#' + hex.toLowerCase() : null;
-  }
-
-  function rgbFromHex6(h) {
-    return {
-      r: parseInt(h.slice(1, 3), 16),
-      g: parseInt(h.slice(3, 5), 16),
-      b: parseInt(h.slice(5, 7), 16)
-    };
-  }
-
-  /** WCAG relative luminance for #rrggbb (same rule as contrast-checker / derive). */
-  function relLumFromHex(hex) {
-    if (!hex || hex.length !== 7) return 0;
-    var c = rgbFromHex6(hex);
-    function l(x) {
-      x /= 255;
-      return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
-    }
-    return 0.2126 * l(c.r) + 0.7152 * l(c.g) + 0.0722 * l(c.b);
-  }
-
-  function readOverridePair() {
-    try {
-      var raw = global.localStorage.getItem(OVERRIDE_KEY);
-      if (!raw) return null;
-      var o = JSON.parse(raw);
-      var bg = normalizeHex6(String(o.bg || ''));
-      var fg = normalizeHex6(String(o.fg || ''));
-      return bg && fg ? { bg: bg, fg: fg } : null;
-    } catch (err) {
-      return null;
-    }
-  }
-
-  /** Current surface pair: saved override or computed --color-bg/--color-fg. */
-  function readCurrentSurfacePair() {
-    var saved = readOverridePair();
-    if (saved) return saved;
-    var cs = getComputedStyle(document.documentElement);
-    var bg = normalizeHex6(cs.getPropertyValue('--color-bg').trim());
-    var fg = normalizeHex6(cs.getPropertyValue('--color-fg').trim());
-    return {
-      bg: bg || CANONICAL_PAIR.dark.bg,
-      fg: fg || CANONICAL_PAIR.dark.fg
-    };
-  }
+  /* The old { bg, fg } override is no longer read anywhere. */
+  try { global.localStorage.removeItem('uzBankWebColorOverride'); } catch (err0) {}
 
   /**
-   * Sidebar Light/Dark: keep the user's custom BG/FG (like Reverse colours),
-   * only swap roles when needed so shell polarity matches the chosen theme,
-   * then persist + derived tokens + data-theme + Profile picker sync.
+   * Copy the cached --color-* tokens for a shell onto <html>, replacing any
+   * previous inline colour tokens. No cache = tokens.css (UZ Bank look).
+   */
+  function applyColorTokens(shell) {
+    var style = document.documentElement.style;
+    var names = [];
+    for (var i = 0; i < style.length; i++) {
+      if (style[i].indexOf('--color-') === 0) names.push(style[i]);
+    }
+    names.forEach(function (n) { style.removeProperty(n); });
+    try {
+      var raw = global.localStorage.getItem(TOKEN_CACHE_KEY);
+      if (!raw) return;
+      var all = JSON.parse(raw);
+      var map = all && all[shell];
+      if (!map) return;
+      for (var k in map) style.setProperty('--' + k, map[k]);
+    } catch (err) {}
+  }
+  global.UZBankApplyColorTokens = applyColorTokens;
+
+  /**
+   * Sidebar Light/Dark: each saved theme remembers its own Light and Dark
+   * contrast (precomputed when it was saved), so switching only applies the
+   * other shell's cached tokens. Profile > Theme re-syncs via uzbank:picker-sync.
    */
   function UZBankApplyThemeChoice(wantTheme) {
     if (wantTheme !== 'light' && wantTheme !== 'dark') return;
-    var pair = readCurrentSurfacePair();
-    var bg = pair.bg;
-    var fg = pair.fg;
-    var isDarkPolar = relLumFromHex(bg) < relLumFromHex(fg);
-    var wantDark = wantTheme === 'dark';
-    if (wantDark !== isDarkPolar) {
-      var t = bg;
-      bg = fg;
-      fg = t;
-    }
-    try {
-      global.localStorage.setItem(OVERRIDE_KEY, JSON.stringify({ bg: bg, fg: fg }));
-    } catch (err) {}
-    applyDerivedTokensFromPair(bg, fg);
+    applyColorTokens(wantTheme);
     applyTheme(wantTheme);
     try {
       document.dispatchEvent(
-        new CustomEvent('uzbank:picker-sync', {
-          bubbles: true,
-          detail: { bg: bg, fg: fg, theme: wantTheme }
-        })
+        new CustomEvent('uzbank:picker-sync', { bubbles: true, detail: { theme: wantTheme } })
       );
     } catch (e2) {}
   }
 
   global.UZBankApplyThemeChoice = UZBankApplyThemeChoice;
 
-  /**
-   * Writes --color-* inline on <html> from a BG/FG hex pair (mirrors boot
-   * script + deriveTokens in contrast-checker.js).
-   */
-  function applyDerivedTokensFromPair(bgHex, fgHex) {
-    function rgb(h) {
-      return {
-        r: parseInt(h.slice(1, 3), 16),
-        g: parseInt(h.slice(3, 5), 16),
-        b: parseInt(h.slice(5, 7), 16)
-      };
-    }
-    function hex(r, g, b) {
-      function p(x) {
-        return Math.round(x)
-          .toString(16)
-          .padStart(2, '0');
-      }
-      return '#' + p(r) + p(g) + p(b);
-    }
-    function lum(c) {
-      function l(x) {
-        x /= 255;
-        return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
-      }
-      return 0.2126 * l(c.r) + 0.7152 * l(c.g) + 0.0722 * l(c.b);
-    }
-    var bg = rgb(bgHex);
-    var fg = rgb(fgHex);
-    var isDark = lum(bg) < lum(fg);
-    function mix(a, b, t) {
-      return hex(a.r + (b.r - a.r) * t, a.g + (b.g - a.g) * t, a.b + (b.b - a.b) * t);
-    }
-    function fa(a) {
-      return 'rgba(' + fg.r + ',' + fg.g + ',' + fg.b + ',' + a + ')';
-    }
-    function sa(c, a) {
-      return 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + a + ')';
-    }
-    function ba(a) {
-      return 'rgba(0,0,0,' + a + ')';
-    }
-    var bgE = isDark ? 0.22 : 0.07;
-    var fgE = isDark ? 0.06 : 0.22;
-    var brandPrimaryHex = isDark ? bgHex : fgHex;
-    var brandPrimaryRgb = isDark ? bg : fg;
-    var white = { r: 255, g: 255, b: 255 };
-    var tokens = {
-      'color-bg': bgHex,
-      'color-bg-secondary': mix(bg, fg, bgE),
-      'color-bg-sidebar': bgHex,
-      'color-fg': fgHex,
-      'color-fg-secondary': mix(fg, bg, fgE),
-      'color-fg-label': fa(0.7),
-      'color-fg-disabled': fa(0.4),
-      'color-separator': fa(0.1),
-      'color-show-all-bg': fa(0.1),
-      'color-nav-item-active-bg': fa(0.1),
-      'color-segmented-track-bg': fa(0.05),
-      'color-input-stroke': fa(0.7),
-      'color-input-stroke-focus': fgHex,
-      'color-icon-circle-fill': fgHex,
-      'color-btn-primary-bg': fgHex,
-      'color-btn-primary-fg': bgHex,
-      'color-btn-primary-hover': mix(fg, bg, fgE),
-      'color-btn-primary-pressed': mix(fg, bg, Math.min(0.45, fgE * 1.75)),
-      'color-btn-secondary-bg': isDark ? bgHex : '#ffffff',
-      'color-btn-secondary-border': isDark ? fgHex : brandPrimaryHex,
-      'color-btn-secondary-fg': isDark ? fgHex : brandPrimaryHex,
-      'color-btn-secondary-hover': isDark ? mix(bg, fg, 0.1) : mix(white, brandPrimaryRgb, 0.1),
-      'color-btn-secondary-pressed': isDark ? mix(bg, fg, 0.2) : mix(white, brandPrimaryRgb, 0.2),
-      'color-btn-tonal-bg': mix(bg, fg, isDark ? 0.28 : 0.08),
-      'color-btn-tonal-border': mix(bg, fg, isDark ? 0.28 : 0.08),
-      'color-btn-tonal-fg': fgHex,
-      'color-btn-tonal-hover': mix(bg, fg, isDark ? 0.38 : 0.14),
-      'color-btn-tonal-pressed': mix(bg, fg, isDark ? 0.48 : 0.22),
-      'color-overlay-tint': fgHex,
-      'color-nav-elevated-shadow': ba(isDark ? 0.35 : 0.06),
-      'color-modal-elevated-shadow': ba(isDark ? 0.45 : 0.12),
-      'color-surface-state-hover': fa(0.1),
-      'color-surface-state-pressed': fa(0.2),
-      'color-action-circle-state-hover': isDark
-        ? 'rgba(0, 21, 126, 0.1)'
-        : 'rgba(255, 255, 255, 0.12)',
-      'color-action-circle-state-pressed': isDark
-        ? 'rgba(0, 21, 126, 0.2)'
-        : 'rgba(255, 255, 255, 0.22)'
-    };
-    var s = document.documentElement.style;
-    for (var k in tokens) s.setProperty('--' + k, tokens[k]);
-  }
-
-  /**
-   * Persist canonical { bg, fg } and apply derived tokens (e.g. reset flows).
-   * Sidebar Light/Dark uses UZBankApplyThemeChoice so custom colours stay
-   * aligned with Reverse colours behaviour.
-   */
+  /** Back to the UZ Bank look (tokens.css): drop the custom theme. */
   function applyCanonicalColors(theme) {
     if (theme !== 'light' && theme !== 'dark') return;
-    var pair = CANONICAL_PAIR[theme];
     try {
-      global.localStorage.setItem(OVERRIDE_KEY, JSON.stringify({ bg: pair.bg, fg: pair.fg }));
+      global.localStorage.removeItem(THEME_OVERRIDE_KEY);
+      global.localStorage.removeItem(TOKEN_CACHE_KEY);
     } catch (err) {}
-    applyDerivedTokensFromPair(pair.bg, pair.fg);
+    applyColorTokens(theme);
   }
-
   global.UZBankApplyCanonicalColors = applyCanonicalColors;
 
   /* ── App-wide appearance scale (Profile > Legibility / Persona) ─── */
@@ -369,8 +225,7 @@
       return t === 'light' || t === 'dark' ? t : 'dark';
     }
 
-    var savedPair = readOverridePair();
-    if (savedPair) applyDerivedTokensFromPair(savedPair.bg, savedPair.fg);
+    applyColorTokens(getTheme());
 
     applyTheme(getTheme());
 

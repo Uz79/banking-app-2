@@ -50,11 +50,13 @@ Persisted in `localStorage` (see `js/storage-migrate.js` for legacy key migratio
 | Key | Purpose |
 |-----|---------|
 | `uzBankWebTheme` | `light` / `dark` |
-| `uzBankWebColorOverride` | Custom `{ bg, fg }` palette |
+| `uzBankWebColorOverride_v2` | Profile > Theme: committed colour theme (see `scripts/theme-engine/`) |
+| `uzBankWebColorTokens` | Finished `--color-*` tokens for Light and Dark, applied by the boot script on every page |
 | `uzBankWebAppearance` | Profile legibility / persona scale |
 | `uzBankWebPersonaProfile` | Profile > User Type slider values (financial knowledge, banking products, digital affinity) |
 | `uzBankWebPaymentState` | Demo payment balances and bookings |
-| `uzBankWebSavedColorThemes` | Profile saved colour themes |
+| `uzBankWebSavedColorThemes_v2` | Profile > Theme saved theme cards |
+| `uzBankWebBuiltinThemesSeeded_v1` | Built-in theme cards seeded once |
 
 ## Source layout
 
