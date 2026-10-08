@@ -1,0 +1,158 @@
+[
+  {
+    "id": "uzbank-default",
+    "name": "UZ Bank",
+    "bg": "#ffffff",
+    "fg": "#00157e",
+    "neutral": "#00157e",
+    "kind": "monochrome",
+    "neutralSeed": "#00157e",
+    "primarySeed": "#00157e",
+    "createdAt": 0
+  },
+  {
+    "id": "t_60e4b9e0a998e_1a0afd66790",
+    "name": "Custom 01",
+    "bg": "#ffffff",
+    "fg": "#7f9376",
+    "neutral": "#546463",
+    "kind": "multicolor",
+    "neutralSeed": "#465453",
+    "primarySeed": "#a5b39f",
+    "bgIndex": 0,
+    "fgIndex": 8,
+    "primaryIndex": 6,
+    "contrastByShell": {
+      "light": {
+        "bgIndex": 0,
+        "fgIndex": 8
+      },
+      "dark": {
+        "bgIndex": 3,
+        "fgIndex": 4
+      }
+    },
+    "primaryByShell": {
+      "light": 6,
+      "dark": 6
+    },
+    "createdAt": 1789656459152
+  },
+  {
+    "id": "t_c4de60932fc248_1a0afd844bf",
+    "name": "Custom 11",
+    "bg": "#232e31",
+    "fg": "#0022b8",
+    "neutral": "#cbd7d7",
+    "kind": "multicolor",
+    "neutralSeed": "#3f5252",
+    "primarySeed": "#0022b8",
+    "bgIndex": 3,
+    "fgIndex": 12,
+    "createdAt": 1789656581311
+  },
+  {
+    "id": "t_6b38e5511977c8_1a0afb48600",
+    "name": "Custom 09",
+    "bg": "#ffffff",
+    "fg": "#0022b8",
+    "neutral": "#506868",
+    "kind": "multicolor",
+    "neutralSeed": "#374747",
+    "primarySeed": "#0022b8",
+    "bgIndex": 0,
+    "fgIndex": 8,
+    "createdAt": 1789654238720
+  },
+  {
+    "id": "t_fbe12a96cd592_1a05dd32d06",
+    "name": "Custom 06",
+    "bg": "#ffffff",
+    "fg": "#e06900",
+    "neutral": "#373781",
+    "kind": "multicolor",
+    "neutralSeed": "#2b2b64",
+    "primarySeed": "#f07000",
+    "bgIndex": 0,
+    "fgIndex": 8,
+    "createdAt": 1788280515846
+  },
+  {
+    "id": "t_632e3a6d427ac_1a05cb1a65d",
+    "name": "Custom 05",
+    "bg": "#ffffff",
+    "fg": "#51907f",
+    "neutral": "#36363a",
+    "kind": "multicolor",
+    "neutralSeed": "#f2f2f3",
+    "primarySeed": "#4c8777",
+    "bgIndex": 0,
+    "fgIndex": 10,
+    "createdAt": 1788261541469
+  },
+  {
+    "id": "t_bbfd6914cceb98_1a05cb16eab",
+    "name": "Custom 04",
+    "bg": "#ffffff",
+    "fg": "#51907f",
+    "neutral": "#58585f",
+    "kind": "multicolor",
+    "neutralSeed": "#f2f2f3",
+    "primarySeed": "#4c8777",
+    "bgIndex": 0,
+    "fgIndex": 8,
+    "createdAt": 1788261527211
+  },
+  {
+    "id": "t_01cdd482bbb028_1a059cef0d1",
+    "name": "Custom 08",
+    "bg": "#ffffff",
+    "fg": "#97208e",
+    "neutral": "#58585f",
+    "kind": "multicolor",
+    "neutralSeed": "#f2f2f3",
+    "primarySeed": "#8f1e85",
+    "bgIndex": 0,
+    "fgIndex": 8,
+    "createdAt": 1788213129425
+  },
+  {
+    "id": "t_68eb2a09662aa_1a059c18735",
+    "name": "Custom 07",
+    "bg": "#ffffff",
+    "fg": "#368136",
+    "neutral": "#45454a",
+    "kind": "multicolor",
+    "neutralSeed": "#f2f2f3",
+    "primarySeed": "#7dc97d",
+    "bgIndex": 0,
+    "fgIndex": 9,
+    "createdAt": 1788212250421
+  },
+  {
+    "id": "t_349fe12e9da8e_1a059830ec6",
+    "name": "Custom 03",
+    "bg": "#1c1e23",
+    "fg": "#f9f643",
+    "neutral": "#ececed",
+    "kind": "multicolor",
+    "neutralSeed": "#f2f2f3",
+    "primarySeed": "#fcfb9a",
+    "bgIndex": 4,
+    "fgIndex": 4,
+    "createdAt": 1788208156359
+  },
+  {
+    "id": "t_22474473b39ce8_1a04a777154",
+    "name": "Custom 02",
+    "bg": "#f2f5f5",
+    "fg": "#e05e00",
+    "neutral": "#647d7a",
+    "kind": "multicolor",
+    "neutralSeed": "#344140",
+    "primarySeed": "#eb6200",
+    "bgIndex": 3,
+    "fgIndex": 7,
+    "createdAt": 1787955736916
+  }
+]
