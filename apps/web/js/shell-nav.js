@@ -1,13 +1,22 @@
 /**
- * Multi-page shell — root tab highlighting + hierarchical page transitions.
+ * Multi-page shell — root tab highlighting + tectonic page transitions.
+ *
+ * Page transitions are a carousel (Tectonics, Figma 347:8976): dashboards on the left, every
+ * deeper level further right.
+ *   deeper  → this page's sections leave into a stack off the LEFT edge while the next page's
+ *             sections come out of a stack off the RIGHT edge (overlapping)
+ *   back    → the mirror
+ *   between dashboards → quick fade out, the next page's sections come in from the left
+ * The motion itself lives in js/section-build-motion.js (+ js/section-build-boot.js).
+ * Flow transitions (sheets, steps) are a separate topic.
  */
 (function (global) {
   'use strict';
 
   var PREV_PATH_KEY = 'uzShellNavPrevPath';
   var ENTER_DIR_KEY = 'uzShellNavEnterDir';
-  var EXIT_MS = 380;
-  var REVEAL_MS = 320;
+  var EXIT_FADE_MS = 160;   /* = --tectonic-exit-duration */
+  var EXIT_MAX_MS = 900;    /* fail-safe: navigate even if an animation never ends */
 
   /** Root tab screens only; child/detail screens leave all tabs inactive. */
   var ROOT_TAB_BY_SCREEN = {
@@ -18,7 +27,9 @@
     'investment-product-details': null,
     'details-of-position': null,
     'all-bookings': null,
-    components: null
+    components: 'design',            /* design system subpages keep "Design system" selected */
+    'motion-specimens': 'design',
+    'design-system': 'design'
   };
 
   var NAV_DEPTH = {
@@ -28,19 +39,11 @@
     'account-details.html': 1,
     'investment-product-details.html': 1,
     'all-bookings-and-payments.html': 2,
-    'details-of-position.html': 2
+    'details-of-position.html': 2,
+    'design-system.html': 0,      /* admin: a dashboard of its own (4th tab) */
+    'motion-specimens.html': 1,
+    'components.html': 1
   };
-
-  (function markPendingEnter() {
-    try {
-      var dir = sessionStorage.getItem(ENTER_DIR_KEY);
-      if (dir === 'forward' || dir === 'back') {
-        document.documentElement.classList.add('shell-nav-pending', 'shell-nav-pending--' + dir);
-      }
-    } catch (err) {
-      /* ignore */
-    }
-  })();
 
   function prefersReducedMotion() {
     return global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -55,9 +58,10 @@
     } catch (err) {
       /* keep raw path */
     }
-    var name = path.split('/').pop() || 'overview.html';
-    if (!/\.html$/i.test(name)) name = 'overview.html';
-    return name.split('?')[0].split('#')[0].toLowerCase();
+    /* Strip query and hash first: "all-bookings-and-payments.html?account=x" is still that page */
+    var name = (path.split('?')[0].split('#')[0].split('/').pop() || 'overview.html').toLowerCase();
+    if (!/\.html$/.test(name)) name = 'overview.html';
+    return name;
   }
 
   function currentPath() {
@@ -74,6 +78,7 @@
     if (path === 'overview.html') return 'overview';
     if (path === 'payments.html') return 'payments';
     if (path === 'profile.html') return 'profile';
+    if (path === 'design-system.html') return 'design';
     return null;
   }
 
@@ -86,34 +91,12 @@
     if (path === 'overview.html') return 'overview';
     if (path === 'payments.html') return 'payments';
     if (path === 'profile.html') return 'profile';
+    if (path === 'design-system.html') return 'design';
     return null;
   }
 
   function getTransitionSurface() {
     return document.querySelector('.view.view--active') || document.querySelector('.main-content__inner');
-  }
-
-  function clearPendingEnterClasses() {
-    document.documentElement.classList.remove(
-      'shell-nav-pending',
-      'shell-nav-pending--forward',
-      'shell-nav-pending--back'
-    );
-  }
-
-  function clearTransitionClasses(surface) {
-    if (!surface) return;
-    surface.classList.remove(
-      'shell-view--enter-forward',
-      'shell-view--enter-back',
-      'shell-view--exit-forward',
-      'shell-view--exit-back'
-    );
-  }
-
-  function isShellAnimation(event, surface) {
-    if (!surface || event.target !== surface) return false;
-    return typeof event.animationName === 'string' && event.animationName.indexOf('shell-view-') === 0;
   }
 
   function syncShellNav() {
@@ -138,79 +121,6 @@
     });
   }
 
-  function inferEnterDirection() {
-    var stored = sessionStorage.getItem(ENTER_DIR_KEY);
-    if (stored === 'forward' || stored === 'back') {
-      sessionStorage.removeItem(ENTER_DIR_KEY);
-      return stored;
-    }
-
-    var prev = sessionStorage.getItem(PREV_PATH_KEY);
-    var cur = currentPath();
-    if (!prev || prev === cur) return null;
-
-    var prevDepth = getDepth(prev);
-    var curDepth = getDepth(cur);
-    if (curDepth > prevDepth) return 'forward';
-    if (curDepth < prevDepth) return 'back';
-    return null;
-  }
-
-  function markViewEntered(surface) {
-    if (surface) surface.classList.add('shell-view--entered');
-    try {
-      global.dispatchEvent(new CustomEvent('uz:shell-view-entered'));
-    } catch (err) {
-      /* ignore */
-    }
-  }
-
-  function playEnterTransition() {
-    var surface = getTransitionSurface();
-
-    if (prefersReducedMotion()) {
-      clearPendingEnterClasses();
-      markViewEntered(surface);
-      return;
-    }
-
-    var direction = inferEnterDirection();
-    if (!direction) {
-      clearPendingEnterClasses();
-      markViewEntered(surface);
-      return;
-    }
-
-    var main = document.querySelector('.main-content');
-    if (!surface) {
-      clearPendingEnterClasses();
-      markViewEntered(surface);
-      return;
-    }
-
-    if (main) main.classList.add('main-content--page-transition');
-    clearTransitionClasses(surface);
-
-    global.requestAnimationFrame(function () {
-      surface.classList.add('shell-view--enter-' + direction);
-      clearPendingEnterClasses();
-    });
-
-    function cleanup() {
-      clearTransitionClasses(surface);
-      if (main) main.classList.remove('main-content--page-transition');
-      markViewEntered(surface);
-    }
-
-    surface.addEventListener('animationend', function onEnd(event) {
-      if (!isShellAnimation(event, surface)) return;
-      surface.removeEventListener('animationend', onEnd);
-      cleanup();
-    });
-
-    global.setTimeout(cleanup, EXIT_MS + 80);
-  }
-
   function isShellPageLink(anchor) {
     if (!anchor || anchor.tagName !== 'A') return false;
     if (anchor.hasAttribute('download')) return false;
@@ -230,52 +140,104 @@
     }
   }
 
-  function navigateWithTransition(url) {
+  function directionTo(targetPath) {
+    var from = getDepth(currentPath());
+    var to = getDepth(targetPath);
+    return to > from ? 'forward' : to < from ? 'back' : 'lateral';
+  }
+
+  function markViewEntered() {
+    var surface = getTransitionSurface();
+    if (surface) surface.classList.add('shell-view--entered');
+    try {
+      global.dispatchEvent(new CustomEvent('uz:shell-view-entered'));
+    } catch (err) {
+      /* ignore */
+    }
+  }
+
+  /* The view counts as "entered" once its sections have built up (or straight away). */
+  function settleEntry() {
+    var root = document.documentElement;
+    var building = root.classList.contains('section-build-pending') ||
+                   root.classList.contains('section-build-running');
+    if (!building) {
+      markViewEntered();
+      return;
+    }
+    var done = false;
+    function finish() {
+      if (done) return;
+      done = true;
+      markViewEntered();
+    }
+    global.addEventListener('uz:sections-built', finish, { once: true });
+    global.setTimeout(finish, 2500);
+  }
+
+  function fadeOut(surface) {
+    return new Promise(function (resolve) {
+      if (!surface) return resolve();
+      surface.classList.add('shell-view--exit-fade');
+      surface.addEventListener('animationend', function onEnd(event) {
+        if (event.target !== surface) return;
+        surface.removeEventListener('animationend', onEnd);
+        resolve();
+      });
+      global.setTimeout(resolve, EXIT_FADE_MS + 80);
+    });
+  }
+
+  var leaving = false;
+
+  function go(url) {
     var targetPath = normalizePath(url);
     var fromPath = currentPath();
-    var targetDepth = getDepth(targetPath);
-    var fromDepth = getDepth(fromPath);
-    var direction = null;
+    if (leaving) return;
 
-    if (targetPath !== fromPath) {
-      if (targetDepth > fromDepth) direction = 'forward';
-      else if (targetDepth < fromDepth) direction = 'back';
+    var direction = targetPath === fromPath ? null : directionTo(targetPath);
+    try {
+      sessionStorage.setItem(PREV_PATH_KEY, fromPath);
+      if (direction) sessionStorage.setItem(ENTER_DIR_KEY, direction);
+      else sessionStorage.removeItem(ENTER_DIR_KEY);
+    } catch (err) {
+      /* ignore */
     }
-
-    sessionStorage.setItem(PREV_PATH_KEY, fromPath);
-    if (direction) sessionStorage.setItem(ENTER_DIR_KEY, direction);
 
     if (!direction || prefersReducedMotion()) {
       global.location.href = url;
       return;
     }
 
-    var surface = getTransitionSurface();
-    var main = document.querySelector('.main-content');
-    if (!surface) {
-      global.location.href = url;
-      return;
-    }
-
+    leaving = true;
     document.body.classList.add('shell-nav-transitioning');
-    if (main) main.classList.add('main-content--page-transition');
-    clearTransitionClasses(surface);
-    surface.classList.add('shell-view--exit-' + direction);
 
-    var done = false;
-    function finish() {
-      if (done) return;
-      done = true;
-      global.location.href = url;
+    var exitDone;
+    if (direction === 'lateral' || !global.UZSectionBuild) {
+      exitDone = fadeOut(getTransitionSurface());
+    } else {
+      exitDone = global.UZSectionBuild.leave(direction, targetPath);
     }
 
-    surface.addEventListener('animationend', function onEnd(event) {
-      if (!isShellAnimation(event, surface)) return;
-      surface.removeEventListener('animationend', onEnd);
-      finish();
-    });
+    var navigated = false;
+    function navigate() {
+      if (navigated) return;
+      navigated = true;
+      global.location.href = url;
+    }
+    exitDone.then(navigate);
+    global.setTimeout(navigate, EXIT_MAX_MS);
+  }
 
-    global.setTimeout(finish, EXIT_MS + 100);
+  /* Coming back via the browser's back/forward cache: the page is still built down — restore it. */
+  function onPageShow(event) {
+    if (!event.persisted) return;
+    leaving = false;
+    document.body.classList.remove('shell-nav-transitioning');
+    var surface = getTransitionSurface();
+    if (surface) surface.classList.remove('shell-view--exit-fade');
+    if (global.UZSectionBuild) global.UZSectionBuild.reset();
+    try { sessionStorage.setItem(PREV_PATH_KEY, currentPath()); } catch (err) { /* ignore */ }
   }
 
   function bindShellNavLinks() {
@@ -287,24 +249,22 @@
       var anchor = event.target.closest('a[href]');
       if (!isShellPageLink(anchor)) return;
 
-      var href = anchor.href;
-      var targetPath = normalizePath(href);
-      if (targetPath === currentPath()) {
-        event.preventDefault();
-        return;
-      }
-
       event.preventDefault();
-      navigateWithTransition(href);
+      if (normalizePath(anchor.href) === currentPath()) return;
+      go(anchor.href);
     });
   }
 
   function init() {
     syncShellNav();
-    playEnterTransition();
-    sessionStorage.setItem(PREV_PATH_KEY, currentPath());
+    settleEntry();
+    try { sessionStorage.setItem(PREV_PATH_KEY, currentPath()); } catch (err) { /* ignore */ }
     bindShellNavLinks();
+    global.addEventListener('pageshow', onPageShow);
   }
+
+  /* For script-driven navigation (e.g. "Show all bookings"): UZShellNav.go(url) */
+  global.UZShellNav = { go: go };
 
   if (typeof global.onDocumentReady === 'function') {
     global.onDocumentReady(init);

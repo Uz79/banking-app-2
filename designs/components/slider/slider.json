@@ -2,14 +2,25 @@
   "name": "slider",
   "category": "selection-control",
   "description": "Slider input for selecting a numeric value along a range.",
+  "variants": [
+    "regular",
+    "small",
+    "x-small"
+  ],
   "interactionStates": [
     "default"
   ],
   "assets": {
-    "overview": "variants/default/default.svg",
+    "overview": "variants/regular-default/default.svg",
     "variants": {
-      "default": {
-        "default": "variants/default/default.svg"
+      "regular-default": {
+        "default": "variants/regular-default/default.svg"
+      },
+      "small-default": {
+        "default": "variants/small-default/default.svg"
+      },
+      "x-small-default": {
+        "default": "variants/x-small-default/default.svg"
       }
     }
   },
@@ -32,7 +43,9 @@
     "keyboardFocusable": true
   },
   "notes": [
-    "Single default export. Thumb is a pill (rounded rect), not a circle.",
+    "Default-state exports are currently available for regular, small, and x-small sizes.",
+    "Thumb is a pill (rounded rect), not a circle.",
+    "Previous single-variant pill export archived under _archive/2026-08-12/.",
     "Previous circular-thumb export archived under _archive/2026-07-13/."
   ]
 }

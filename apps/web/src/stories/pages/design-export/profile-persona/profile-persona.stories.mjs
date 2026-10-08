@@ -27,12 +27,19 @@ export const DesignExport = {
       .de-img--screen { max-height: 85vh; object-fit: contain; object-position: top center; }
     </style>
     <div class="de-wrap">
-      <p class="de-desc">Profile persona / avatar selection.</p>
-<h4 class="de-variant">default-default</h4>
+      <p class="de-desc">Profile settings tab: User type / persona selection.</p>
+<h4 class="de-variant">desktop-default</h4>
 <div class="de-grid de-grid--screen">
 <figure class="de-item">
-  <img class="de-img de-img--screen" src="/designs/screens/profile-persona/variants/default-default/default.svg" alt="default-default / default" loading="lazy" />
-  <figcaption class="de-cap">default-default / default</figcaption>
+  <img class="de-img de-img--screen" src="/designs/screens/profile-persona/variants/desktop-default/default.svg" alt="desktop-default / default" loading="lazy" />
+  <figcaption class="de-cap">desktop-default / default</figcaption>
+</figure>
+</div>
+<h4 class="de-variant">mobile-default</h4>
+<div class="de-grid de-grid--screen">
+<figure class="de-item">
+  <img class="de-img de-img--screen" src="/designs/screens/profile-persona/variants/mobile-default/default.svg" alt="mobile-default / default" loading="lazy" />
+  <figcaption class="de-cap">mobile-default / default</figcaption>
 </figure>
 </div>
     </div>

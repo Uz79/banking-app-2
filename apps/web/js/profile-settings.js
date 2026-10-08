@@ -61,11 +61,6 @@
     root.querySelectorAll('[data-legibility-preset]').forEach(function (btn) {
       btn.classList.toggle('profile-scale-card--active', btn.getAttribute('data-legibility-preset') === settings.size);
     });
-    root.querySelectorAll('[data-persona]').forEach(function (btn) {
-      var active = btn.getAttribute('data-persona') === settings.persona;
-      btn.classList.toggle('profile-persona-card--active', active);
-      btn.setAttribute('aria-checked', active ? 'true' : 'false');
-    });
   }
 
   tabs.forEach(function (tab) {
@@ -84,15 +79,7 @@
     });
   });
 
-  root.querySelectorAll('[data-persona]').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      if (!window.UZBankAppearance) return;
-      var persona = btn.getAttribute('data-persona');
-      var size = persona === 'beatrice' ? 'large' : 'small';
-      var settings = window.UZBankAppearance.applyPreset(size, persona);
-      syncControls(settings);
-    });
-  });
+  /* User Type sliders live in js/profile-persona.js. */
 
   [fontRange, spaceRange].forEach(function (input) {
     if (!input) return;

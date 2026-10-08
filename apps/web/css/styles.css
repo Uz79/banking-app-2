@@ -321,9 +321,9 @@ html:has(body.body--iat-open) {
   box-sizing: border-box;
 }
 
-/* Dashboard main (Overview / Payments): fluid up to 1440px content cap */
-.body[data-screen="overview"] .main-content__inner,
-.body[data-screen="payments"] .main-content__inner {
+/* Dashboard main (Overview): fluid up to 1440px content cap */
+.body[data-screen="motion-specimens"] .main-content__inner,
+.body[data-screen="overview"] .main-content__inner {
   width: 100%;
   max-width: min(1440px, 100%);
   min-width: min(60rem, 100%);
@@ -336,7 +336,11 @@ html:has(body.body--iat-open) {
   margin-inline: auto;
 }
 
-/* Investment product details: 960dp (60rem) content column. */
+/* Investment product details: 960dp (60rem) content column.
+   Payments uses the same main box (two columns inside 960dp, like Custody account). */
+.body[data-screen="payments"] .main-content__inner,
+.body[data-screen="design-system"] .main-content__inner,
+.body[data-screen="components"] .main-content__inner,
 .body[data-screen="investment-product-details"] .main-content__inner,
 .body[data-screen="details-of-position"] .main-content__inner {
   max-width: 60rem;
@@ -431,10 +435,18 @@ html:has(body.body--iat-open) {
 
 /* Main scroll views: sticky page title; flush horizontal edges when pinned to scroll top */
 .body[data-screen="overview"] .view__nav[data-scroll-edge-nav],
+.body[data-screen="motion-specimens"] .view__sticky-header[data-scroll-edge-nav],
+.body[data-screen="overview"] .view__sticky-header[data-scroll-edge-nav],
 .body[data-screen="payments"] .view__nav[data-scroll-edge-nav],
+.body[data-screen="payments"] .view__sticky-header[data-scroll-edge-nav],
 .body[data-screen="account-details"] .view__nav[data-scroll-edge-nav],
+.body[data-screen="account-details"] .view__sticky-header[data-scroll-edge-nav],
 .body[data-screen="investment-product-details"] .view__nav[data-scroll-edge-nav],
-.body[data-screen="details-of-position"] .view__nav[data-scroll-edge-nav] {
+.body[data-screen="design-system"] .view__sticky-header[data-scroll-edge-nav],
+.body[data-screen="components"] .view__sticky-header[data-scroll-edge-nav],
+.body[data-screen="investment-product-details"] .view__sticky-header[data-scroll-edge-nav],
+.body[data-screen="details-of-position"] .view__nav[data-scroll-edge-nav],
+.body[data-screen="details-of-position"] .view__sticky-header[data-scroll-edge-nav] {
   position: sticky;
   top: 0;
   z-index: 10;
@@ -838,6 +850,8 @@ html:has(body.body--iat-open) {
  * sticky chrome and cards share the same width (account-details / all-bookings 45rem). */
 @media (min-width: 1024px) {
   .body[data-screen="account-details"] .main-content__inner,
+  .body[data-screen="design-system"] .main-content__inner,
+  .body[data-screen="components"] .main-content__inner,
   .body[data-screen="investment-product-details"] .main-content__inner,
   .body[data-screen="details-of-position"] .main-content__inner,
   .body[data-screen="profile"] .main-content__inner,
@@ -847,8 +861,14 @@ html:has(body.body--iat-open) {
   }
 
   .body[data-screen="account-details"] .view__nav[data-scroll-edge-nav],
+
+  .body[data-screen="account-details"] .view__sticky-header[data-scroll-edge-nav],
   .body[data-screen="investment-product-details"] .view__nav[data-scroll-edge-nav],
-  .body[data-screen="details-of-position"] .view__nav[data-scroll-edge-nav] {
+  .body[data-screen="design-system"] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen="components"] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen="investment-product-details"] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen="details-of-position"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="details-of-position"] .view__sticky-header[data-scroll-edge-nav] {
     margin-inline: 0;
     padding-inline: var(--space-3);
     box-sizing: border-box;
@@ -872,17 +892,29 @@ html:has(body.body--iat-open) {
   }
 
   .body[data-screen="overview"] .view__nav[data-scroll-edge-nav],
-  .body[data-screen="payments"] .view__nav[data-scroll-edge-nav] {
+
+  .body[data-screen="motion-specimens"] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen="overview"] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen="payments"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="payments"] .view__sticky-header[data-scroll-edge-nav] {
     margin-inline: 0;
     box-sizing: border-box;
   }
 
   /* Elevated (shadow): grow 16dp per side; at rest margin stays 0 on nav rules above. */
   .body[data-screen="overview"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
+  .body[data-screen="motion-specimens"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
+  .body[data-screen="overview"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="payments"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
+  .body[data-screen="payments"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="account-details"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
+  .body[data-screen="account-details"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="investment-product-details"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
+  .body[data-screen="design-system"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
+  .body[data-screen="components"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
+  .body[data-screen="investment-product-details"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="details-of-position"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
+  .body[data-screen="details-of-position"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="all-bookings"] .all-bookings__sticky-header.is-scroll-edge--after,
   .body[data-screen="profile"] .profile__sticky-header.is-scroll-edge--after,
   .body[data-screen="profile"].profile--tabs-merged .profile__sticky-header {
@@ -905,8 +937,14 @@ html:has(body.body--iat-open) {
   }
 
   .body[data-screen="account-details"] .view__nav[data-scroll-edge-nav],
+
+  .body[data-screen="account-details"] .view__sticky-header[data-scroll-edge-nav],
   .body[data-screen="investment-product-details"] .view__nav[data-scroll-edge-nav],
-  .body[data-screen="details-of-position"] .view__nav[data-scroll-edge-nav] {
+  .body[data-screen="design-system"] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen="components"] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen="investment-product-details"] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen="details-of-position"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="details-of-position"] .view__sticky-header[data-scroll-edge-nav] {
     margin-inline: calc(-1 * var(--space-3));
     padding-inline: var(--space-3);
   }
@@ -931,7 +969,9 @@ html:has(body.body--iat-open) {
     z-index: 30;
   }
 
-  .view__nav[data-scroll-edge-nav] {
+  .view__nav[data-scroll-edge-nav],
+
+  .view__sticky-header[data-scroll-edge-nav] {
     padding-top: max(env(safe-area-inset-top, 0px), var(--space-2));
     padding-bottom: var(--space-2);
     top: 0;
@@ -940,7 +980,10 @@ html:has(body.body--iat-open) {
 
   /* Full-bleed sticky bar (match account-details). */
   .body[data-screen="overview"] .view__nav[data-scroll-edge-nav],
-  .body[data-screen="payments"] .view__nav[data-scroll-edge-nav] {
+  .body[data-screen="motion-specimens"] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen="overview"] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen="payments"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="payments"] .view__sticky-header[data-scroll-edge-nav] {
     margin-inline: calc(-1 * var(--space-3));
     padding-inline: var(--space-3);
   }
@@ -996,7 +1039,9 @@ html:has(body.body--iat-open) {
   .body[data-screen='payments'] .view--active.view--payments .action-buttons,
   .body[data-screen='payments'] .view--active.view--payments .section-card,
   .body[data-screen='overview'] .view__nav[data-scroll-edge-nav],
-  .body[data-screen='payments'] .view__nav[data-scroll-edge-nav] {
+  .body[data-screen='overview'] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen='payments'] .view__nav[data-scroll-edge-nav],
+  .body[data-screen='payments'] .view__sticky-header[data-scroll-edge-nav] {
     margin-bottom: 0;
   }
 
@@ -1030,13 +1075,16 @@ html:has(body.body--iat-open) {
   }
 }
 
-/* Account details / overview: 24dp gap between circular action buttons (Figma space/4). */
+/* Overview / Payments / Account details: 24dp gap between circular action buttons
+   (Figma Button Stack `space/5` → 24px = --space-4). Keep screens in sync. */
 .body[data-screen="account-details"] .action-buttons,
-.body[data-screen="overview"] .action-buttons {
+.body[data-screen="overview"] .action-buttons,
+.body[data-screen="payments"] .action-buttons {
   gap: var(--space-4);
 }
 
-.body[data-screen="overview"] .action-buttons {
+.body[data-screen="overview"] .action-buttons,
+.body[data-screen="payments"] .action-buttons {
   justify-content: center;
   width: 100%;
   max-width: 100%;
@@ -4282,6 +4330,7 @@ button.debit-account:focus-visible {
 /* ── Tablet-wide dashboard: 1024–1279px ─────────────────
    Tab bar for app nav; 2-column content grid (designs/screens/payments desktop-default). */
 @media (min-width: 1024px) and (max-width: 1279px) {
+  .body[data-screen="motion-specimens"] .main-content__inner,
   .body[data-screen="overview"] .main-content__inner,
   .body[data-screen="payments"] .main-content__inner {
     width: 100%;
@@ -4290,7 +4339,9 @@ button.debit-account:focus-visible {
     margin-inline: auto;
   }
 
-  .view__nav[data-scroll-edge-nav] {
+  .view__nav[data-scroll-edge-nav],
+
+  .view__sticky-header[data-scroll-edge-nav] {
     top: 0;
     z-index: 20;
   }
@@ -4306,7 +4357,10 @@ button.debit-account:focus-visible {
   .view--active.view--overview .view__nav,
   .view--active.view--payments .view__nav,
   .body[data-screen="overview"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="motion-specimens"] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen="overview"] .view__sticky-header[data-scroll-edge-nav],
   .body[data-screen="payments"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="payments"] .view__sticky-header[data-scroll-edge-nav],
   .view--active.view--payments .action-buttons,
   .view--active.view--overview .section-card,
   .view--active.view--payments .section-card {
@@ -4396,8 +4450,8 @@ button.debit-account:focus-visible {
 
   /* Dashboard inner: border box may exceed 1440px by horizontal padding so the
      grid/content area can use a full 1440px between gutters. */
-  .body[data-screen="overview"] .main-content__inner,
-  .body[data-screen="payments"] .main-content__inner {
+  .body[data-screen="motion-specimens"] .main-content__inner,
+  .body[data-screen="overview"] .main-content__inner {
     max-width: min(calc(1440px + 2 * var(--space-5)), 100%);
     width: 100%;
     margin-inline: auto;
@@ -4422,15 +4476,24 @@ button.debit-account:focus-visible {
 
   /* Desktop sticky nav — card chrome only while content scrolls below. */
   .body[data-screen="overview"] .view__nav[data-scroll-edge-nav],
-  .body[data-screen="payments"] .view__nav[data-scroll-edge-nav] {
+  .body[data-screen="motion-specimens"] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen="overview"] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen="payments"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="payments"] .view__sticky-header[data-scroll-edge-nav] {
     border: 0.0625rem solid transparent;
     border-radius: var(--radius-regular);
     box-sizing: border-box;
   }
 
   .body[data-screen="account-details"] .view__nav[data-scroll-edge-nav],
+
+  .body[data-screen="account-details"] .view__sticky-header[data-scroll-edge-nav],
   .body[data-screen="investment-product-details"] .view__nav[data-scroll-edge-nav],
-  .body[data-screen="details-of-position"] .view__nav[data-scroll-edge-nav] {
+  .body[data-screen="design-system"] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen="components"] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen="investment-product-details"] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen="details-of-position"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="details-of-position"] .view__sticky-header[data-scroll-edge-nav] {
     top: 0;
     border: 0.0625rem solid transparent;
     border-radius: var(--radius-regular);
@@ -4445,7 +4508,11 @@ button.debit-account:focus-visible {
   }
 
   .body[data-screen="overview"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
-  .body[data-screen="payments"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after {
+
+  .body[data-screen="motion-specimens"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
+  .body[data-screen="overview"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
+  .body[data-screen="payments"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
+  .body[data-screen="payments"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after {
     top: var(--view-nav-sticky-top);
     background-color: var(--color-bg-secondary);
     border-color: var(--color-separator);
@@ -4454,8 +4521,14 @@ button.debit-account:focus-visible {
   }
 
   .body[data-screen="account-details"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
+
+  .body[data-screen="account-details"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="investment-product-details"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
+  .body[data-screen="design-system"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
+  .body[data-screen="components"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
+  .body[data-screen="investment-product-details"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="details-of-position"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
+  .body[data-screen="details-of-position"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="profile"]:not(.profile--tabs-merged) .profile__sticky-header.is-scroll-edge--after {
     top: var(--view-nav-sticky-top);
     background-color: var(--color-bg-secondary);
@@ -4492,7 +4565,10 @@ button.debit-account:focus-visible {
   .body[data-screen="overview"] .view--active.view--overview .view__nav,
   .body[data-screen="payments"] .view--active.view--payments .view__nav,
   .body[data-screen="overview"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="motion-specimens"] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen="overview"] .view__sticky-header[data-scroll-edge-nav],
   .body[data-screen="payments"] .view__nav[data-scroll-edge-nav],
+  .body[data-screen="payments"] .view__sticky-header[data-scroll-edge-nav],
   .body[data-screen="overview"] .view--active.view--overview .section-card,
   .body[data-screen="payments"] .view--active.view--payments .section-card {
     margin-bottom: 0;
@@ -4929,10 +5005,6 @@ a.btn-primary {
   flex: 1 1 0;
 }
 
-.profile-persona__header {
-  gap: var(--space-2);
-}
-
 @media (max-width: 62rem) {
   /* Keep Quick preset tiles in one horizontal row (Figma mobile). */
   .profile-scale-presets {
@@ -4972,189 +5044,296 @@ a.btn-primary {
   border: 0;
 }
 
-.profile-persona__question {
-  margin: var(--space-3) 0 0;
-  font-size: var(--fs-text-lg);
-  line-height: var(--lh-text);
-  font-weight: var(--fw-bold);
-  color: var(--color-fg);
-}
+/* ============================================================================
+ * Profile > User Type — persona sliders + 3D character
+ * Figma: banking-app_main-view-profile_setting-persona (1258:83318),
+ * previews from banking-app_main-view-profile_setting-persona_ui-previews (1259:86708).
+ * Character: js/profile-persona-character.js · logic: js/profile-persona.js
+ * ========================================================================== */
 
-.profile-persona-grid {
+.profile-persona__layout {
   display: grid;
-  grid-template-columns: repeat(2, minmax(16rem, 1fr));
-  gap: var(--space-5);
-  align-items: stretch;
+  grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); /* 320px controls column (Figma) */
+  column-gap: var(--space-6); /* 48px */
+  row-gap: var(--space-5);
+  align-items: start;
 }
 
-.profile-persona-card {
-  --persona-card-min-h: 26.25rem; /* 420px — Figma card height */
-  position: relative;
-  display: block;
-  width: 100%;
-  min-height: var(--persona-card-min-h);
-  height: var(--persona-card-min-h);
-  padding: 0;
-  overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--color-fg) 18%, transparent);
-  border-radius: var(--radius-regular);
-  background: var(--color-bg);
+.profile-persona__controls,
+.profile-persona__showcase {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5); /* 32px — Figma space/6 */
+  min-width: 0;
+}
+
+.profile-persona__showcase {
+  gap: var(--space-3); /* 16px — Figma header → preview */
+}
+
+.profile-persona__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.profile-persona__heading {
+  margin: 0;
+  font-size: var(--fs-text-lg);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-caption);
   color: var(--color-fg);
-  text-align: left;
-  font-family: inherit;
-  cursor: pointer;
-  transition: box-shadow 0.15s, transform 0.05s;
 }
 
-.profile-persona-card:active {
-  transform: translateY(1px);
+.profile-persona__hint {
+  margin: 0;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-caption);
+  color: var(--color-fg-label);
 }
 
-.profile-persona-card:focus-visible {
+.profile-persona-sliders {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5); /* 32px */
+}
+
+.profile-persona-slider {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-1) / 2); /* 4px — Figma space/1 */
+}
+
+.profile-persona-slider__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 1.5rem;
+  font-size: var(--fs-text-xs);
+  line-height: var(--lh-caption);
+  color: var(--color-fg-label);
+}
+
+.profile-persona-slider__icon {
+  flex: none;
+  fill: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--color-fg);
+}
+
+.profile-persona-slider__range {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-size: var(--fs-text-xs);
+  line-height: var(--lh-caption);
+  color: var(--color-fg-label);
+}
+
+/* Compact slider (Figma persona slider): 2px track, 20×12 pill thumb.
+   Doubled class: .cc-color-slider is declared later in this file. */
+.cc-color-slider.cc-color-slider--compact {
+  --slider-thumb-w: 1.25rem;
+  --slider-thumb-h: 0.75rem;
+  --slider-track-h: 0.125rem;
+  height: 1rem;
+}
+
+.profile-persona__title {
+  margin: 0;
+  font-size: var(--fs-h6);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-h6);
+  color: var(--color-fg);
+}
+
+.profile-persona__story {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.profile-persona__story-title {
+  margin: 0;
+  font-size: var(--fs-text-sm);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-caption);
+  color: var(--color-fg);
+}
+
+.profile-persona__story-text {
+  margin: 0;
+  font-size: var(--fs-text-xs);
+  line-height: var(--lh-caption);
+  color: var(--color-fg-label);
+}
+
+/* Scene: UI preview (phone at 50 %). On desktop the character leaves the content
+   column and stands fixed in the viewport's lower right corner (64dp margins),
+   1.5× the in-column size; on mobile it stays beside the preview.
+   The character sits *behind* the page content (text, tabs, preview card) but in
+   front of the page background: main-content becomes its own stacking context on
+   this screen, and the stage takes z-index -1 inside it. */
+.body[data-screen="profile"] .main-content,
+.body[data-screen="overview"] .main-content,
+.body[data-screen="payments"] .main-content,
+.body[data-screen="account-details"] .main-content,
+.body[data-screen="investment-product-details"] .main-content {
+  isolation: isolate;
+}
+
+.profile-persona__scene {
+  --persona-preview-w: 11.75rem; /* 188px — 375px screen at 0.5 */
+  position: relative;
+}
+
+.profile-persona-preview {
+  position: relative;
+  width: var(--persona-preview-w);
+  max-height: 32rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  border-radius: var(--radius-regular);
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-content-indication-after);
+}
+
+.profile-persona-preview::-webkit-scrollbar {
+  display: none;
+}
+
+.profile-persona-preview:focus-visible {
   outline: 0.125rem solid var(--color-fg);
   outline-offset: 0.125rem;
 }
 
-/* No hover stroke — keep thin rest vs strong selected contrast (Figma). */
-.profile-persona-card--active,
-.profile-persona-card--active:hover {
-  border: 2px solid var(--color-fg);
+.profile-persona-preview__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.profile-persona-card__label {
-  position: absolute;
-  z-index: 3;
-  top: var(--space-4);
-  left: var(--space-4);
-  right: 3.5rem;
-  margin: 0;
-  font-size: var(--fs-text-sm);
-  line-height: var(--lh-text);
-  font-weight: var(--fw-regular);
-  color: var(--color-fg);
-  pointer-events: none;
-}
-
-.profile-persona-card__radio {
-  position: absolute;
-  z-index: 3;
-  top: var(--space-4);
-  right: var(--space-4);
-  width: 1.5rem;
-  height: 1.5rem;
-  border: 2px solid var(--color-fg);
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  background: transparent;
-  pointer-events: none;
-}
-
-.profile-persona-card__radio-dot {
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: 999px;
-  background: var(--color-fg);
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-
-.profile-persona-card--active .profile-persona-card__radio-dot {
-  opacity: 1;
-}
-
-.profile-persona-card__stage {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  overflow: hidden;
-  background: var(--color-bg);
-}
-
-.profile-persona-card__stage-fallback {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-size: var(--fs-text-sm);
-  color: var(--color-fg-secondary);
-  /* Visible until Spline mounts — otherwise a failed module load leaves a blank stage. */
-  opacity: 0.7;
-  pointer-events: none;
-  transition: opacity 0.2s;
-}
-
-.profile-persona-card__stage--ready .profile-persona-card__stage-fallback {
+.profile-persona-preview__image--entering {
   opacity: 0;
 }
 
-.profile-persona-card__stage--loading .profile-persona-card__stage-fallback {
-  opacity: 0.7;
+/* Outgoing image sits on top of the incoming one and fades with the exit curve. */
+.profile-persona-preview__image--leaving {
+  position: absolute;
+  inset: 0 0 auto 0;
+  opacity: 0;
+  transition: opacity 0.28s cubic-bezier(0.4, 0, 1, 1);
 }
 
-.profile-persona-card__stage--error .profile-persona-card__stage-fallback {
-  opacity: 0.7;
+.profile-persona-stage {
+  /* The canvas runs to the viewport edges so the shadow can fall into the margin;
+     the figure itself is placed 64dp from the right and bottom edges in JS. */
+  --persona-figure-margin: 4; /* rem, 64dp */
+  position: fixed;
+  z-index: -1; /* behind content, above the main-content background */
+  right: 0;
+  bottom: 0;
+  width: 44rem;
+  height: min(52rem, 100vh); /* figure ≈ 1.5 × its in-column size */
+  height: min(52rem, 100dvh);
+  pointer-events: none; /* click-through; the character is hit-tested in JS */
 }
 
-.profile-persona-card__canvas {
+.profile-persona-stage__canvas {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100% !important;
   height: 100% !important;
   pointer-events: none;
-  background: transparent !important;
 }
 
-/* Hide Spline watermark badge inside cards */
-.profile-persona-card__stage a[href*="spline.design"] {
-  display: none !important;
+/* Overview, Payments, account details, custody account: the same figure at 1× (Profile shows it at 1.5×), decoration only. */
+.profile-persona-stage--ambient {
+  width: calc(44rem / 1.5);
+  height: min(calc(52rem / 1.5), 100vh);
+  height: min(calc(52rem / 1.5), 100dvh);
 }
 
-.profile-persona-card__glass {
+.body.persona-character--hover,
+.body.persona-character--hover * {
+  cursor: grab !important;
+}
+
+.body.persona-character--dragging,
+.body.persona-character--dragging * {
+  cursor: grabbing !important;
+  user-select: none;
+}
+
+.profile-persona-stage__fallback {
   position: absolute;
-  z-index: 2;
-  left: var(--space-4);
-  right: var(--space-4);
-  bottom: var(--space-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-4);
-  border-radius: var(--radius-regular);
-  background: color-mix(in srgb, var(--color-fg) 12%, transparent);
-  backdrop-filter: blur(0.5rem);
-  -webkit-backdrop-filter: blur(0.5rem);
-  border: 1px solid color-mix(in srgb, var(--color-fg) 16%, transparent);
-  pointer-events: none;
-}
-
-.profile-persona-card__name {
-  font-size: var(--fs-text-lg);
-  font-weight: var(--fw-bold);
-  line-height: var(--lh-text);
-  color: var(--color-fg);
-}
-
-.profile-persona-card__description {
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
+  inset: 0;
+  display: grid;
+  place-items: center;
   font-size: var(--fs-text-sm);
-  line-height: var(--lh-text);
-  color: var(--color-fg);
+  color: var(--color-fg-label);
 }
 
-.profile-persona-card__description span::before {
-  content: "• ";
+.profile-persona-stage--ready .profile-persona-stage__fallback {
+  display: none;
+}
+
+.profile-persona-stage__name {
+  position: absolute;
+  right: 4rem;
+  bottom: 1rem;
+  font-size: var(--fs-h6);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-h6);
+  color: var(--color-fg-disabled);
 }
 
 @media (max-width: 62rem) {
-  .profile-persona-grid {
-    grid-template-columns: 1fr;
+  .profile-persona__layout {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .profile-persona-card {
-    --persona-card-min-h: 22.5rem;
-    height: var(--persona-card-min-h);
+  .profile-persona__controls {
+    max-width: 30rem;
+  }
+
+  /* No room for a floating figure next to dense content on phones. */
+  .profile-persona-stage--ambient {
+    display: none;
+  }
+
+  /* Mobile: the character stays beside the preview instead of floating. */
+  .profile-persona__scene {
+    display: grid;
+    grid-template-columns: var(--persona-preview-w) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .profile-persona-preview {
+    grid-column: 1;
+    grid-row: 1;
+    max-height: 26rem;
+  }
+
+  .profile-persona-stage__name {
+    right: 0;
+    bottom: 0;
+  }
+
+  .profile-persona-stage {
+    position: relative;
+    z-index: 0;
+    right: auto;
+    bottom: auto;
+    grid-column: 1 / -1;
+    grid-row: 1;
+    width: auto;
+    height: 26rem;
+    margin-left: calc(var(--persona-preview-w) * 0.45);
   }
 }
 
@@ -5213,8 +5392,8 @@ a.btn-primary {
 }
 
 .account-information__share-icon {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.5rem;   /* small button icon = 24 × 24 dp (only small chips use 16) */
+  height: 1.5rem;
   flex-shrink: 0;
 }
 
@@ -5423,8 +5602,8 @@ a.btn-primary {
 }
 
 .share-information__share-icon {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.5rem;   /* small button icon = 24 × 24 dp (only small chips use 16) */
+  height: 1.5rem;
   flex-shrink: 0;
 }
 
@@ -7015,7 +7194,7 @@ dialog.basic-dialog-payment-exit.basic-dialog-payment-exit--closing[open] .basic
   display: inline-flex;
   flex-direction: row;
   align-items: center;
-  gap: var(--space-1);
+  gap: var(--space-2);             /* = .uz-btn */
   height: var(--btn-height-sm);
   padding: var(--btn-pad-y-sm) var(--btn-pad-x-sm);
   border: none;
@@ -7030,8 +7209,8 @@ dialog.basic-dialog-payment-exit.basic-dialog-payment-exit--closing[open] .basic
 .payment-details__fn-btn:active { background-color: var(--color-btn-tonal-pressed); }
 
 .payment-details__fn-icon {
-  width: 1rem;
-  height: 1rem;
+  width: 1.5rem;   /* small button icon = 24 × 24 dp (only small chips use 16) */
+  height: 1.5rem;
   flex-shrink: 0;
 }
 
@@ -8234,3 +8413,883 @@ html.shell-nav-pending [data-shell-reveal="when-ready"],
   position: relative;
 }
 
+
+/* ==========================================================================
+   Close button motion
+   Ref: threejs-journey.com close button (Motion Specimens · No. 003)
+   Targets any button/link whose direct icon is the shared #i-x symbol
+   (.modal__close, .view__nav-btn …). Click behaviour: js/nav-button-motion.js
+   ========================================================================== */
+
+:root {
+  --close-spin-duration: 0.45s;
+  --close-spin-ease: cubic-bezier(0.34, 1.45, 0.64, 1);   /* small overshoot */
+  --close-collapse-duration: 0.28s;                       /* = .modal-shell--closing */
+  --close-collapse-ease: cubic-bezier(0.55, 0, 0.75, 0);  /* accelerate away */
+}
+
+/* 1 · Hover / focus: the × spins a quarter turn and settles */
+:is(button, a):has(> svg > use[href="#i-x"]) > svg {
+  transition: transform var(--close-spin-duration) var(--close-spin-ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :is(button, a):has(> svg > use[href="#i-x"]):hover > svg {
+    transform: rotate(90deg);
+  }
+}
+
+:is(button, a):has(> svg > use[href="#i-x"]):focus-visible > svg {
+  transform: rotate(90deg);
+}
+
+/* 2 · Click: icon shrinks first, then the whole button collapses to a dot */
+:is(button, a).is-dismissing {
+  animation: uz-close-collapse var(--close-collapse-duration) var(--close-collapse-ease) forwards;
+  pointer-events: none;
+}
+
+:is(button, a).is-dismissing > svg {
+  animation: uz-close-icon-out calc(var(--close-collapse-duration) * 0.6) ease-in forwards;
+}
+
+@keyframes uz-close-collapse {
+  0%   { transform: scale(1);    opacity: 1; }
+  35%  { transform: scale(0.94); opacity: 1; }
+  85%  { transform: scale(0.12); opacity: 1; }
+  100% { transform: scale(0);    opacity: 0; }
+}
+
+@keyframes uz-close-icon-out {
+  from { transform: rotate(90deg) scale(1); }
+  to   { transform: rotate(90deg) scale(0); }
+}
+
+/* 3 · If the view stays open (e.g. "Discard?" prompt), pop back in */
+:is(button, a).is-restoring {
+  animation: uz-close-restore 0.36s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+@keyframes uz-close-restore {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* 4 · Sheet opens: the button builds up once the sheet has landed
+      Spec: Figma "Des-Sys-Test-IV" › Micro Animations ›
+      design-system_anmation-spec_close-button (node 315:3433) · Motion Specimens No. 005
+      - Button wrapper: dot → 108 % → 100 %, filled with the separator tint,
+        which fades to transparent at the end. Origin: center.
+      - Icon: grows 0 → 100 % with a small overshoot while turning 180°,
+        ~2 frames (70 ms) behind the wrapper.
+      - Fill mode `backwards` only, so the hover spin keeps working afterwards.
+      - Interruption: jump to the end (a click mid-entrance drops .is-entering, see JS). */
+:root {
+  --close-enter-delay: 0.3s;      /* ≈ end of .modal-shell's 0.35s slide-in */
+  --close-enter-duration: 0.4s;
+  --close-enter-icon-lag: 70ms;
+  --close-enter-icon-duration: 0.32s;
+  /* Figma: background/background-separator. No generated token yet → closest: --color-separator */
+  --close-enter-fill: var(--color-bg-separator, var(--color-separator));
+}
+
+:is(button, a).is-entering {
+  transform-origin: center;
+  border-radius: 50%;   /* a round dot; reverts invisibly once the tint has faded */
+  animation: uz-close-enter var(--close-enter-duration) ease-in-out var(--close-enter-delay) backwards;
+}
+
+:is(button, a).is-entering > svg {
+  transform-origin: center;
+  animation: uz-close-icon-enter var(--close-enter-icon-duration) cubic-bezier(0.2, 0.9, 0.3, 1.2)
+             calc(var(--close-enter-delay) + var(--close-enter-icon-lag)) backwards;
+}
+
+@keyframes uz-close-enter {
+  0%   { transform: scale(0);    opacity: 0; background-color: var(--close-enter-fill); }
+  10%  { transform: scale(0.08); opacity: 1; background-color: var(--close-enter-fill); }  /* the dot */
+  60%  { transform: scale(1.08);             background-color: var(--close-enter-fill); }  /* overshoot */
+  100% { transform: scale(1);                background-color: transparent; }            /* tint fades out */
+}
+
+@keyframes uz-close-icon-enter {
+  from { transform: rotate(-180deg) scale(0); }
+  to   { transform: rotate(0deg)    scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(button, a):has(> svg > use[href="#i-x"]) > svg {
+    transition: none;
+  }
+  :is(button, a):has(> svg > use[href="#i-x"]):is(:hover, :focus-visible) > svg {
+    transform: none;
+  }
+  :is(button, a):is(.is-dismissing, .is-restoring, .is-entering),
+  :is(button, a):is(.is-dismissing, .is-restoring, .is-entering) > svg {
+    animation: none;
+  }
+}
+
+/* ==========================================================================
+   Back button motion (Motion Specimens · No. 004)
+   .modal__back = previous step in flows, .view__back = page back.
+   Click behaviour: js/nav-button-motion.js
+   ========================================================================== */
+
+:root {
+  --back-nudge: -0.1875rem;                                /* 3px */
+  --back-nudge-ease: cubic-bezier(0.34, 1.6, 0.64, 1);     /* springy */
+  --back-step-duration: 0.42s;
+}
+
+:is(.modal__back, .view__back) {
+  --back-x: 0px;
+}
+
+:is(.modal__back, .view__back) > svg {
+  transform: translateX(var(--back-x));
+  transition: transform 0.35s var(--back-nudge-ease);
+}
+
+/* 1 · Hover / focus: arrow leans the way it points */
+@media (hover: hover) and (pointer: fine) {
+  :is(.modal__back, .view__back):hover {
+    --back-x: var(--back-nudge);
+  }
+}
+
+:is(.modal__back, .view__back):focus-visible {
+  --back-x: var(--back-nudge);
+}
+
+/* 2 · Click: arrow exits left, re-enters from the right, lands where it rests */
+:is(.modal__back, .view__back).is-stepping-back > svg {
+  animation: uz-back-step var(--back-step-duration) linear;
+}
+
+@keyframes uz-back-step {
+  0%   { transform: translateX(var(--back-x));  opacity: 1;
+         animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45); }   /* ease-in: leave */
+  35%  { transform: translateX(-0.75rem);       opacity: 0; }
+  36%  { transform: translateX(0.75rem);        opacity: 0;
+         animation-timing-function: cubic-bezier(0.2, 0.9, 0.3, 1.15); } /* ease-out, tiny overshoot: arrive */
+  100% { transform: translateX(var(--back-x));  opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.modal__back, .view__back) > svg {
+    transition: none;
+    transform: none;
+  }
+  :is(.modal__back, .view__back).is-stepping-back > svg {
+    animation: none;
+  }
+}
+
+/* ==========================================================================
+   Tectonics · Page transitions — the carousel
+   Spec: Figma "Des-Sys-Test-IV" › Animations Transitions ›
+         design-system_animation-spec_tectonics_… (node 347:8976): mobile frames 01–07,
+         "Desktop transition – Overall sections movements" (dashboard case + Overview → Custody account)
+   Pages sit side by side like a carousel: dashboards (Overview, Payments, Profile) on the left,
+   every deeper level further right. Sections travel as a small stack outside the screen edge.
+   · Deeper: the old page's sections shrink into a stack off the LEFT edge while the new
+     page's sections come out of a stack off the RIGHT edge — overlapping.
+   · Back: the mirror.  · Between dashboards: quick fade, sections come in from the left stack.
+   Logic: js/section-build-boot.js (head) + js/section-build-motion.js + js/shell-nav.js
+   ========================================================================== */
+
+:root {
+  /* 1 · Old page: only its content fades (no movement before the hand-over — moving, pausing
+         while the next page loads and moving again reads as a stutter) */
+  --tectonic-handover-fade: 120ms;
+  /* 2 · Old cards → stack, one continuous soft curve: slow drift first (in-between 1), then
+         shrinking toward the stack. They fade out by ~2/3 of the way, so far-travelling cards
+         (e.g. Overview's right column) are gone before they get fast or cross the new content. */
+  --tectonic-leave-duration: 400ms;
+  --tectonic-leave-stagger: 30ms;
+  --tectonic-leave-ease: cubic-bezier(0.45, 0, 0.55, 1);
+  --tectonic-leave-fade-end: 0.65;
+  /* 3 · New sections ← stack (deeper / back), counted from the moment the old cards start leaving.
+         Mostly sequential: they set off when the old cards are ~2/3 gone, only the tails overlap. */
+  --tectonic-arrive-delay: 260ms;
+  --tectonic-arrive-duration: 400ms;
+  --tectonic-arrive-stagger: 40ms;
+  --tectonic-arrive-ease: cubic-bezier(0.33, 1, 0.68, 1);
+  /* Between dashboards (case 1): sections come out of the left stack */
+  --tectonic-container-duration: 320ms;
+  --tectonic-container-stagger: 50ms;
+  --tectonic-container-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* 4 · Content layer: comes in when its container is ~70 % in place */
+  --tectonic-content-duration: 200ms;
+  --tectonic-content-duration-dashboard: 220ms;
+  --tectonic-content-stagger: 30ms;
+  --tectonic-content-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --tectonic-content-from-x: 12px;
+  --tectonic-content-handoff: 0.7;
+  /* The stack: a narrow column off the screen edge, ~8 % of the screen wide */
+  --tectonic-stack-width: 0.08;
+  /* Leaving between dashboards: quick fade */
+  --tectonic-exit-duration: 160ms;
+  --tectonic-exit-ease: cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* Hidden before first paint; js/section-build-motion.js takes over in the same frame. */
+html.section-build-pending .view.view--active {
+  opacity: 0;
+}
+
+/* Switching between root tabs: a quick fade out (js/shell-nav.js). */
+.shell-view--exit-fade {
+  animation: shell-view-exit-fade var(--tectonic-exit-duration) var(--tectonic-exit-ease) both;
+}
+
+@keyframes shell-view-exit-fade {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.section-build-pending .view.view--active {
+    opacity: 1;
+  }
+  .shell-view--exit-fade {
+    animation: none !important;
+  }
+}
+
+/* ==========================================================================
+   Status message (alert message) — Status category
+   Spec: Figma "Des-Sys-Test-IV" › Animations Transitions ›
+         design-system_animation-spec_status_alert-message (node 353:11968)
+   Sits in a sticky slot directly under the sticky title bar. Logic: js/status-message.js
+   ========================================================================== */
+
+:root {
+  /* Motion */
+  --status-enter-duration: 600ms;     /* pill drop → card (frames 01–04) */
+  --status-slot-duration: 240ms;      /* slot opens, sections move down (starts at 25 %) */
+  --status-content-duration: 220ms;
+  --status-content-stagger: 40ms;
+  --status-exit-duration: 420ms;
+  --status-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --status-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --status-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Status colours — placeholders until status tokens exist in designs/tokens.
+   One colour per state for border, icon and text (as in the Figma card). */
+html[data-theme="light"],
+html:not([data-theme]) {
+  --status-surface: var(--color-bg);
+  --status-error: #FF0095;     /* Figma: account-picker/border error · foreground error */
+  --status-warning: #A86A00;   /* a yellow that still reads as text on white */
+  --status-info: #2F6BFF;
+}
+
+html[data-theme="dark"] {
+  --status-surface: var(--color-bg);
+  --status-error: #FF4DB3;
+  --status-warning: #FFC933;
+  --status-info: #7FA8FF;
+}
+
+.status-slot {
+  position: sticky;
+  top: var(--status-slot-top, 0px);
+  z-index: 9;                          /* under the title bar (10) at rest */
+  margin-bottom: var(--view-stack-gap);
+  background-color: var(--color-bg-secondary);
+}
+
+.status-slot[hidden] {
+  display: none;
+}
+
+/* While the pill drops in (or rises out) it passes over the title bar. */
+.status-slot--entering {
+  z-index: 40;                         /* above the title bar (10) and Profile's sticky header (30) */
+}
+
+/* Multi-column views: on top of the right-most column */
+.status-slot--column {
+  top: var(--status-slot-top, 0px);
+}
+
+.status-message {
+  --status-accent: var(--status-info);
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  column-gap: var(--space-3);
+  width: 100%;
+  min-height: 4.5rem;
+  padding: var(--space-3);
+  border: none;
+  background: none;
+  color: var(--status-accent);
+  font-family: var(--font-family);
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.status-message--error {
+  --status-accent: var(--status-error);
+}
+
+.status-message--warning {
+  --status-accent: var(--status-warning);
+}
+
+/* Container layer — what the pill grows into */
+.status-message__shell {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: var(--radius-regular);
+  background-color: var(--status-surface);
+  box-shadow: inset 0 0 0 1px var(--status-accent);
+  transition: background-color 0.15s ease;
+}
+
+.status-message:hover .status-message__shell {
+  background-color: color-mix(in srgb, var(--status-surface), var(--status-accent) 6%);
+}
+
+.status-message:active .status-message__shell {
+  background-color: color-mix(in srgb, var(--status-surface), var(--status-accent) 12%);
+}
+
+.status-message:focus-visible {
+  outline: 0.125rem solid var(--color-fg);
+  outline-offset: 0.125rem;
+  border-radius: var(--radius-regular);
+}
+
+/* Content layer */
+.status-message__icon,
+.status-message__text,
+.status-message__meta {
+  position: relative;
+  z-index: 1;
+}
+
+.status-message__icon {
+  display: flex;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--status-accent);
+}
+
+.status-message__icon svg {
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 20%;
+}
+
+.status-message__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.status-message__title {
+  font-size: var(--fs-text-sm);      /* Figma: Text Small <em> */
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-text);
+}
+
+.status-message__body {
+  font-size: var(--fs-text-xs);      /* Figma: Text X-Small */
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.status-message__meta {
+  font-size: var(--fs-text-xs);
+  line-height: var(--lh-text);
+  white-space: nowrap;
+  padding-top: 0.125rem;
+}
+
+.status-message__date {
+  font-weight: var(--fw-bold);
+  margin-left: var(--space-1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-message__shell {
+    transition: none;
+  }
+}
+
+/* Overview, three columns (the sidebar is display: contents there): the message takes the
+   top of column 3 and Offers moves below it; columns 1 and 2 span both rows. */
+@media (min-width: calc(1200px + 16rem)) {
+  @container main (min-width: 1200px) {
+    .body[data-screen="overview"] .view--active.view--overview:has(> .view__sidebar > .status-slot:not([hidden])) {
+      grid-template-rows: auto auto 1fr;
+    }
+
+    .body[data-screen="overview"] .view--active.view--overview:has(> .view__sidebar > .status-slot:not([hidden])) .overview__primary,
+    .body[data-screen="overview"] .view--active.view--overview:has(> .view__sidebar > .status-slot:not([hidden])) .section-card--performance {
+      grid-row: 2 / span 2;
+    }
+
+    .body[data-screen="overview"] .view--active.view--overview > .view__sidebar > .status-slot {
+      grid-column: 3;
+      grid-row: 2;
+      margin-bottom: 0;
+    }
+
+    .body[data-screen="overview"] .view--active.view--overview:has(> .view__sidebar > .status-slot:not([hidden])) .section-card--overview-offers {
+      grid-row: 3;
+    }
+  }
+}
+
+/* ==========================================================================
+   Sticky header container — title bar + status message (Overview, Payments, Account details)
+   Same pattern as .all-bookings__sticky-header: the wrapper is sticky and carries the
+   content-indication shadow; the title bar inside is a plain row.
+   ========================================================================== */
+.view__sticky-header {
+  box-sizing: border-box;
+}
+
+.view__sticky-header > .view__nav {
+  position: relative;
+  top: auto;
+  z-index: auto;
+  margin-bottom: 0;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+/* In the desktop grid the wrapper spans all columns (like the title bar did). */
+.view--active.view--overview > .view__main > .view__sticky-header,
+.view--active.view--payments > .view__main > .view__sticky-header {
+  grid-column: 1 / -1;
+}
+
+/* The wrapper never pads itself (its bleed paddings were written for the title bar);
+   the title bar inside keeps the paddings it had when it was the sticky element. */
+html body .view__main > .view__sticky-header.view__sticky-header[data-scroll-edge-nav] {
+  padding: 0;
+}
+
+@media (max-width: 1023px) {
+  .view__sticky-header > .view__nav {
+    padding-top: max(env(safe-area-inset-top, 0px), var(--space-2));
+    padding-bottom: var(--space-2);
+  }
+}
+
+/* Status message inside the sticky header container (single-column views and Profile) */
+.status-slot--in-header {
+  position: relative;
+  top: auto;
+  z-index: 1;
+  margin: 0 var(--status-slot-inset-end, 0px) 0 var(--status-slot-inset-start, 0px);
+  padding: 0 0 var(--space-2);
+  background-color: transparent;
+}
+
+/* While the pill drops in, it may leave the header's box (Profile clips its header). */
+[data-status-host].status-host--entering {
+  overflow: visible !important;
+}
+
+/* ==========================================================================
+   Components · Proceed button (multi-step flows)
+   The primary button that moves a multi-step flow on (payment, internal account transfer,
+   buy & sell) carries one of two motions — set by js/cta-pulse.js:
+   · .uz-btn--proceed-next  (steps in between): a trailing arrow-right that travels slowly
+     to the right quickly and comes back slowly
+   · .uz-btn--proceed-final (last step = executes the whole flow): the button pulses —
+     grows slowly by 4 dp on every side (a ring in its own colour, so the label never
+     scales) and contracts slowly
+   Both breathe organically and permanently: quick outward phase (38 %), slow return (62 %),
+   every turn soft (no overshoot, no hold) so the loop never hits or stops.
+   Pause while pointed at (hover takes over); disabled buttons and reduced motion stay still.
+   ========================================================================== */
+
+:root {
+  --proceed-cycle: 2000ms;
+  --proceed-grow: 4px;      /* last step: 4 dp on every side at the peak */
+  --proceed-nudge: 6px;     /* steps in between: how far the arrow travels */
+}
+
+/* ── Steps in between: the arrow points the way (shared Arrow nudge, see below) ── */
+.uz-btn--proceed-next .uz-btn__icon--trailing {
+  --arrow-dir: 1;
+  --arrow-nudge: var(--proceed-nudge);
+  animation: uz-arrow-nudge var(--proceed-cycle) infinite;
+}
+
+/* The last step has no arrow — it executes, there's nothing further to point at */
+.uz-btn--proceed-final .uz-btn__icon--trailing {
+  display: none;
+}
+
+/* ── Last step: the button pulses ── */
+.uz-btn--proceed-final {
+  --proceed-ring: var(--color-btn-primary-bg);
+  animation: uz-proceed-pulse var(--proceed-cycle) infinite;
+}
+
+.uz-btn--proceed-final:hover {
+  --proceed-ring: var(--color-btn-primary-hover);
+}
+
+.uz-btn--proceed-final:active,
+.uz-btn--proceed-final.uz-btn--pressed {
+  --proceed-ring: var(--color-btn-primary-pressed);
+}
+
+@keyframes uz-proceed-pulse {
+  0%   { box-shadow: 0 0 0 0 var(--proceed-ring);                   animation-timing-function: cubic-bezier(0.3, 0, 0.2, 1); }  /* grow: quick, soft arrival */
+  38%  { box-shadow: 0 0 0 var(--proceed-grow) var(--proceed-ring); animation-timing-function: cubic-bezier(0.45, 0, 0.4, 1); }  /* contract: slow, eases home */
+  100% { box-shadow: 0 0 0 0 var(--proceed-ring); }
+}
+
+/* Pointing at it pauses the motion; the normal hover takes over */
+.uz-btn--proceed:hover,
+.uz-btn--proceed:hover .uz-btn__icon--trailing {
+  animation-play-state: paused;
+}
+
+.uz-btn--proceed:disabled,
+.uz-btn--proceed[aria-disabled="true"],
+.uz-btn--proceed:disabled .uz-btn__icon--trailing,
+.uz-btn--proceed[aria-disabled="true"] .uz-btn__icon--trailing {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uz-btn--proceed,
+  .uz-btn--proceed .uz-btn__icon--trailing {
+    animation: none;
+  }
+}
+
+/* ==========================================================================
+   Components · Step indicator (multi-step flows)
+   One short segment per step under the flow title, filled up to the current step.
+   Built by js/step-indicator.js (payment: 4 steps, internal account transfer: 3).
+   Hidden on pre-flow steps (the payment's recipient search).
+   Motion: forward = the next segment fills left → right (ease-out);
+           back    = the segment you leave empties right → left, a little quicker;
+           first paint / reopening = no animation.
+   Not in Figma yet.
+   ========================================================================== */
+
+:root {
+  --step-seg-width: 1.375rem;     /* 22dp */
+  --step-seg-height: 0.25rem;     /* 4dp */
+  --step-seg-gap: 0.375rem;       /* 6dp */
+  --step-fill-duration: 360ms;
+  --step-fill-ease: cubic-bezier(0.22, 1, 0.36, 1);      /* the app's entry curve */
+  --step-empty-duration: 240ms;
+  --step-empty-ease: cubic-bezier(0.45, 0, 0.55, 1);
+}
+
+.step-indicator {
+  display: flex;
+  justify-content: center;
+  gap: var(--step-seg-gap);
+  flex-shrink: 0;
+  padding: 0 var(--space-3) var(--space-2);
+}
+
+/* The nav keeps only 8dp below the title, so the indicator sits close under it */
+.modal__nav:has(+ .step-indicator:not(.step-indicator--hidden)) {
+  padding-bottom: var(--space-1);
+}
+
+.step-indicator__seg {
+  position: relative;
+  width: var(--step-seg-width);
+  height: var(--step-seg-height);
+  border-radius: calc(var(--step-seg-height) / 2);
+  background-color: var(--color-separator);
+  overflow: hidden;
+}
+
+.step-indicator__seg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--color-fg);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--step-fill-duration) var(--step-fill-ease);
+}
+
+.step-indicator__seg.is-filled::after {
+  transform: scaleX(1);
+}
+
+.step-indicator--back .step-indicator__seg::after {
+  transition-duration: var(--step-empty-duration);
+  transition-timing-function: var(--step-empty-ease);
+}
+
+.step-indicator--instant .step-indicator__seg::after {
+  transition: none;
+}
+
+/* Pre-flow steps (payment recipient search): no indicator yet */
+.step-indicator--hidden {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .step-indicator__seg::after {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   Components · Wiggle (attention cue)
+   The whole 24 × 24 icon swings a few degrees left and right around its centre
+   and settles. One rule for every icon: the pivot is always the centre of the
+   icon container, never a part of the drawing.
+   Used by the payment recipient search (magnifier), the status message (bell /
+   state icon, permanently) and the edit pencils on every flow step (one at a
+   time, random order). Schedule lives in js/wiggle.js. Not in Figma yet.
+   ========================================================================== */
+
+:root {
+  --wiggle-duration: 720ms;
+  --wiggle-angle: 14deg;          /* first swing; each next swing is smaller */
+  --wiggle-rest: 1.5s;           /* stillness between two rounds (after the last icon settled) */
+  --wiggle-search-delay: 700ms;   /* after the sheet and the close button have landed */
+  --wiggle-step-delay: 500ms;     /* after a flow step has slid in */
+  --wiggle-sequence-gap: 120ms;   /* several icons: the next starts 120 ms after the previous settled */
+}
+
+.uz-wiggle {
+  transform-box: border-box;      /* the icon's own 24 × 24 box … */
+  transform-origin: 50% 50%;      /* … rotating around its centre */
+  animation: uz-wiggle var(--wiggle-duration) both;
+}
+
+@keyframes uz-wiggle {
+  0%   { transform: rotate(0deg);                               animation-timing-function: cubic-bezier(0.33, 0, 0.67, 1); }
+  14%  { transform: rotate(calc(var(--wiggle-angle) * -1));     animation-timing-function: cubic-bezier(0.33, 0, 0.67, 1); }
+  32%  { transform: rotate(calc(var(--wiggle-angle) * 0.75));   animation-timing-function: cubic-bezier(0.33, 0, 0.67, 1); }
+  50%  { transform: rotate(calc(var(--wiggle-angle) * -0.5));   animation-timing-function: cubic-bezier(0.33, 0, 0.67, 1); }
+  68%  { transform: rotate(calc(var(--wiggle-angle) * 0.28));   animation-timing-function: cubic-bezier(0.33, 0, 0.67, 1); }
+  84%  { transform: rotate(calc(var(--wiggle-angle) * -0.1));   animation-timing-function: cubic-bezier(0.33, 0, 0.67, 1); }
+  100% { transform: rotate(0deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uz-wiggle { animation: none; }
+}
+
+/* ==========================================================================
+   Components · Arrow nudge (directional arrows)
+   Every arrow that leads somewhere breathes the way it points — the same motion
+   as the proceed arrow: out quick (38 %), back slow (62 %), soft turns, 2 s loop.
+   · Forward / deeper level: arrow-right in a button or link (Details, Show all, …)
+     → nudges right. (The proceed button is set up in its own block above.)
+   · Back / higher level: .view__back (page back) and .modal__back (previous flow
+     step) → nudges left.
+   Uses the individual `translate` property, so it adds to the hover lean and the
+   click step-back of the back arrow (Motion Specimens No. 004), which use transform.
+   Pointing at the control pauses it. Reduced motion: still. Not in Figma yet.
+   ========================================================================== */
+
+:root {
+  --arrow-nudge: 6px;
+  --arrow-cycle: 2000ms;
+}
+
+@keyframes uz-arrow-nudge {
+  0%   { translate: 0 0;                                              animation-timing-function: cubic-bezier(0.3, 0, 0.2, 1); }  /* out: quick, soft arrival */
+  38%  { translate: calc(var(--arrow-nudge) * var(--arrow-dir, 1)) 0; animation-timing-function: cubic-bezier(0.45, 0, 0.4, 1); }  /* back: slow, eases home */
+  100% { translate: 0 0; }
+}
+
+/* Forward / deeper: Details, Show all, … */
+:is(a, button):not(.uz-btn--proceed):has(> svg > use[href="#i-arrow-right"]) > svg {
+  --arrow-dir: 1;
+  animation: uz-arrow-nudge var(--arrow-cycle) infinite;
+}
+
+/* Back / higher level: page back and previous flow step */
+:is(.view__back, .modal__back) > svg {
+  --arrow-dir: -1;
+  animation: uz-arrow-nudge var(--arrow-cycle) infinite;
+}
+
+/* Pointing at it pauses the loop; the hover state takes over */
+:is(a, button):has(> svg > use[href="#i-arrow-right"]):hover > svg,
+:is(.view__back, .modal__back):hover > svg {
+  animation-play-state: paused;
+}
+
+:is(a, button):is(:disabled, [aria-disabled="true"]) > svg {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(a, button):has(> svg > use[href="#i-arrow-right"]) > svg,
+  :is(.view__back, .modal__back) > svg {
+    animation: none;
+  }
+}
+
+/* ==========================================================================
+   Admin access + Design system (lab)
+   Profile › Admin access signs in the lab admin (js/admin.js, front-end demo only).
+   html.is-admin (set before paint by js/admin-boot.js) shows the admin-only menu
+   entries: "Design system" in the sidebar and as 4th tab on mobile.
+   ========================================================================== */
+
+html:not(.is-admin) .admin-only {
+  display: none !important;
+}
+
+/* Profile › Admin access — same rhythm as the Demo data section below it */
+.admin-access {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-top: var(--space-6);
+  margin-top: var(--space-6);
+  border-top: 1px solid var(--color-separator);
+  max-width: 56rem;
+}
+
+.admin-access__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+html:not(.is-admin) .admin-access__signed-in,
+html.is-admin .admin-access__signed-out {
+  display: none;
+}
+
+/* Sign-in dialog: the basic dialog with two fields */
+.admin-login__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  text-align: left;
+}
+
+.admin-login__error {
+  margin: 0;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: #FF0095;   /* = status error placeholder until status tokens exist */
+}
+
+html[data-theme="dark"] .admin-login__error {
+  color: #FF7AC6;
+}
+
+/* Design system hub (design-system.html) */
+.ds-hub__intro {
+  margin: 0 0 var(--space-2);
+  max-width: 48rem;
+  font-size: var(--fs-text-md);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.ds-hub__card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  padding: var(--space-4) var(--space-3);
+  border-radius: var(--radius-regular);
+  margin-bottom: var(--view-stack-gap);
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.ds-hub__card:hover {
+  background-color: color-mix(in srgb, var(--color-bg) 90%, var(--color-fg));
+}
+
+.ds-hub__card:focus-visible {
+  outline: 0.125rem solid var(--color-fg);
+  outline-offset: 0.125rem;
+}
+
+.ds-hub__icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.ds-hub__title {
+  font-size: var(--fs-text-lg);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-text);
+}
+
+.ds-hub__meta {
+  grid-column: 2;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.ds-hub__card > .uz-btn__icon {
+  grid-row: 1 / span 2;
+  grid-column: 3;
+}
+
+.ds-hub__card > .ds-hub__icon {
+  grid-row: 1 / span 2;
+}
+
+/* ==========================================================================
+   Components · Button — toggled state
+   Every button except primary can be a toggle (on / off). When it is on it takes
+   the primary appearance, so the state reads at a glance:
+   secondary, tonal, icon-only … → primary colours (fill, label, border).
+   Primary has no toggled state. Set aria-pressed="true" (preferred, also tells
+   screen readers) or the class .uz-btn--toggled.
+   ========================================================================== */
+
+.uz-btn:not(.uz-btn--primary):is([aria-pressed="true"], .uz-btn--toggled) {
+  background-color: var(--color-btn-primary-bg);
+  color: var(--color-btn-primary-fg);
+  border-color: var(--color-btn-primary-bg);
+}
+
+.uz-btn:not(.uz-btn--primary):is([aria-pressed="true"], .uz-btn--toggled):hover {
+  background-color: var(--color-btn-primary-hover);
+  border-color: var(--color-btn-primary-hover);
+}
+
+.uz-btn:not(.uz-btn--primary):is([aria-pressed="true"], .uz-btn--toggled):active {
+  background-color: var(--color-btn-primary-pressed);
+  border-color: var(--color-btn-primary-pressed);
+}
+
+/* Design system pages in the app shell: Motion uses the wide dashboard column
+   (two-column specimens), Components the 60rem default. */
+.body[data-screen="motion-specimens"] .main-content__inner {
+  width: 100%;
+  max-width: min(1440px, 100%);
+}

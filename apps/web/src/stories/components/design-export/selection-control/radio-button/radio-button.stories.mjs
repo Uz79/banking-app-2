@@ -29,20 +29,12 @@ export const DesignExport = {
 <h4 class="de-variant">regular-inactive</h4>
 <div class="de-grid">
 <figure class="de-item">
-  <img class="de-img" src="/designs/components/selection-control/radio-button/variants/regular-inactive/focus.svg" alt="regular-inactive / focus" loading="lazy" />
-  <figcaption class="de-cap">regular-inactive / focus</figcaption>
-</figure>
-<figure class="de-item">
   <img class="de-img" src="/designs/components/selection-control/radio-button/variants/regular-inactive/default.svg" alt="regular-inactive / default" loading="lazy" />
   <figcaption class="de-cap">regular-inactive / default</figcaption>
 </figure>
 <figure class="de-item">
   <img class="de-img" src="/designs/components/selection-control/radio-button/variants/regular-inactive/hover.svg" alt="regular-inactive / hover" loading="lazy" />
   <figcaption class="de-cap">regular-inactive / hover</figcaption>
-</figure>
-<figure class="de-item">
-  <img class="de-img" src="/designs/components/selection-control/radio-button/variants/regular-inactive/pressed 2.svg" alt="regular-inactive / pressed 2" loading="lazy" />
-  <figcaption class="de-cap">regular-inactive / pressed 2</figcaption>
 </figure>
 <figure class="de-item">
   <img class="de-img" src="/designs/components/selection-control/radio-button/variants/regular-inactive/pressed.svg" alt="regular-inactive / pressed" loading="lazy" />
@@ -52,10 +44,6 @@ export const DesignExport = {
 <h4 class="de-variant">regular-active</h4>
 <div class="de-grid">
 <figure class="de-item">
-  <img class="de-img" src="/designs/components/selection-control/radio-button/variants/regular-active/focus.svg" alt="regular-active / focus" loading="lazy" />
-  <figcaption class="de-cap">regular-active / focus</figcaption>
-</figure>
-<figure class="de-item">
   <img class="de-img" src="/designs/components/selection-control/radio-button/variants/regular-active/default.svg" alt="regular-active / default" loading="lazy" />
   <figcaption class="de-cap">regular-active / default</figcaption>
 </figure>
@@ -64,12 +52,38 @@ export const DesignExport = {
   <figcaption class="de-cap">regular-active / hover</figcaption>
 </figure>
 <figure class="de-item">
-  <img class="de-img" src="/designs/components/selection-control/radio-button/variants/regular-active/pressed 2.svg" alt="regular-active / pressed 2" loading="lazy" />
-  <figcaption class="de-cap">regular-active / pressed 2</figcaption>
-</figure>
-<figure class="de-item">
   <img class="de-img" src="/designs/components/selection-control/radio-button/variants/regular-active/pressed.svg" alt="regular-active / pressed" loading="lazy" />
   <figcaption class="de-cap">regular-active / pressed</figcaption>
+</figure>
+</div>
+<h4 class="de-variant">small-inactive</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/selection-control/radio-button/variants/small-inactive/default.svg" alt="small-inactive / default" loading="lazy" />
+  <figcaption class="de-cap">small-inactive / default</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/selection-control/radio-button/variants/small-inactive/hover.svg" alt="small-inactive / hover" loading="lazy" />
+  <figcaption class="de-cap">small-inactive / hover</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/selection-control/radio-button/variants/small-inactive/pressed.svg" alt="small-inactive / pressed" loading="lazy" />
+  <figcaption class="de-cap">small-inactive / pressed</figcaption>
+</figure>
+</div>
+<h4 class="de-variant">small-active</h4>
+<div class="de-grid">
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/selection-control/radio-button/variants/small-active/default.svg" alt="small-active / default" loading="lazy" />
+  <figcaption class="de-cap">small-active / default</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/selection-control/radio-button/variants/small-active/hover.svg" alt="small-active / hover" loading="lazy" />
+  <figcaption class="de-cap">small-active / hover</figcaption>
+</figure>
+<figure class="de-item">
+  <img class="de-img" src="/designs/components/selection-control/radio-button/variants/small-active/pressed.svg" alt="small-active / pressed" loading="lazy" />
+  <figcaption class="de-cap">small-active / pressed</figcaption>
 </figure>
 </div>
     </div>

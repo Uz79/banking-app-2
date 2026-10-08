@@ -117,7 +117,6 @@ var __dsPreview = (() => {
           subtitle: "CH35 0900 0000 2470 2920 1",
           currency: "CHF",
           value: "10'000.00",
-          static: true,
           ariaLabel: "Household account"
         }
       ),
@@ -129,7 +128,6 @@ var __dsPreview = (() => {
           subtitle: "CH35 0900 0000 2470 2920 2",
           currency: "CHF",
           value: "25'000.00",
-          static: true,
           ariaLabel: "Savings account"
         }
       )

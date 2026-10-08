@@ -52,6 +52,7 @@ Persisted in `localStorage` (see `js/storage-migrate.js` for legacy key migratio
 | `uzBankWebTheme` | `light` / `dark` |
 | `uzBankWebColorOverride` | Custom `{ bg, fg }` palette |
 | `uzBankWebAppearance` | Profile legibility / persona scale |
+| `uzBankWebPersonaProfile` | Profile > User Type slider values (financial knowledge, banking products, digital affinity) |
 | `uzBankWebPaymentState` | Demo payment balances and bookings |
 | `uzBankWebSavedColorThemes` | Profile saved colour themes |
 
@@ -62,3 +63,10 @@ Persisted in `localStorage` (see `js/storage-migrate.js` for legacy key migratio
 - `css/tokens.css` — generated from `designs/tokens/`
 - `css/typography.css` — generated responsive type scale
 - `css/styles.css` — components and page layout
+
+## Persona character (Profile > User Type)
+
+- `js/profile-persona.js` — three sliders set the profile (novice / standard / power): title, story, UI preview and the Legibility preset (Large / Regular / Compact). Each slider also owns part of the character: financial knowledge → headwear (the head is always the Rogue's), banking products → outfit + back, digital affinity → animation loop.
+- `js/profile-persona-character.js` — three.js scene (runtime from jsDelivr). KayKit parts mixed on one shared rig, recoloured to the theme (monochrome + one accent), transparent stage with an overlay-tint shadow and a spotlight on dark backgrounds.
+- `assets/3d/kaykit/` — KayKit Adventurers 2.0 by Kay Lousberg (CC0), pruned to the parts used.
+- `assets/images/persona/` — UI previews rendered from Figma (`banking-app_main-view-profile_setting-persona_ui-previews`), recoloured to the live theme at runtime.

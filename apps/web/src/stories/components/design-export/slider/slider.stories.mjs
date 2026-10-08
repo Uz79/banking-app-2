@@ -26,11 +26,11 @@ export const DesignExport = {
     </style>
     <div class="de-wrap">
       <p class="de-desc">Slider input for selecting a numeric value along a range.</p>
-<h4 class="de-variant">default-default</h4>
+<h4 class="de-variant">default</h4>
 <div class="de-grid">
 <figure class="de-item">
-  <img class="de-img" src="/designs/components/slider/variants/default-default/default.svg" alt="default-default / default" loading="lazy" />
-  <figcaption class="de-cap">default-default / default</figcaption>
+  <img class="de-img" src="/designs/components/slider/variants/default/default.svg" alt="default / default" loading="lazy" />
+  <figcaption class="de-cap">default / default</figcaption>
 </figure>
 </div>
     </div>
