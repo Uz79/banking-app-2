@@ -109,6 +109,13 @@ button, input, select, textarea {
   /* Performance chart tooltip — Figma primary @ 15%, dy=2, blur=6. */
   --performance-chart-tooltip-shadow-color: var(--color-fg);
   --performance-chart-tooltip-shadow-opacity: 0.15;
+  /* Section panels — same float as cartography-lab (offset 0/4, blur 12), tinted with neutral ink. Light only. */
+  --panel-drop-shadow: none;
+}
+
+html[data-theme="light"] {
+  /* Slightly stronger than cartography's 5% black so the float still reads on --color-bg-secondary. */
+  --panel-drop-shadow: 0 0.25rem 0.75rem color-mix(in srgb, var(--color-overlay-tint) 10%, transparent);
 }
 
 html[data-theme="dark"] {
@@ -116,6 +123,7 @@ html[data-theme="dark"] {
   --shadow-content-indication-before: 0 -0.125rem 1rem color-mix(in srgb, var(--color-overlay-tint) 25%, transparent);
   --performance-chart-tooltip-shadow-color: #000000;
   --performance-chart-tooltip-shadow-opacity: 0.35;
+  --panel-drop-shadow: none;
 }
 
 @media (min-width: 1024px) {
@@ -936,6 +944,8 @@ html.sidebar-compressed .sidebar__logout-btn {
   /* Icon stays 24×24dp at all breakpoints (circle grows 40→48dp only). */
   width: 1.5rem;
   height: 1.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .action-button__label {
@@ -1012,6 +1022,7 @@ html.sidebar-compressed .sidebar__logout-btn {
   background-color: var(--color-bg);
   border-radius: var(--radius-regular);
   border: 0.0625rem solid var(--color-separator);
+  box-shadow: var(--panel-drop-shadow);
   overflow: hidden;
 }
 
@@ -1759,6 +1770,9 @@ html.sidebar-compressed .sidebar__logout-btn {
 
 .carousel__track {
   overflow: hidden;
+  /* Keep horizontal clipping for the slide; pad so the account-card drop shadow is not cut off. */
+  padding: 0.75rem 0.75rem 1rem;
+  margin: -0.75rem -0.75rem -1rem;
 }
 
 .carousel__slides {
@@ -1793,6 +1807,7 @@ html.sidebar-compressed .sidebar__logout-btn {
 
 .carousel__slide .list-item--group-account {
   width: 100%;
+  box-shadow: var(--panel-drop-shadow);
 }
 
 .carousel__pagination {
@@ -1863,6 +1878,7 @@ html.sidebar-compressed .sidebar__logout-btn {
   background-color: var(--color-bg);
   border-radius: var(--radius-regular);
   border: 0.0625rem solid var(--color-separator);
+  box-shadow: var(--panel-drop-shadow);
   padding: var(--space-2) 0;
 }
 
@@ -4024,18 +4040,19 @@ button.debit-account:focus-visible {
 .uz-btn--tonal {
   background-color: var(--color-btn-tonal-bg);
   color: var(--color-btn-tonal-fg);
-  border-color: var(--color-btn-tonal-border);
+  /* Transparent border — matching alpha border+fill paints a double-opacity edge. */
+  border-color: transparent;
 }
 
 .uz-btn--tonal:hover {
   background-color: var(--color-btn-tonal-hover);
-  border-color: var(--color-btn-tonal-hover);
+  border-color: transparent;
 }
 
 .uz-btn--tonal:active,
 .uz-btn--tonal.uz-btn--pressed {
   background-color: var(--color-btn-tonal-pressed);
-  border-color: var(--color-btn-tonal-pressed);
+  border-color: transparent;
 }
 
 .uz-btn__icon {
@@ -4089,7 +4106,7 @@ button.debit-account:focus-visible {
   flex-shrink: 0;
   background-color: var(--color-btn-tonal-bg);
   color: var(--color-btn-tonal-fg);
-  border: 0.0625rem solid var(--color-btn-tonal-border);
+  border: 0.0625rem solid transparent;
   border-radius: var(--radius-small);
 }
 
@@ -4111,13 +4128,13 @@ button.debit-account:focus-visible {
 
 .uz-btn--icon-only-filledtonal:hover {
   background-color: var(--color-btn-tonal-hover);
-  border-color: var(--color-btn-tonal-hover);
+  border-color: transparent;
 }
 
 .uz-btn--icon-only-filledtonal:active,
 .uz-btn--icon-only-filledtonal.uz-btn--pressed {
   background-color: var(--color-btn-tonal-pressed);
-  border-color: var(--color-btn-tonal-pressed);
+  border-color: transparent;
 }
 
 .uz-btn--icon-only:hover {
@@ -5168,6 +5185,7 @@ a.btn-primary {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+  min-width: 0;
 }
 
 .profile-font-field {
@@ -5194,53 +5212,19 @@ a.btn-primary {
   margin: var(--space-1) 0 0;
 }
 
+/* Preview column — same title rhythm as Manual settings; no outer chrome. */
 .profile-legibility-preview {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-3) 0 var(--space-1);
-  border-radius: var(--radius-regular);
-  background: var(--color-bg);
-}
-
-.profile-legibility-preview__label {
-  padding: 0 var(--space-4);
-  font-size: var(--fs-text-xs);
-  line-height: var(--lh-text);
-  color: var(--color-fg-secondary);
-}
-
-.profile-preview-dialog__body {
-  display: flex;
-  flex-direction: column;
   gap: var(--space-4);
-  padding: var(--space-3) var(--space-4);
+  min-width: 0;
 }
 
-.profile-preview-dialog__title {
-  margin: 0;
-  font-size: var(--fs-text-lg);
-  font-weight: var(--fw-bold);
-  line-height: var(--lh-text);
-  color: var(--color-fg);
-}
-
-.profile-preview-dialog__text {
-  margin: 0;
-  padding-top: var(--space-3);
-  font-size: var(--fs-text-md);
-  line-height: var(--lh-text);
-  color: var(--color-fg);
-}
-
-.profile-preview-dialog__actions {
-  display: flex;
-  gap: var(--space-3);
-  padding: var(--space-4);
-}
-
-.profile-preview-dialog__actions .cc-btn-action {
-  flex: 1 1 0;
+/* Dialog surface fills the column; no elevated shadow (specimen, not live modal). */
+.profile-legibility-preview__dialog.basic-dialog-payment-exit__surface {
+  width: 100%;
+  max-width: none;
+  box-shadow: none;
 }
 
 @media (max-width: 62rem) {
@@ -5331,6 +5315,7 @@ a.btn-primary {
 }
 
 .profile-persona-sliders {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--space-5); /* 32px */
@@ -5347,8 +5332,8 @@ a.btn-primary {
   align-items: center;
   gap: var(--space-3);
   min-height: 1.5rem;
-  font-size: var(--fs-text-xs);
-  line-height: var(--lh-caption);
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
   color: var(--color-fg-label);
 }
 
@@ -5364,8 +5349,8 @@ a.btn-primary {
   display: flex;
   justify-content: space-between;
   gap: var(--space-2);
-  font-size: var(--fs-text-xs);
-  line-height: var(--lh-caption);
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
   color: var(--color-fg-label);
 }
 
@@ -5409,7 +5394,7 @@ a.btn-primary {
 
 /* Scene: UI preview (phone at 50 %). On desktop the character leaves the content
    column and stands fixed in the viewport's lower right corner (64dp margins),
-   1.5× the in-column size; on mobile it stays beside the preview.
+   1.5× the in-column size. On mobile it sits behind the slider stack.
    The character sits *behind* the page content (text, tabs, preview card) but in
    front of the page background: main-content becomes its own stacking context on
    this screen, and the stage takes z-index -1 inside it. */
@@ -5540,39 +5525,40 @@ a.btn-primary {
     max-width: 30rem;
   }
 
+  /* Regular slider (42×24 thumb, 4px track) instead of the compact persona slider. */
+  .profile-persona .cc-color-slider.cc-color-slider--compact {
+    --slider-thumb-w: 2.625rem;
+    --slider-thumb-h: 1.5rem;
+    --slider-track-h: 0.25rem;
+    height: var(--slider-thumb-h);
+  }
+
+  .profile-persona-slider {
+    position: relative;
+    z-index: 1;
+  }
+
   /* No room for a floating figure next to dense content on phones. */
   .profile-persona-stage--ambient {
     display: none;
   }
 
-  /* Mobile: the character stays beside the preview instead of floating. */
-  .profile-persona__scene {
-    display: grid;
-    grid-template-columns: var(--persona-preview-w) minmax(0, 1fr);
-    align-items: start;
-  }
-
-  .profile-persona-preview {
-    grid-column: 1;
-    grid-row: 1;
-    max-height: 26rem;
+  /* The figure fills the slider stack and paints behind the controls. */
+  .profile-persona-stage {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    width: auto;
+    height: auto;
+    margin: 0;
   }
 
   .profile-persona-stage__name {
-    right: 0;
-    bottom: 0;
+    display: none;
   }
 
-  .profile-persona-stage {
-    position: relative;
-    z-index: 0;
-    right: auto;
-    bottom: auto;
-    grid-column: 1 / -1;
-    grid-row: 1;
-    width: auto;
-    height: 26rem;
-    margin-left: calc(var(--persona-preview-w) * 0.45);
+  .profile-persona-preview {
+    max-height: 26rem;
   }
 }
 
@@ -5965,6 +5951,7 @@ a.btn-primary {
 .demo-reset {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: var(--space-2);
   padding-top: var(--space-6);
   margin-top: var(--space-6);
@@ -8982,15 +8969,30 @@ html[data-theme="dark"] {
   --status-accent: var(--status-warning);
 }
 
-/* Container layer — what the pill grows into */
+/* Container layer — what the pill grows into.
+   Float uses a separate custom property so dark mode (`none`) and the sticky
+   swallowed state can drop it without invalidating the inset accent ring. */
 .status-message__shell {
+  --status-float-shadow: 0 0 0 0 transparent;
   position: absolute;
   inset: 0;
   z-index: 0;
   border-radius: var(--radius-regular);
   background-color: var(--status-surface);
-  box-shadow: inset 0 0 0 1px var(--status-accent);
-  transition: background-color 0.15s ease;
+  box-shadow:
+    inset 0 0 0 1px var(--status-accent),
+    var(--status-float-shadow);
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+html[data-theme="light"] .status-message__shell {
+  --status-float-shadow: var(--panel-drop-shadow);
+}
+
+/* Inside an elevated sticky chrome card the message is swallowed — no own float. */
+[data-scroll-edge-nav].is-scroll-edge--after .status-message__shell,
+[data-status-host].is-scroll-edge--after .status-message__shell {
+  --status-float-shadow: 0 0 0 0 transparent;
 }
 
 .status-message:hover .status-message__shell {
@@ -9404,6 +9406,7 @@ html:not(.is-admin) .admin-only {
 .admin-access {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: var(--space-2);
   padding-top: var(--space-6);
   margin-top: var(--space-6);
@@ -9414,6 +9417,7 @@ html:not(.is-admin) .admin-only {
 .admin-access__actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-2);
 }
 
@@ -9930,36 +9934,8 @@ html[data-theme="dark"] .admin-login__error {
 .theme-flow .tf-section--action {
   flex-direction: row;
   flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-3);
-}
-
-.theme-flow .tf-btn-action {
-  height: 2.5rem;
-  padding: 0 var(--space-3);
-  border: 2px solid var(--color-fg-interactive);
-  border-radius: var(--radius-regular);
-  background: var(--color-fg-interactive);
-  color: var(--color-bg);
-  font-family: inherit;
-  font-size: var(--fs-text-sm);
-  font-weight: var(--fw-medium);
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
-
-.theme-flow .tf-btn-action:hover {
-  opacity: 0.85;
-}
-
-.theme-flow .tf-btn-action--secondary {
-  background: transparent;
-  border-color: var(--color-btn-secondary-border, var(--color-btn-secondary-border));
-  color: var(--color-btn-secondary-fg, var(--color-btn-secondary-fg));
-}
-
-.theme-flow .tf-btn-action--secondary:hover {
-  opacity: 1;
-  background: var(--color-btn-secondary-hover, var(--color-btn-secondary-hover));
 }
 
 .theme-flow .tf-btn-action--inline {
@@ -9972,6 +9948,7 @@ html[data-theme="dark"] .admin-login__error {
   font-weight: var(--fw-medium);
   text-decoration: underline;
   text-underline-offset: 0.15em;
+  cursor: pointer;
 }
 
 .theme-flow .tf-section__heading--primary {
@@ -10367,21 +10344,21 @@ html[data-theme="dark"] .admin-login__error {
   gap: var(--space-3);
 }
 
+/* Specimen column — no outer tinted chrome; card keeps surface, no float shadow. */
 .theme-flow .tf-live {
-  border-radius: var(--radius-regular);
-  background: color-mix(in srgb, var(--color-fg) 6%, var(--color-bg));
-  padding: var(--space-4);
+  min-width: 0;
 }
 
 .theme-flow .tf-live__card {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+  width: 100%;
   padding: var(--space-4);
   border-radius: var(--radius-regular);
   background: var(--color-bg);
   border: 1px solid var(--color-separator);
-  box-shadow: var(--color-modal-elevated-shadow, 0 4px 12px rgba(0, 0, 0, 0.06));
+  box-shadow: none;
 }
 
 .theme-flow .tf-live__chrome {

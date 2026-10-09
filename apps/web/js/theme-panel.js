@@ -127,6 +127,13 @@
     render();
   }
 
+  function reverseColor() {
+    var next = state.shell === 'light' ? 'dark' : 'light';
+    if (typeof window.UZBankApplyThemeChoice === 'function') {
+      window.UZBankApplyThemeChoice(next);
+    }
+  }
+
   function selectBankDefault() {
     E.clearToBankDefault();
     state.selectedId = BANK_ID;
@@ -361,16 +368,17 @@
         '</section>';
     }
 
-    /* Reset */
+    /* Reverse + reset — design-system secondary, hug content (not fill) */
     html +=
       '<section class="tf-section tf-section--action">' +
-        '<button type="button" class="tf-btn-action tf-btn-action--secondary" data-action="reset" data-focus="reset">Reset to theme</button>' +
+        '<button type="button" class="uz-btn uz-btn--secondary uz-btn--md" data-action="reverse" data-focus="reverse">Reverse color</button>' +
+        '<button type="button" class="uz-btn uz-btn--secondary uz-btn--md" data-action="reset" data-focus="reset">Reset to theme</button>' +
       '</section>';
 
     /* Live preview with real banking components */
     html +=
       '<section class="tf-section tf-section--live" aria-labelledby="tfLiveTitle">' +
-        '<h3 class="tf-section__heading" id="tfLiveTitle">Live preview: real components</h3>' +
+        '<h3 class="tf-section__heading" id="tfLiveTitle">Live preview with real components</h3>' +
         '<div class="tf-live">' +
           '<div class="tf-live__card">' +
             '<div class="tf-live__chrome">' +
@@ -431,6 +439,7 @@
     else if (a === 'bg') commitSettings(Object.assign({}, s, { bgIndex: i }), { savedThemeId: null });
     else if (a === 'primary') commitSettings(Object.assign({}, s, { primaryIndex: i }), { savedThemeId: null });
     else if (a === 'kind') setKind(el.getAttribute('data-kind'));
+    else if (a === 'reverse') reverseColor();
     else if (a === 'reset') selectBankDefault();
     else if (a === 'add') addTheme();
     else if (a === 'delete') { e.stopPropagation(); deleteSaved(el.getAttribute('data-id')); }
