@@ -15,6 +15,15 @@
   try { signedIn = localStorage.getItem(KEY) === '1'; } catch (e) {}
   if (signedIn) document.documentElement.classList.add('is-admin');
 
+  try {
+    /* Collapsed unless the user has explicitly expanded it. */
+    if (localStorage.getItem('uzBankSidebar') !== 'extended') {
+      document.documentElement.classList.add('sidebar-compressed');
+    }
+  } catch (e) {
+    document.documentElement.classList.add('sidebar-compressed');
+  }
+
   var me = document.currentScript;
   if (!signedIn && me && me.hasAttribute('data-guard')) {
     location.replace('profile.html#admin');

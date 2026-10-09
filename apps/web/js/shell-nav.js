@@ -29,6 +29,7 @@
     'all-bookings': null,
     components: 'design',            /* design system subpages keep "Design system" selected */
     'motion-specimens': 'design',
+    'character-kit': 'design',
     'design-system': 'design'
   };
 
@@ -42,7 +43,8 @@
     'details-of-position.html': 2,
     'design-system.html': 0,      /* admin: a dashboard of its own (4th tab) */
     'motion-specimens.html': 1,
-    'components.html': 1
+    'components.html': 1,
+    'character-kit.html': 1
   };
 
   function prefersReducedMotion() {
@@ -255,8 +257,118 @@
     });
   }
 
+  var SIDEBAR_KEY = 'uzBankSidebar';
+
+  var COLLAPSE_ICON =
+    '<svg class="sidebar__collapse-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+      '<use href="#i-chevrons-left" width="24" height="24"/>' +
+    '</svg>';
+
+  var THEME_ICONS = {
+    light:
+      '<svg class="sidebar__theme-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+        '<use href="#i-sun" width="24" height="24"/>' +
+      '</svg>',
+    dark:
+      '<svg class="sidebar__theme-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+        '<use href="#i-moon" width="24" height="24"/>' +
+      '</svg>'
+  };
+
+  function sidebarIsCompressed() {
+    return document.documentElement.classList.contains('sidebar-compressed');
+  }
+
+  function syncSidebarToggle(button) {
+    if (!button) return;
+    var compressed = sidebarIsCompressed();
+    button.setAttribute('aria-pressed', compressed ? 'true' : 'false');
+    button.setAttribute('aria-expanded', compressed ? 'false' : 'true');
+    button.setAttribute('aria-label', compressed ? 'Expand sidebar' : 'Collapse sidebar');
+    var icon = button.querySelector('use');
+    if (icon) icon.setAttribute('href', compressed ? '#i-chevrons-right' : '#i-chevrons-left');
+  }
+
+  function setSidebarCompressed(compressed) {
+    document.documentElement.classList.toggle('sidebar-compressed', compressed);
+    try {
+      localStorage.setItem(SIDEBAR_KEY, compressed ? 'compressed' : 'extended');
+    } catch (err) {
+      /* ignore */
+    }
+    syncSidebarToggle(document.querySelector('.sidebar__collapse'));
+  }
+
+  function wrapThemeLabel(button) {
+    if (button.querySelector('.sidebar__theme-label')) return;
+    var label = document.createElement('span');
+    label.className = 'sidebar__theme-label';
+    while (button.firstChild) label.appendChild(button.firstChild);
+    button.appendChild(label);
+  }
+
+  function initSidebarCollapse() {
+    var sidebar = document.querySelector('.sidebar');
+    if (!sidebar || sidebar.querySelector('.sidebar__collapse')) return;
+
+    var logo = sidebar.querySelector('.sidebar__logo');
+    var link = logo && logo.querySelector('a');
+    if (link && !link.querySelector('.sidebar__logo-mark')) {
+      var words = (link.textContent || '').trim().split(/\s+/);
+      link.textContent = '';
+      link.classList.add('sidebar__logo-link');
+      var mark = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      mark.setAttribute('class', 'sidebar__logo-mark');
+      mark.setAttribute('aria-hidden', 'true');
+      mark.setAttribute('focusable', 'false');
+      var use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+      use.setAttribute('href', '#i-uz-logo');
+      mark.appendChild(use);
+      link.appendChild(mark);
+      if (words.length > 1) {
+        var name = document.createElement('span');
+        name.className = 'sidebar__logo-name';
+        name.textContent = words.slice(1).join(' ');
+        link.appendChild(name);
+      }
+      if (!link.getAttribute('aria-label')) link.setAttribute('aria-label', words.join(' ') || 'UZ Bank');
+    }
+
+    if (logo) {
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'sidebar__collapse';
+      button.innerHTML = COLLAPSE_ICON;
+      button.addEventListener('click', function () {
+        setSidebarCompressed(!sidebarIsCompressed());
+      });
+      logo.appendChild(button);
+      syncSidebarToggle(button);
+    }
+
+    sidebar.querySelectorAll('.sidebar__nav-item').forEach(function (item) {
+      var label = item.querySelector('span');
+      if (label && !item.getAttribute('title')) item.setAttribute('title', label.textContent.trim());
+    });
+
+    sidebar.querySelectorAll('[data-set-theme]').forEach(function (themeButton) {
+      var mode = themeButton.getAttribute('data-set-theme');
+      wrapThemeLabel(themeButton);
+      if (THEME_ICONS[mode] && !themeButton.querySelector('.sidebar__theme-icon')) {
+        themeButton.insertAdjacentHTML('afterbegin', THEME_ICONS[mode]);
+      }
+    });
+
+    var logoutLabel = sidebar.querySelector('.sidebar__logout-btn > span');
+    var logout = sidebar.querySelector('.sidebar__logout-btn');
+    if (logout && logoutLabel && !logout.getAttribute('aria-label')) {
+      logout.setAttribute('aria-label', logoutLabel.textContent.trim());
+    }
+  }
+
   function init() {
     syncShellNav();
+    initSidebarCollapse();
     settleEntry();
     try { sessionStorage.setItem(PREV_PATH_KEY, currentPath()); } catch (err) { /* ignore */ }
     bindShellNavLinks();

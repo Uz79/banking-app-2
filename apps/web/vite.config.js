@@ -36,6 +36,7 @@ export default {
         designSystem: resolve(dir, 'design-system.html'),        // admin only
         motionSpecimens: resolve(dir, 'motion-specimens.html'),  // admin only
         components: resolve(dir, 'components.html'),             // admin only
+        characterKit: resolve(dir, 'character-kit.html'),        // admin only
       },
     },
   },

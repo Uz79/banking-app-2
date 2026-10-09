@@ -65,6 +65,7 @@
     try {
       global.localStorage.removeItem(THEME_OVERRIDE_KEY);
       global.localStorage.removeItem(TOKEN_CACHE_KEY);
+      global.localStorage.setItem('uzBankWebPreferBankDefault', '1');
     } catch (err) {}
     applyColorTokens(theme);
   }
@@ -503,7 +504,8 @@
         screen !== 'details-of-position' &&
         screen !== 'design-system' &&
         screen !== 'motion-specimens' &&
-        screen !== 'components'
+        screen !== 'components' &&
+        screen !== 'character-kit'
       ) {
         return;
       }

@@ -574,6 +574,18 @@ function mountAmbient() {
 }
 
 function init() {
+  /* Design system > Character kit: an in-page specimen, driven by its own pickers
+     through the same uzbank:persona-change event. */
+  const specimen = document.querySelector('[data-character-specimen]');
+  if (specimen) {
+    mountStage(specimen).catch((err) => {
+      console.warn('[profile-persona-character] 3D failed to load', err);
+      const fb = specimen.querySelector('.profile-persona-stage__fallback');
+      if (fb) fb.textContent = '3D unavailable';
+    });
+    return;
+  }
+
   const panel = document.getElementById('profilePanelPersona');
   const stage = panel && panel.querySelector('[data-persona-stage]');
   if (!stage) {

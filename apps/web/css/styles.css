@@ -191,19 +191,132 @@ html:has(body.body--iat-open) {
 
 .sidebar {
   display: none;
-  width: 16rem;
+  width: 16rem; /* extended rail, 256px */
   flex-shrink: 0;
   flex-direction: column;
   background-color: var(--color-bg-sidebar);
   border-right: 0.0625rem solid var(--color-separator);
+  transition: width 180ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar {
+    transition: none;
+  }
+}
+
+/* Compressed rail: 80dp, icon-only, so the main column can use the width. */
+html.sidebar-compressed .sidebar {
+  width: 80px;
 }
 
 .sidebar__logo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
   padding: var(--space-4);
   font-size: var(--fs-text-lg);
   font-weight: var(--fw-bold);
   line-height: var(--lh-text);
   color: var(--color-fg);
+}
+
+.sidebar__logo-link {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: var(--space-2);
+  white-space: nowrap;
+  color: inherit;
+  text-decoration: none;
+}
+
+.sidebar__logo-mark {
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  color: var(--color-fg);
+}
+
+.sidebar__logo-name {
+  font-size: var(--fs-text-lg);
+  font-weight: var(--fw-bold);
+  line-height: 1;
+}
+
+.sidebar__collapse {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-small);
+  background: none;
+  color: var(--color-fg);
+  line-height: 0;
+  cursor: pointer;
+}
+
+.sidebar__collapse:hover {
+  background-color: var(--color-surface-state-hover);
+}
+
+.sidebar__collapse:focus-visible {
+  outline: 0.125rem solid var(--color-fg-interactive);
+  outline-offset: 0.125rem;
+}
+
+.sidebar__collapse-icon {
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  color: inherit;
+  fill: none;
+  overflow: visible;
+}
+
+/* 8dp inset, then 24dp mark, 8dp gap, 32dp chevron button, 8dp inset. */
+html.sidebar-compressed .sidebar__logo {
+  justify-content: flex-start;
+  gap: 8px;
+  padding-inline: 8px;
+}
+
+html.sidebar-compressed .sidebar__logo-mark,
+html.sidebar-compressed .sidebar__collapse-icon {
+  width: 24px;
+  height: 24px;
+}
+
+html.sidebar-compressed .sidebar__collapse {
+  width: 32px;
+  height: 32px;
+}
+
+html.sidebar-compressed .sidebar__nav,
+html.sidebar-compressed .sidebar__footer {
+  padding-inline: 8px;
+}
+
+html.sidebar-compressed .sidebar__logo-name,
+html.sidebar-compressed .sidebar__nav-item > span,
+html.sidebar-compressed .sidebar__logout-btn > span,
+html.sidebar-compressed .sidebar__theme-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .sidebar__nav {
@@ -296,6 +409,70 @@ html:has(body.body--iat-open) {
   height: 1.25rem;
 }
 
+.sidebar__theme-icon {
+  display: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  color: inherit;
+  fill: none;
+  overflow: visible;
+}
+
+html.sidebar-compressed .sidebar__nav-item,
+html.sidebar-compressed .sidebar__logout-btn,
+html.sidebar-compressed .sidebar .segmented__option {
+  position: relative;
+}
+
+html.sidebar-compressed .sidebar__nav-item {
+  justify-content: center;
+  gap: 0;
+  width: 100%;
+  min-height: 2.5rem;
+  padding-inline: 0;
+}
+
+html.sidebar-compressed .sidebar__footer {
+  align-items: stretch;
+  gap: var(--space-2);
+}
+
+html.sidebar-compressed .sidebar .segmented.segmented--theme {
+  flex-direction: column-reverse;
+  width: 100%;
+  padding: 0;
+  gap: var(--space-2);
+  background: none;
+}
+
+html.sidebar-compressed .sidebar .segmented--theme .sidebar__theme-icon {
+  display: block;
+}
+
+html.sidebar-compressed .sidebar .segmented--theme .segmented__option {
+  flex: none;
+  width: 100%;
+  min-height: 2rem;
+  height: 2rem;
+  padding: 0;
+  background-color: var(--color-nav-item-active-bg);
+  color: var(--color-fg);
+}
+
+html.sidebar-compressed .sidebar .segmented--theme .segmented__option--active,
+html.sidebar-compressed .sidebar .segmented--theme .segmented__option--active:hover {
+  background-color: var(--color-btn-primary-bg);
+  color: var(--color-btn-primary-fg);
+}
+
+html.sidebar-compressed .sidebar__logout-btn {
+  width: 100%;
+  height: 2.5rem;
+  padding: 0;
+  border-radius: var(--radius-small);
+}
+
 /* ── Main content ─────────────────────────────────────── */
 
 .main-content {
@@ -340,6 +517,7 @@ html:has(body.body--iat-open) {
 /* Investment product details: 960dp (60rem) content column. */
 .body[data-screen="design-system"] .main-content__inner,
 .body[data-screen="components"] .main-content__inner,
+.body[data-screen="character-kit"] .main-content__inner,
 .body[data-screen="investment-product-details"] .main-content__inner,
 .body[data-screen="details-of-position"] .main-content__inner {
   max-width: 60rem;
@@ -443,6 +621,7 @@ html:has(body.body--iat-open) {
 .body[data-screen="investment-product-details"] .view__nav[data-scroll-edge-nav],
 .body[data-screen="design-system"] .view__sticky-header[data-scroll-edge-nav],
 .body[data-screen="components"] .view__sticky-header[data-scroll-edge-nav],
+.body[data-screen="character-kit"] .view__sticky-header[data-scroll-edge-nav],
 .body[data-screen="investment-product-details"] .view__sticky-header[data-scroll-edge-nav],
 .body[data-screen="details-of-position"] .view__nav[data-scroll-edge-nav],
 .body[data-screen="details-of-position"] .view__sticky-header[data-scroll-edge-nav] {
@@ -851,6 +1030,7 @@ html:has(body.body--iat-open) {
   .body[data-screen="account-details"] .main-content__inner,
   .body[data-screen="design-system"] .main-content__inner,
   .body[data-screen="components"] .main-content__inner,
+  .body[data-screen="character-kit"] .main-content__inner,
   .body[data-screen="investment-product-details"] .main-content__inner,
   .body[data-screen="details-of-position"] .main-content__inner,
   .body[data-screen="profile"] .main-content__inner,
@@ -865,6 +1045,7 @@ html:has(body.body--iat-open) {
   .body[data-screen="investment-product-details"] .view__nav[data-scroll-edge-nav],
   .body[data-screen="design-system"] .view__sticky-header[data-scroll-edge-nav],
   .body[data-screen="components"] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen="character-kit"] .view__sticky-header[data-scroll-edge-nav],
   .body[data-screen="investment-product-details"] .view__sticky-header[data-scroll-edge-nav],
   .body[data-screen="details-of-position"] .view__nav[data-scroll-edge-nav],
   .body[data-screen="details-of-position"] .view__sticky-header[data-scroll-edge-nav] {
@@ -911,6 +1092,7 @@ html:has(body.body--iat-open) {
   .body[data-screen="investment-product-details"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="design-system"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="components"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
+  .body[data-screen="character-kit"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="investment-product-details"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="details-of-position"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="details-of-position"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
@@ -941,6 +1123,7 @@ html:has(body.body--iat-open) {
   .body[data-screen="investment-product-details"] .view__nav[data-scroll-edge-nav],
   .body[data-screen="design-system"] .view__sticky-header[data-scroll-edge-nav],
   .body[data-screen="components"] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen="character-kit"] .view__sticky-header[data-scroll-edge-nav],
   .body[data-screen="investment-product-details"] .view__sticky-header[data-scroll-edge-nav],
   .body[data-screen="details-of-position"] .view__nav[data-scroll-edge-nav],
   .body[data-screen="details-of-position"] .view__sticky-header[data-scroll-edge-nav] {
@@ -4294,6 +4477,8 @@ button.debit-account:focus-visible {
 .modal__close-icon > use,
 .action-button__icon > use,
 .sidebar__logout-icon > use,
+.sidebar__collapse-icon > use,
+.sidebar__theme-icon > use,
 .recipient-search__icon-svg > use,
 .recipient-search__clear-icon > use,
 .recipient-search__result-icon > use,
@@ -4497,6 +4682,7 @@ button.debit-account:focus-visible {
   .body[data-screen="investment-product-details"] .view__nav[data-scroll-edge-nav],
   .body[data-screen="design-system"] .view__sticky-header[data-scroll-edge-nav],
   .body[data-screen="components"] .view__sticky-header[data-scroll-edge-nav],
+  .body[data-screen="character-kit"] .view__sticky-header[data-scroll-edge-nav],
   .body[data-screen="investment-product-details"] .view__sticky-header[data-scroll-edge-nav],
   .body[data-screen="details-of-position"] .view__nav[data-scroll-edge-nav],
   .body[data-screen="details-of-position"] .view__sticky-header[data-scroll-edge-nav] {
@@ -4532,6 +4718,7 @@ button.debit-account:focus-visible {
   .body[data-screen="investment-product-details"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="design-system"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="components"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
+  .body[data-screen="character-kit"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="investment-product-details"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="details-of-position"] .view__nav[data-scroll-edge-nav].is-scroll-edge--after,
   .body[data-screen="details-of-position"] .view__sticky-header[data-scroll-edge-nav].is-scroll-edge--after,
@@ -9174,7 +9361,7 @@ html body .view__main > .view__sticky-header.view__sticky-header[data-scroll-edg
 }
 
 /* Forward / deeper: Details, Show all, … */
-:is(a, button):not(.uz-btn--proceed):has(> svg > use[href="#i-arrow-right"]) > svg {
+:is(a, button):not(.uz-btn--proceed):has(> svg > use[href="#i-arrow-right"]) > svg:has(> use[href="#i-arrow-right"]) {
   --arrow-dir: 1;
   animation: uz-arrow-nudge var(--arrow-cycle) infinite;
 }
@@ -9186,7 +9373,7 @@ html body .view__main > .view__sticky-header.view__sticky-header[data-scroll-edg
 }
 
 /* Pointing at it pauses the loop; the hover state takes over */
-:is(a, button):has(> svg > use[href="#i-arrow-right"]):hover > svg,
+:is(a, button):has(> svg > use[href="#i-arrow-right"]):hover > svg:has(> use[href="#i-arrow-right"]),
 :is(.view__back, .modal__back):hover > svg {
   animation-play-state: paused;
 }
@@ -9196,7 +9383,7 @@ html body .view__main > .view__sticky-header.view__sticky-header[data-scroll-edg
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :is(a, button):has(> svg > use[href="#i-arrow-right"]) > svg,
+  :is(a, button):has(> svg > use[href="#i-arrow-right"]) > svg:has(> use[href="#i-arrow-right"]),
   :is(.view__back, .modal__back) > svg {
     animation: none;
   }

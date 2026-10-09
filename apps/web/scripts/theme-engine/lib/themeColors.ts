@@ -2118,6 +2118,7 @@ export function readSavedOverride(): ColorPair | null {
 export function saveOverride(pair: ColorPair): void {
   try {
     localStorage.setItem(OVERRIDE_KEY, JSON.stringify(pair));
+    localStorage.removeItem("uzBankWebPreferBankDefault");
   } catch {
     /* ignore quota */
   }
@@ -2380,9 +2381,17 @@ export function bootColorOverride(): ColorPair | null {
     /* localStorage may be unavailable */
   }
 
+  let preferBank = false;
+  try {
+    preferBank = localStorage.getItem("uzBankWebPreferBankDefault") === "1";
+  } catch {
+    /* localStorage may be unavailable */
+  }
+
   let saved = readSavedOverride();
-  /* First time shipping builtins (or no override): select Custom 01. */
-  if (!saved || firstBuiltinSeed) {
+  /* No saved theme, or the first time builtins ship: select Custom 01.
+   * An explicit "UZ Bank" choice (prefer-bank flag, no override) stays on tokens.css. */
+  if ((!saved || firstBuiltinSeed) && !preferBank) {
     const builtin = getDefaultBuiltinTheme();
     const shell = shellThemeFromPair(builtin.bg, builtin.fg, builtin.neutral);
     const settings = settingsFromPair(builtin, shell);
@@ -2395,6 +2404,8 @@ export function bootColorOverride(): ColorPair | null {
     saveOverride(pair);
     saved = pair;
   }
+
+  if (!saved) return null;
 
   const pairShell = shellThemeFromPair(saved.bg, saved.fg, saved.neutral);
   const systemShell = getSystemTheme();

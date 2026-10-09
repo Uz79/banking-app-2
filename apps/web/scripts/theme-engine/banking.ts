@@ -10,13 +10,14 @@
  */
 import * as tc from "./lib/themeColors";
 import type { ColorPair, ThemeMode } from "./lib/themeColors";
-import { DEFAULT_BUILTIN_THEME_ID } from "./data/builtinThemes";
-
 export * from "./lib/themeColors";
 export { DEFAULT_BUILTIN_THEME_ID } from "./data/builtinThemes";
 
 export const TOKEN_CACHE_KEY = "uzBankWebColorTokens";
-export const UZBANK_THEME_ID = DEFAULT_BUILTIN_THEME_ID;
+/** Choosing this card clears the override so tokens.css (the original blue) applies. */
+export const UZBANK_THEME_ID = "uzbank-default";
+/** Set when the user explicitly picks UZ Bank, so the next boot does not reapply Custom 01. */
+export const PREFER_BANK_KEY = "uzBankWebPreferBankDefault";
 
 /** The banking CSS reads --color-* roles only; the v4/map tokens stay out. */
 export function bankingTokens(pair: ColorPair): Record<string, string> {
@@ -81,6 +82,7 @@ export function clearToBankDefault(): void {
   tc.clearSavedOverride();
   try {
     localStorage.removeItem(TOKEN_CACHE_KEY);
+    localStorage.setItem(PREFER_BANK_KEY, "1");
   } catch {
     /* ignore */
   }
