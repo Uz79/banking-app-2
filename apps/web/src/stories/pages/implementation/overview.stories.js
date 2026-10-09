@@ -32,7 +32,7 @@ export const StaticShell = {
           </div>
           <div class="sidebar__logout">
             <button class="sidebar__logout-btn" type="button">
-              <svg class="sidebar__logout-icon" aria-hidden="true" focusable="false"><use href="#i-corner-up-right"/></svg>
+              <svg class="sidebar__logout-icon" aria-hidden="true" focusable="false"><use href="#i-log-out"/></svg>
               <span>Logout</span>
             </button>
           </div>

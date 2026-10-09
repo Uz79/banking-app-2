@@ -33,17 +33,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="format-detection" content="telephone=no">
   <meta name="color-scheme" content="dark light">
-  <title>UZ Bank – Custody account</title>
-  <script src="js/storage-migrate.js"></script>
+  <title>UZ Bank – Character kit</title>
   <script src="js/theme-boot.js"></script>
 
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/typography.css">
   <link rel="stylesheet" href="css/styles.css">
-  <script src="js/admin-boot.js"></script>
+  <script src="js/admin-boot.js" data-guard></script>
   <script src="js/section-build-boot.js"></script>
+  <style>
+    .ds-page { padding-bottom: var(--space-9); }
+    .ds-intro { color: var(--color-fg-secondary); font-size: var(--fs-text-md); line-height: var(--lh-text); margin-bottom: var(--space-6); max-width: 48rem; }
+    .ds-section { margin-bottom: var(--space-7); }
+    .ds-section h2 { font-size: var(--fs-h5); font-weight: var(--fw-medium); line-height: var(--lh-h5); margin: 0 0 var(--space-3); color: var(--color-fg); }
+    .ds-section h3 { font-size: var(--fs-text-md); font-weight: var(--fw-bold); line-height: var(--lh-text); margin: var(--space-4) 0 var(--space-2); color: var(--color-fg); }
+    .ds-caption { font-size: var(--fs-text-sm); line-height: var(--lh-text); color: var(--color-fg-secondary); margin: 0 0 var(--space-3); max-width: 48rem; }
+    .ds-note { font-size: var(--fs-text-xs); line-height: var(--lh-caption); color: var(--color-fg-secondary); margin-top: var(--space-2); max-width: 44rem; }
+    .ds-intro code, .ds-section code { font-size: 0.85em; }
+
+    /* Live specimen */
+    .ck-specimen { display: grid; grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem); gap: var(--space-5); align-items: stretch; }
+    .ck-stage-card { position: relative; border-radius: var(--radius-regular); background: var(--color-bg); box-shadow: var(--shadow-content-indication-after); overflow: hidden; min-height: 28rem; }
+    .profile-persona-stage.ck-stage { position: absolute; inset: 0; z-index: 0; width: auto; height: auto; margin: 0; pointer-events: none; }
+    .ck-stage-hint { position: absolute; left: var(--space-4); bottom: var(--space-3); font-size: var(--fs-text-xs); color: var(--color-fg-label); pointer-events: none; }
+    .ck-controls { display: flex; flex-direction: column; gap: var(--space-4); }
+    .ck-control { display: flex; flex-direction: column; gap: var(--space-2); }
+    .ck-control__label { font-size: var(--fs-text-xs); line-height: var(--lh-caption); color: var(--color-fg-label); }
+    .ck-control .segmented { display: flex; width: 100%; }
+    .ck-control .segmented__option { flex: 1 1 0; }
+    .ck-presets { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+    .ck-recipe { margin: 0; padding: var(--space-3); border-radius: var(--radius-small); background: var(--color-bg-secondary); font-size: var(--fs-text-xs); line-height: var(--lh-caption); color: var(--color-fg); white-space: pre; overflow-x: auto; }
+
+    /* Tables */
+    .ck-table-wrap { overflow-x: auto; max-width: 56rem; }
+    .ck-table { width: 100%; border-collapse: collapse; font-size: var(--fs-text-sm); line-height: var(--lh-text); color: var(--color-fg); }
+    .ck-table th { text-align: left; font-weight: var(--fw-regular); font-size: var(--fs-text-xs); color: var(--color-fg-label); padding: 0 var(--space-3) var(--space-2) 0; border-bottom: 1px solid var(--color-separator); }
+    .ck-table td { padding: var(--space-2) var(--space-3) var(--space-2) 0; border-bottom: 1px solid var(--color-separator); vertical-align: top; }
+    .ck-steps { margin: 0; padding-left: 1.25rem; max-width: 48rem; font-size: var(--fs-text-sm); line-height: var(--lh-text); color: var(--color-fg); }
+    .ck-steps li + li { margin-top: var(--space-2); }
+    .ck-steps pre { margin: var(--space-2) 0 0; padding: var(--space-3); border-radius: var(--radius-small); background: var(--color-bg-secondary); font-size: var(--fs-text-xs); overflow-x: auto; }
+
+    @media (max-width: 62rem) {
+      .ck-specimen { grid-template-columns: minmax(0, 1fr); }
+      .ck-stage-card { min-height: 24rem; }
+    }
+  </style>
 </head>
-<body class="body" data-screen="investment-product-details" data-page="investment-product-details">
+<body class="body" data-screen="character-kit" data-page="character-kit">
 <div id="uzbank-icon-defs" aria-hidden="true" class="uzbank-icon-defs">
 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden;pointer-events:none">
 <symbol id="i-activity" viewBox="0 0 24 24">
@@ -2333,7 +2369,7 @@
         <svg class="sidebar__nav-icon" aria-hidden="true" focusable="false"><use href="#i-user"/></svg>
         <span>Profile</span>
       </a>
-      <a class="sidebar__nav-item admin-only" href="design-system.html">
+      <a class="sidebar__nav-item sidebar__nav-item--active admin-only" href="design-system.html" aria-current="page">
         <svg class="sidebar__nav-icon" aria-hidden="true" focusable="false"><use href="#i-layers"/></svg>
         <span>Design system</span>
       </a>
@@ -2355,146 +2391,190 @@
 
   <main class="main-content">
     <div class="main-content__inner">
-      <section class="view view--active view--investment-product-details" data-view="investment-product-details">
+      <!-- ── CHARACTER KIT (design system, admin) ── -->
+      <section class="view view--active view--character-kit" data-view="character-kit">
         <div class="view__main">
-          <header class="view__nav view__nav--position-details" data-scroll-edge-nav>
-            <a class="view__nav-btn view__nav-btn--leading view__back" href="overview.html" aria-label="Back">
-              <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
-            </a>
-            <div class="view__nav-title-stack" data-shell-reveal>
-              <h1 class="page-title view__nav-title">Custody account</h1>
-              <p class="view__nav-meta">123.456.78</p>
-            </div>
-            <button type="button" class="view__nav-btn view__nav-btn--trailing view__nav-btn--hidden" aria-hidden="true" tabindex="-1">
-              <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>
-            </button>
-          </header>
+          <div class="view__sticky-header" data-scroll-edge-nav data-status-host>
+            <header class="view__nav">
+              <a class="view__nav-btn view__nav-btn--leading view__back" href="design-system.html" aria-label="Back to Design system">
+                <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
+              </a>
+              <h1 class="page-title view__nav-title">Character kit</h1>
+              <button type="button" class="view__nav-btn view__nav-btn--trailing view__nav-btn--hidden" aria-hidden="true" tabindex="-1">
+                <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>
+              </button>
+            </header>
+          </div>
+          <div class="ds-page">
 
-          <div class="investment-product-details__grid">
-            <div class="investment-product-details__left">
-              <div class="action-buttons action-buttons--investment action-buttons--circular">
-                <button class="action-button" type="button">
-                  <span class="action-button__circle">
-                    <svg class="action-button__icon" aria-hidden="true" focusable="false"><use href="#i-search"/></svg>
-                  </span>
-                  <span class="action-button__label">Trade</span>
-                </button>
-                <button class="action-button" type="button">
-                  <span class="action-button__circle">
-                    <svg class="action-button__icon" aria-hidden="true" focusable="false"><use href="#i-eye"/></svg>
-                  </span>
-                  <span class="action-button__label">Details</span>
-                </button>
-              </div>
-              <div class="action-buttons action-buttons--investment action-buttons--standard">
-                <button type="button" class="uz-btn uz-btn--secondary uz-btn--sm">
-                  <svg class="uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-search"/></svg>
-                  Trade
-                </button>
-                <button type="button" class="uz-btn uz-btn--secondary uz-btn--sm">
-                  <svg class="uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-eye"/></svg>
-                  Details
-                </button>
-              </div>
+  <p class="ds-intro">
+    One 3D character, built from KayKit Adventurers parts (CC0) on a shared skeleton. It mirrors the user type set in Profile &gt; User Type and takes its colours from the live theme, so it reads as part of the UI rather than as an illustration. Code: <code>js/profile-persona-character.js</code> (rendering) and <code>js/profile-persona.js</code> (user type to recipe).
+  </p>
 
-              <div class="section-card section-card--performance">
-              <div class="section-card__body performance-card">
-                <header class="performance-card__header">
-                  <div class="performance-card__balance">
-                    <span class="performance-card__balance-value">20'000.00</span>
-                    <span class="performance-card__balance-currency">CHF</span>
-                  </div>
-                </header>
-                <div class="performance-card__meta">
-                  <p class="performance-card__change">
-                    <span>+ 980.39 CHF</span>
-                    <span class="performance-card__change-sep" aria-hidden="true">&bull;</span>
-                    <span>+ 5.13 %</span>
-                  </p>
-                  <time class="performance-card__date" datetime="2026-05-05">05.May 2026</time>
-                </div>
+  <section class="ds-section" aria-labelledby="ck-live-heading">
+    <h2 id="ck-live-heading">Live specimen</h2>
+    <p class="ds-caption">The real module on this page. Pick parts or a profile; drag the figure to turn it. Switch Light / Dark in the menu, or pick a Multi-color theme in Profile &gt; Theme, to see the recolour.</p>
+    <div class="ck-specimen">
+      <div class="ck-stage-card">
+        <div class="profile-persona-stage ck-stage" data-character-specimen aria-hidden="true">
+          <span class="profile-persona-stage__fallback">Loading 3D…</span>
+        </div>
+        <span class="ck-stage-hint">Drag to turn</span>
+      </div>
+      <div class="ck-controls" data-ck-controls>
+        <div class="ck-control">
+          <span class="ck-control__label">Profile</span>
+          <div class="ck-presets">
+            <button type="button" class="uz-btn uz-btn--secondary uz-btn--sm" data-ck-preset="novice" aria-pressed="true">Beat · Newbie</button>
+            <button type="button" class="uz-btn uz-btn--secondary uz-btn--sm" data-ck-preset="standard" aria-pressed="false">Lena · All-rounder</button>
+            <button type="button" class="uz-btn uz-btn--secondary uz-btn--sm" data-ck-preset="power" aria-pressed="false">Max · Power user</button>
+          </div>
+        </div>
+        <div class="ck-control">
+          <span class="ck-control__label" id="ckHeadwear">Headwear · financial knowledge</span>
+          <div class="segmented segmented--sm" role="group" aria-labelledby="ckHeadwear" data-ck-slot="headwear">
+            <button type="button" class="segmented__option" data-value="none">None</button>
+            <button type="button" class="segmented__option" data-value="helmet">Helmet</button>
+            <button type="button" class="segmented__option" data-value="hat">Hat</button>
+          </div>
+        </div>
+        <div class="ck-control">
+          <span class="ck-control__label" id="ckOutfit">Outfit · banking products</span>
+          <div class="segmented segmented--sm" role="group" aria-labelledby="ckOutfit" data-ck-slot="outfit">
+            <button type="button" class="segmented__option" data-value="barbarian">Barbarian</button>
+            <button type="button" class="segmented__option" data-value="ranger">Ranger</button>
+            <button type="button" class="segmented__option" data-value="knight">Knight</button>
+          </div>
+        </div>
+        <div class="ck-control">
+          <span class="ck-control__label" id="ckBack">Back · banking products</span>
+          <div class="segmented segmented--sm" role="group" aria-labelledby="ckBack" data-ck-slot="back">
+            <button type="button" class="segmented__option" data-value="none">None</button>
+            <button type="button" class="segmented__option" data-value="quiver">Quiver</button>
+            <button type="button" class="segmented__option" data-value="cape">Cape</button>
+          </div>
+        </div>
+        <div class="ck-control">
+          <span class="ck-control__label" id="ckLoop">Loop · digital affinity</span>
+          <div class="segmented segmented--sm" role="group" aria-labelledby="ckLoop" data-ck-slot="loop">
+            <button type="button" class="segmented__option" data-value="Idle_A">Idle</button>
+            <button type="button" class="segmented__option" data-value="Walking_A">Walk</button>
+            <button type="button" class="segmented__option" data-value="Running_A">Run</button>
+          </div>
+        </div>
+        <pre class="ck-recipe" data-ck-recipe aria-label="Current recipe"></pre>
+      </div>
+    </div>
+  </section>
 
-                <div class="performance-card__chart" aria-hidden="true">
-                  <svg class="performance-card__chart-svg" viewBox="0 0 388 164" xmlns="http://www.w3.org/2000/svg" data-performance-chart>
-                    <defs>
-                      <linearGradient id="performance-chart-fill" x1="194" y1="8" x2="194" y2="132" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="currentColor" stop-opacity="0.2"/>
-                        <stop offset="1" stop-color="currentColor" stop-opacity="0"/>
-                      </linearGradient>
-                      <filter id="performance-chart-tooltip-shadow" class="performance-card__chart-tooltip-shadow" filterUnits="objectBoundingBox" x="-0.08" y="-0.12" width="1.16" height="1.45" color-interpolation-filters="sRGB">
-                        <feDropShadow dx="0" dy="2" stdDeviation="6"/>
-                      </filter>
-                    </defs>
-                    <text class="performance-card__chart-axis performance-card__chart-axis--y" x="384" y="32" text-anchor="end">60</text>
-                    <text class="performance-card__chart-axis performance-card__chart-axis--y" x="384" y="64" text-anchor="end">40</text>
-                    <text class="performance-card__chart-axis performance-card__chart-axis--y" x="384" y="96" text-anchor="end">20</text>
-                    <text class="performance-card__chart-axis performance-card__chart-axis--y" x="384" y="132" text-anchor="end">0</text>
-                    <path class="performance-card__chart-area" data-performance-chart-area d="M0 74 L29 67 L57 70 L85 54 L113 62 L141 50 L169 60 L197 44 L225 52 L253 40 L281 50 L309 46 L337 54 L352 48 V132 H0 Z" fill="url(#performance-chart-fill)"/>
-                    <path class="performance-card__chart-line" data-performance-chart-line d="M0 74 L29 67 L57 70 L85 54 L113 62 L141 50 L169 60 L197 44 L225 52 L253 40 L281 50 L309 46 L337 54 L352 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path class="performance-card__chart-line-hit" data-performance-chart-line-hit d="M0 74 L29 67 L57 70 L85 54 L113 62 L141 50 L169 60 L197 44 L225 52 L253 40 L281 50 L309 46 L337 54 L352 48" fill="none" stroke="transparent" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
-                    <g class="performance-card__chart-hover" data-performance-chart-hover hidden>
-                      <line class="performance-card__chart-marker" data-performance-chart-marker x1="197" y1="44" x2="197" y2="132" stroke="currentColor" stroke-opacity="0.7" stroke-width="0.5" stroke-dasharray="2 2"/>
-                      <circle class="performance-card__chart-dot" data-performance-chart-dot cx="197" cy="44" r="7" fill="var(--color-bg)" stroke="currentColor" stroke-width="2"/>
-                      <rect class="performance-card__chart-tooltip" data-performance-chart-tooltip filter="url(#performance-chart-tooltip-shadow)" x="67" y="8" width="260" height="43" rx="8"/>
-                      <text class="performance-card__chart-tooltip-value" data-performance-chart-tooltip-value x="83" y="35" text-anchor="start">25'000.00</text>
-                      <text class="performance-card__chart-tooltip-date" data-performance-chart-tooltip-date x="311" y="35" text-anchor="end">05.May 2026</text>
-                    </g>
-                    <text class="performance-card__chart-axis performance-card__chart-axis--x" data-performance-chart-x-label x="24" y="152">Feb</text>
-                    <text class="performance-card__chart-axis performance-card__chart-axis--x" data-performance-chart-x-label x="120" y="152">Feb</text>
-                    <text class="performance-card__chart-axis performance-card__chart-axis--x" data-performance-chart-x-label x="216" y="152">Mai</text>
-                    <text class="performance-card__chart-axis performance-card__chart-axis--x" data-performance-chart-x-label x="312" y="152">Aug</text>
-                  </svg>
-                </div>
+  <section class="ds-section" aria-labelledby="ck-anatomy-heading">
+    <h2 id="ck-anatomy-heading">Anatomy: slots and recipe</h2>
+    <p class="ds-caption">Every KayKit character is skinned to the same 23-bone rig (Rig_Medium), so parts from different characters mix on one skeleton and every animation plays on every mix. A <strong>recipe</strong> names one option per slot.</p>
+    <div class="ck-table-wrap">
+      <table class="ck-table">
+        <thead><tr><th>Slot</th><th>Options (source model)</th><th>Driven by</th></tr></thead>
+        <tbody>
+          <tr><td>Head</td><td>rogue (Rogue)</td><td>Fixed: one face for every profile</td></tr>
+          <tr><td>Headwear</td><td>none · helmet (Knight) · hat (Mage)</td><td>Financial knowledge: low · medium · high</td></tr>
+          <tr><td>Outfit</td><td>barbarian · ranger · knight (body, arms, legs)</td><td>Banking products: few · some · many</td></tr>
+          <tr><td>Back</td><td>none · quiver (Ranger) · cape (Knight)</td><td>Banking products: few · some · many</td></tr>
+          <tr><td>Loop</td><td>Idle_A · Walking_A · Running_A</td><td>Digital affinity: low · medium · high</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="ds-note">Slider tiers: 0 to 33 low, 34 to 66 medium, 67 to 100 high. The sliders snap to 0, 50 and 100, so each lands in the middle of a tier.</p>
+  </section>
 
-                <div class="performance-card__range" role="group" aria-label="Performance time range" data-performance-range>
-                  <button type="button" class="performance-card__range-chip" data-range="1w" aria-pressed="false">1w</button>
-                  <button type="button" class="performance-card__range-chip" data-range="1m" aria-pressed="false">1m</button>
-                  <button type="button" class="performance-card__range-chip" data-range="3m" aria-pressed="false">3m</button>
-                  <button type="button" class="performance-card__range-chip" data-range="ytd" aria-pressed="false">ytd</button>
-                  <button type="button" class="performance-card__range-chip performance-card__range-chip--active" data-range="max" aria-pressed="true">Max</button>
-                </div>
+  <section class="ds-section" aria-labelledby="ck-profiles-heading">
+    <h2 id="ck-profiles-heading">Profiles</h2>
+    <p class="ds-caption">The average of the three sliders picks the profile. The profile sets the title, the story, the UI preview and the legibility preset; the parts follow each slider on its own, so mixed answers give mixed figures.</p>
+    <div class="ck-table-wrap">
+      <table class="ck-table">
+        <thead><tr><th>Average</th><th>Profile</th><th>Persona</th><th>Legibility preset</th></tr></thead>
+        <tbody>
+          <tr><td>below 34</td><td>Newbie</td><td>Beat</td><td>Large</td></tr>
+          <tr><td>34 to 66</td><td>All-rounder</td><td>Lena</td><td>Regular</td></tr>
+          <tr><td>67 and up</td><td>Power user</td><td>Max</td><td>Small</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 
-                <div class="performance-card__summary">
-                  <div class="performance-card__summary-row">
-                    <span class="performance-card__summary-icon uz-btn uz-btn--sm uz-btn--icon-only-filledtonal" aria-hidden="true">
-                      <svg class="uz-btn__icon" focusable="false"><use href="#i-coffee"/></svg>
-                    </span>
-                    <span class="performance-card__summary-label">Invested</span>
-                    <span class="performance-card__summary-amount">
-                      <span class="performance-card__summary-currency">CHF</span>
-                      <span class="performance-card__summary-value">15'000.00</span>
-                    </span>
-                  </div>
-                  <div class="performance-card__summary-row">
-                    <span class="performance-card__summary-icon uz-btn uz-btn--sm uz-btn--icon-only-filledtonal" aria-hidden="true">
-                      <svg class="uz-btn__icon" focusable="false"><use href="#i-dollar-sign"/></svg>
-                    </span>
-                    <span class="performance-card__summary-label">Cash</span>
-                    <span class="performance-card__summary-amount">
-                      <span class="performance-card__summary-currency">CHF</span>
-                      <span class="performance-card__summary-value">5'000.00</span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            </div>
+  <section class="ds-section" aria-labelledby="ck-colour-heading">
+    <h2 id="ck-colour-heading">Colour</h2>
+    <p class="ds-caption">The figure follows the app, not the asset. All colour is computed in OKLCH from the live tokens and updates whenever the theme or a custom colour theme changes.</p>
+    <h3>Monochrome body</h3>
+    <p class="ds-caption">Each texture pixel keeps its lightness and takes the theme hue: from whichever of <code>--color-fg</code> and <code>--color-bg</code> carries more chroma (fallback hue 264, brand blue), at the ds4 neutral tint of 0.25. Lightness is squeezed into L 0.32 to 0.97 on Light and L 0.24 to 0.86 on Dark, so the figure never matches the background.</p>
+    <h3>One accent</h3>
+    <p class="ds-caption">Colour is spent in one place. The dyeable cloth swatches, the helmet's metal and, bare-headed only, the newbie's hair take the hue of <code>--color-fg-interactive</code> on the ds4 ramp law <code>C = 0.22 × (1 − L)</code>, anchored at step 700 on Light and 600 on Dark. In Monochrome themes that is the theme hue; in Multi-color themes it is the primary accent. Under a helmet or hat the hair stays neutral, so headwear and hair never merge.</p>
+    <h3>Light and shadow</h3>
+    <div class="ck-table-wrap">
+      <table class="ck-table">
+        <thead><tr><th></th><th>Light</th><th>Dark</th></tr></thead>
+        <tbody>
+          <tr><td>Stage</td><td colspan="2">Transparent canvas; the floor only catches the shadow</td></tr>
+          <tr><td>Shadow</td><td><code>--color-overlay-tint</code> at 20 %</td><td>black at 55 %</td></tr>
+          <tr><td>Spotlight pool</td><td>none</td><td><code>--color-overlay-tint</code> at 25 %, the Dark content-indication strength, so the shadow stays visible</td></tr>
+          <tr><td>Key · fill · rim</td><td>2.2 · 1.15 · 0</td><td>1.8 · 0.85 · 2.2</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="ds-note">The key light comes from the right, so the shadow falls back left onto the page rather than out of the viewport.</p>
+  </section>
 
-            <div class="section-card section-card--positions">
-              <div class="section-card__body">
-                <header class="section-card__inline-header">
-                  <span class="section-card__title">Positions</span>
-                  <button class="show-all-btn uz-btn uz-btn--tonal uz-btn--sm" type="button">
-                    <span>Show all</span>
-                    <svg class="show-all-btn__icon uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
-                  </button>
-                </header>
-                <div class="positions-list" data-positions-list data-shell-reveal="when-ready" aria-live="polite"></div>
-              </div>
-            </div>
+  <section class="ds-section" aria-labelledby="ck-staging-heading">
+    <h2 id="ck-staging-heading">Staging</h2>
+    <div class="ck-table-wrap">
+      <table class="ck-table">
+        <thead><tr><th>Where</th><th>Size</th><th>Behaviour</th></tr></thead>
+        <tbody>
+          <tr><td>Profile &gt; User Type</td><td>1.5×</td><td>Editable through the sliders; drag to turn</td></tr>
+          <tr><td>Overview, Payments, Account details, Custody account, Position details</td><td>1×</td><td>Decoration: reads the saved recipe, no interaction</td></tr>
+          <tr><td>Below 62rem</td><td></td><td>Profile: beside the UI preview, in the flow. Other screens: hidden, no room next to dense content</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="ds-caption" style="margin-top: var(--space-3);">On desktop the stage is fixed to the lower right corner. The figure keeps 64dp to the right and bottom edges, measured on one fixed capsule (2.65 m tall, 0.8 m radius), so it stands on the same spot whatever it wears. The stage sits behind the content but in front of the page background: <code>.main-content</code> gets <code>isolation: isolate</code> on these screens and the stage takes <code>z-index: -1</code>. The canvas is click-through; the figure is hit-tested against an invisible capsule.</p>
+  </section>
+
+  <section class="ds-section" aria-labelledby="ck-motion-heading">
+    <h2 id="ck-motion-heading">Motion</h2>
+    <div class="ck-table-wrap">
+      <table class="ck-table">
+        <thead><tr><th>Moment</th><th>Spec</th></tr></thead>
+        <tbody>
+          <tr><td>Part swap</td><td>Squash out 168 ms, ease-in <code>(0.4, 0, 1, 1)</code> to scale 1.06 / 0.92, swap the parts, spring back 420 ms, ease-out <code>(0.22, 1, 0.36, 1)</code>. During a drag only the latest recipe waits.</td></tr>
+          <tr><td>Loop change</td><td>Cross-fade 280 ms between Idle, Walk and Run</td></tr>
+          <tr><td>Rest pose</td><td>Turned 30° toward the viewer's left, heading for the bottom centre of the screen</td></tr>
+          <tr><td>Scroll</td><td>About 7° per 100 px, tied to the scroll position and eased</td></tr>
+          <tr><td>Drag</td><td>Turns with the pointer, then coasts out (damping 0.92 per frame)</td></tr>
+          <tr><td>Reduced motion</td><td>No loops, tweens, coasting or scroll turn: a still pose; swaps happen instantly</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="ds-note">The canvas renders only while it is on screen and the tab is visible.</p>
+  </section>
+
+  <section class="ds-section" aria-labelledby="ck-add-heading">
+    <h2 id="ck-add-heading">Add the character to a screen</h2>
+    <ol class="ck-steps">
+      <li>Load the two scripts at the end of the page:
+        <pre>&lt;script src="js/profile-persona.js"&gt;&lt;/script&gt;
+&lt;script type="module" src="js/profile-persona-character.js"&gt;&lt;/script&gt;</pre>
+      </li>
+      <li>Add the page's <code>data-screen</code> to <code>AMBIENT_SCREENS</code> in <code>js/profile-persona-character.js</code>.</li>
+      <li>Add <code>.body[data-screen="…"] .main-content</code> to the <code>isolation: isolate</code> rule in <code>css/styles.css</code>. Without it the figure renders behind the page background and stays invisible.</li>
+    </ol>
+  </section>
+
+  <section class="ds-section" aria-labelledby="ck-assets-heading">
+    <h2 id="ck-assets-heading">Assets</h2>
+    <p class="ds-caption"><code>assets/3d/kaykit/</code>: knight, mage, rogue, barbarian, ranger (.glb, parts on Rig_Medium) plus <code>rig-medium-general.glb</code> and <code>rig-medium-movement.glb</code> (animation clips). KayKit Adventurers 2.0 by Kay Lousberg, CC0. Runtime: three.js 0.170 from jsDelivr.</p>
+  </section>
           </div>
         </div>
       </section>
+
     </div>
   </main>
   <nav class="tab-bar" data-scroll-edge-footer>
@@ -2518,8 +2598,8 @@
       </span>
       <span class="tab-bar__label">Profile</span>
     </a>
-    <a class="tab-bar__item admin-only" href="design-system.html">
-      <span class="tab-bar__icon-wrap">
+    <a class="tab-bar__item tab-bar__item--active admin-only" href="design-system.html" aria-current="page">
+      <span class="tab-bar__icon-wrap tab-bar__icon-wrap--active">
         <svg class="tab-bar__icon" aria-hidden="true" focusable="false"><use href="#i-layers"/></svg>
       </span>
       <span class="tab-bar__label">Design</span>
@@ -2529,21 +2609,72 @@
 
 </div>
 
-<script src="js/document-ready.js"></script>
-<script src="js/section-build-motion.js"></script>
-<script src="js/shell-nav.js"></script>
 <script src="js/analytics.js"></script>
+<script src="js/payment-state.js"></script>
+<script src="js/data-render.js"></script>
 <script src="js/scroll-edge-chrome.js"></script>
 <script src="js/app-mp.js"></script>
-<script src="js/payment-state.js"></script>
-<script src="js/investment-product-details.js"></script>
-<script src="js/investment-positions.js"></script>
+<script src="js/form-field-sheet.js"></script>
 <script src="js/nav-button-motion.js"></script>
 <script src="js/cta-pulse.js"></script>
 <script src="js/step-indicator.js"></script>
 <script src="js/wiggle.js"></script>
 <script src="js/admin.js"></script>
-<script src="js/profile-persona.js"></script>
+<script src="js/section-build-motion.js"></script>
+<script src="js/shell-nav.js"></script>
+<script>
+/* Character kit specimen: pickers build a recipe and send it to the 3D stage
+   (js/profile-persona-character.js) via uzbank:persona-change. */
+(function () {
+  var root = document.querySelector('[data-ck-controls]');
+  var stage = document.querySelector('[data-character-specimen]');
+  if (!root || !stage) return;
+  var PRESETS = {
+    novice: { headwear: 'none', outfit: 'barbarian', back: 'none', loop: 'Idle_A' },
+    standard: { headwear: 'helmet', outfit: 'ranger', back: 'quiver', loop: 'Walking_A' },
+    power: { headwear: 'hat', outfit: 'knight', back: 'cape', loop: 'Running_A' }
+  };
+  var recipe = Object.assign({ head: 'rogue' }, PRESETS.novice);
+  var out = root.querySelector('[data-ck-recipe]');
+
+  function render() {
+    root.querySelectorAll('[data-ck-slot]').forEach(function (group) {
+      var slot = group.getAttribute('data-ck-slot');
+      group.querySelectorAll('[data-value]').forEach(function (b) {
+        var on = b.getAttribute('data-value') === recipe[slot];
+        b.classList.toggle('segmented__option--active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    });
+    root.querySelectorAll('[data-ck-preset]').forEach(function (b) {
+      var p = PRESETS[b.getAttribute('data-ck-preset')];
+      var on = Object.keys(p).every(function (k) { return p[k] === recipe[k]; });
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    out.textContent = JSON.stringify(recipe, null, 2);
+  }
+  function send() {
+    try { document.dispatchEvent(new CustomEvent('uzbank:persona-change', { detail: { recipe: Object.assign({}, recipe) } })); } catch (e) {}
+  }
+
+  root.addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) return;
+    if (b.hasAttribute('data-ck-preset')) Object.assign(recipe, PRESETS[b.getAttribute('data-ck-preset')]);
+    else if (b.hasAttribute('data-value')) recipe[b.closest('[data-ck-slot]').getAttribute('data-ck-slot')] = b.getAttribute('data-value');
+    else return;
+    render();
+    send();
+  });
+
+  /* Picks made while the 3D was still loading: re-send once the stage is ready. */
+  new MutationObserver(function (_, obs) {
+    if (stage.classList.contains('profile-persona-stage--ready')) { obs.disconnect(); send(); }
+  }).observe(stage, { attributes: true, attributeFilter: ['class'] });
+
+  render();
+})();
+</script>
 <script type="module" src="js/profile-persona-character.js"></script>
 </body>
 </html>

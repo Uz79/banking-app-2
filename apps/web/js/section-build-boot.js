@@ -22,7 +22,8 @@
     'details-of-position.html': 2,
     'design-system.html': 0,      /* admin: a dashboard of its own (4th tab) */
     'motion-specimens.html': 1,
-    'components.html': 1
+    'components.html': 1,
+    'character-kit.html': 1
   };
 
   function page(pathname) {

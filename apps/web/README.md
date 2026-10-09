@@ -62,6 +62,7 @@ Persisted in `localStorage` (see `js/storage-migrate.js` for legacy key migratio
 
 - `spa-source.html` — wide SPA-style reference (not the primary runtime)
 - `components.html` — button design-system gallery
+- `character-kit.html` — design system: the 3D persona character, with a live specimen
 - `css/tokens.css` — generated from `designs/tokens/`
 - `css/typography.css` — generated responsive type scale
 - `css/styles.css` — components and page layout

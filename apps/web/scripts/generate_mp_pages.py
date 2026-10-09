@@ -79,7 +79,7 @@ def sidebar(active: str, prefix: str = "") -> str:
       </div>
       <div class="sidebar__logout">
         <button class="sidebar__logout-btn" type="button" data-analytics="logout_click">
-          {svg_icon("sidebar__logout-icon", "icon24-corner-up-right.svg", prefix)}
+          {svg_icon("sidebar__logout-icon", "icon24-log-out.svg", prefix)}
           <span>Logout</span>
         </button>
       </div>

@@ -1,4 +1,3 @@
-/* Generated from cartography-lab-app themeColors.ts + banking adapter (build: scripts/theme-engine/). Do not edit by hand. */
 var UZBankThemeEngine = (() => {
   var __defProp = Object.defineProperty;
   var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -18,7 +17,7 @@ var UZBankThemeEngine = (() => {
   };
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // ../engine/src/banking.ts
+  // scripts/theme-engine/banking.ts
   var banking_exports = {};
   __export(banking_exports, {
     BANKING_NEUTRAL_SEED: () => BANKING_NEUTRAL_SEED,
@@ -39,6 +38,7 @@ var UZBankThemeEngine = (() => {
     NEUTRAL_300_STEP_INDEX: () => NEUTRAL_300_STEP_INDEX,
     NEUTRAL_STEP_LABELS: () => NEUTRAL_STEP_LABELS,
     OVERRIDE_KEY: () => OVERRIDE_KEY,
+    PREFER_BANK_KEY: () => PREFER_BANK_KEY,
     SEQUENCE_STEPS: () => SEQUENCE_STEPS,
     THEMES_KEY: () => THEMES_KEY,
     TOKEN_CACHE_KEY: () => TOKEN_CACHE_KEY,
@@ -111,7 +111,7 @@ var UZBankThemeEngine = (() => {
     writeSavedThemes: () => writeSavedThemes
   });
 
-  // ../engine/src/data/builtinThemes.json
+  // scripts/theme-engine/data/builtinThemes.json
   var builtinThemes_default = [
     {
       id: "uzbank-default",
@@ -271,15 +271,15 @@ var UZBankThemeEngine = (() => {
     }
   ];
 
-  // ../engine/src/data/builtinThemes.ts
+  // scripts/theme-engine/data/builtinThemes.ts
   var BUILTIN_THEMES = builtinThemes_default;
-  var DEFAULT_BUILTIN_THEME_ID = "uzbank-default";
+  var DEFAULT_BUILTIN_THEME_ID = "t_60e4b9e0a998e_1a0afd66790";
   function getDefaultBuiltinTheme() {
     var _a;
     return (_a = BUILTIN_THEMES.find((t) => t.id === DEFAULT_BUILTIN_THEME_ID)) != null ? _a : BUILTIN_THEMES[0];
   }
 
-  // ../engine/src/lib/themeColors.ts
+  // scripts/theme-engine/lib/themeColors.ts
   var SEQUENCE_STEPS = 13;
   var FINETUNE_BG_STEPS = 7;
   var FINETUNE_FG_STEPS = SEQUENCE_STEPS;
@@ -1793,6 +1793,7 @@ var UZBankThemeEngine = (() => {
   function saveOverride(pair) {
     try {
       localStorage.setItem(OVERRIDE_KEY, JSON.stringify(pair));
+      localStorage.removeItem("uzBankWebPreferBankDefault");
     } catch (e) {
     }
   }
@@ -1990,8 +1991,13 @@ var UZBankThemeEngine = (() => {
       ensureBuiltinThemes();
     } catch (e) {
     }
+    let preferBank = false;
+    try {
+      preferBank = localStorage.getItem("uzBankWebPreferBankDefault") === "1";
+    } catch (e) {
+    }
     let saved = readSavedOverride();
-    if (!saved || firstBuiltinSeed) {
+    if ((!saved || firstBuiltinSeed) && !preferBank) {
       const builtin = getDefaultBuiltinTheme();
       const shell = shellThemeFromPair(builtin.bg, builtin.fg, builtin.neutral);
       const settings = settingsFromPair(builtin, shell);
@@ -2004,6 +2010,7 @@ var UZBankThemeEngine = (() => {
       saveOverride(pair);
       saved = pair;
     }
+    if (!saved) return null;
     const pairShell = shellThemeFromPair(saved.bg, saved.fg, saved.neutral);
     const systemShell = getSystemTheme();
     if (pairShell !== systemShell) {
@@ -2018,9 +2025,10 @@ var UZBankThemeEngine = (() => {
     return { ...saved, ...resolved };
   }
 
-  // ../engine/src/banking.ts
+  // scripts/theme-engine/banking.ts
   var TOKEN_CACHE_KEY = "uzBankWebColorTokens";
-  var UZBANK_THEME_ID = DEFAULT_BUILTIN_THEME_ID;
+  var UZBANK_THEME_ID = "uzbank-default";
+  var PREFER_BANK_KEY = "uzBankWebPreferBankDefault";
   function bankingTokens(pair) {
     var _a;
     const all = deriveTokens(pair.bg, pair.fg, pair.neutral, (_a = pair.kind) != null ? _a : "monochrome", {
@@ -2072,6 +2080,7 @@ var UZBankThemeEngine = (() => {
     clearSavedOverride();
     try {
       localStorage.removeItem(TOKEN_CACHE_KEY);
+      localStorage.setItem(PREFER_BANK_KEY, "1");
     } catch (e) {
     }
     clearInlineColorTokens();
