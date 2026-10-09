@@ -16,7 +16,7 @@ export { DEFAULT_BUILTIN_THEME_ID } from "./data/builtinThemes";
 export const TOKEN_CACHE_KEY = "uzBankWebColorTokens";
 /** Choosing this card clears the override so tokens.css (the original blue) applies. */
 export const UZBANK_THEME_ID = "uzbank-default";
-/** Set when the user explicitly picks UZ Bank, so the next boot does not reapply Custom 01. */
+/** Set when the user explicitly picks UZ Bank, so the next boot does not reapply Custom 10. */
 export const PREFER_BANK_KEY = "uzBankWebPreferBankDefault";
 
 /** The banking CSS reads --color-* roles only; the v4/map tokens stay out. */

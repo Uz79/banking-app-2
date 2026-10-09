@@ -1665,6 +1665,10 @@
 <path d="M9 9H9.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M15 9H15.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </symbol>
+<symbol id="i-sort" viewBox="0 0 24 24">
+<path d="M7 15L12 20L17 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17 9L12 4L7 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</symbol>
 <symbol id="i-speaker 2" viewBox="0 0 24 24">
 <g clip-path="url(#i-speaker 2-clip0_164_49556)">
 <path d="M18 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V4C20 2.89543 19.1046 2 18 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2396,6 +2400,10 @@
                     </header>
 
                     <div class="profile-persona-sliders">
+                      <div class="profile-persona-stage" data-persona-stage>
+                        <span class="profile-persona-stage__fallback" aria-hidden="true">Loading 3D…</span>
+                        <span class="profile-persona-stage__name" data-persona-name aria-hidden="true">Beat</span>
+                      </div>
                       <div class="profile-persona-slider">
                         <label class="profile-persona-slider__label" for="personaKnowledge">
                           <svg class="profile-persona-slider__icon" aria-hidden="true" focusable="false"><use href="#i-key"/></svg>
@@ -2436,10 +2444,6 @@
                     </header>
                     <div class="profile-persona__scene">
                       <div class="profile-persona-preview" data-persona-preview role="region" aria-label="UI preview" tabindex="0"></div>
-                      <div class="profile-persona-stage" data-persona-stage>
-                        <span class="profile-persona-stage__fallback" aria-hidden="true">Loading 3D…</span>
-                        <span class="profile-persona-stage__name" data-persona-name aria-hidden="true">Beat</span>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -2477,53 +2481,49 @@
                   </div>
                 </section>
 
-                <section class="profile-legibility__section" aria-labelledby="legibilityManualTitle">
-                  <h3 class="profile-section-title" id="legibilityManualTitle">Manual settings</h3>
-                  <div class="profile-legibility__manual">
-                    <div class="profile-legibility__controls">
-                      <div class="form-field profile-font-field">
-                        <label class="form-field__label" for="profileFontFamily">Typeface</label>
-                        <div class="form-field__select-wrap">
-                          <select class="form-field__select" id="profileFontFamily" name="profileFontFamily" data-font-select aria-label="Typeface">
-                            <option value="profile-pro" data-font-family="'Profile Pro', sans-serif" selected>Profile Pro</option>
-                            <option value="dm-sans" data-font-family="'DM Sans', sans-serif">DM Sans</option>
-                            <option value="inter" data-font-family="'Inter', sans-serif">Inter</option>
-                            <option value="space-grotesk" data-font-family="'Space Grotesk', sans-serif">Space Grotesk</option>
-                            <option value="source-serif-4" data-font-family="'Source Serif 4', serif">Source Serif 4</option>
-                            <option value="georgia" data-font-family="Georgia, 'Times New Roman', serif">Georgia</option>
-                          </select>
-                          <span class="form-field__select-icon" aria-hidden="true">
-                            <svg class="form-field__select-chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
-                          </span>
-                        </div>
-                      </div>
-
-                      <div class="profile-persona-slider">
-                        <label class="profile-persona-slider__label" for="profileFontScale"><span>Font</span></label>
-                        <input type="range" id="profileFontScale" min="0.85" max="1.25" step="0.01" value="1" data-appearance-range="fontScale" class="cc-color-slider cc-color-slider--compact profile-persona-slider__input" aria-label="Font size">
-                        <div class="profile-persona-slider__range" aria-hidden="true"><span>small</span><span>big</span></div>
-                        <span class="visually-hidden" id="profileFontScaleValue">100%</span>
-                      </div>
-
-                      <div class="profile-persona-slider">
-                        <label class="profile-persona-slider__label" for="profileSpaceScale"><span>Paddings</span></label>
-                        <input type="range" id="profileSpaceScale" min="0.80" max="1.25" step="0.01" value="1" data-appearance-range="spaceScale" class="cc-color-slider cc-color-slider--compact profile-persona-slider__input" aria-label="Padding size">
-                        <div class="profile-persona-slider__range" aria-hidden="true"><span>small</span><span>big</span></div>
-                        <span class="visually-hidden" id="profileSpaceScaleValue">100%</span>
+                <section class="profile-legibility__section profile-legibility__manual" aria-label="Manual settings and preview">
+                  <div class="profile-legibility__controls" aria-labelledby="legibilityManualTitle">
+                    <h3 class="profile-section-title" id="legibilityManualTitle">Manual settings</h3>
+                    <div class="form-field profile-font-field">
+                      <label class="form-field__label" for="profileFontFamily">Typeface</label>
+                      <div class="form-field__select-wrap">
+                        <select class="form-field__select" id="profileFontFamily" name="profileFontFamily" data-font-select aria-label="Typeface">
+                          <option value="profile-pro" data-font-family="'Profile Pro', sans-serif" selected>Profile Pro</option>
+                          <option value="dm-sans" data-font-family="'DM Sans', sans-serif">DM Sans</option>
+                          <option value="inter" data-font-family="'Inter', sans-serif">Inter</option>
+                          <option value="space-grotesk" data-font-family="'Space Grotesk', sans-serif">Space Grotesk</option>
+                          <option value="source-serif-4" data-font-family="'Source Serif 4', serif">Source Serif 4</option>
+                          <option value="georgia" data-font-family="Georgia, 'Times New Roman', serif">Georgia</option>
+                        </select>
+                        <span class="form-field__select-icon" aria-hidden="true">
+                          <svg class="form-field__select-chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+                        </span>
                       </div>
                     </div>
 
-                    <div class="profile-legibility-preview" aria-label="Legibility preview">
-                      <span class="profile-legibility-preview__label">Preview</span>
-                      <div class="profile-preview-dialog" role="group" aria-label="Preview dialog">
-                        <div class="profile-preview-dialog__body">
-                          <h3 class="profile-preview-dialog__title">Dismiss process?</h3>
-                          <p class="profile-preview-dialog__text">All the input will be lost.</p>
-                        </div>
-                        <div class="profile-preview-dialog__actions">
-                          <button type="button" class="cc-btn-action cc-btn-action--secondary" tabindex="-1">Cancel</button>
-                          <button type="button" class="cc-btn-action" tabindex="-1">Dismiss</button>
-                        </div>
+                    <div class="profile-persona-slider">
+                      <label class="profile-persona-slider__label" for="profileFontScale"><span>Font</span></label>
+                      <input type="range" id="profileFontScale" min="0.85" max="1.25" step="0.01" value="1" data-appearance-range="fontScale" class="cc-color-slider cc-color-slider--compact profile-persona-slider__input" aria-label="Font size">
+                      <div class="profile-persona-slider__range" aria-hidden="true"><span>small</span><span>big</span></div>
+                      <span class="visually-hidden" id="profileFontScaleValue">100%</span>
+                    </div>
+
+                    <div class="profile-persona-slider">
+                      <label class="profile-persona-slider__label" for="profileSpaceScale"><span>Paddings</span></label>
+                      <input type="range" id="profileSpaceScale" min="0.80" max="1.25" step="0.01" value="1" data-appearance-range="spaceScale" class="cc-color-slider cc-color-slider--compact profile-persona-slider__input" aria-label="Padding size">
+                      <div class="profile-persona-slider__range" aria-hidden="true"><span>small</span><span>big</span></div>
+                      <span class="visually-hidden" id="profileSpaceScaleValue">100%</span>
+                    </div>
+                  </div>
+
+                  <div class="profile-legibility-preview" aria-labelledby="legibilityPreviewTitle">
+                    <h3 class="profile-section-title" id="legibilityPreviewTitle">Preview</h3>
+                    <div class="basic-dialog-payment-exit__surface profile-legibility-preview__dialog" role="group" aria-label="Preview dialog">
+                      <p class="basic-dialog-payment-exit__title">Dismiss process?</p>
+                      <p class="basic-dialog-payment-exit__message">All the input will be lost.</p>
+                      <div class="basic-dialog-payment-exit__actions">
+                        <button type="button" class="uz-btn uz-btn--secondary uz-btn--md uz-btn--block" tabindex="-1">Cancel</button>
+                        <button type="button" class="uz-btn uz-btn--primary uz-btn--md uz-btn--block" tabindex="-1">Dismiss</button>
                       </div>
                     </div>
                   </div>
@@ -2651,7 +2651,7 @@
           <section class="demo-reset">
             <h2 class="demo-reset__title">Demo data</h2>
             <p class="demo-reset__subtitle">Clear saved bookings and restore the Household account to <strong>CHF&nbsp;10'000.00</strong>.</p>
-            <button type="button" class="cc-btn-action cc-btn-action--secondary" id="demoResetBtn">Reset demo data</button>
+            <button type="button" class="uz-btn uz-btn--secondary uz-btn--md" id="demoResetBtn">Reset demo data</button>
           </section>
         </div>
       </section>

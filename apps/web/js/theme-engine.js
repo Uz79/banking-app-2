@@ -125,6 +125,34 @@ var UZBankThemeEngine = (() => {
       createdAt: 0
     },
     {
+      id: "t_da0fdc6c4b056_1a122a822ab",
+      name: "Custom 10",
+      bg: "#ffffff",
+      fg: "#6b7e63",
+      neutral: "#414e4d",
+      kind: "multicolor",
+      neutralSeed: "#465453",
+      primarySeed: "#a5b39f",
+      bgIndex: 0,
+      fgIndex: 9,
+      primaryIndex: 7,
+      contrastByShell: {
+        light: {
+          bgIndex: 0,
+          fgIndex: 9
+        },
+        dark: {
+          bgIndex: 3,
+          fgIndex: 4
+        }
+      },
+      primaryByShell: {
+        light: 7,
+        dark: 6
+      },
+      createdAt: 1791582806699
+    },
+    {
       id: "t_60e4b9e0a998e_1a0afd66790",
       name: "Custom 01",
       bg: "#ffffff",
@@ -273,7 +301,7 @@ var UZBankThemeEngine = (() => {
 
   // scripts/theme-engine/data/builtinThemes.ts
   var BUILTIN_THEMES = builtinThemes_default;
-  var DEFAULT_BUILTIN_THEME_ID = "t_60e4b9e0a998e_1a0afd66790";
+  var DEFAULT_BUILTIN_THEME_ID = "t_da0fdc6c4b056_1a122a822ab";
   function getDefaultBuiltinTheme() {
     var _a;
     return (_a = BUILTIN_THEMES.find((t) => t.id === DEFAULT_BUILTIN_THEME_ID)) != null ? _a : BUILTIN_THEMES[0];
@@ -670,7 +698,7 @@ var UZBankThemeEngine = (() => {
     const a = Math.round(Math.min(1, Math.max(0, alpha)) * 255).toString(16).padStart(2, "0");
     return `#${rgb.r.toString(16).padStart(2, "0")}${rgb.g.toString(16).padStart(2, "0")}${rgb.b.toString(16).padStart(2, "0")}${a}`;
   }
-  var TONAL_FILL_ALPHA = 0.1;
+  var TONAL_FILL_ALPHA = 0.05;
   function shellThemeFromPair(bgHex, fgHex, neutralHex) {
     var _a;
     const bg = hexToRgb(bgHex);
@@ -1577,11 +1605,11 @@ var UZBankThemeEngine = (() => {
     const primaryStatePressed = primaryFillIsDark ? hexAlpha("#ffffff", 0.2) : hexAlpha(accentHex, 0.2);
     const neutralInk = selectedForegroundHex;
     const tonalBg = hexAlpha(neutralInk, TONAL_FILL_ALPHA);
-    const tonalHover = hexAlpha(neutralInk, 0.14);
-    const tonalPressed = hexAlpha(neutralInk, 0.22);
-    const chipTonalBg = hexAlpha(neutralInk, TONAL_FILL_ALPHA);
     const neutralWash10 = hexAlpha(neutralInk, 0.1);
     const neutralWash20 = hexAlpha(neutralInk, 0.2);
+    const tonalHover = neutralWash10;
+    const tonalPressed = neutralWash20;
+    const chipTonalBg = tonalBg;
     const separatorWash = hexAlpha(neutralInk, isDark ? 0.1 : 0.14);
     const neutralStroke70 = hexAlpha(neutralInk, 0.7);
     const modeKey = isDark ? "dark" : "light";
@@ -1611,7 +1639,7 @@ var UZBankThemeEngine = (() => {
       "color-fg-label": secondaryFgHex,
       "color-fg-disabled": isDark ? "rgba(255, 255, 255, 0.4)" : "rgba(8, 10, 16, 0.4)",
       "color-separator": separatorWash,
-      "color-show-all-bg": neutralWash10,
+      "color-show-all-bg": tonalBg,
       "color-nav-item-active-bg": tonalBg,
       "color-segmented-track-bg": tonalBg,
       "color-input-stroke": neutralStroke70,
@@ -1637,8 +1665,9 @@ var UZBankThemeEngine = (() => {
       "color-modal-elevated-shadow": blackAlpha(isDark ? 0.45 : 0.12),
       "color-surface-state-hover": neutralWash10,
       "color-surface-state-pressed": neutralWash20,
-      "color-action-circle-state-hover": hexAlpha(accentHex, 0.1),
-      "color-action-circle-state-pressed": hexAlpha(accentHex, 0.2),
+      /* White wash on filled accent circles (accent@alpha is invisible on same fill). */
+      "color-action-circle-state-hover": hexAlpha("#ffffff", 0.12),
+      "color-action-circle-state-pressed": hexAlpha("#ffffff", 0.22),
       /* v4 tokens — buttons/segmented/chips read these directly from colors.css */
       "background-background": bgHex,
       "background-background-brand": accentHex,

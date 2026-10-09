@@ -518,8 +518,8 @@ export function hexAlpha(hex: string, alpha: number): string {
     .padStart(2, "0")}${rgb.b.toString(16).padStart(2, "0")}${a}`;
 }
 
-/** Filled tonal wash: 10% of the shell’s neutral foreground (fg/bg swap per theme). */
-const TONAL_FILL_ALPHA = 0.1;
+/** Filled tonal wash: 5% of the shell’s neutral ink (Figma chip / segmented / tonal). */
+const TONAL_FILL_ALPHA = 0.05;
 
 /**
  * Infer Light/Dark from page bg vs body ink.
@@ -1874,14 +1874,15 @@ export function deriveTokens(
     ? hexAlpha("#ffffff", 0.2)
     : hexAlpha(accentHex, 0.2);
   /* Resting interactive chrome uses neutral fg; primary only for primary/selected states.
-   * Tonal fills = 10% of that shell’s neutral fg (Light dark-ink / Dark light-ink). */
+   * Tonal fills = 5% of that shell’s neutral ink (chip, segmented, filled-tonal, nav item).
+   * Hover / pressed state layers = 10% / 20% (Figma #…1A / #…33). */
   const neutralInk = selectedForegroundHex;
   const tonalBg = hexAlpha(neutralInk, TONAL_FILL_ALPHA);
-  const tonalHover = hexAlpha(neutralInk, 0.14);
-  const tonalPressed = hexAlpha(neutralInk, 0.22);
-  const chipTonalBg = hexAlpha(neutralInk, TONAL_FILL_ALPHA);
   const neutralWash10 = hexAlpha(neutralInk, 0.1);
   const neutralWash20 = hexAlpha(neutralInk, 0.2);
+  const tonalHover = neutralWash10;
+  const tonalPressed = neutralWash20;
+  const chipTonalBg = tonalBg;
   /* Light separators need a touch more opacity on frosted white panels. */
   const separatorWash = hexAlpha(neutralInk, isDark ? 0.1 : 0.14);
   const neutralStroke70 = hexAlpha(neutralInk, 0.7);
@@ -1919,7 +1920,7 @@ export function deriveTokens(
     "color-fg-label": secondaryFgHex,
     "color-fg-disabled": isDark ? "rgba(255, 255, 255, 0.4)" : "rgba(8, 10, 16, 0.4)",
     "color-separator": separatorWash,
-    "color-show-all-bg": neutralWash10,
+    "color-show-all-bg": tonalBg,
     "color-nav-item-active-bg": tonalBg,
     "color-segmented-track-bg": tonalBg,
     "color-input-stroke": neutralStroke70,
@@ -1945,8 +1946,9 @@ export function deriveTokens(
     "color-modal-elevated-shadow": blackAlpha(isDark ? 0.45 : 0.12),
     "color-surface-state-hover": neutralWash10,
     "color-surface-state-pressed": neutralWash20,
-    "color-action-circle-state-hover": hexAlpha(accentHex, 0.1),
-    "color-action-circle-state-pressed": hexAlpha(accentHex, 0.2),
+    /* White wash on filled accent circles (accent@alpha is invisible on same fill). */
+    "color-action-circle-state-hover": hexAlpha("#ffffff", 0.12),
+    "color-action-circle-state-pressed": hexAlpha("#ffffff", 0.22),
     /* v4 tokens — buttons/segmented/chips read these directly from colors.css */
     "background-background": bgHex,
     "background-background-brand": accentHex,
@@ -2370,7 +2372,7 @@ export function resolveThemeChoice(
   return pair;
 }
 
-/** Boot: seed built-in themes, restore override, or apply Custom 01 as default.
+/** Boot: seed built-in themes, restore override, or apply Custom 10 as default.
  * Final shell always matches the OS preference (Light/Dark). */
 export function bootColorOverride(): ColorPair | null {
   let firstBuiltinSeed = true;
@@ -2389,7 +2391,7 @@ export function bootColorOverride(): ColorPair | null {
   }
 
   let saved = readSavedOverride();
-  /* No saved theme, or the first time builtins ship: select Custom 01.
+  /* No saved theme, or the first time builtins ship: select Custom 10.
    * An explicit "UZ Bank" choice (prefer-bank flag, no override) stays on tokens.css. */
   if ((!saved || firstBuiltinSeed) && !preferBank) {
     const builtin = getDefaultBuiltinTheme();

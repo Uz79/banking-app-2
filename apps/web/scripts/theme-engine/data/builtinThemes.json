@@ -11,6 +11,34 @@
     "createdAt": 0
   },
   {
+    "id": "t_da0fdc6c4b056_1a122a822ab",
+    "name": "Custom 10",
+    "bg": "#ffffff",
+    "fg": "#6b7e63",
+    "neutral": "#414e4d",
+    "kind": "multicolor",
+    "neutralSeed": "#465453",
+    "primarySeed": "#a5b39f",
+    "bgIndex": 0,
+    "fgIndex": 9,
+    "primaryIndex": 7,
+    "contrastByShell": {
+      "light": {
+        "bgIndex": 0,
+        "fgIndex": 9
+      },
+      "dark": {
+        "bgIndex": 3,
+        "fgIndex": 4
+      }
+    },
+    "primaryByShell": {
+      "light": 7,
+      "dark": 6
+    },
+    "createdAt": 1791582806699
+  },
+  {
     "id": "t_60e4b9e0a998e_1a0afd66790",
     "name": "Custom 01",
     "bg": "#ffffff",
