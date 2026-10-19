@@ -8,11 +8,11 @@ Each group ends with something to look at in the browser (`cd apps/web && npm ru
 
 What you see: a fourth card "Payday run" under Character kit on the Design system page. It opens a full-screen empty page with a close button top left; close returns to the hub with the back motion. Signed out, the page redirects to Profile > Admin access.
 
-- [ ] `playground.html`: copy the head and boot script from `character-kit.html` (title "UZ Bank – Playground", `admin-boot.js` with `data-guard`, `section-build-boot.js`), the inline icon sprite block, `body.body[data-screen="playground"][data-page="playground"]`. One `main.main-content` holding `section.view.view--active.view--playground` with the close button `a.view__nav-btn.view__nav-btn--leading.view__back[href="design-system.html"][aria-label="Close Playground"]` using `#i-x`, and an empty `div.playground-stage` (D5, D6). No sidebar, tab bar or sticky header. Scripts: the same shell set as `character-kit.html` that the page transition and back button need (`nav-button-motion.js`, `section-build-motion.js`, `shell-nav.js`, `admin.js`), nothing that adds the status message
-- [ ] `design-system.html`: fourth `a.ds-hub__card` to `playground.html` ("Payday run", one-line meta, `#i-play`, trailing arrow)
-- [ ] Register the page (D5, D18): `vite.config.js`; `NAV_DEPTH` in `js/section-build-boot.js` and `js/shell-nav.js`; `ROOT_TAB_BY_SCREEN` in `js/shell-nav.js`; (no `bindMainScrollChrome` entry, D18); `.body[data-screen="playground"]` full-screen rules in `css/styles.css` (100dvh, no scroll, no padding, sidebar and tab bar hidden, close button above the stage)
-- [ ] `AGENTS.md`: add the full-screen exception to the "new page" rule (no `bindMainScrollChrome` entry for pages without a scroll header)
-- [ ] Check `npm run build` emits `playground.html`
+- [x] `playground.html`: copy the head and boot script from `character-kit.html` (title "UZ Bank – Playground", `admin-boot.js` with `data-guard`, `section-build-boot.js`), the inline icon sprite block, `body.body[data-screen="playground"][data-page="playground"]`. One `main.main-content` holding `section.view.view--active.view--playground` with the close button `a.view__nav-btn.view__nav-btn--leading.view__back[href="design-system.html"][aria-label="Close Playground"]` using `#i-x`, and an empty `div.playground-stage` (D5, D6). No sidebar, tab bar or sticky header. Scripts: the same shell set as `character-kit.html` that the page transition and back button need (`nav-button-motion.js`, `section-build-motion.js`, `shell-nav.js`, `admin.js`), nothing that adds the status message
+- [x] `design-system.html`: fourth `a.ds-hub__card` to `playground.html` ("Payday run", one-line meta, `#i-play`, trailing arrow)
+- [x] Register the page (D5, D18): `vite.config.js`; `NAV_DEPTH` in `js/section-build-boot.js` and `js/shell-nav.js`; `ROOT_TAB_BY_SCREEN` in `js/shell-nav.js`; (no `bindMainScrollChrome` entry, D18); `.body[data-screen="playground"]` full-screen rules in `css/styles.css` (100dvh, no scroll, no padding, sidebar and tab bar hidden, close button above the stage)
+- [x] `AGENTS.md`: add the full-screen exception to the "new page" rule (no `bindMainScrollChrome` entry for pages without a scroll header)
+- [x] Check `npm run build` emits `playground.html`
 
 ## 2. The runner on a themed stage (character module refactor)
 

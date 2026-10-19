@@ -10657,3 +10657,59 @@ html[data-theme="dark"] .admin-login__error {
 .theme-flow__body { display: flex; flex-direction: column; gap: var(--space-5); }
 .theme-flow .tf-set-color-dialog { margin: auto; } /* global reset zeroes dialog margins */
 .theme-flow .tf-spin__btn svg { width: 0.75rem; height: 0.75rem; }
+
+/* ── Playground (design system, admin): full-screen page, no app chrome ───────── */
+
+.body[data-screen="playground"] .sidebar,
+.body[data-screen="playground"] .tab-bar {
+  display: none;
+}
+
+.body[data-screen="playground"] .app {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+.body[data-screen="playground"] .main-content {
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--color-bg);
+}
+
+.body[data-screen="playground"] .main-content__inner,
+.body[data-screen="playground"] .view--playground,
+.body[data-screen="playground"] .view--playground .view__main {
+  max-width: none;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.body[data-screen="playground"] .view--playground .view__main {
+  position: relative;
+}
+
+.playground-stage {
+  position: absolute;
+  inset: 0;
+}
+
+.playground__close {
+  top: max(var(--space-3), env(safe-area-inset-top, 0px));
+  bottom: auto;
+  left: max(var(--space-3), env(safe-area-inset-left, 0px));
+  margin: 0;
+  z-index: 2;
+}
+
+/* The page name for assistive tech only; the full-screen page shows no title bar. */
+.playground__title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
