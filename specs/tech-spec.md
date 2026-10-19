@@ -1,0 +1,92 @@
+# Technical Spec
+
+Scope: `apps/web`. The other folders (`apps/ios`, `apps/backend`, `packages/`, `designs/`) are supporting material; `designs/tokens/` is the token source.
+
+## Stack
+
+- Vanilla HTML, CSS and JavaScript, multi-page, built with Vite (`npm run dev` on port 5174, `npm run build`)
+- Classic `<script>` files for the app shell; ES modules only where a library needs them (the 3D character)
+- three.js 0.170 from jsDelivr, loaded only by the 3D character module
+- Deployed to GitHub Pages by `.github/workflows/deploy.yml` on every push to `main` (it uploads `apps/web` after a build)
+
+## Not using
+
+- No UI framework, no TypeScript, no state library
+- No test runner or end-to-end infrastructure; checks are manual and recorded in each spec's `validation.md`
+- No backend: all data is simulated in the browser
+- No new runtime dependency without a spec decision that records why
+
+## Pages
+
+Every shell page shares the same structure: sidebar (desktop) or tab bar (mobile), `.main-content` with a sticky header, the inline icon sprite, the inline boot script, and `data-screen` on `<body>`.
+
+| Page | `data-screen` | Depth | Notes |
+|---|---|---|---|
+| `overview.html` | overview | 0 | Accounts, products, offers; the 3D character at 1× |
+| `payments.html` | payments | 0 | Pay flow overlays (`#pay/...`), recipient search, schedule, summary |
+| `profile.html` | profile | 0 | User Type, Legibility, Theme tabs; admin access; demo data reset |
+| `account-details.html` | account-details | 1 | Account with bookings |
+| `investment-product-details.html` | investment-product-details | 1 | Custody account, positions, trade |
+| `all-bookings-and-payments.html` | all-bookings | 2 | Executed, pending, recurring |
+| `details-of-position.html` | details-of-position | 2 | Position chart, buy and sell |
+| `account-information.html` | | | Account information overlay content |
+| `design-system.html` | design-system | 0 | Admin hub: Motion, Components, Character kit |
+| `motion-specimens.html` | motion-specimens | 1 | Admin: motion specimens with live demos |
+| `components.html` | components | 1 | Admin: buttons and states |
+| `character-kit.html` | character-kit | 1 | Admin: the 3D character, live specimen |
+| `spa-source.html` | | | Old single-page reference, not the runtime. Do not extend |
+
+Depth drives the page transitions (`js/section-build-boot.js`, `js/section-build-motion.js`): deeper pages enter from the right, back goes left.
+
+Registering a new page: see `AGENTS.md` → Conventions (five places).
+
+## Design tokens and styles
+
+- `css/tokens.css`: generated from `designs/tokens/` by `scripts/generate-tokens-css.mjs` (`npm run tokens:build`, also run by `dev` and `build`)
+- `css/typography.css`: generated responsive type scale
+- `css/styles.css`: every component and page layout, one file
+- Icons: one sprite, inlined into each page (`scripts/sync_icons_sprite.py`), used as `<svg><use href="#i-name"/></svg>` so strokes follow `currentColor`
+
+## Theme
+
+- Light and Dark: `data-theme` on `<html>`, from `uzBankWebTheme`, set by the inline boot script before paint. The sidebar segmented control switches it.
+- Colour themes (Profile > Theme): the engine is ported from `cartography-lab-app` (`themeColors.ts`), bundled to `js/theme-engine.js` (global `UZBankThemeEngine`, Profile only) from `scripts/theme-engine/`. A save stores the finished `--color-*` tokens for both shells in `uzBankWebColorTokens`; the boot script and the sidebar toggle only apply that cache. No colour maths outside Profile.
+- The built-in "UZ Bank" card (and "Reset to theme") clears the override, so the untouched `tokens.css` look applies.
+- `--color-fg-interactive` is the interactive ink: equal to `--color-fg` in Monochrome, the primary accent in Multi-color.
+
+## 3D character kit
+
+- `js/profile-persona.js`: User Type sliders → profile (Newbie, All-rounder, Power user) and a part recipe; persists `uzBankWebPersonaProfile`; exposes `window.UZBankPersona`
+- `js/profile-persona-character.js`: three.js scene, KayKit Adventurers parts on one shared rig, recoloured to the theme. Modes: Profile (1.5×, interactive), ambient (1× on `AMBIENT_SCREENS`), specimen (`[data-character-specimen]`, Character kit page)
+- Assets: `assets/3d/kaykit/` (CC0). Unused KayKit packs live outside the repo, in the Design System project's `_resources` folder
+- Full documentation: `character-kit.html`
+
+## Other systems
+
+- Admin: a demo-only switch (`uzBankAdmin` in `localStorage`), signed in from Profile; credentials in `js/admin.js`. Not security
+- Status messages: `js/status-message.js` (component) and `js/status-feed.js` (demo feed, first appearance after 12 s)
+- Payment simulation: `js/payment-state.js` (`uzBankWebPaymentState`), reset from Profile
+- Analytics hook: `js/analytics.js`; Maze snippet in each page head
+
+## Storage keys
+
+All in `localStorage`, all prefixed `uzBankWeb` (except the admin flag). The list is kept in `apps/web/README.md`; add new keys there.
+
+## Decisions
+
+Settled choices, so they don't get re-argued. Add a row when a decision changes how the app looks or behaves.
+
+| Need | Decision | Notes |
+|---|---|---|
+| Changing the process | Spec-driven workflow adopted in place on 2026-10-19; the code was not rebuilt | A rebuild would have meant weeks of parity work on a presentable app. The pre-process state is tagged `v1-presentable` |
+| Default look | UZ Bank navy on white / white on navy, shown as the built-in "UZ Bank" theme card | Nothing changes until a user picks a theme |
+| Light/Dark with colour themes | The sidebar toggle stays; each theme remembers its own Light and Dark contrast | Cached tokens per shell; switching is instant on every page |
+| Interactive ink | `--color-fg-interactive` for focus rings, selected states and sliders; follows Cartography for filled primary buttons and active segments | Secondary buttons and nav stay neutral |
+| 3D character | three.js with KayKit (CC0), replacing Spline | One rig, mixable parts, theme recolour; documented on `character-kit.html` |
+| Character on main screens | 1× in the lower right, behind content, hidden below 62rem except on Profile | Decoration, reads the saved recipe |
+| Status message timing | First appearance 12 s after a main view lands; back 8 s after dismissal | Demo pacing |
+| Playground placement | A fourth card on the Design system page, admin only, full screen; an easter egg from the avatar may follow later | Not in the customer menu. See `specs/roadmap.md` |
+
+## Guiding rule
+
+Only add a dependency or a new system when a roadmap item needs it, and update this file in the same change.
