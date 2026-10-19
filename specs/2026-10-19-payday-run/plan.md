@@ -1,0 +1,115 @@
+# Payday run: plan
+
+Branch: `feature/payday-run`. Decisions are cited as D1 to D18 from `requirements.md`.
+
+Each group ends with something to look at in the browser (`cd apps/web && npm run dev`, `http://localhost:5174/overview.html`, signed in as admin). On the feature branch each group is committed on its own once implementation is approved. Nothing is merged to `main` without an explicit ask.
+
+## 1. Hub card and an empty full-screen page
+
+What you see: a fourth card "Payday run" under Character kit on the Design system page. It opens a full-screen empty page with a close button top left; close returns to the hub with the back motion. Signed out, the page redirects to Profile > Admin access.
+
+- [ ] `playground.html`: copy the head and boot script from `character-kit.html` (title "UZ Bank – Playground", `admin-boot.js` with `data-guard`, `section-build-boot.js`), the inline icon sprite block, `body.body[data-screen="playground"][data-page="playground"]`. One `main.main-content` holding `section.view.view--active.view--playground` with the close button `a.view__nav-btn.view__nav-btn--leading.view__back[href="design-system.html"][aria-label="Close Playground"]` using `#i-x`, and an empty `div.playground-stage` (D5, D6). No sidebar, tab bar or sticky header. Scripts: the same shell set as `character-kit.html` that the page transition and back button need (`nav-button-motion.js`, `section-build-motion.js`, `shell-nav.js`, `admin.js`), nothing that adds the status message
+- [ ] `design-system.html`: fourth `a.ds-hub__card` to `playground.html` ("Payday run", one-line meta, `#i-play`, trailing arrow)
+- [ ] Register the page (D5, D18): `vite.config.js`; `NAV_DEPTH` in `js/section-build-boot.js` and `js/shell-nav.js`; `ROOT_TAB_BY_SCREEN` in `js/shell-nav.js`; (no `bindMainScrollChrome` entry, D18); `.body[data-screen="playground"]` full-screen rules in `css/styles.css` (100dvh, no scroll, no padding, sidebar and tab bar hidden, close button above the stage)
+- [ ] `AGENTS.md`: add the full-screen exception to the "new page" rule (no `bindMainScrollChrome` entry for pages without a scroll header)
+- [ ] Check `npm run build` emits `playground.html`
+
+## 2. The runner on a themed stage (character module refactor)
+
+What you see: the Playground page shows the persona character idling on a bare stage in the active theme, and it changes with the User Type set in Profile. Profile, Character kit and Overview look and behave exactly as before.
+
+- [ ] `js/profile-persona-character.js`: extract `createFigure()`, export `readTheme`, the lightness-to-theme-hue map and `createFigure`; add `timeScale` to `setLoop`; keep `mountStage` and `init` behaviour identical (see "What changes in the character module")
+- [ ] `js/playground.js` (ES module): dynamic `import()` of the character module, create the renderer, scene, camera and lights, add the figure, read `UZBankPersona.read()`, play `Idle_A`, resize with the stage, re-apply the theme on `data-theme` and token changes
+- [ ] `playground.html`: add `js/profile-persona.js` and the module script
+- [ ] Regression: Profile User Type, Character kit specimen, Overview ambient figure (baseline sections 2, 4, 5)
+
+## 3. Track, camera and steering
+
+What you see: press Space and the figure runs along a curved ribbon track in theme colours with a chase camera; steer with the arrow keys or A/D inside the track width; Escape pauses with Resume and Close. Pace differs for Beat, Lena and Max.
+
+- [ ] `js/playground-config.js`: first version of the config object (D10): per-profile speed and `timeScale`, steering response, camera distance, height and lag, track width and length, `maxPixelRatio`
+- [ ] `js/playground.js`: spline and arc-length table, `(s, x)` player state, ribbon mesh along the curve, chase camera with lag, game states (ready, running, paused), start overlay, pause overlay (D11, D8)
+- [ ] `css/styles.css`: overlay and HUD base styles with `--color-*` tokens, focus rings on `--color-fg-interactive`
+- [ ] Keyboard only here; check Light and Dark
+
+## 4. Touch controls and layout at 390px
+
+What you see: on a phone-sized touch device two large Left and Right buttons appear at the bottom and steer while held; the layout works in portrait and landscape.
+
+- [ ] Left/Right buttons, shown on `(hover: none) and (pointer: coarse)` (D4); pointer events with capture so a finger sliding off the button still releases; safe-area insets
+- [ ] Pause on `visibilitychange` and on orientation change
+- [ ] Check at 390px in the browser's touch emulation
+
+## 5. The town
+
+What you see: the run goes through a town: varied buildings on both sides, lamps, benches, hydrants, parked cars, a water tower, all recoloured to the theme (Light, Dark, a Multi-color theme).
+
+- [ ] Copy the proposed City Builder models, texture and `License.txt` to `assets/3d/playground/town/` (list in `requirements.md`)
+- [ ] `js/playground-world.js`: load models, build one `InstancedMesh` per model, place along the track on both sides with seeded variation, per-pack scale from the config (D12, D14)
+- [ ] Recolour the shared texture with the exported theme map (D13)
+- [ ] Log the draw-call count in the console in dev; record it in `validation.md`
+
+## 6. Payday burst, coins and the balance
+
+What you see: at the start the salary bursts out as coins; the HUD shows the balance in the app's CHF format; running through coins collects them and the balance ticks up.
+
+- [ ] Coins as one `InstancedMesh` in the accent colour; burst at the start (instanced, no per-coin objects); coin layout along the town stretch; pickup by `(s, x)` distance on a flat array (D11, D9)
+- [ ] HUD: balance via `formatMoney` from `js/payment-state.js` (loaded for the formatter only, state untouched), distance or stage marker
+- [ ] Coin and burst sizes and counts in the config
+
+## 7. Gates for rent, groceries and bills
+
+What you see: three labelled gates across the track; passing through each takes its amount off the balance with a clear HUD change.
+
+- [ ] Gate meshes (accent frame, label from a canvas texture, one per kind), placed at config distances; deduction on crossing; HUD delta line (D9)
+- [ ] A short text line in the HUD for each: "Rent", "Groceries", "Bills", with the amount
+
+## 8. The savings chest
+
+What you see: at the end of the town the track runs through a chest; what is left is deposited and the HUD switches from balance to saved.
+
+- [ ] Chest mesh built from simple geometry (accent), deposit on crossing, HUD change (D9)
+- [ ] Transition into the forest stretch
+
+## 9. The forest with growing trees
+
+What you see: after the chest the town gives way to a forest; trees along the track grow stage by stage as you run, and the saved amount compounds with them.
+
+- [ ] Copy the proposed Forest Nature models, texture and `License.txt` to `assets/3d/playground/forest/`
+- [ ] Growth: the `Tree_2_A` to `Tree_2_E` series swapped by instance index and distance (a swap or a scale tween per stage), `Tree_1` series and ground cover for variety; the saved amount grows by the config rate per stage (D9)
+- [ ] Recolour (D13); resolve open question 2
+
+## 10. Result screen and best run
+
+What you see: at the finish the run ends on a result screen with the final balance, a breakdown, a "New best" badge when it applies, and Play again / Close. The best run survives a reload.
+
+- [ ] Result overlay: balance via `formatMoney`, one line per step, badge, buttons, focus moved into the dialog and returned on close (D2)
+- [ ] `uzBankWebPlaygroundBest` read and written with try/catch around `localStorage`; first visit shows no best
+- [ ] `apps/web/README.md`: add the key to the storage list
+
+## 11. Reduced motion: the stepped version
+
+What you see: with reduced motion on, the run is a set of still scenes with a Next button, no camera movement and no animation, ending on the same result screen.
+
+- [ ] `matchMedia('(prefers-reduced-motion: reduce)')` switches to the stepped mode at start and reacts live (D15)
+- [ ] Scenes for payday, town, gates, chest, forest at final tree size, result; Next and Skip to result as buttons
+- [ ] Check no animation is left running anywhere in the mode, including the overlays
+
+## 12. Performance pass and entry point
+
+What you see: smooth play on a throttled phone profile; a "Try it in the Playground" link at the end of Character kit.
+
+- [ ] Dynamic resolution (D16); `maxPixelRatio`; stop rendering when paused or hidden; dispose geometries and textures on leaving
+- [ ] Measure: frame time and draw calls on a 4x CPU-throttled desktop run and at 390px; record the numbers and the device in `validation.md`; decide open question 4
+- [ ] `character-kit.html`: "Try it in the Playground" link at the end of the page (an `a.uz-btn` to `playground.html`)
+
+## 13. Wrap-up
+
+- [ ] `npm run build` in `apps/web` succeeds
+- [ ] Work through `validation.md` in a real browser and fill in its "Checked on" line
+- [ ] Run the baseline smoke test (final section of `validation.md`)
+- [ ] `specs/roadmap.md`: mark item 2 done
+- [ ] `specs/tech-spec.md`: add `playground.html` to the Pages table, a Playground line under "Other systems" (config, world, game module), and a Decisions row for the stepped reduced-motion version
+- [ ] `apps/web/README.md`: storage key `uzBankWebPlaygroundBest`, new files and `assets/3d/playground/`
+- [ ] `character-kit.html`: update the Assets paragraph to mention that the Playground reuses the module and has its own assets
+- [ ] `/changelog`, tidy, commit on the branch; merge to `main` only on an explicit ask
