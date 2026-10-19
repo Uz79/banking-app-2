@@ -137,3 +137,9 @@ dist
 
 # macOS
 .DS_Store
+
+# JetBrains IDE settings (WebStorm), per machine
+.idea/
+
+# Claude Code / MCP, per machine
+.mcp.json
