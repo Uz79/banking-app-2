@@ -68,6 +68,13 @@ export const CONFIG = {
     growFrom: 55, growTo: 24, seedling: 0.12,
   },
 
+  /* Reduced motion: the run becomes a few still scenes (D15). `collect` is the share of the salary it assumes
+     was picked up on the way; `s` is where the runner stands in each scene. */
+  stepped: {
+    collect: 0.8,
+    scenes: { payday: 0, town: 60, gates: 92, chest: 226, forest: 385 },
+  },
+
   burst: { count: 36, life: 1.1, up: [6, 9], out: [2, 5], gravity: 18, size: 0.2 },
 
   /* Rendering. */

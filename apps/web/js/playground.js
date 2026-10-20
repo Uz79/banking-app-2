@@ -62,7 +62,9 @@ function writeBest(balance) {
 
 async function mountGame(host) {
   const reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const reduced = () => reduceMQ.matches;
+  /* `?reduced` forces the still version, for testing where the system setting cannot be flipped. */
+  const forceReduced = new URLSearchParams(window.location.search).has('reduced');
+  const reduced = () => forceReduced || reduceMQ.matches;
 
   const persona = (window.UZBankPersona && window.UZBankPersona.read()) || null;
   const profile = CONFIG.profiles[persona && persona.profile] || CONFIG.profiles[CONFIG.fallbackProfile];
@@ -225,7 +227,7 @@ async function mountGame(host) {
   }
   function showBalance(dt) {
     const target = deposited ? saved : balance;
-    shown += (target - shown) * Math.min(1, dt * 10);
+    shown = reduced() ? target : shown + (target - shown) * Math.min(1, dt * 10);
     if (Math.abs(target - shown) < 0.005) shown = target;
     if (balanceEl) balanceEl.textContent = money(shown);
   }
@@ -262,7 +264,14 @@ async function mountGame(host) {
   const heading = new THREE.Vector3();
 
   const TEXT = {
-    ready: { title: 'Payday run', text: touchMode ? 'Hold the left and right buttons to steer.' : 'Steer with the arrow keys or A and D. Escape pauses.', primary: 'Start' },
+    ready: {
+      title: 'Payday run',
+      get text() {
+        if (reduced()) return 'Reduced motion is on, so the run is a few still scenes. Press Next to move on.';
+        return touchMode ? 'Hold the left and right buttons to steer.' : 'Steer with the arrow keys or A and D. Escape pauses.';
+      },
+      primary: 'Start',
+    },
     paused: { title: 'Paused', text: touchMode ? '' : 'Escape again closes the game.', primary: 'Resume' },
     finished: { title: 'Your result', text: '', primary: 'Play again' },
   };
@@ -270,6 +279,8 @@ async function mountGame(host) {
   function showOverlay(name) {
     if (!overlay) return;
     const t = TEXT[name];
+    overlay.classList.remove('playground-overlay--step');
+    overlay.querySelector('[data-overlay-skip]').hidden = true;
     overlay.hidden = !t;
     if (!t) return;
     overlay.querySelector('[data-overlay-title]').textContent = t.title;
@@ -421,11 +432,91 @@ async function mountGame(host) {
     b.addEventListener('contextmenu', (e) => e.preventDefault());
   });
 
+  /* ── Reduced motion: still scenes, one Next at a time (D15) ───────── */
+  const stepCfg = CONFIG.stepped;
+  const collectedN = Math.round(coins.count * stepCfg.collect);
+  const gatesTotal = CONFIG.gates.reduce((sum, g) => sum + g.amount, 0);
+  const afterGates = collectedN * coins.value - gatesTotal;
+  const depositSum = Math.max(0, afterGates);
+  const finalSum = depositSum * Math.pow(1 + forest.rate, forest.stages);
+  const SCENES = [
+    {
+      key: 'payday', title: 'Payday',
+      text: () => 'Your salary of ' + money(CONFIG.money.salary) + ' lands.',
+      apply: () => { balance = 0; saved = 0; deposited = false; collectedCount = 0; gatesPaid = []; depositAmount = 0; },
+    },
+    {
+      key: 'town', title: 'The town',
+      text: () => 'You pick up most of it on the way: ' + money(collectedN * coins.value) + '.',
+      apply: () => { balance = collectedN * coins.value; saved = 0; deposited = false; collectedCount = collectedN; gatesPaid = []; depositAmount = 0; },
+    },
+    {
+      key: 'gates', title: 'Rent, groceries and bills',
+      text: () => CONFIG.gates.map((g) => g.label + ' ' + money(g.amount)).join(', ') + '. Left over: ' + money(afterGates) + '.',
+      apply: () => { balance = afterGates; saved = 0; deposited = false; collectedCount = collectedN; gatesPaid = CONFIG.gates.map((g) => ({ label: g.label, amount: g.amount })); depositAmount = 0; },
+    },
+    {
+      key: 'chest', title: 'The savings chest',
+      text: () => money(depositSum) + ' goes into savings.',
+      apply: () => { balance = 0; saved = depositSum; deposited = true; collectedCount = collectedN; gatesPaid = CONFIG.gates.map((g) => ({ label: g.label, amount: g.amount })); depositAmount = depositSum; },
+    },
+    {
+      key: 'forest', title: 'The forest',
+      text: () => forest.stages + ' years of growth at ' + Math.round(forest.rate * 100) + ' percent a year: ' + money(finalSum) + '.',
+      apply: () => { balance = 0; saved = finalSum; deposited = true; collectedCount = collectedN; gatesPaid = CONFIG.gates.map((g) => ({ label: g.label, amount: g.amount })); depositAmount = depositSum; },
+    },
+  ];
+  let stepIndex = 0;
+
+  function showScene(i) {
+    stepIndex = i;
+    const sc = SCENES[i];
+    sc.apply();
+    setHudLabel();
+    shown = deposited ? saved : balance;
+    s = stepCfg.scenes[sc.key]; x = 0; vx = 0;
+    pose(0, true);
+    state = 'stepping';
+    figure.setLoop(CONFIG.idleClip);
+    const last = i === SCENES.length - 1;
+    overlay.hidden = false;
+    overlay.classList.add('playground-overlay--step');
+    overlay.querySelector('[data-overlay-title]').textContent = sc.title;
+    const text = overlay.querySelector('[data-overlay-text]');
+    text.textContent = sc.text();
+    text.hidden = false;
+    overlay.querySelector('[data-overlay-result]').hidden = true;
+    overlay.querySelector('.playground-panel').classList.remove('playground-panel--result');
+    const primary = overlay.querySelector('[data-overlay-primary]');
+    primary.textContent = last ? 'Show result' : 'Next';
+    overlay.querySelector('[data-overlay-skip]').hidden = last;
+    primary.focus({ preventScroll: true });
+    announce(sc.title + '. ' + sc.text());
+  }
+  function startStepped() {
+    coins.reset();
+    showScene(0);
+  }
+  function skipToResult() {
+    SCENES[SCENES.length - 1].apply();
+    setHudLabel();
+    finishRun();
+  }
+  function onMotionPreference() {
+    document.body.classList.toggle('playground--stepped', reduced());
+    if (state !== 'ready') reset(); /* switching modes mid-run starts over, so nothing is left half done */
+    else showOverlay('ready');
+  }
+  document.body.classList.toggle('playground--stepped', reduced());
+  reduceMQ.addEventListener('change', onMotionPreference);
+
   if (overlay) {
+    overlay.querySelector('[data-overlay-skip]').addEventListener('click', skipToResult);
     overlay.querySelector('[data-overlay-primary]').addEventListener('click', () => {
-      if (state === 'ready') startRun();
+      if (state === 'stepping') { if (stepIndex < SCENES.length - 1) showScene(stepIndex + 1); else skipToResult(); }
+      else if (state === 'ready') { if (reduced()) startStepped(); else startRun(); }
       else if (state === 'paused') setState('running');
-      else if (state === 'finished') { reset(); startRun(); }
+      else if (state === 'finished') { reset(); if (reduced()) startStepped(); else startRun(); }
     });
   }
 
@@ -451,7 +542,12 @@ async function mountGame(host) {
     requestAnimationFrame(frame);
     const dt = Math.min(clock.getDelta(), 0.05);
     if (document.hidden) return;
-    if (state !== 'paused') {
+    if (state === 'stepping') {
+      elapsed += dt;
+      coins.update(dt, elapsed, true);
+      forest.update(s, true);
+      showBalance(dt);
+    } else if (state !== 'paused') {
       step(dt);
       pose(dt, false);
       figure.update(dt);

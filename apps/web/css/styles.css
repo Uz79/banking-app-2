@@ -11058,3 +11058,26 @@ html[data-theme="dark"] .admin-login__error {
 .playground-result__best[hidden] {
   display: none;
 }
+
+/* Reduced motion: still scenes. The card sits at the bottom so the scene stays visible, and there is nothing to steer. */
+
+.playground-overlay--step {
+  align-items: flex-end;
+  background-color: transparent;
+  padding-bottom: max(var(--space-4), env(safe-area-inset-bottom, 0px));
+}
+
+.playground--stepped .playground-touch {
+  display: none;
+}
+
+.playground-panel__actions [data-overlay-skip][hidden] {
+  display: none;
+}
+
+@media (min-width: 48rem) {
+  .playground-overlay--step {
+    justify-content: flex-start;
+    padding-left: max(var(--space-5), env(safe-area-inset-left, 0px));
+  }
+}

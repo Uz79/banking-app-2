@@ -64,7 +64,7 @@ What you see: at the start the salary bursts out as coins; the HUD shows the bal
 - [x] HUD: balance via `formatMoney` from `js/payment-state.js` (loaded for the formatter only, state untouched), distance or stage marker
 - [x] Coin and burst sizes and counts in the config
 
-Note: the salary is CHF 6'000 split over 100 coins (CHF 60 each), laid out by `js/playground-coins.js` in lines, waves and zigzags along the town. The balance starts at 0 and the salary shows as a toast at the start (D9). `?debug` also logs draw calls. The balance is announced to screen readers every 20 coins, not on every coin. On narrow screens the pace word and the "Balance" label are hidden so the top row fits.
+Note: the salary is CHF 6'000 split over the coins that fit the town (83 at the current layout, about CHF 72 each; `count` in the config is a cap), laid out by `js/playground-coins.js` in lines, waves and zigzags along the town. The balance starts at 0 and the salary shows as a toast at the start (D9). `?debug` also logs draw calls. The balance is announced to screen readers every 20 coins, not on every coin. On narrow screens the pace word and the "Balance" label are hidden so the top row fits.
 
 ## 7. Gates for rent, groceries and bills
 
@@ -110,9 +110,11 @@ Note: the result dialog shows the final balance, one row per step (salary collec
 
 What you see: with reduced motion on, the run is a set of still scenes with a Next button, no camera movement and no animation, ending on the same result screen.
 
-- [ ] `matchMedia('(prefers-reduced-motion: reduce)')` switches to the stepped mode at start and reacts live (D15)
-- [ ] Scenes for payday, town, gates, chest, forest at final tree size, result; Next and Skip to result as buttons
-- [ ] Check no animation is left running anywhere in the mode, including the overlays
+- [x] `matchMedia('(prefers-reduced-motion: reduce)')` switches to the stepped mode at start and reacts live (D15)
+- [x] Scenes for payday, town, gates, chest, forest at final tree size, result; Next and Skip to result as buttons
+- [x] Check no animation is left running anywhere in the mode, including the overlays
+
+Note: the still version assumes 80 % of the salary was picked up (`CONFIG.stepped.collect`), so it always ends at the same result (about CHF 6'800 on the current numbers) and the best run still works. Scenes: Payday, The town, Rent groceries and bills, The savings chest, The forest, then the result card. The card sits at the bottom (bottom left on wide screens) so the scene stays visible; trees are full size, coins and figure are still, the balance snaps, there are no toasts, and the touch buttons are hidden. Switching the setting while the page is open starts over from the start screen. `?reduced` forces this mode for testing, because the system setting cannot be flipped from the test browser; the real system setting itself has not been tried yet.
 
 ## 12. Performance pass and entry point
 
