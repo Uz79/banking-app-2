@@ -41,9 +41,9 @@ Note: `js/playground-track.js` holds the curve and lookup table (pure maths, use
 
 What you see: on a phone-sized touch device two large Left and Right buttons appear at the bottom and steer while held; the layout works in portrait and landscape.
 
-- [ ] Left/Right buttons, shown on `(hover: none) and (pointer: coarse)` (D4); pointer events with capture so a finger sliding off the button still releases; safe-area insets
-- [ ] Pause on `visibilitychange` and on orientation change
-- [ ] Check at 390px in the browser's touch emulation
+- [x] Left/Right buttons, shown on `(hover: none) and (pointer: coarse)` (D4); pointer events with capture so a finger sliding off the button still releases; safe-area insets
+- [x] Pause on `visibilitychange` and on orientation change
+- [x] Checked at 390px portrait and 844x390 landscape in same-origin iframes of that size (the window itself could not be resized); `?touch` shows the buttons on any device, for testing. A real touch device has not been tried
 
 ## 5. The town
 

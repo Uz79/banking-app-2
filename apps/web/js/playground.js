@@ -112,6 +112,9 @@ async function mountGame(host) {
 
   /* ── Game state ────────────────────────────────────────────────────── */
   const input = { left: false, right: false };
+  /* Touch: two on-screen buttons on touch devices (D4). `?touch` shows them anywhere, for testing. */
+  const touchMode = window.matchMedia('(hover: none) and (pointer: coarse)').matches || new URLSearchParams(window.location.search).has('touch');
+  document.body.classList.toggle('playground--touch', touchMode);
   let state = 'ready'; /* ready | running | paused | finished */
   let s = 0;           /* distance along the track */
   let x = 0;           /* sideways offset from the centre line */
@@ -123,7 +126,7 @@ async function mountGame(host) {
   const heading = new THREE.Vector3();
 
   const TEXT = {
-    ready: { title: 'Payday run', text: 'Steer with the arrow keys or A and D. Escape pauses.', primary: 'Start' },
+    ready: { title: 'Payday run', text: touchMode ? 'Hold the left and right buttons to steer.' : 'Steer with the arrow keys or A and D. Escape pauses.', primary: 'Start' },
     paused: { title: 'Paused', text: '', primary: 'Resume' },
     finished: { title: 'Finish', text: 'You made it to the end of the track.', primary: 'Play again' },
   };
@@ -218,9 +221,27 @@ async function mountGame(host) {
     const dir = KEYS[e.key];
     if (dir) input[dir] = false;
   });
-  const pause = () => { input.left = input.right = false; if (state === 'running') setState('paused'); };
+  const pause = () => { input.left = input.right = false; releaseTouch(); if (state === 'running') setState('paused'); };
   window.addEventListener('blur', pause);
   document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
+  window.matchMedia('(orientation: portrait)').addEventListener('change', pause);
+
+  /* Hold a button to steer. Pointer capture keeps the hold when the finger slides off the button. */
+  const touchButtons = [...document.querySelectorAll('[data-touch]')];
+  function releaseTouch() {
+    touchButtons.forEach((b) => b.classList.remove('is-held'));
+  }
+  touchButtons.forEach((b) => {
+    const dir = b.getAttribute('data-touch');
+    const hold = (on) => { input[dir] = on; b.classList.toggle('is-held', on); };
+    b.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      try { b.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+      hold(true);
+    });
+    ['pointerup', 'pointercancel', 'lostpointercapture'].forEach((t) => b.addEventListener(t, () => hold(false)));
+    b.addEventListener('contextmenu', (e) => e.preventDefault());
+  });
 
   if (overlay) {
     overlay.querySelector('[data-overlay-primary]').addEventListener('click', () => {
