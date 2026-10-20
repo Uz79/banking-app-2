@@ -135,6 +135,16 @@ Before the culling the forest start showed 58 draw calls and 163,000 triangles. 
 
 Not verified: dynamic resolution stepping down (this display has a pixel ratio of 1, so there was nothing to lower; the logic is in `adaptResolution`), any phone, and a 4x CPU throttle. A heap reading over repeated open and close of the sheet sawtoothed between about 190 and 290 MB with no clear climb, but it was too noisy to count as a leak check. Character kit now ends with a "Try it in the Playground" link; it is a plain link, so closing the game from there goes back to the Design system hub.
 
+## 14. Review fixes (visual)
+
+What you see: no focus ring on Start when the game opens; neutral steer buttons; a clean Components icon; the admin sign-in error in the design system's text field style.
+
+- [x] D20: quiet focus ring on the overlay buttons (`js/playground.js`, `css/styles.css`)
+- [x] D21: steer buttons in foreground ink with a separator-ink circle (`css/styles.css`)
+- [x] D22: `fill: none` on the Components hub icon (`design-system.html`)
+- [x] D23: error state of the text field in the admin dialog (`js/admin.js`, `css/styles.css`); `alert-triangle` icon
+- [x] `npm run build` clean; checked in the browser (Dark, desktop): quiet ring, steer buttons, hub icon, admin error. Light, 390px and a real phone not rechecked
+
 ## 13. Wrap-up
 
 - [x] `npm run build` in `apps/web` succeeds

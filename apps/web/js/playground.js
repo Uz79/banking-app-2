@@ -399,7 +399,10 @@ async function mountGame(host) {
 
   /* ── Input ─────────────────────────────────────────────────────────── */
   const KEYS = { ArrowLeft: 'left', a: 'left', A: 'left', ArrowRight: 'right', d: 'right', D: 'right' };
+  overlay.dataset.quiet = '';
+  window.addEventListener('pointerdown', () => { overlay.dataset.quiet = ''; });
   window.addEventListener('keydown', (e) => {
+    delete overlay.dataset.quiet;
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     const dir = KEYS[e.key];
     if (dir) { input[dir] = true; e.preventDefault(); return; }

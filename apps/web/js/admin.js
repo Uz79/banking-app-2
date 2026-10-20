@@ -40,11 +40,11 @@
             '<label class="form-field__label" for="admin-login-user">Username</label>' +
             '<div class="form-field__text-wrap"><input class="form-field__input" id="admin-login-user" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required /></div>' +
           '</div>' +
-          '<div class="form-field">' +
+          '<div class="form-field" id="admin-login-pass-field">' +
             '<label class="form-field__label" for="admin-login-pass">Password</label>' +
-            '<div class="form-field__text-wrap"><input class="form-field__input" id="admin-login-pass" name="password" type="password" autocomplete="current-password" required /></div>' +
+            '<div class="form-field__text-wrap"><input class="form-field__input" id="admin-login-pass" name="password" type="password" autocomplete="current-password" required aria-describedby="admin-login-error" /></div>' +
+            '<p class="form-field__error-row" id="admin-login-error" role="alert"></p>' +
           '</div>' +
-          '<p class="admin-login__error" id="admin-login-error" role="alert" hidden>Username or password is not correct.</p>' +
         '</div>' +
         '<div class="basic-dialog-payment-exit__actions">' +
           '<button type="button" class="uz-btn uz-btn--secondary uz-btn--md uz-btn--block" data-admin-cancel>Cancel</button>' +
@@ -56,6 +56,14 @@
     var user = dialog.querySelector('#admin-login-user');
     var pass = dialog.querySelector('#admin-login-pass');
     var error = dialog.querySelector('#admin-login-error');
+    var passField = dialog.querySelector('#admin-login-pass-field');
+    function setError(on) {
+      passField.classList.toggle('form-field--error', on);
+      pass.setAttribute('aria-invalid', on ? 'true' : 'false');
+      error.innerHTML = on
+        ? '<svg width="16" height="16" aria-hidden="true" focusable="false" style="fill:none"><use href="#i-alert-triangle"/></svg><span>Username or password is not correct.</span>'
+        : '';
+    }
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -63,14 +71,14 @@
         setAdmin(true);
         close();
       } else {
-        error.hidden = false;
+        setError(true);
         pass.value = '';
         pass.focus();
       }
     });
-    [user, pass].forEach(function (i) { i.addEventListener('input', function () { error.hidden = true; }); });
+    [user, pass].forEach(function (i) { i.addEventListener('input', function () { setError(false); }); });
     dialog.querySelector('[data-admin-cancel]').addEventListener('click', close);
-    dialog.addEventListener('close', function () { form.reset(); error.hidden = true; });
+    dialog.addEventListener('close', function () { form.reset(); setError(false); });
 
     document.body.appendChild(dialog);
     return dialog;

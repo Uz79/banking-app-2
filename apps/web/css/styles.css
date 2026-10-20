@@ -9435,15 +9435,35 @@ html.is-admin .admin-access__signed-out {
   text-align: left;
 }
 
-.admin-login__error {
-  margin: 0;
-  font-size: var(--fs-text-sm);
-  line-height: var(--lh-text);
-  color: #FF0095;   /* = status error placeholder until status tokens exist */
+.form-field__error-row > svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
 }
 
-html[data-theme="dark"] .admin-login__error {
+/* Error state (Figma TextField, Case = Error): error stroke on the control, icon and message in the row under it */
+.form-field--error .form-field__text-wrap,
+.form-field--error .form-field__text-wrap:focus-within {
+  box-shadow: inset 0 0 0 var(--input-stroke-px, 1px) var(--color-fg-error, #ff0095);
+}
+
+.form-field--error .form-field__text-wrap:focus-within {
+  box-shadow: inset 0 0 0 var(--input-stroke-focus-px, 2px) var(--color-fg-error, #ff0095);
+}
+
+/* = status error placeholder until status tokens exist */
+html[data-theme="dark"] .form-field__error-row {
   color: #FF7AC6;
+}
+
+html[data-theme="dark"] .form-field--error .form-field__text-wrap,
+html[data-theme="dark"] .form-field--error .form-field__text-wrap:focus-within {
+  box-shadow: inset 0 0 0 var(--input-stroke-px, 1px) #FF7AC6;
+}
+
+html[data-theme="dark"] .form-field--error .form-field__text-wrap:focus-within {
+  box-shadow: inset 0 0 0 var(--input-stroke-focus-px, 2px) #FF7AC6;
 }
 
 /* Design system hub (design-system.html) */
@@ -10857,10 +10877,10 @@ html[data-theme="dark"] .admin-login__error {
   align-items: center;
   justify-content: center;
   padding: 0;
-  border: 0.125rem solid var(--color-fg-interactive);
+  border: 0.125rem solid var(--color-separator);
   border-radius: 50%;
   background-color: color-mix(in srgb, var(--color-bg) 72%, transparent);
-  color: var(--color-fg-interactive);
+  color: var(--color-fg);
   pointer-events: auto;
   touch-action: none;
   user-select: none;
@@ -10875,8 +10895,12 @@ html[data-theme="dark"] .admin-login__error {
 }
 
 .playground-touch__btn.is-held {
-  background-color: var(--color-fg-interactive);
-  color: var(--color-bg);
+  background-color: var(--color-separator);
+}
+
+/* The start, pause and result buttons take focus when a screen opens; the ring waits for the keyboard */
+.playground-overlay[data-quiet] :focus-visible {
+  outline: none;
 }
 
 .playground-touch__icon {

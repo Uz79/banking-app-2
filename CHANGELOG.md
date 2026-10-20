@@ -14,6 +14,8 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Assets: `assets/3d/playground/town` and `assets/3d/playground/forest` (about 1.0 MB, CC0, with the pack licences).
 
 ### Changed
+- Playground review fixes: the start button no longer shows a focus ring until a key is pressed, the steer buttons use neutral inks, and the Components icon on the Design system hub renders as an outline.
+- Admin sign-in: a wrong password now shows the design system's text field error state (error stroke, warning icon and message under the field) instead of a separate pink line.
 - `js/profile-persona-character.js` now exports `createFigure()` (the character without a scene), `readTheme`, `monochromeLut`, `preparePalette`, `cssColor` and `THREE`, so the Playground reuses the character instead of forking it. `setLoop` takes an optional `timeScale`. The Profile, Character kit and ambient figures behave as before.
 - `AGENTS.md`: a full-screen page with no scroll header does not need an entry in `bindMainScrollChrome`.
 

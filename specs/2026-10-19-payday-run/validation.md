@@ -83,6 +83,13 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [x] Tab order: close, then in-page controls; no keyboard trap while running or paused
 - [x] Legibility presets (Profile > Legibility) do not break the HUD or the result screen layout
 
+## 9b. Review fixes (group 14)
+
+- [ ] Opening the game shows no focus ring on Start (mouse, touch); pressing Tab brings the ring back; Enter still starts
+- [ ] Steer buttons: arrows in foreground ink, circle in separator ink, in Light and Dark (checked in Dark on desktop only)
+- [ ] Design system hub: the Components icon is an outline in Light and Dark (checked in Dark)
+- [ ] Admin sign-in with a wrong password: pink stroke on the password field, warning icon and message under it, label unchanged; typing clears it; Light and Dark (checked in Dark)
+
 ## 10. Baseline smoke test
 
 Copied from `specs/baseline/validation.md`. Run after the checks above. Setup: `cd apps/web && npm run build`, then `npm run dev` and open `http://localhost:5174/overview.html`. Check desktop (1440px) in Light, then repeat the starred (★) items in Dark and at phone width (390px).
