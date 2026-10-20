@@ -9486,11 +9486,16 @@ html[data-theme="dark"] .form-field--error .form-field__text-wrap:focus-within {
   background-color: var(--color-bg);
   color: var(--color-fg);
   text-decoration: none;
-  transition: background-color 0.15s ease;
+  transition: box-shadow 0.15s ease;
 }
 
+/* The state tokens are translucent, so they sit over the card as an inset layer (a plain background would show the page through) */
 .ds-hub__card:hover {
-  background-color: color-mix(in srgb, var(--color-bg) 90%, var(--color-fg));
+  box-shadow: inset 0 0 0 100vmax var(--color-surface-state-hover);
+}
+
+.ds-hub__card:active {
+  box-shadow: inset 0 0 0 100vmax var(--color-surface-state-pressed);
 }
 
 .ds-hub__card:focus-visible {

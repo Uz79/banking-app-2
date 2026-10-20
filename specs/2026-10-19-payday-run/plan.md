@@ -156,6 +156,13 @@ What you see: Escape, the close button, or switching tabs during a run opens "Qu
 - [x] D25: the start and result card matches the confirmation dialog (button order, title size, bottom sheet under 1280px) (`playground.html`, `css/styles.css`)
 - [x] `npm run build` clean; checked on a separate dev server (port 5176, own storage): the dialog text and buttons, focus on Keep playing, Escape inside it resumes, the close button opens it, Quit run leaves (direct visit and in the sheet). Stopped for review
 
+## 16. Hub card states (D26)
+
+What you see: the four Design system cards lighten on hover and darken or lighten further while pressed, using the shared state inks.
+
+- [x] `css/styles.css`: `.ds-hub__card` hover and `:active` use the state tokens as an inset layer
+- [x] `npm run build` clean; hover checked in Dark on desktop (a scratch server on port 5176). Pressed and Light not looked at
+
 ## 13. Wrap-up
 
 - [x] `npm run build` in `apps/web` succeeds

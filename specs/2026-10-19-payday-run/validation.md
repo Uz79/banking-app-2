@@ -112,6 +112,13 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [ ] The card and the quit dialog look alike side by side, in Light and Dark, on a phone
 - [ ] Reduced motion: no slide
 
+## 9e. Hub card states (D26)
+
+- [x] Hovering a Design system card changes its fill (Dark, desktop)
+- [ ] Pressing a card shows a visibly stronger fill than hover, in Light and Dark; on touch the pressed fill shows while the finger is down
+- [ ] Hover and pressed read clearly in Light (the state inks are the secondary button's)
+- [ ] Keyboard focus ring unchanged; reduced motion: no fade is needed, the fill still changes
+
 ## 10. Baseline smoke test
 
 Copied from `specs/baseline/validation.md`. Run after the checks above. Setup: `cd apps/web && npm run build`, then `npm run dev` and open `http://localhost:5174/overview.html`. Check desktop (1440px) in Light, then repeat the starred (★) items in Dark and at phone width (390px).
