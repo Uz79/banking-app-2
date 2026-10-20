@@ -64,6 +64,7 @@ Persisted in `localStorage` (see `js/storage-migrate.js` for legacy key migratio
 - `spa-source.html` — wide SPA-style reference (not the primary runtime)
 - `components.html` — button design-system gallery
 - `character-kit.html` — design system: the 3D persona character, with a live specimen
+- `playground.html` — design system: "Payday run", a small 3D game (full screen, opened as a sheet from the Design system page)
 - `css/tokens.css` — generated from `designs/tokens/`
 - `css/typography.css` — generated responsive type scale
 - `css/styles.css` — components and page layout
@@ -74,3 +75,12 @@ Persisted in `localStorage` (see `js/storage-migrate.js` for legacy key migratio
 - `js/profile-persona-character.js` — three.js scene (runtime from jsDelivr). KayKit parts mixed on one shared rig, recoloured to the theme (monochrome + one accent), transparent stage with an overlay-tint shadow and a spotlight on dark backgrounds.
 - `assets/3d/kaykit/` — KayKit Adventurers 2.0 by Kay Lousberg (CC0), pruned to the parts used.
 - `assets/images/persona/` — UI previews rendered from Figma (`banking-app_main-view-profile_setting-persona_ui-previews`), recoloured to the live theme at runtime.
+
+## Playground (Design system > Payday run)
+
+- `playground.html` + `js/playground.js` — page, game loop, overlays (start, pause, result), keyboard and touch input, the still version for reduced motion
+- `js/playground-config.js` — every number that decides how it feels (speeds per profile, steering, camera, track, coins, gates, chest, forest growth, rendering)
+- `js/playground-track.js` (the curve and distance lookup), `js/playground-world.js` (the town), `js/playground-coins.js`, `js/playground-gates.js`, `js/playground-chest.js`, `js/playground-forest.js`
+- `js/playground-sheet.js` — the Design system page opens the game as a flow-style sheet (iframe, slides up and down like the payment flow)
+- `assets/3d/playground/town` and `assets/3d/playground/forest` — KayKit City Builder Bits 1.0 and Forest Nature Pack 1.0 by Kay Lousberg (CC0), pruned to the models used; licences included
+- Dev URL parameters: `?debug` (draw calls, frame cost), `?touch` (show the touch buttons), `?reduced` (force the still version), `?from=<distance>&money=<chf>` (start partway along the track)

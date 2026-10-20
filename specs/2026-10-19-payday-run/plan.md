@@ -137,11 +137,11 @@ Not verified: dynamic resolution stepping down (this display has a pixel ratio o
 
 ## 13. Wrap-up
 
-- [ ] `npm run build` in `apps/web` succeeds
-- [ ] Work through `validation.md` in a real browser and fill in its "Checked on" line
-- [ ] Run the baseline smoke test (final section of `validation.md`)
-- [ ] `specs/roadmap.md`: mark item 2 done
-- [ ] `specs/tech-spec.md`: add `playground.html` to the Pages table, a Playground line under "Other systems" (config, world, game module), and a Decisions row for the stepped reduced-motion version
-- [ ] `apps/web/README.md`: storage key `uzBankWebPlaygroundBest`, new files and `assets/3d/playground/`
-- [ ] `character-kit.html`: update the Assets paragraph to mention that the Playground reuses the module and has its own assets
-- [ ] `/changelog`, tidy, commit on the branch; merge to `main` only on an explicit ask
+- [x] `npm run build` in `apps/web` succeeds
+- [~] Work through `validation.md` in a real browser and fill in its "Checked on" line (46 of 71 items ticked; the rest are listed as not checked in the file)
+- [~] Run the baseline smoke test (final section of `validation.md`) (partly run; the unticked items are listed in the file and still need a pass before merging)
+- [x] `specs/roadmap.md`: mark item 2 done
+- [x] `specs/tech-spec.md`: add `playground.html` to the Pages table, a Playground line under "Other systems" (config, world, game module), and a Decisions row for the stepped reduced-motion version
+- [x] `apps/web/README.md`: storage key `uzBankWebPlaygroundBest`, new files and `assets/3d/playground/`
+- [x] `character-kit.html`: update the Assets paragraph to mention that the Playground reuses the module and has its own assets
+- [x] `/changelog`, tidy, commit on the branch; merge to `main` only on an explicit ask
