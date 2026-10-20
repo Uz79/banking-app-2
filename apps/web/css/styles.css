@@ -11081,3 +11081,49 @@ html[data-theme="dark"] .admin-login__error {
     padding-left: max(var(--space-5), env(safe-area-inset-left, 0px));
   }
 }
+
+/* Short screens (a phone on its side): the dialog scrolls instead of being cut off, and gets tighter. */
+.playground-overlay {
+  overflow-y: auto;
+}
+
+.playground-panel {
+  margin: auto;
+  flex-shrink: 0;
+}
+
+.playground-overlay--step .playground-panel {
+  margin: auto 0 0;
+}
+
+@media (min-width: 48rem) {
+  .playground-overlay--step .playground-panel {
+    margin: auto auto 0 0;
+  }
+}
+
+@media (max-height: 30rem) {
+  .playground-panel {
+    padding: var(--space-3);
+  }
+
+  .playground-panel__title {
+    font-size: var(--fs-text-md);
+  }
+
+  .playground-result {
+    margin-bottom: var(--space-3);
+  }
+
+  .playground-result__badge {
+    margin-bottom: var(--space-2);
+  }
+
+  .playground-result__amount {
+    font-size: var(--fs-text-md);
+  }
+
+  .playground-result__rows li {
+    padding: 0.25rem 0;
+  }
+}
