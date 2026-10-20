@@ -41,7 +41,7 @@ export const CONFIG = {
   money: { salary: 6000 },
   coins: {
     count: 100,       /* the salary is split evenly over this many coins */
-    from: 18, to: 244,
+    from: 18, to: 232,
     spacing: 1.9, gap: 3, lateral: 2.4,
     radius: 0.55, thickness: 0.14, height: 1.3,
     spin: 2.6,        /* radians per second */
@@ -54,6 +54,9 @@ export const CONFIG = {
     { id: 'bills', label: 'Bills', amount: 700, at: 210 },
   ],
   gate: { height: 7.4, bannerHeight: 1.7, post: 0.5, outset: 0.5 },
+
+  /* The savings chest at the end of the town: what is left in the balance is deposited when the runner passes. */
+  chest: { at: 240, depth: 4, wall: 2.2, height: 4 },
 
   burst: { count: 36, life: 1.1, up: [6, 9], out: [2, 5], gravity: 18, size: 0.2 },
 

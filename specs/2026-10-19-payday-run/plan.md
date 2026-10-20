@@ -79,8 +79,10 @@ Note: starting values are rent CHF 1'600 at 105, groceries CHF 500 at 160, bills
 
 What you see: at the end of the town the track runs through a chest; what is left is deposited and the HUD switches from balance to saved.
 
-- [ ] Chest mesh built from simple geometry (accent), deposit on crossing, HUD change (D9)
-- [ ] Transition into the forest stretch
+- [x] Chest mesh built from simple geometry (accent), deposit on crossing, HUD change (D9)
+- [x] Transition into the forest stretch
+
+Note: the chest is an arch of two walls and a half-cylinder lid in the accent colour with a lock plate and a "Savings" banner (`js/playground-chest.js`), at distance 240 on the starting config. What is in the balance moves to "Saved" (never below zero). Coins now end at 232 so none are lost after the deposit. `?from=214` starts the run partway along the track, for looking at a later stretch (dev only).
 
 ## 9. The forest with growing trees
 

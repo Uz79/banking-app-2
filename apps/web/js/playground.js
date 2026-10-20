@@ -16,6 +16,7 @@ import { createTrack } from './playground-track.js';
 import { createTown } from './playground-world.js';
 import { createCoins } from './playground-coins.js';
 import { createGates } from './playground-gates.js';
+import { createChest } from './playground-chest.js';
 
 const embedded = window.parent !== window;
 const closeButton = document.querySelector('[data-playground-close]');
@@ -95,6 +96,8 @@ async function mountGame(host) {
   scene.add(coins.group);
   const gates = createGates(track, CONFIG, (n) => money(n).replace(/\.00$/, ''));
   scene.add(gates.group);
+  const chest = createChest(track, CONFIG);
+  scene.add(chest.group);
 
   /* ── Runner ────────────────────────────────────────────────────────── */
   const figure = await createFigure({ reduced });
@@ -118,6 +121,7 @@ async function mountGame(host) {
     accentMat.color.copy(colour('--color-fg-interactive'));
     coins.recolour(colour('--color-fg-interactive'));
     gates.recolour(colour('--color-fg-interactive'), bg);
+    chest.recolour(colour('--color-fg-interactive'), bg);
     town.recolour(theme, bg.clone().lerp(colour('--color-fg'), 0.07));
     figure.recolour(theme);
   }
@@ -132,6 +136,8 @@ async function mountGame(host) {
   const toastEl = document.querySelector('[data-playground-toast]');
   const liveEl = document.querySelector('[data-playground-live]');
   let balance = 0;
+  let saved = 0;
+  let deposited = false; /* after the chest the HUD shows what is saved */
   let shown = 0;
   let collectedCount = 0;
   let toastTimer = 0;
@@ -148,12 +154,18 @@ async function mountGame(host) {
     toastTimer = setTimeout(() => { toastEl.hidden = true; }, 2600);
   }
   function showBalance(dt) {
-    shown += (balance - shown) * Math.min(1, dt * 10);
-    if (Math.abs(balance - shown) < 0.005) shown = balance;
+    const target = deposited ? saved : balance;
+    shown += (target - shown) * Math.min(1, dt * 10);
+    if (Math.abs(target - shown) < 0.005) shown = target;
     if (balanceEl) balanceEl.textContent = money(shown);
   }
+  function setHudLabel() {
+    const label = document.querySelector('.playground-balance__label');
+    if (label) label.textContent = deposited ? 'Saved' : 'Balance';
+  }
   function startRun() {
-    balance = 0; shown = 0; collectedCount = 0;
+    balance = 0; saved = 0; deposited = false; shown = 0; collectedCount = 0;
+    setHudLabel();
     coins.reset();
     if (balanceEl) balanceEl.textContent = money(0);
     toast('Salary: ' + money(CONFIG.money.salary));
@@ -166,7 +178,9 @@ async function mountGame(host) {
   const touchMode = window.matchMedia('(hover: none) and (pointer: coarse)').matches || new URLSearchParams(window.location.search).has('touch');
   document.body.classList.toggle('playground--touch', touchMode);
   let state = 'ready'; /* ready | running | paused | finished */
-  let s = 0;           /* distance along the track */
+  /* Dev only: `?from=230` starts the run that far along the track, to look at a later stretch. */
+  const startAt = Math.max(0, Number(new URLSearchParams(window.location.search).get('from')) || 0);
+  let s = startAt; /* distance along the track */
   let x = 0;           /* sideways offset from the centre line */
   let vx = 0;
   const camPos = new THREE.Vector3();
@@ -204,8 +218,9 @@ async function mountGame(host) {
   }
 
   function reset() {
-    s = 0; x = 0; vx = 0;
-    balance = 0; shown = 0; collectedCount = 0;
+    s = startAt; x = 0; vx = 0;
+    balance = 0; saved = 0; deposited = false; shown = 0; collectedCount = 0;
+    setHudLabel();
     coins.reset();
     if (balanceEl) balanceEl.textContent = money(0);
     pose(0, true);
@@ -259,8 +274,17 @@ async function mountGame(host) {
       toast(gate.label + ': -' + money(gate.amount), 'expense');
       announce(gate.label + ' paid, ' + money(gate.amount) + '. Balance ' + money(balance) + '.');
     });
+    if (!deposited && chest.crossed(prevS, s)) {
+      saved = Math.max(0, balance);
+      balance = 0;
+      deposited = true;
+      shown = saved;
+      setHudLabel();
+      toast(saved > 0 ? 'Saved: ' + money(saved) : 'Nothing left to save', saved > 0 ? 'income' : 'expense');
+      announce(saved > 0 ? 'Deposited ' + money(saved) + ' in the savings chest.' : 'Nothing was left to deposit.');
+    }
     const got = coins.collect(s, x);
-    if (got) {
+    if (got && !deposited) {
       balance += got * coins.value;
       collectedCount += got;
       if (Math.floor(collectedCount / 20) !== Math.floor((collectedCount - got) / 20)) announce('Balance ' + money(balance));
