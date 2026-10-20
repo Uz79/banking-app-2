@@ -88,9 +88,11 @@ Note: the chest is an arch of two walls and a half-cylinder lid in the accent co
 
 What you see: after the chest the town gives way to a forest; trees along the track grow stage by stage as you run, and the saved amount compounds with them.
 
-- [ ] Copy the proposed Forest Nature models, texture and `License.txt` to `assets/3d/playground/forest/`
-- [ ] Growth: the `Tree_2_A` to `Tree_2_E` series swapped by instance index and distance (a swap or a scale tween per stage), `Tree_1` series and ground cover for variety; the saved amount grows by the config rate per stage (D9)
-- [ ] Recolour (D13); resolve open question 2
+- [x] Copy the proposed Forest Nature models, texture and `License.txt` to `assets/3d/playground/forest/`
+- [x] Growth: the `Tree_2_A` to `Tree_2_E` series swapped by instance index and distance (a swap or a scale tween per stage), `Tree_1` series and ground cover for variety; the saved amount grows by the config rate per stage (D9)
+- [x] Recolour (D13); resolve open question 2
+
+Note: the forest starts at distance 254 and is cut into 5 stretches ("years"), one tree size up each (`Tree_2_A` to `E`), with the broader `Tree_1` series behind. Trees are seedlings until the runner is 55 units away and full size at 24 (growth follows the runner's distance, no timers; with reduced motion all trees are full size). Entering a stretch grows the saved amount by 15 % (`CONFIG.forest.rate`). Accent on foliage was not used (open question 2: monochrome, accent only on interactive things). The forest and town together are 58 draw calls and about 163,000 triangles in the forest (desktop, `?debug`); culling by distance belongs to group 12. Dev only: `?from=335&money=3000` starts partway with savings.
 
 ## 10. Result screen and best run
 

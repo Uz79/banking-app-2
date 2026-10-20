@@ -58,6 +58,16 @@ export const CONFIG = {
   /* The savings chest at the end of the town: what is left in the balance is deposited when the runner passes. */
   chest: { at: 240, depth: 4, wall: 2.2, height: 4 },
 
+  /* The forest after the chest. The track after `from` is cut into `stages` stretches, one "year" each:
+     the trees there are one size up (Tree_2 A to E), and the saved amount grows by `rate` when the runner enters it.
+     A tree grows from a seedling as the runner closes in (growFrom to growTo units ahead). */
+  forest: {
+    from: 254, finishMargin: 12, stages: 5, rate: 0.15,
+    scale: 0.8, groundScale: 2,
+    rows: [{ near: 2.5, far: 11, every: 5.5 }, { near: 12, far: 26, every: 8 }],
+    growFrom: 55, growTo: 24, seedling: 0.12,
+  },
+
   burst: { count: 36, life: 1.1, up: [6, 9], out: [2, 5], gravity: 18, size: 0.2 },
 
   /* Rendering. */

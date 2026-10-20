@@ -99,6 +99,8 @@ Source (read-only): `~/Documents/Projects/AI Portfolio Projects/Design System/_r
 
 **Both together: 1,029,520 B, about 1.0 MB**, on top of the 1.6 MB already in `assets/3d/`. Scale is not shared between the packs (a forest tree is 4 to 9 units, a town building 1.5 to 3, the figure about 2.65), so each pack gets a scale factor in the config (D10). Per-model triangle counts are small (largest 2,228), so draw calls, not triangles, are the budget.
 
+**Changed during the build:** `Grass_1_A_Color1` was dropped (flat blades looked wrong at game scale), so the forest has 13 models. As copied into `assets/3d/playground/`, the town is 718,388 B, the forest 306,018 B, both together 1,024,406 B (about 0.98 MB), plus the two `LICENSE.txt` files.
+
 ## Context
 
 - Registering a new page (AGENTS.md, five places) maps to:

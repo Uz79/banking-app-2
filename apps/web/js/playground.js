@@ -17,6 +17,7 @@ import { createTown } from './playground-world.js';
 import { createCoins } from './playground-coins.js';
 import { createGates } from './playground-gates.js';
 import { createChest } from './playground-chest.js';
+import { createForest } from './playground-forest.js';
 
 const embedded = window.parent !== window;
 const closeButton = document.querySelector('[data-playground-close]');
@@ -98,6 +99,8 @@ async function mountGame(host) {
   scene.add(gates.group);
   const chest = createChest(track, CONFIG);
   scene.add(chest.group);
+  const forest = await createForest(track, CONFIG);
+  scene.add(forest.group);
 
   /* ── Runner ────────────────────────────────────────────────────────── */
   const figure = await createFigure({ reduced });
@@ -122,7 +125,9 @@ async function mountGame(host) {
     coins.recolour(colour('--color-fg-interactive'));
     gates.recolour(colour('--color-fg-interactive'), bg);
     chest.recolour(colour('--color-fg-interactive'), bg);
-    town.recolour(theme, bg.clone().lerp(colour('--color-fg'), 0.07));
+    const ground = bg.clone().lerp(colour('--color-fg'), 0.07);
+    town.recolour(theme, ground);
+    forest.recolour(theme, ground);
     figure.recolour(theme);
   }
   applyTheme(true);
@@ -164,10 +169,11 @@ async function mountGame(host) {
     if (label) label.textContent = deposited ? 'Saved' : 'Balance';
   }
   function startRun() {
-    balance = 0; saved = 0; deposited = false; shown = 0; collectedCount = 0;
+    balance = startMoney; saved = 0; deposited = false; shown = startMoney; collectedCount = 0;
+    if (startAt > CONFIG.chest.at) { saved = startMoney; balance = 0; deposited = true; shown = saved; } /* dev: starting past the chest */
     setHudLabel();
     coins.reset();
-    if (balanceEl) balanceEl.textContent = money(0);
+    if (balanceEl) balanceEl.textContent = money(deposited ? saved : startMoney);
     toast('Salary: ' + money(CONFIG.money.salary));
     announce('Payday. Salary of ' + money(CONFIG.money.salary) + ' is on the road. Collect the coins.');
     track.at(s, here);
@@ -180,6 +186,7 @@ async function mountGame(host) {
   let state = 'ready'; /* ready | running | paused | finished */
   /* Dev only: `?from=230` starts the run that far along the track, to look at a later stretch. */
   const startAt = Math.max(0, Number(new URLSearchParams(window.location.search).get('from')) || 0);
+  const startMoney = Number(new URLSearchParams(window.location.search).get('money')) || 0; /* dev only: `?money=3000` */
   let s = startAt; /* distance along the track */
   let x = 0;           /* sideways offset from the centre line */
   let vx = 0;
@@ -283,6 +290,16 @@ async function mountGame(host) {
       toast(saved > 0 ? 'Saved: ' + money(saved) : 'Nothing left to save', saved > 0 ? 'income' : 'expense');
       announce(saved > 0 ? 'Deposited ' + money(saved) + ' in the savings chest.' : 'Nothing was left to deposit.');
     }
+    if (deposited) {
+      forest.entered(prevS, s).forEach((k) => {
+        const gain = saved * forest.rate;
+        saved += gain;
+        if (gain > 0) {
+          toast('Year ' + (k + 1) + ': +' + money(gain));
+          announce('Year ' + (k + 1) + '. Savings grew by ' + money(gain) + ' to ' + money(saved) + '.');
+        }
+      });
+    }
     const got = coins.collect(s, x);
     if (got && !deposited) {
       balance += got * coins.value;
@@ -368,6 +385,7 @@ async function mountGame(host) {
       figure.update(dt);
       elapsed += dt;
       coins.update(dt, elapsed, reduced());
+      forest.update(s, reduced());
       showBalance(dt);
     }
     renderer.render(scene, camera);
