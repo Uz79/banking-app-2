@@ -45,13 +45,13 @@ export const CONFIG = {
     spacing: 1.9, gap: 3, lateral: 2.4,
     radius: 0.55, thickness: 0.14, height: 1.3,
     spin: 2.6,        /* radians per second */
-    reach: { along: 1.2, across: 1.15 },
+    reach: { along: 1.4, across: 1.5 },
   },
   /* Gates across the whole track: unavoidable costs, taken once when the runner passes. Amounts in CHF. */
   gates: [
-    { id: 'rent', label: 'Rent', amount: 1600, at: 105 },
-    { id: 'groceries', label: 'Groceries', amount: 500, at: 160 },
-    { id: 'bills', label: 'Bills', amount: 700, at: 210 },
+    { id: 'rent', label: 'Rent', amount: 1200, at: 105 },
+    { id: 'groceries', label: 'Groceries', amount: 400, at: 160 },
+    { id: 'bills', label: 'Bills', amount: 500, at: 210 },
   ],
   gate: { height: 7.4, bannerHeight: 1.7, post: 0.5, outset: 0.5 },
 
@@ -62,7 +62,7 @@ export const CONFIG = {
      the trees there are one size up (Tree_2 A to E), and the saved amount grows by `rate` when the runner enters it.
      A tree grows from a seedling as the runner closes in (growFrom to growTo units ahead). */
   forest: {
-    from: 254, finishMargin: 12, stages: 5, rate: 0.15,
+    from: 254, finishMargin: 12, stages: 5, rate: 0.2,
     scale: 0.8, groundScale: 2,
     rows: [{ near: 2.5, far: 11, every: 5.5 }, { near: 12, far: 26, every: 8 }],
     growFrom: 55, growTo: 24, seedling: 0.12,

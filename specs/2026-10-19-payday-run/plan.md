@@ -73,7 +73,7 @@ What you see: three labelled gates across the track; passing through each takes 
 - [x] Gate meshes (accent frame, label from a canvas texture, one per kind), placed at config distances; deduction on crossing; HUD delta line (D9)
 - [x] A short text line in the HUD for each: "Rent", "Groceries", "Bills", with the amount
 
-Note: starting values are rent CHF 1'600 at 105, groceries CHF 500 at 160, bills CHF 700 at 210 (of a CHF 6'000 salary). A runner who misses many coins can go below zero at a gate; the balance shows the minus sign. Whether to floor it is for the tuning pass (open question 1).
+Note: starting values are rent CHF 1'200 at 105, groceries CHF 400 at 160, bills CHF 500 at 210 (CHF 2'100 of a CHF 6'000 salary). A runner who misses many coins can go below zero at a gate; the balance shows the minus sign. Whether to floor it is for the tuning pass (open question 1).
 
 ## 8. The savings chest
 
@@ -92,7 +92,9 @@ What you see: after the chest the town gives way to a forest; trees along the tr
 - [x] Growth: the `Tree_2_A` to `Tree_2_E` series swapped by instance index and distance (a swap or a scale tween per stage), `Tree_1` series and ground cover for variety; the saved amount grows by the config rate per stage (D9)
 - [x] Recolour (D13); resolve open question 2
 
-Note: the forest starts at distance 254 and is cut into 5 stretches ("years"), one tree size up each (`Tree_2_A` to `E`), with the broader `Tree_1` series behind. Trees are seedlings until the runner is 55 units away and full size at 24 (growth follows the runner's distance, no timers; with reduced motion all trees are full size). Entering a stretch grows the saved amount by 15 % (`CONFIG.forest.rate`). Accent on foliage was not used (open question 2: monochrome, accent only on interactive things). The forest and town together are 58 draw calls and about 163,000 triangles in the forest (desktop, `?debug`); culling by distance belongs to group 12. Dev only: `?from=335&money=3000` starts partway with savings.
+Note: the forest starts at distance 254 and is cut into 5 stretches ("years"), one tree size up each (`Tree_2_A` to `E`), with the broader `Tree_1` series behind. Trees are seedlings until the runner is 55 units away and full size at 24 (growth follows the runner's distance, no timers; with reduced motion all trees are full size). Entering a stretch grows the saved amount by 20 % (`CONFIG.forest.rate`). Accent on foliage was not used (open question 2: monochrome, accent only on interactive things). The forest and town together are 58 draw calls and about 163,000 triangles in the forest (desktop, `?debug`); culling by distance belongs to group 12. Dev only: `?from=335&money=3000` starts partway with savings.
+
+Tuning after a first full run (2026-10-20): weaving without aiming left the savings at CHF 0 with the first values (rent 1'600, groceries 500, bills 700; growth 15 %), so costs were lowered, growth raised to 20 %, and the coin reach widened. A perfect run now ends near CHF 9'700 (3'900 saved, five stretches at 20 %), a careless one near zero. Still to tune by playing (open question 1).
 
 ## 10. Result screen and best run
 
