@@ -98,7 +98,7 @@ function oklchToRGB(L, C, h) {
 }
 const rgbCss = (c) => `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
 
-function cssColor(name) {
+export function cssColor(name) {
   const probe = document.createElement('span');
   probe.style.color = `var(${name})`;
   probe.style.display = 'none';

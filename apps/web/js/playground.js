@@ -4,8 +4,15 @@
  * The page is opened as a sheet on the Design system hub (js/playground-sheet.js puts it in an
  * iframe and slides it up like the flow screens). Embedded, the close button asks the hub to
  * slide it down again; opened directly, it is a plain link back to the hub.
+ *
+ * The runner is the persona character (createFigure from js/profile-persona-character.js),
+ * its recipe from User Type (UZBankPersona) and its pace from the profile (js/playground-config.js).
+ * It runs along a curve (js/playground-track.js) as (distance, sideways offset); a chase camera
+ * follows. Plan group 3: track, camera and keyboard steering. The story comes in the next groups.
  */
-import { THREE, createFigure, readTheme } from './profile-persona-character.js';
+import { THREE, createFigure, readTheme, cssColor } from './profile-persona-character.js';
+import { CONFIG } from './playground-config.js';
+import { createTrack } from './playground-track.js';
 
 const embedded = window.parent !== window;
 const closeButton = document.querySelector('[data-playground-close]');
@@ -17,19 +24,27 @@ if (embedded && closeButton) {
   });
 }
 
-/* ── Stage: the persona character on a themed stage ───────────────────────────
-   Group 2 of the plan: the figure idles in its own scene. The track, camera and
-   game come in the next groups. The character comes from js/profile-persona-character.js
-   (createFigure), the recipe from User Type (UZBankPersona, js/profile-persona.js). */
-
 const stage = document.querySelector('[data-playground-stage]');
+const overlay = document.querySelector('[data-playground-overlay]');
+const hud = document.querySelector('[data-playground-hud]');
 
-async function mountStage(host) {
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+async function mountGame(host) {
   const reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
   const reduced = () => reduceMQ.matches;
 
+  const persona = (window.UZBankPersona && window.UZBankPersona.read()) || null;
+  const profile = CONFIG.profiles[persona && persona.profile] || CONFIG.profiles[CONFIG.fallbackProfile];
+  const recipe = (persona && persona.recipe) || { outfit: 'barbarian', head: 'rogue', headwear: 'none', back: 'none' };
+  if (hud) {
+    hud.querySelector('[data-hud-name]').textContent = profile.name;
+    hud.querySelector('[data-hud-pace]').textContent = profile.pace;
+  }
+
+  /* ── Scene ─────────────────────────────────────────────────────────── */
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, CONFIG.maxPixelRatio));
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.NoToneMapping;
@@ -39,37 +54,40 @@ async function mountStage(host) {
   host.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
-  camera.position.set(2.9, 2.2, 6.6);
-  camera.lookAt(0, 1.1, 0);
+  scene.fog = new THREE.Fog(0xffffff, CONFIG.fogNear, CONFIG.fogFar);
+  const camera = new THREE.PerspectiveCamera(CONFIG.camera.fov, 1, 0.1, 400);
 
   const hemi = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
   const key = new THREE.DirectionalLight(0xffffff, 2);
-  key.position.set(3, 5.5, 4);
   key.castShadow = true;
   key.shadow.mapSize.set(1024, 1024);
-  Object.assign(key.shadow.camera, { left: -3, right: 3, top: 3.5, bottom: -2 });
+  Object.assign(key.shadow.camera, { left: -5, right: 5, top: 5, bottom: -5 });
   key.shadow.bias = -0.0006;
   key.shadow.normalBias = 0.02;
   const rim = new THREE.DirectionalLight(0xffffff, 0);
   rim.position.set(-3, 3, -4);
-  scene.add(hemi, key, rim);
+  scene.add(hemi, key, key.target, rim);
 
-  const shadowMat = new THREE.ShadowMaterial({ opacity: 0.2 });
-  const floor = new THREE.Mesh(new THREE.CircleGeometry(7, 64), shadowMat);
-  floor.rotation.x = -Math.PI / 2;
-  floor.receiveShadow = true;
-  scene.add(floor);
+  /* ── Track ─────────────────────────────────────────────────────────── */
+  const track = createTrack(CONFIG.track);
+  const edge = CONFIG.track.edge;
+  const half = track.width / 2;
+  const trackMat = new THREE.MeshStandardMaterial({ roughness: 0.95, metalness: 0 });
+  const accentMat = new THREE.MeshStandardMaterial({ roughness: 0.8, metalness: 0 });
+  const road = new THREE.Mesh(track.ribbon(-half, half, 0), trackMat);
+  road.receiveShadow = true;
+  const edges = new THREE.Mesh(mergeGeometries([
+    track.ribbon(-half - edge, -half, 0.01),
+    track.ribbon(half, half + edge, 0.01),
+    track.ribbon(-half, half, 0.012, 0, 1.2, 0.6),
+    track.ribbon(-half, half, 0.012, track.length - 1.2, track.length, 0.6),
+  ]), accentMat);
+  scene.add(road, edges);
 
+  /* ── Runner ────────────────────────────────────────────────────────── */
   const figure = await createFigure({ reduced });
-  figure.actor.rotation.y = 0.35 - Math.PI / 6;
-  scene.add(figure.actor);
-
-  const persona = (window.UZBankPersona && window.UZBankPersona.read()) || null;
-  const recipe = (persona && persona.recipe) || { outfit: 'barbarian', head: 'rogue', headwear: 'none', back: 'none' };
   figure.setRecipe(recipe, false);
-  figure.setLoop('Idle_A');
-  figure.mixer.update(0.4);
+  scene.add(figure.actor);
 
   let themeKey = '';
   function applyTheme(force) {
@@ -81,35 +99,185 @@ async function mountStage(host) {
     hemi.intensity = theme.light.fill;
     key.intensity = theme.light.key;
     rim.intensity = theme.light.rim;
-    shadowMat.color.set(theme.shadowColor);
-    shadowMat.opacity = theme.shadowOpacity;
+    const colour = (name) => new THREE.Color().setRGB(...cssColor(name).map((v) => v / 255), THREE.SRGBColorSpace);
+    const bg = colour('--color-bg');
+    scene.fog.color.copy(bg);
+    trackMat.color.copy(bg).lerp(colour('--color-fg'), 0.14);
+    accentMat.color.copy(colour('--color-fg-interactive'));
     figure.recolour(theme);
   }
   applyTheme(true);
   new MutationObserver(() => requestAnimationFrame(() => applyTheme(false)))
     .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'style', 'class'] });
 
+  /* ── Game state ────────────────────────────────────────────────────── */
+  const input = { left: false, right: false };
+  let state = 'ready'; /* ready | running | paused | finished */
+  let s = 0;           /* distance along the track */
+  let x = 0;           /* sideways offset from the centre line */
+  let vx = 0;
+  const camPos = new THREE.Vector3();
+  const camLook = new THREE.Vector3();
+  const here = { p: new THREE.Vector3(), t: new THREE.Vector3(), r: new THREE.Vector3() };
+  const back = { p: new THREE.Vector3(), t: new THREE.Vector3(), r: new THREE.Vector3() };
+  const heading = new THREE.Vector3();
+
+  const TEXT = {
+    ready: { title: 'Payday run', text: 'Steer with the arrow keys or A and D. Escape pauses.', primary: 'Start' },
+    paused: { title: 'Paused', text: '', primary: 'Resume' },
+    finished: { title: 'Finish', text: 'You made it to the end of the track.', primary: 'Play again' },
+  };
+
+  function showOverlay(name) {
+    if (!overlay) return;
+    const t = TEXT[name];
+    overlay.hidden = !t;
+    if (!t) return;
+    overlay.querySelector('[data-overlay-title]').textContent = t.title;
+    const text = overlay.querySelector('[data-overlay-text]');
+    text.textContent = t.text;
+    text.hidden = !t.text;
+    const primary = overlay.querySelector('[data-overlay-primary]');
+    primary.textContent = t.primary;
+    primary.focus({ preventScroll: true });
+  }
+
+  function setState(next) {
+    state = next;
+    if (next === 'running') figure.setLoop(CONFIG.runClip, { timeScale: profile.timeScale });
+    else if (next !== 'paused') figure.setLoop(CONFIG.idleClip);
+    showOverlay(next);
+    if (next === 'running' && document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  }
+
+  function reset() {
+    s = 0; x = 0; vx = 0;
+    pose(0, true);
+    setState('ready');
+  }
+
+  /* Position of the camera's anchor `distance` behind distance s (extends the track backwards at the start). */
+  function behind(sRaw, o) {
+    if (sRaw >= 0) return track.at(sRaw, o);
+    track.at(0, o);
+    o.p.addScaledVector(o.t, sRaw);
+    return o;
+  }
+
+  function pose(dt, snap) {
+    const c = CONFIG.camera;
+    track.at(s, here);
+    const px = here.p.x + here.r.x * x, pz = here.p.z + here.r.z * x;
+    figure.actor.position.set(px, 0, pz);
+    const speed = profile.speed;
+    heading.set(here.t.x * speed + here.r.x * vx, 0, here.t.z * speed + here.r.z * vx);
+    figure.actor.rotation.set(0, Math.atan2(heading.x, heading.z), vx * CONFIG.steer.lean * 0.1, 'XYZ');
+
+    behind(s - c.distance, back);
+    const wantX = back.p.x + back.r.x * x * c.follow;
+    const wantY = c.height;
+    const wantZ = back.p.z + back.r.z * x * c.follow;
+    const lookX = px + here.t.x * c.lookAhead, lookZ = pz + here.t.z * c.lookAhead;
+    const k = snap ? 1 : 1 - Math.exp(-c.lag * dt);
+    camPos.x += (wantX - camPos.x) * k; camPos.y += (wantY - camPos.y) * k; camPos.z += (wantZ - camPos.z) * k;
+    camLook.x += (lookX - camLook.x) * k; camLook.y += (c.lookHeight - camLook.y) * k; camLook.z += (lookZ - camLook.z) * k;
+    camera.position.copy(camPos);
+    camera.lookAt(camLook);
+
+    key.position.set(px + 3, 5.5, pz + 4);
+    key.target.position.set(px, 0, pz);
+  }
+
+  function step(dt) {
+    if (state !== 'running') return;
+    const st = CONFIG.steer;
+    const target = ((input.right ? 1 : 0) - (input.left ? 1 : 0)) * st.speed;
+    vx += (target - vx) * Math.min(1, dt * st.response);
+    const limit = half - st.margin;
+    x = clamp(x + vx * dt, -limit, limit);
+    if (x === limit || x === -limit) vx = 0;
+    s += profile.speed * dt;
+    if (s >= track.length) {
+      s = track.length;
+      setState('finished');
+    }
+  }
+
+  /* ── Input ─────────────────────────────────────────────────────────── */
+  const KEYS = { ArrowLeft: 'left', a: 'left', A: 'left', ArrowRight: 'right', d: 'right', D: 'right' };
+  window.addEventListener('keydown', (e) => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const dir = KEYS[e.key];
+    if (dir) { input[dir] = true; e.preventDefault(); return; }
+    if (e.key === 'Escape') {
+      if (state === 'running') { setState('paused'); e.preventDefault(); }
+      else if (state === 'paused') { setState('running'); e.preventDefault(); }
+    }
+  });
+  window.addEventListener('keyup', (e) => {
+    const dir = KEYS[e.key];
+    if (dir) input[dir] = false;
+  });
+  const pause = () => { input.left = input.right = false; if (state === 'running') setState('paused'); };
+  window.addEventListener('blur', pause);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
+
+  if (overlay) {
+    overlay.querySelector('[data-overlay-primary]').addEventListener('click', () => {
+      if (state === 'ready' || state === 'paused') setState('running');
+      else if (state === 'finished') { reset(); setState('running'); }
+    });
+  }
+
+  /* ── Size and loop ─────────────────────────────────────────────────── */
   function resize() {
     const w = host.clientWidth, h = host.clientHeight;
     if (!w || !h) return;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
-    camera.fov = w / h < 0.55 ? 38 : 30;
+    camera.fov = w / h < 0.7 ? CONFIG.camera.fovNarrow : CONFIG.camera.fov;
     camera.updateProjectionMatrix();
   }
   new ResizeObserver(resize).observe(host);
   resize();
 
+  pose(0, true);
+  figure.setLoop(CONFIG.idleClip);
+  figure.mixer.update(0.4);
+  showOverlay('ready');
+
   const clock = new THREE.Clock();
   function frame() {
     requestAnimationFrame(frame);
-    if (document.hidden) { clock.getDelta(); return; }
-    figure.update(Math.min(clock.getDelta(), 0.05));
+    const dt = Math.min(clock.getDelta(), 0.05);
+    if (document.hidden) return;
+    if (state !== 'paused') {
+      step(dt);
+      pose(dt, false);
+      figure.update(dt);
+    }
     renderer.render(scene, camera);
   }
   requestAnimationFrame(frame);
 }
 
+/* Merge a few position-only strips into one geometry (one draw call). */
+function mergeGeometries(geos) {
+  const positions = [];
+  const index = [];
+  let base = 0;
+  geos.forEach((g) => {
+    positions.push(...g.getAttribute('position').array);
+    g.getIndex().array.forEach((i) => index.push(i + base));
+    base += g.getAttribute('position').count;
+  });
+  const out = new THREE.BufferGeometry();
+  out.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+  out.setIndex(index);
+  out.computeVertexNormals();
+  return out;
+}
+
 if (stage) {
-  mountStage(stage).catch((err) => console.warn('[playground] 3D failed to load', err));
+  mountGame(stage).catch((err) => console.warn('[playground] 3D failed to load', err));
 }

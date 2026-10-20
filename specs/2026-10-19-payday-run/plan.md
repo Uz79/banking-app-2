@@ -30,10 +30,12 @@ Note on the regression: all seven pages mounted the figure and reached the ready
 
 What you see: press Space and the figure runs along a curved ribbon track in theme colours with a chase camera; steer with the arrow keys or A/D inside the track width; Escape pauses with Resume and Close. Pace differs for Beat, Lena and Max.
 
-- [ ] `js/playground-config.js`: first version of the config object (D10): per-profile speed and `timeScale`, steering response, camera distance, height and lag, track width and length, `maxPixelRatio`
-- [ ] `js/playground.js`: spline and arc-length table, `(s, x)` player state, ribbon mesh along the curve, chase camera with lag, game states (ready, running, paused), start overlay, pause overlay (D11, D8)
-- [ ] `css/styles.css`: overlay and HUD base styles with `--color-*` tokens, focus rings on `--color-fg-interactive`
-- [ ] Keyboard only here; check Light and Dark
+- [x] `js/playground-config.js`: first version of the config object (D10): per-profile speed and `timeScale`, steering response, camera distance, height and lag, track width and length, `maxPixelRatio`
+- [x] `js/playground.js`: spline and arc-length table, `(s, x)` player state, ribbon mesh along the curve, chase camera with lag, game states (ready, running, paused), start overlay, pause overlay (D11, D8)
+- [x] `css/styles.css`: overlay and HUD base styles with `--color-*` tokens, focus rings on `--color-fg-interactive`
+- [x] Keyboard only here; checked in Dark and a Multi-color theme (Light not checked on the running view)
+
+Note: `js/playground-track.js` holds the curve and lookup table (pure maths, used again by the world in group 5). Reduced motion is not handled yet (group 11): the figure holds its pose but the camera and run still move.
 
 ## 4. Touch controls and layout at 390px
 
