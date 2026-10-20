@@ -44,6 +44,22 @@ const hud = document.querySelector('[data-playground-hud]');
 
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
+/* The best run is the only thing the game keeps: { balance, date } in localStorage (D2, listed in README.md). */
+const BEST_KEY = 'uzBankWebPlaygroundBest';
+function readBest() {
+  try {
+    const v = JSON.parse(window.localStorage.getItem(BEST_KEY) || 'null');
+    return v && typeof v.balance === 'number' && Number.isFinite(v.balance) ? v : null;
+  } catch (err) {
+    return null;
+  }
+}
+function writeBest(balance) {
+  try {
+    window.localStorage.setItem(BEST_KEY, JSON.stringify({ balance: Math.round(balance * 100) / 100, date: new Date().toISOString().slice(0, 10) }));
+  } catch (err) { /* private mode or blocked storage: the game still works */ }
+}
+
 async function mountGame(host) {
   const reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
   const reduced = () => reduceMQ.matches;
@@ -154,6 +170,8 @@ async function mountGame(host) {
   let deposited = false; /* after the chest the HUD shows what is saved */
   let shown = 0;
   let collectedCount = 0;
+  let gatesPaid = [];     /* for the result breakdown */
+  let depositAmount = 0;
   let toastTimer = 0;
   const announce = (text) => { if (liveEl) liveEl.textContent = text; };
   function toast(text, kind = 'income') {
@@ -167,6 +185,44 @@ async function mountGame(host) {
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => { toastEl.hidden = true; }, 2600);
   }
+  /* The finish: the breakdown, the final balance and the best run. */
+  const signed = (n) => (n < 0 ? '-' : '+') + money(Math.abs(n));
+  let result = null;
+  function finishRun() {
+    const final = saved;
+    const best = readBest();
+    const isBest = final > 0 && (!best || final > best.balance);
+    if (isBest) writeBest(final);
+    result = { final, isBest, previous: best };
+    announce('Run finished. Final balance ' + money(final) + (isBest ? '. New best.' : '.'));
+    setState('finished');
+  }
+  function renderResult(el) {
+    if (!result) return;
+    const rows = [['Salary collected', signed(collectedCount * coins.value)]];
+    gatesPaid.forEach((g) => rows.push([g.label, signed(-g.amount)]));
+    rows.push(['Deposited in savings', money(depositAmount)]);
+    rows.push(['Growth in the forest', signed(saved - depositAmount)]);
+    const list = el.querySelector('[data-result-rows]');
+    list.textContent = '';
+    rows.forEach(([label, value]) => {
+      const li = document.createElement('li');
+      const a = document.createElement('span');
+      const b = document.createElement('span');
+      a.textContent = label;
+      b.textContent = value;
+      li.append(a, b);
+      list.appendChild(li);
+    });
+    el.querySelector('[data-result-total]').textContent = money(result.final);
+    el.querySelector('[data-result-badge]').hidden = !result.isBest;
+    const bestEl = el.querySelector('[data-result-best]');
+    const kept = result.isBest ? result.previous : readBest();
+    bestEl.textContent = result.isBest
+      ? (kept ? 'Previous best: ' + money(kept.balance) : 'Your first best run.')
+      : (kept ? 'Best so far: ' + money(kept.balance) : '');
+    bestEl.hidden = !bestEl.textContent;
+  }
   function showBalance(dt) {
     const target = deposited ? saved : balance;
     shown += (target - shown) * Math.min(1, dt * 10);
@@ -178,7 +234,7 @@ async function mountGame(host) {
     if (label) label.textContent = deposited ? 'Saved' : 'Balance';
   }
   function startRun() {
-    balance = startMoney; saved = 0; deposited = false; shown = startMoney; collectedCount = 0;
+    balance = startMoney; saved = 0; deposited = false; shown = startMoney; collectedCount = 0; gatesPaid = []; depositAmount = 0;
     if (startAt > CONFIG.chest.at) { saved = startMoney; balance = 0; deposited = true; shown = saved; } /* dev: starting past the chest */
     setHudLabel();
     coins.reset();
@@ -208,7 +264,7 @@ async function mountGame(host) {
   const TEXT = {
     ready: { title: 'Payday run', text: touchMode ? 'Hold the left and right buttons to steer.' : 'Steer with the arrow keys or A and D. Escape pauses.', primary: 'Start' },
     paused: { title: 'Paused', text: touchMode ? '' : 'Escape again closes the game.', primary: 'Resume' },
-    finished: { title: 'Finish', text: 'You made it to the end of the track.', primary: 'Play again' },
+    finished: { title: 'Your result', text: '', primary: 'Play again' },
   };
 
   function showOverlay(name) {
@@ -220,6 +276,10 @@ async function mountGame(host) {
     const text = overlay.querySelector('[data-overlay-text]');
     text.textContent = t.text;
     text.hidden = !t.text;
+    const resultEl = overlay.querySelector('[data-overlay-result]');
+    resultEl.hidden = name !== 'finished';
+    overlay.querySelector('.playground-panel').classList.toggle('playground-panel--result', name === 'finished');
+    if (name === 'finished') renderResult(resultEl);
     const primary = overlay.querySelector('[data-overlay-primary]');
     primary.textContent = t.primary;
     primary.focus({ preventScroll: true });
@@ -235,7 +295,7 @@ async function mountGame(host) {
 
   function reset() {
     s = startAt; x = 0; vx = 0;
-    balance = 0; saved = 0; deposited = false; shown = 0; collectedCount = 0;
+    balance = 0; saved = 0; deposited = false; shown = 0; collectedCount = 0; gatesPaid = []; depositAmount = 0;
     setHudLabel();
     coins.reset();
     if (balanceEl) balanceEl.textContent = money(0);
@@ -287,11 +347,13 @@ async function mountGame(host) {
     s += profile.speed * dt;
     gates.crossed(prevS, s).forEach((gate) => {
       balance -= gate.amount;
+      gatesPaid.push({ label: gate.label, amount: gate.amount });
       toast(gate.label + ': -' + money(gate.amount), 'expense');
       announce(gate.label + ' paid, ' + money(gate.amount) + '. Balance ' + money(balance) + '.');
     });
     if (!deposited && chest.crossed(prevS, s)) {
       saved = Math.max(0, balance);
+      depositAmount = saved;
       balance = 0;
       deposited = true;
       shown = saved;
@@ -317,7 +379,7 @@ async function mountGame(host) {
     }
     if (s >= track.length) {
       s = track.length;
-      setState('finished');
+      finishRun();
     }
   }
 

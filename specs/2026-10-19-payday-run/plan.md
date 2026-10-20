@@ -100,9 +100,11 @@ Tuning after a first full run (2026-10-20): weaving without aiming left the savi
 
 What you see: at the finish the run ends on a result screen with the final balance, a breakdown, a "New best" badge when it applies, and Play again / Close. The best run survives a reload.
 
-- [ ] Result overlay: balance via `formatMoney`, one line per step, badge, buttons, focus moved into the dialog and returned on close (D2)
-- [ ] `uzBankWebPlaygroundBest` read and written with try/catch around `localStorage`; first visit shows no best
-- [ ] `apps/web/README.md`: add the key to the storage list
+- [x] Result overlay: balance via `formatMoney`, one line per step, badge, buttons, focus moved into the dialog and returned on close (D2)
+- [x] `uzBankWebPlaygroundBest` read and written with try/catch around `localStorage`; first visit shows no best
+- [x] `apps/web/README.md`: add the key to the storage list
+
+Note: the result dialog shows the final balance, one row per step (salary collected, each gate, deposited, growth in the forest), a "New best" badge and the previous or best-so-far line, then Play again and Close. A run is only recorded when it ends above CHF 0 and beats the stored best; invalid or blocked storage is ignored. Checked with dev-jump runs (`?from=405&money=...`): first run, worse run, better run, zero run and invalid stored JSON. A full real run to the result has not been timed by hand.
 
 ## 11. Reduced motion: the stepped version
 

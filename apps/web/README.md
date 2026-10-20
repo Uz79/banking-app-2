@@ -57,6 +57,7 @@ Persisted in `localStorage` (see `js/storage-migrate.js` for legacy key migratio
 | `uzBankWebPaymentState` | Demo payment balances and bookings |
 | `uzBankWebSavedColorThemes_v2` | Profile > Theme saved theme cards |
 | `uzBankWebBuiltinThemesSeeded_v1` | Built-in theme cards seeded once |
+| `uzBankWebPlaygroundBest` | Design system > Payday run: the best run, `{ "balance": number, "date": "YYYY-MM-DD" }` |
 
 ## Source layout
 
