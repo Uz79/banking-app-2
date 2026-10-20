@@ -21,6 +21,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [ ] The accessible name reads "Switch to Dark mode" in Light and "Switch to Light mode" in Dark, and updates after a tap
 - [ ] The button is not on the deeper screens: Account details, All bookings, Details of position, the specimen pages (their back arrow is unchanged)
 - [ ] At 1280px and wider the button is hidden and the sidebar's Light/Dark still works
+- [ ] On a phone, the button does not keep its hover fill after a tap (it shows the pressed fill only while the finger is down)
 - [ ] Reduced motion: nothing animates because of the toggle
 - [ ] Legibility presets (Profile > Legibility), including the largest, do not push the button or the title out of the bar
 - [ ] The status message ("Open payment!") appearing above the bar does not cover or shift the button

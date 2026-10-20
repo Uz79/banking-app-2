@@ -643,6 +643,14 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
   }
 }
 
+/* On touch there is no hover: without this the tapped button keeps its hover fill until the next tap elsewhere.
+   The pressed fill still shows while the finger is down. */
+@media (hover: none) {
+  .view__nav .view__mode-toggle:hover:not(:active) {
+    background-color: transparent;
+  }
+}
+
 /* Main scroll views: sticky page title; flush horizontal edges when pinned to scroll top */
 .body[data-screen="overview"] .view__nav[data-scroll-edge-nav],
 .body[data-screen="motion-specimens"] .view__sticky-header[data-scroll-edge-nav],

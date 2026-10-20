@@ -15,8 +15,9 @@ What you see: on Overview at 390px, a sun or moon button in the top left of the 
 
 What you see: the same button on Payments, Profile and Design system (signed in as admin), and the icon follows a change made in Profile > Theme.
 
-- [ ] `payments.html`, `profile.html`, `design-system.html`: same markup and script
-- [ ] Check the icon after switching Light/Dark from the sidebar at a wider window and back, and after reload
+- [x] `payments.html`, `profile.html`, `design-system.html`: same markup and script
+- [x] Checked at 390px (iframes on a scratch server): all four screens show the 32 x 32 dp button with the title centred, and the icon and name follow a switch made through `UZBankApplyThemeChoice` (as the sidebar and Profile > Theme do). Not looked at: reload on each page, a real phone
+- [x] D9: no hover fill left after a tap on touch (the CSS rule is in place; the touch behaviour itself needs a phone to see)
 
 ## 3. Wrap-up
 

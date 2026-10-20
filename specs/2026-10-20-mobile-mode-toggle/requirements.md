@@ -31,6 +31,7 @@ Interview outcome: the four main screens only; the icon shows the current mode; 
 | D6 | Accessibility: the button's accessible name names the action, "Switch to Dark mode" or "Switch to Light mode", updated when the mode changes. It has no `aria-pressed`. The focus ring is the existing `--color-fg-interactive` outline | The name already carries the state; a pressed state would repeat it |
 | D7 | A new small classic script, `js/mode-toggle.js`, wires the click and keeps the accessible name current. It is loaded on the four pages only. No new storage key | Keeps the change out of `app.js`/`app-mp.js`, which every page loads |
 | D8 | The page transition (tectonics) and its stand-in cards are not changed; the button is part of the top bar, which does not take part in them | Out of scope |
+| D9 | Review change: the button keeps no hover fill after a tap on a touch screen (`@media (hover: none)` clears the hover fill, except while pressed). Desktop hover is unchanged | Touch browsers leave `:hover` on the last tapped element |
 
 ## Context
 
