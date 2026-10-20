@@ -618,6 +618,31 @@ html.sidebar-compressed .sidebar__logout-btn {
   height: 1.5rem;
 }
 
+/* Mobile Light/Dark toggle: small glyph-only button in the bar's leading slot (js/mode-toggle.js).
+   The sun shows in Light, the moon in Dark, chosen by html[data-theme] so it is right before first paint. */
+.view__nav .view__mode-toggle {
+  position: absolute;
+  left: var(--space-3);
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+}
+
+.view__nav .view__mode-toggle .mode-toggle__icon--sun,
+html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--moon {
+  display: none;
+}
+
+html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
+  display: block;
+}
+
+@media (min-width: 1280px) {
+  .view__nav .view__mode-toggle {
+    display: none;
+  }
+}
+
 /* Main scroll views: sticky page title; flush horizontal edges when pinned to scroll top */
 .body[data-screen="overview"] .view__nav[data-scroll-edge-nav],
 .body[data-screen="motion-specimens"] .view__sticky-header[data-scroll-edge-nav],
