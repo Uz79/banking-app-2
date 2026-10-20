@@ -19,10 +19,12 @@ What you see: a fourth card "Payday run" under Character kit on the Design syste
 
 What you see: the Playground page shows the persona character idling on a bare stage in the active theme, and it changes with the User Type set in Profile. Profile, Character kit and Overview look and behave exactly as before.
 
-- [ ] `js/profile-persona-character.js`: extract `createFigure()`, export `readTheme`, the lightness-to-theme-hue map and `createFigure`; add `timeScale` to `setLoop`; keep `mountStage` and `init` behaviour identical (see "What changes in the character module")
-- [ ] `js/playground.js` (ES module): dynamic `import()` of the character module, create the renderer, scene, camera and lights, add the figure, read `UZBankPersona.read()`, play `Idle_A`, resize with the stage, re-apply the theme on `data-theme` and token changes
-- [ ] `playground.html`: add `js/profile-persona.js` and the module script
-- [ ] Regression: Profile User Type, Character kit specimen, Overview ambient figure (baseline sections 2, 4, 5)
+- [x] `js/profile-persona-character.js`: extract `createFigure()`, export `readTheme`, the lightness-to-theme-hue map and `createFigure`; add `timeScale` to `setLoop`; keep `mountStage` and `init` behaviour identical (see "What changes in the character module")
+- [x] `js/playground.js` (ES module): static `import` of the character module (it also re-exports `THREE`, so there is one three.js instance), create the renderer, scene, camera and lights, add the figure, read `UZBankPersona.read()`, play `Idle_A`, resize with the stage, re-apply the theme on `data-theme` and token changes
+- [x] `playground.html`: add `js/profile-persona.js` and the module script
+- [x] Regression (checked 2026-10-20, see the note below): Profile User Type, Character kit specimen, Overview ambient figure (baseline sections 2, 4, 5)
+
+Note on the regression: all seven pages mounted the figure and reached the ready state, with no errors; the Character kit presets, Light/Dark recolour and running animation, and the Profile slider (character, title, stored value) behaved as before. Not checked in group 2: a Multi-color theme, reduced motion, drag-to-turn, and the phone width. Those are in `validation.md` and the final baseline run.
 
 ## 3. Track, camera and steering
 

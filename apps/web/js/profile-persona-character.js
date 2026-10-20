@@ -21,6 +21,9 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/+esm';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js/+esm';
 
+/* One three.js instance for everything that imports this module (the Playground included). */
+export { THREE };
+
 const ASSETS = {
   knight: new URL('../assets/3d/kaykit/knight.glb', import.meta.url).href,
   mage: new URL('../assets/3d/kaykit/mage.glb', import.meta.url).href,
@@ -108,7 +111,7 @@ function cssColor(name) {
 }
 
 /* Everything the scene takes from the app theme, in one place. */
-function readTheme() {
+export function readTheme() {
   const bg = cssColor('--color-bg');
   const fg = cssColor('--color-fg');
   const tint = cssColor('--color-overlay-tint');
@@ -136,6 +139,38 @@ function readTheme() {
   };
 }
 
+export function preparePalette(material) {
+  const img = material.map.image;
+  const c = document.createElement('canvas');
+  c.width = img.width; c.height = img.height;
+  const ctx = c.getContext('2d', { willReadFrequently: true });
+  ctx.drawImage(img, 0, 0);
+  const orig = ctx.getImageData(0, 0, c.width, c.height);
+  const L = new Float32Array(c.width * c.height);
+  for (let i = 0, d = orig.data; i < L.length; i++) L[i] = toOklab(d[i * 4], d[i * 4 + 1], d[i * 4 + 2])[0];
+  const tex = new THREE.CanvasTexture(c);
+  tex.flipY = false;
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.magFilter = THREE.NearestFilter;
+  material.map = tex;
+  material.roughness = 0.9;
+  material.metalness = 0;
+  material.needsUpdate = true;
+  return { ctx, orig, L, tex, size: c.width };
+}
+
+/* Lightness (0-255) to the theme's monochrome ramp, as an RGB lookup table. */
+export function monochromeLut(theme) {
+  const [lo, hi] = theme.range;
+  const lut = new Uint8Array(256 * 3);
+  for (let v = 0; v < 256; v++) {
+    const src = Math.min(1, Math.max(0, (v / 255 - 0.08) / 0.9));
+    const L = lo + src * (hi - lo);
+    lut.set(oklchToRGB(L, theme.tintAmount * 0.09 * (1 - L), theme.hue), v * 3);
+  }
+  return lut;
+}
+
 /* ── Easing (ds4 motion curves) ───────────────────────────────────────── */
 function bezier(x1, y1, x2, y2) {
   const cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx;
@@ -151,68 +186,13 @@ function bezier(x1, y1, x2, y2) {
 }
 const EASE = { enter: bezier(0.22, 1, 0.36, 1), exit: bezier(0.4, 0, 1, 1) };
 
-/* ── Stage ────────────────────────────────────────────────────────────── */
-/* interactive: drag-to-turn + hover cursor (Profile only; elsewhere the figure is decoration). */
-async function mountStage(stage, { interactive = true } = {}) {
-  const reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const reduced = () => reduceMQ.matches;
-  const fallback = stage.querySelector('.profile-persona-stage__fallback');
-
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setClearColor(0x000000, 0);
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.NoToneMapping;
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  renderer.domElement.className = 'profile-persona-stage__canvas';
-  renderer.domElement.setAttribute('aria-hidden', 'true');
-  stage.appendChild(renderer.domElement);
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
-  camera.position.set(2.9, 2.2, 6.6);
-  camera.lookAt(0, 1.1, 0);
-
-  const hemi = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
-  const key = new THREE.DirectionalLight(0xffffff, 2);
-  key.position.set(3, 5.5, 4); /* from the right: the shadow falls back-left, onto the page */
-  key.castShadow = true;
-  key.shadow.mapSize.set(1024, 1024);
-  Object.assign(key.shadow.camera, { left: -3, right: 3, top: 3.5, bottom: -2 });
-  key.shadow.bias = -0.0006;
-  key.shadow.normalBias = 0.02;
-  const rim = new THREE.DirectionalLight(0xffffff, 0);
-  rim.position.set(-3, 3, -4);
-  scene.add(hemi, key, rim);
-
-  /* Floor: shadow catcher + spotlight pool, both see-through. */
-  const shadowMat = new THREE.ShadowMaterial({ opacity: 0.2 });
-  const floor = new THREE.Mesh(new THREE.CircleGeometry(7, 64), shadowMat);
-  floor.rotation.x = -Math.PI / 2;
-  floor.receiveShadow = true;
-  floor.renderOrder = 1;
-  const glowCanvas = document.createElement('canvas');
-  glowCanvas.width = glowCanvas.height = 256;
-  const gctx = glowCanvas.getContext('2d');
-  const grad = gctx.createRadialGradient(128, 128, 0, 128, 128, 128);
-  [[0, 1], [0.35, 0.62], [0.65, 0.22], [1, 0]].forEach(([o, a]) => grad.addColorStop(o, `rgba(255,255,255,${a})`));
-  gctx.fillStyle = grad;
-  gctx.fillRect(0, 0, 256, 256);
-  const glowTex = new THREE.CanvasTexture(glowCanvas);
-  glowTex.colorSpace = THREE.SRGBColorSpace;
-  const glowMat = new THREE.MeshBasicMaterial({ map: glowTex, transparent: true, depthWrite: false, opacity: 0 });
-  const glow = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), glowMat);
-  glow.rotation.x = -Math.PI / 2;
-  glow.position.y = -0.002;
-  glow.scale.set(1.8, 1.45, 1); /* fades out well inside the canvas edges */
-  glow.renderOrder = -1;
-  scene.add(floor, glow);
-
-  const turntable = new THREE.Group();
+/* ── Figure ───────────────────────────────────────────────────────────── */
+/* The persona character on its own: the rig with mixable parts, the theme recolour and the
+   animation loop, with no scene, camera or lights. Add `actor` to any three.js scene and call
+   `update(dt)` every frame. Used by the stage below (Profile, ambient, Character kit) and by
+   the Playground. `reduced` says whether motion should be skipped. */
+export async function createFigure({ reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches } = {}) {
   const actor = new THREE.Group();
-  turntable.add(actor);
-  scene.add(turntable);
 
   /* Load everything in parallel. */
   const loader = new GLTFLoader();
@@ -266,35 +246,9 @@ async function mountStage(stage, { interactive = true } = {}) {
   [...general.animations, ...move.animations].forEach((c) => { clips[c.name] = c; });
   const mixer = new THREE.AnimationMixer(rig);
 
-  function preparePalette(material) {
-    const img = material.map.image;
-    const c = document.createElement('canvas');
-    c.width = img.width; c.height = img.height;
-    const ctx = c.getContext('2d', { willReadFrequently: true });
-    ctx.drawImage(img, 0, 0);
-    const orig = ctx.getImageData(0, 0, c.width, c.height);
-    const L = new Float32Array(c.width * c.height);
-    for (let i = 0, d = orig.data; i < L.length; i++) L[i] = toOklab(d[i * 4], d[i * 4 + 1], d[i * 4 + 2])[0];
-    const tex = new THREE.CanvasTexture(c);
-    tex.flipY = false;
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.magFilter = THREE.NearestFilter;
-    material.map = tex;
-    material.roughness = 0.9;
-    material.metalness = 0;
-    material.needsUpdate = true;
-    return { ctx, orig, L, tex, size: c.width };
-  }
-
   /* Monochrome on the theme hue, then one accent on the cloth swatches. */
   function recolour(theme) {
-    const [lo, hi] = theme.range;
-    const lut = new Uint8Array(256 * 3);
-    for (let v = 0; v < 256; v++) {
-      const src = Math.min(1, Math.max(0, (v / 255 - 0.08) / 0.9));
-      const L = lo + src * (hi - lo);
-      lut.set(oklchToRGB(L, theme.tintAmount * 0.09 * (1 - L), theme.hue), v * 3);
-    }
+    const lut = monochromeLut(theme);
     for (const k of CHARACTERS) {
       const p = palettes[k];
       const img = new ImageData(new Uint8ClampedArray(p.orig.data), p.size, p.size);
@@ -331,23 +285,6 @@ async function mountStage(stage, { interactive = true } = {}) {
           const [r, g, b] = oklchToRGB(L, 0.22 * (1 - L), theme.accentHue);
           out[i * 4] = r; out[i * 4 + 1] = g; out[i * 4 + 2] = b;
         }
-  }
-
-  let themeKey = '';
-  function applyTheme(force) {
-    const theme = readTheme();
-    if (!force && theme.key === themeKey) return;
-    themeKey = theme.key;
-    hemi.color.set(theme.sky);
-    hemi.groundColor.set(theme.dark ? '#1E2026' : '#DCDEE3');
-    hemi.intensity = theme.light.fill;
-    key.intensity = theme.light.key;
-    rim.intensity = theme.light.rim;
-    shadowMat.color.set(theme.shadowColor);
-    shadowMat.opacity = theme.shadowOpacity;
-    glowMat.color.set(theme.glowColor);
-    glowMat.opacity = theme.glowOpacity;
-    recolour(theme);
   }
 
   /* Parts on the shared rig. */
@@ -414,14 +351,110 @@ async function mountStage(stage, { interactive = true } = {}) {
   }
 
   let loopAction = null;
-  function setLoop(name) {
+  function setLoop(name, { timeScale = 1 } = {}) {
     if (!clips[name]) return;
     const next = mixer.clipAction(clips[name]);
+    next.timeScale = timeScale;
     if (next === loopAction) return;
     next.reset().setLoop(THREE.LoopRepeat, Infinity).setEffectiveWeight(1).play();
     if (loopAction) next.crossFadeFrom(loopAction, reduced() ? 0 : DUR.exit, false);
     loopAction = next;
     if (reduced()) mixer.update(0.4);
+  }
+  /* Tweens (the swap squash) first, then the clip; the clip stays still with reduced motion. */
+  function update(dt) {
+    for (let i = tweens.length - 1; i >= 0; i--) {
+      const tw = tweens[i];
+      tw.t += dt;
+      const p = Math.min(1, tw.t / tw.dur);
+      tw.onUpdate(tw.ease(p));
+      if (p >= 1) { tweens.splice(i, 1); if (tw.onDone) tw.onDone(); }
+    }
+    if (!reduced()) mixer.update(dt);
+  }
+
+  return { actor, mixer, setRecipe, setLoop, recolour, update };
+}
+
+/* ── Stage ────────────────────────────────────────────────────────────── */
+/* interactive: drag-to-turn + hover cursor (Profile only; elsewhere the figure is decoration). */
+async function mountStage(stage, { interactive = true } = {}) {
+  const reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const reduced = () => reduceMQ.matches;
+  const fallback = stage.querySelector('.profile-persona-stage__fallback');
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.NoToneMapping;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.domElement.className = 'profile-persona-stage__canvas';
+  renderer.domElement.setAttribute('aria-hidden', 'true');
+  stage.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
+  camera.position.set(2.9, 2.2, 6.6);
+  camera.lookAt(0, 1.1, 0);
+
+  const hemi = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
+  const key = new THREE.DirectionalLight(0xffffff, 2);
+  key.position.set(3, 5.5, 4); /* from the right: the shadow falls back-left, onto the page */
+  key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024);
+  Object.assign(key.shadow.camera, { left: -3, right: 3, top: 3.5, bottom: -2 });
+  key.shadow.bias = -0.0006;
+  key.shadow.normalBias = 0.02;
+  const rim = new THREE.DirectionalLight(0xffffff, 0);
+  rim.position.set(-3, 3, -4);
+  scene.add(hemi, key, rim);
+
+  /* Floor: shadow catcher + spotlight pool, both see-through. */
+  const shadowMat = new THREE.ShadowMaterial({ opacity: 0.2 });
+  const floor = new THREE.Mesh(new THREE.CircleGeometry(7, 64), shadowMat);
+  floor.rotation.x = -Math.PI / 2;
+  floor.receiveShadow = true;
+  floor.renderOrder = 1;
+  const glowCanvas = document.createElement('canvas');
+  glowCanvas.width = glowCanvas.height = 256;
+  const gctx = glowCanvas.getContext('2d');
+  const grad = gctx.createRadialGradient(128, 128, 0, 128, 128, 128);
+  [[0, 1], [0.35, 0.62], [0.65, 0.22], [1, 0]].forEach(([o, a]) => grad.addColorStop(o, `rgba(255,255,255,${a})`));
+  gctx.fillStyle = grad;
+  gctx.fillRect(0, 0, 256, 256);
+  const glowTex = new THREE.CanvasTexture(glowCanvas);
+  glowTex.colorSpace = THREE.SRGBColorSpace;
+  const glowMat = new THREE.MeshBasicMaterial({ map: glowTex, transparent: true, depthWrite: false, opacity: 0 });
+  const glow = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), glowMat);
+  glow.rotation.x = -Math.PI / 2;
+  glow.position.y = -0.002;
+  glow.scale.set(1.8, 1.45, 1); /* fades out well inside the canvas edges */
+  glow.renderOrder = -1;
+  scene.add(floor, glow);
+
+  const turntable = new THREE.Group();
+  scene.add(turntable);
+
+  const figure = await createFigure({ reduced });
+  turntable.add(figure.actor);
+
+  let themeKey = '';
+  function applyTheme(force) {
+    const theme = readTheme();
+    if (!force && theme.key === themeKey) return;
+    themeKey = theme.key;
+    hemi.color.set(theme.sky);
+    hemi.groundColor.set(theme.dark ? '#1E2026' : '#DCDEE3');
+    hemi.intensity = theme.light.fill;
+    key.intensity = theme.light.key;
+    rim.intensity = theme.light.rim;
+    shadowMat.color.set(theme.shadowColor);
+    shadowMat.opacity = theme.shadowOpacity;
+    glowMat.color.set(theme.glowColor);
+    glowMat.opacity = theme.glowOpacity;
+    figure.recolour(theme);
   }
 
   /* Drag to turn. The canvas is click-through (it floats over the page), so the
@@ -515,17 +548,10 @@ async function mountStage(stage, { interactive = true } = {}) {
     requestAnimationFrame(frame);
     if (!visible || document.hidden) return;
     const dt = Math.min(clock.getDelta(), 0.05);
-    for (let i = tweens.length - 1; i >= 0; i--) {
-      const tw = tweens[i];
-      tw.t += dt;
-      const p = Math.min(1, tw.t / tw.dur);
-      tw.onUpdate(tw.ease(p));
-      if (p >= 1) { tweens.splice(i, 1); if (tw.onDone) tw.onDone(); }
-    }
+    figure.update(dt);
     if (!dragging && !reduced()) { vel *= 0.92; yaw += vel; }
     if (!reduced()) scrollYaw += (scrollTarget - scrollYaw) * Math.min(1, dt * 6);
     turntable.rotation.y = yaw + (reduced() ? 0 : scrollYaw);
-    if (!reduced()) mixer.update(dt);
     renderer.render(scene, camera);
   }
 
@@ -535,17 +561,17 @@ async function mountStage(stage, { interactive = true } = {}) {
 
   const initial = (window.UZBankPersona && window.UZBankPersona.read()) || null;
   const r0 = (initial && initial.recipe) || { outfit: 'barbarian', head: 'rogue', headwear: 'none', back: 'none', loop: 'Idle_A' };
-  setRecipe(r0, false);
+  figure.setRecipe(r0, false);
   applyTheme(true);
-  setLoop(r0.loop);
-  mixer.update(0.4);
+  figure.setLoop(r0.loop);
+  figure.mixer.update(0.4);
   requestAnimationFrame(frame);
 
   document.addEventListener('uzbank:persona-change', (ev) => {
     const r = ev.detail && ev.detail.recipe;
     if (!r) return;
-    setRecipe(r, true);
-    setLoop(r.loop);
+    figure.setRecipe(r, true);
+    figure.setLoop(r.loop);
   });
 
   stage.classList.add('profile-persona-stage--ready');
