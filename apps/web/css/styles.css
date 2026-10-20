@@ -9362,8 +9362,8 @@ html body .view__main > .view__sticky-header.view__sticky-header[data-scroll-edg
   100% { translate: 0 0; }
 }
 
-/* Forward / deeper: Details, Show all, … */
-:is(a, button):not(.uz-btn--proceed):has(> svg > use[href="#i-arrow-right"]) > svg:has(> use[href="#i-arrow-right"]) {
+/* Forward / deeper: Details, Show all, … (not the Playground steer button: it is a control, not a link onward) */
+:is(a, button):not(.uz-btn--proceed, .playground-touch__btn):has(> svg > use[href="#i-arrow-right"]) > svg:has(> use[href="#i-arrow-right"]) {
   --arrow-dir: 1;
   animation: uz-arrow-nudge var(--arrow-cycle) infinite;
 }
