@@ -5,7 +5,7 @@
  * Placement is seeded, so the town is the same every run.
  */
 import { THREE, preparePalette, monochromeLut } from './profile-persona-character.js';
-import { seeded } from './playground-track.js';
+import { seeded, limitDraw } from './playground-track.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js/+esm';
 
 /* A folder of glTF files with their sidecars, resolved at runtime (the app is served as source, not from dist). */
@@ -60,7 +60,7 @@ export async function createTown(track, cfg) {
       new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), yaw),
       new THREE.Vector3(scale, scale, scale),
     );
-    models[name].placements.push(m);
+    models[name].placements.push({ m, s });
   };
   /* Yaw that turns a model's front (local axis) toward the road from the given side (-1 left, 1 right). */
   const faceRoad = (side, axis, extra = 0) => {
@@ -111,11 +111,15 @@ export async function createTown(track, cfg) {
   /* ── Instanced meshes ─────────────────────────────────────────────── */
   const group = new THREE.Group();
   const mat = new THREE.Matrix4();
+  const meshes = [];
   Object.values(models).forEach(({ parts, placements }) => {
     if (!placements.length) return;
+    placements.sort((a, b) => a.s - b.s);
     parts.forEach(({ geometry, local }) => {
       const mesh = new THREE.InstancedMesh(geometry, material, placements.length);
-      placements.forEach((p, i) => mesh.setMatrixAt(i, mat.multiplyMatrices(p, local)));
+      mesh.userData.s = Float32Array.from(placements, (p) => p.s);
+      meshes.push(mesh);
+      placements.forEach((p, i) => mesh.setMatrixAt(i, mat.multiplyMatrices(p.m, local)));
       mesh.instanceMatrix.needsUpdate = true;
       group.add(mesh);
     });
@@ -143,5 +147,8 @@ export async function createTown(track, cfg) {
     walkMat.color.copy(ground);
   }
 
-  return { group, recolour };
+  /* Only what the camera can see ahead (inside the fog) is drawn. */
+  const cull = (runnerS, range) => meshes.forEach((mesh) => limitDraw(mesh, runnerS, range));
+
+  return { group, recolour, cull };
 }

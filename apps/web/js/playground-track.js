@@ -16,6 +16,20 @@ export function seeded(seed) {
   };
 }
 
+/* Draw only the instances up to a distance ahead of the runner (and none once they are all behind). The instances of a mesh are sorted by their
+   distance along the track (`mesh.userData.s`), so the ones in range are the first `count` of them (D12). */
+export function limitDraw(mesh, runnerS, range) {
+  const s = mesh.userData.s;
+  let lo = 0, hi = s.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (s[mid] <= runnerS + range) lo = mid + 1; else hi = mid;
+  }
+  mesh.count = lo;
+  /* Once the runner is well past the last instance of a mesh (the whole town, later), it is not drawn at all. */
+  mesh.visible = lo > 0 && runnerS - s[s.length - 1] < 40;
+}
+
 export function createTrack(cfg) {
   const { width, spacing, sway, step } = cfg;
   const points = sway.map((x, i) => new THREE.Vector3(x, 0, -i * spacing));

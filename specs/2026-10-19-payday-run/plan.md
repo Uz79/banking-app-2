@@ -120,9 +120,20 @@ Note: the still version assumes 80 % of the salary was picked up (`CONFIG.steppe
 
 What you see: smooth play on a throttled phone profile; a "Try it in the Playground" link at the end of Character kit.
 
-- [ ] Dynamic resolution (D16); `maxPixelRatio`; stop rendering when paused or hidden; dispose geometries and textures on leaving
-- [ ] Measure: frame time and draw calls on a 4x CPU-throttled desktop run and at 390px; record the numbers and the device in `validation.md`; decide open question 4
-- [ ] `character-kit.html`: "Try it in the Playground" link at the end of the page (an `a.uz-btn` to `playground.html`)
+- [x] Dynamic resolution (D16); `maxPixelRatio`; stop rendering when paused or hidden; dispose geometries and textures on leaving
+- [x] Measure: frame time and draw calls on a 4x CPU-throttled desktop run and at 390px; record the numbers and the device in `validation.md`; decide open question 4
+- [x] `character-kit.html`: "Try it in the Playground" link at the end of the page (an `a.uz-btn` to `playground.html`)
+
+Measured on 2026-10-20, desktop Chrome on an Apple M4, device pixel ratio 1, 60 fps (`?debug` logs every 180 frames):
+
+| Where | Draw calls | Triangles | Render CPU per frame |
+|---|---|---|---|
+| Town, distance 0 to 135 | 47 to 52 | 62,000 to 84,000 | 1.5 to 2.8 ms (9 ms on the first frames) |
+| Forest, distance 300 to 417 | 29 to 30 | about 104,000 | 0.7 to 1.0 ms |
+
+Before the culling the forest start showed 58 draw calls and 163,000 triangles. Instances are sorted by distance and only those within the fog range ahead are drawn (`limitDraw`), and a mesh whose instances are all behind the runner is skipped. The two parked cars stay (open question 4): the draw-call count is well inside budget. Paused and still scenes redraw only when something changed. The renderer is released on `pagehide`.
+
+Not verified: dynamic resolution stepping down (this display has a pixel ratio of 1, so there was nothing to lower; the logic is in `adaptResolution`), any phone, and a 4x CPU throttle. A heap reading over repeated open and close of the sheet sawtoothed between about 190 and 290 MB with no clear climb, but it was too noisy to count as a leak check. Character kit now ends with a "Try it in the Playground" link; it is a plain link, so closing the game from there goes back to the Design system hub.
 
 ## 13. Wrap-up
 

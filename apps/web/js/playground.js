@@ -65,6 +65,7 @@ async function mountGame(host) {
   /* `?reduced` forces the still version, for testing where the system setting cannot be flipped. */
   const forceReduced = new URLSearchParams(window.location.search).has('reduced');
   const reduced = () => forceReduced || reduceMQ.matches;
+  let dirty = true; /* something changed that a still frame has to show (paused and still scenes only redraw when it is set) */
 
   const persona = (window.UZBankPersona && window.UZBankPersona.read()) || null;
   const profile = CONFIG.profiles[persona && persona.profile] || CONFIG.profiles[CONFIG.fallbackProfile];
@@ -139,6 +140,7 @@ async function mountGame(host) {
     const theme = readTheme();
     if (!force && theme.key === themeKey) return;
     themeKey = theme.key;
+    dirty = true;
     hemi.color.set(theme.sky);
     hemi.groundColor.set(theme.dark ? '#1E2026' : '#DCDEE3');
     hemi.intensity = theme.light.fill;
@@ -298,6 +300,7 @@ async function mountGame(host) {
 
   function setState(next) {
     state = next;
+    dirty = true;
     if (next === 'running') figure.setLoop(CONFIG.runClip, { timeScale: profile.timeScale });
     else if (next !== 'paused') figure.setLoop(CONFIG.idleClip);
     showOverlay(next);
@@ -477,6 +480,7 @@ async function mountGame(host) {
     s = stepCfg.scenes[sc.key]; x = 0; vx = 0;
     pose(0, true);
     state = 'stepping';
+    dirty = true;
     figure.setLoop(CONFIG.idleClip);
     const last = i === SCENES.length - 1;
     overlay.hidden = false;
@@ -528,6 +532,7 @@ async function mountGame(host) {
     camera.aspect = w / h;
     camera.fov = w / h < 0.7 ? CONFIG.camera.fovNarrow : CONFIG.camera.fov;
     camera.updateProjectionMatrix();
+    dirty = true;
   }
   new ResizeObserver(resize).observe(host);
   resize();
@@ -540,7 +545,8 @@ async function mountGame(host) {
   const clock = new THREE.Clock();
   function frame() {
     requestAnimationFrame(frame);
-    const dt = Math.min(clock.getDelta(), 0.05);
+    const rawDt = clock.getDelta();
+    const dt = Math.min(rawDt, 0.05);
     if (document.hidden) return;
     if (state === 'stepping') {
       elapsed += dt;
@@ -556,12 +562,51 @@ async function mountGame(host) {
       forest.update(s, reduced());
       showBalance(dt);
     }
-    renderer.render(scene, camera);
-    if (debug && ++frames === 120) console.info('[playground] draw calls', renderer.info.render.calls, 'triangles', renderer.info.render.triangles);
+    /* Paused and still scenes only redraw when something changed; everything else draws every frame. */
+    if (state === 'running' || state === 'ready' || state === 'finished' || dirty) {
+      dirty = false;
+      town.cull(s, cullRange);
+      forest.cull(s, cullRange);
+      const t0 = debug ? performance.now() : 0;
+      renderer.render(scene, camera);
+      if (debug) {
+        renderCpu += performance.now() - t0;
+        if (++frames % 180 === 0) {
+          console.info('[playground] draw calls', renderer.info.render.calls, 'triangles', renderer.info.render.triangles,
+            'render cpu ms', (renderCpu / 180).toFixed(2), 'pixel ratio', pixelRatio, 's', Math.round(s));
+          renderCpu = 0;
+        }
+      }
+    }
+    adaptResolution(rawDt);
   }
   let frames = 0;
   let elapsed = 0;
+  let renderCpu = 0;
   const debug = new URLSearchParams(window.location.search).has('debug');
+  const cullRange = CONFIG.fogFar + 15;
+
+  /* Dynamic resolution (D16): if frames keep taking longer than about 24 ms while running, step the
+     pixel ratio down by a quarter, to a floor of 1. It never goes back up during this visit. */
+  let pixelRatio = renderer.getPixelRatio();
+  let slow = 0;
+  function adaptResolution(raw) {
+    if (state !== 'running' || raw > 0.5) return;
+    slow = raw > 0.024 ? slow + raw : Math.max(0, slow - raw);
+    if (slow > 1 && pixelRatio > 1) {
+      pixelRatio = Math.max(1, pixelRatio - 0.25);
+      renderer.setPixelRatio(pixelRatio);
+      resize();
+      slow = 0;
+      if (debug) console.info('[playground] pixel ratio lowered to', pixelRatio);
+    }
+  }
+
+  window.addEventListener('pagehide', (e) => {
+    if (e.persisted) return;
+    renderer.dispose();
+    renderer.forceContextLoss();
+  });
   requestAnimationFrame(frame);
 }
 

@@ -7,7 +7,7 @@
  */
 import { THREE, preparePalette, monochromeLut } from './profile-persona-character.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js/+esm';
-import { seeded } from './playground-track.js';
+import { seeded, limitDraw } from './playground-track.js';
 
 /* A folder of glTF files with their sidecars, resolved at runtime (the app is served as source, not from dist). */
 const FOREST_DIR = new URL(/* @vite-ignore */ '../assets/3d/playground/forest/', import.meta.url).href;
@@ -80,7 +80,9 @@ export async function createForest(track, cfg) {
   const meshes = [];
   Object.values(models).forEach((m) => {
     if (!m.entries.length) return;
+    m.entries.sort((a, b) => a.s - b.s);
     const mesh = new THREE.InstancedMesh(m.geometry, material, m.entries.length);
+    mesh.userData.s = Float32Array.from(m.entries, (e) => e.s);
     mesh.frustumCulled = false;
     meshes.push({ mesh, m });
     group.add(mesh);
@@ -135,6 +137,8 @@ export async function createForest(track, cfg) {
   /* Stages entered between the previous and the current distance (0 is the first stretch). */
   const entered = (prevS, s) => stageStarts.map((st, k) => (prevS < st && s >= st ? k : -1)).filter((k) => k >= 0);
 
+  const cull = (runnerS, range) => meshes.forEach(({ mesh }) => limitDraw(mesh, runnerS, range));
+
   update(0, false);
-  return { group, update, recolour, entered, stageStarts, stages: f.stages, rate: f.rate };
+  return { group, update, recolour, entered, cull, stageStarts, stages: f.stages, rate: f.rate };
 }
