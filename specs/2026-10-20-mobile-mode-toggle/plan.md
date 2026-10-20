@@ -21,10 +21,10 @@ What you see: the same button on Payments, Profile and Design system (signed in 
 
 ## 3. Wrap-up
 
-- [ ] `npm run build` in `apps/web` succeeds
-- [ ] Work through `validation.md` in a real browser and fill in its "Checked on" line
-- [ ] Run the baseline smoke test (final section of `validation.md`)
-- [ ] `specs/roadmap.md`: mark item 4 done
-- [ ] `specs/tech-spec.md`: a line under "Other systems" for the toggle and `js/mode-toggle.js`
-- [ ] `apps/web/README.md`: list `js/mode-toggle.js` in the source layout
-- [ ] `/changelog`, tidy, commit on the branch; merge to `main` only on an explicit ask
+- [x] `npm run build` in `apps/web` succeeds
+- [~] Work through `validation.md` in a real browser and fill in its "Checked on" line (the items that need a phone or a pass of the baseline are listed in the file as not checked)
+- [~] Run the baseline smoke test (final section of `validation.md`) (only the parts this change could touch were run; the rest is listed in the file)
+- [x] `specs/roadmap.md`: mark item 4 done
+- [x] `specs/tech-spec.md`: a line under "Other systems" for the toggle and `js/mode-toggle.js`
+- [x] `apps/web/README.md`: list `js/mode-toggle.js` in the source layout
+- [x] `/changelog`, tidy, commit on the branch; merge to `main` only on an explicit ask

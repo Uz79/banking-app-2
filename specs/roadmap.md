@@ -27,7 +27,7 @@ Open for the interview: scope of a first version (which story beats are in), the
 
 An entry from the 3D character on the main screens (for example a double tap on Overview) that opens the Playground. Only once the game itself feels good.
 
-## 4. Mobile Light/Dark toggle
+## 4. Mobile Light/Dark toggle (done)
 
 A sun or moon button in the top left of the top bar on the four main screens, under 1280px, that swaps Light and Dark. Requested directly on 2026-10-20.
 
