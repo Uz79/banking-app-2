@@ -20,19 +20,22 @@ import { createChest } from './playground-chest.js';
 import { createForest } from './playground-forest.js';
 
 const embedded = window.parent !== window;
-const closeButton = document.querySelector('[data-playground-close]');
+const closeLinks = [...document.querySelectorAll('[data-playground-close]')]; /* the X button and the dialog's Close */
 
-if (embedded && closeButton) {
-  closeButton.addEventListener('click', (event) => {
-    event.preventDefault();
-    window.parent.postMessage({ type: 'uzbank:playground-close' }, window.location.origin);
+/* Embedded, every close link asks the hub to slide the sheet down; opened directly, they stay plain links. */
+if (embedded) {
+  closeLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      window.parent.postMessage({ type: 'uzbank:playground-close' }, window.location.origin);
+    });
   });
 }
 
 /* Leave the game: the hub slides the sheet down, or a direct visit goes back to the hub. */
 function closeGame() {
   if (embedded) window.parent.postMessage({ type: 'uzbank:playground-close' }, window.location.origin);
-  else if (closeButton) window.location.href = closeButton.href;
+  else if (closeLinks[0]) window.location.href = closeLinks[0].href;
 }
 
 const stage = document.querySelector('[data-playground-stage]');
