@@ -102,7 +102,7 @@ Copied from `specs/baseline/validation.md`. Run after the checks above. Setup: `
 ### Shell
 
 - [x] ★ Overview loads with sidebar (desktop) or tab bar (phone); the 3D character appears in the lower right on desktop
-- [ ] ★ Light/Dark toggle switches instantly and survives a reload
+- [x] ★ Light/Dark toggle switches instantly and survives a reload
 - [ ] Navigating Overview > Account details > All bookings and back plays the page transitions in the right directions
 - [x] The "Open payment!" status message appears after about 12 s on a main view; tapping it dismisses it
 
@@ -140,3 +140,5 @@ Not checked, and so not ticked:
 - Baseline: Light/Dark toggle survival on reload, the page transition directions, all-bookings tabs, month chips and search (a scripted attempt was inconclusive), dismissing the trade flow, Legibility, Theme card, the Reset demo data button (the same `reset()` was called from the console), the design system sub-pages' back motion, the Overview focus pass, and the reduced-motion pass of the baseline. Pay and Internal transfer reached their confirmation screens; the Household balance change was not compared against a known starting figure.
 
 Changes made during validation: the result dialog scrolls on short screens (landscape phone); the dialog's Close and Escape behaviours were fixed earlier in the build.
+
+Second pass on 2026-10-20 (desktop Chrome, `npm run dev` on port 5175, Overview in Light): the Light/Dark toggle switched and survived a reload (ticked). Partly looked at, not ticked: All bookings (the Pending tab selects, but `js/all-bookings.js` only binds the tab, it does not filter, and is unchanged since `v1-presentable`; month chips and search could not be driven by script, so they need a hand check), Legibility (picking a preset stored new `fontScale` and `spaceScale` in `uzBankWebAppearance`; the visual effect was not looked at), Reset demo data (the state was already the default, so the click proved nothing). The temporary theme and appearance keys were removed afterwards.
