@@ -5,6 +5,8 @@
 (function () {
   var dialog;
   var pendingFn;
+  var stayFn = null;
+  var escapeStays = false;
   var closeFallbackTimer = null;
   var animatingClose = false;
 
@@ -84,14 +86,21 @@
       '<button type="button" class="uz-btn uz-btn--primary uz-btn--md uz-btn--block" data-payment-exit-leave>Discard</button>' +
       '</div></div>';
 
+    function stay() {
+      var fn = stayFn;
+      pendingFn = null;
+      stayFn = null;
+      closeDialogAnimated();
+      if (typeof fn === 'function') fn();
+    }
+
+    /* Escape does nothing by default; a caller can opt in to Escape meaning "stay" */
     dialog.addEventListener('cancel', function (e) {
       e.preventDefault();
+      if (escapeStays && dialog.open && !animatingClose) stay();
     });
 
-    dialog.querySelector('[data-payment-exit-stay]').addEventListener('click', function () {
-      pendingFn = null;
-      closeDialogAnimated();
-    });
+    dialog.querySelector('[data-payment-exit-stay]').addEventListener('click', stay);
     dialog.querySelector('[data-payment-exit-leave]').addEventListener('click', function () {
       var fn = pendingFn;
       pendingFn = null;
@@ -105,8 +114,10 @@
 
   /**
    * @param {function(): void} exitFn  called only when user chooses Discard.
-   * @param {{ title?: string, message?: string, leaveLabel?: string }} [opts]
-   *   Optional copy overrides — used for edit-mode ("Discard changes?" etc.)
+   * @param {{ title?: string, message?: string, leaveLabel?: string, stayLabel?: string,
+   *           onStay?: function(): void, escapeStays?: boolean }} [opts]
+   *   Optional copy overrides — used for edit-mode ("Discard changes?" etc.). onStay runs when the
+   *   user keeps going (the stay button, or Escape when escapeStays is set).
    */
   function prompt(exitFn, opts) {
     pendingFn = typeof exitFn === 'function' ? exitFn : null;
@@ -118,6 +129,10 @@
       o.message || 'You have not finished this payment. If you exit now your entries will not be submitted.';
     dialog.querySelector('[data-payment-exit-leave]').textContent =
       o.leaveLabel || 'Discard';
+    dialog.querySelector('[data-payment-exit-stay]').textContent =
+      o.stayLabel || 'Continue payment';
+    stayFn = typeof o.onStay === 'function' ? o.onStay : null;
+    escapeStays = !!o.escapeStays;
     dialog.classList.remove('basic-dialog-payment-exit--closing');
     dialog.showModal();
     if (window.UZBankDialogFocus) {

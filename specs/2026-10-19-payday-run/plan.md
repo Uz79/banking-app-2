@@ -146,6 +146,15 @@ What you see: no focus ring on Start when the game opens; neutral steer buttons;
 - [x] D23: error state of the text field in the admin dialog (`js/admin.js`, `css/styles.css`); `alert-triangle` icon
 - [x] `npm run build` clean; checked in the browser (Dark, desktop): quiet ring, steer buttons, hub icon, admin error. Light, 390px and a real phone not rechecked
 
+## 15. One quit dialog (D24)
+
+What you see: Escape, the close button, or switching tabs during a run opens "Quit this run?"; Keep playing resumes, Quit run leaves.
+
+- [x] `js/payment-exit-confirm.js`: optional `stayLabel`, `onStay`, `escapeStays` (payment flows do not set them)
+- [x] `playground.html`: load `js/dialog-focus.js` and `js/payment-exit-confirm.js`
+- [x] `js/playground.js`: `requestQuit()` for Escape, the top-right close button and automatic pauses; remove the "Paused" overlay; the dialog's Close link on the start and result screens still leaves directly
+- [x] `npm run build` clean; checked on a separate dev server (port 5176, own storage): the dialog text and buttons, focus on Keep playing, Escape inside it resumes, the close button opens it, Quit run leaves (direct visit and in the sheet). Stopped for review
+
 ## 13. Wrap-up
 
 - [x] `npm run build` in `apps/web` succeeds

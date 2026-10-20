@@ -22,15 +22,18 @@ import { createForest } from './playground-forest.js';
 const embedded = window.parent !== window;
 const closeLinks = [...document.querySelectorAll('[data-playground-close]')]; /* the X button and the dialog's Close */
 
-/* Embedded, every close link asks the hub to slide the sheet down; opened directly, they stay plain links. */
-if (embedded) {
-  closeLinks.forEach((link) => {
-    link.addEventListener('click', (event) => {
-      event.preventDefault();
-      window.parent.postMessage({ type: 'uzbank:playground-close' }, window.location.origin);
-    });
+/* The close buttons ask first while a run is in progress. The game sets `requestClose` once it is built;
+   until then, and on the start and result screens, they leave straight away. */
+let requestClose = () => closeGame();
+
+closeLinks.forEach((link) => {
+  link.addEventListener('click', (event) => {
+    if (!embedded && !link.matches('.playground__close')) return; /* opened directly: the dialog's Close stays a plain link */
+    event.preventDefault();
+    if (link.matches('.playground__close')) requestClose();
+    else closeGame();
   });
-}
+});
 
 /* Leave the game: the hub slides the sheet down, or a direct visit goes back to the hub. */
 function closeGame() {
@@ -274,7 +277,6 @@ async function mountGame(host) {
       },
       primary: 'Start',
     },
-    paused: { title: 'Paused', text: touchMode ? '' : 'Escape again closes the game.', primary: 'Resume' },
     finished: { title: 'Your result', text: '', primary: 'Play again' },
   };
 
@@ -402,21 +404,40 @@ async function mountGame(host) {
   overlay.dataset.quiet = '';
   window.addEventListener('pointerdown', () => { overlay.dataset.quiet = ''; });
   window.addEventListener('keydown', (e) => {
+    if (quitOpen) return; /* the dialog has the keyboard; its own Escape means Keep playing */
     if (e.key === 'Tab') delete overlay.dataset.quiet; /* only moving focus shows the ring, not Escape or steering */
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     const dir = KEYS[e.key];
     if (dir) { input[dir] = true; e.preventDefault(); return; }
     if (e.key === 'Escape') {
       e.preventDefault();
-      if (state === 'running') setState('paused');
-      else closeGame(); /* ready, paused or finished: Escape leaves, like the flow screens */
+      requestQuit();
     }
   });
   window.addEventListener('keyup', (e) => {
     const dir = KEYS[e.key];
     if (dir) input[dir] = false;
   });
-  const pause = () => { input.left = input.right = false; releaseTouch(); if (state === 'running') setState('paused'); };
+  /* One dialog for Escape, the close button and an automatic pause (tab switch, rotation): the run waits while it is open. */
+  let quitOpen = false;
+  function requestQuit() {
+    if (quitOpen) return;
+    if (state !== 'running' && state !== 'stepping') { closeGame(); return; } /* nothing to lose on the start and result screens */
+    input.left = input.right = false;
+    releaseTouch();
+    if (state === 'running') setState('paused');
+    quitOpen = true;
+    window.UZBankPaymentExitPrompt(closeGame, {
+      title: 'Quit this run?',
+      message: 'Your progress in this run will be lost. Your best run stays saved.',
+      leaveLabel: 'Quit run',
+      stayLabel: 'Keep playing',
+      escapeStays: true,
+      onStay: () => { quitOpen = false; if (state === 'paused') setState('running'); },
+    });
+  }
+  requestClose = requestQuit;
+  const pause = () => { if (state === 'running') requestQuit(); };
   window.addEventListener('blur', pause);
   document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
   window.matchMedia('(orientation: portrait)').addEventListener('change', pause);
@@ -522,7 +543,6 @@ async function mountGame(host) {
     overlay.querySelector('[data-overlay-primary]').addEventListener('click', () => {
       if (state === 'stepping') { if (stepIndex < SCENES.length - 1) showScene(stepIndex + 1); else skipToResult(); }
       else if (state === 'ready') { if (reduced()) startStepped(); else startRun(); }
-      else if (state === 'paused') setState('running');
       else if (state === 'finished') { reset(); if (reduced()) startStepped(); else startRun(); }
     });
   }

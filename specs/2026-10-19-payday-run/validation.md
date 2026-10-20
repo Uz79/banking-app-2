@@ -31,13 +31,13 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 ## 4. Controls
 
-- [x] Keyboard: arrows and A/D steer, Space or Enter starts and restarts, Escape pauses while running; Escape again (or on the start or finish screen) closes the game; Resume works with its button
+- [x] Keyboard: arrows and A/D steer, Space or Enter starts and restarts, Escape or the close button opens the quit dialog while running (see section 9c); on the start and finish screens they leave straight away
 - [x] Steering stays inside the track width at both edges
 - [x] Touch emulation at 390px: Left/Right buttons appear, steer while held, release when the finger slides off
 - [x] The buttons do not appear with a mouse
 - [ ] Portrait and landscape both work; rotating pauses the run
 - [ ] Switching tab or app pauses the run
-- [x] Keyboard focus is visible (`--color-fg-interactive` outline) on close, start, pause, Resume, result buttons
+- [x] Keyboard focus is visible (`--color-fg-interactive` outline) on close, start, the quit dialog buttons, result buttons
 
 ## 5. The story
 
@@ -85,10 +85,24 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 ## 9b. Review fixes (group 14)
 
-- [ ] Opening the game shows no focus ring on Start (mouse, touch) and none on Resume after Escape; pressing Tab brings the ring back; Enter still starts
+- [ ] Opening the game shows no focus ring on Start (mouse, touch); pressing Tab brings the ring back; Enter still starts
 - [ ] Steer buttons: 64 dp, 24 dp arrows with no dark rectangle inside and no moving arrow, arrows in foreground ink, circle in separator ink, in Light and Dark (checked in Dark on desktop only)
 - [ ] Design system hub: the Components icon is an outline in Light and Dark (checked in Dark)
 - [ ] Admin sign-in with a wrong password: pink stroke on the password field, warning icon and message under it, label unchanged; typing clears it; Light and Dark (checked in Dark)
+
+## 9c. Quit dialog (group 15, D24)
+
+- [x] While running, Escape opens "Quit this run?" with the text "Your progress in this run will be lost. Your best run stays saved.", "Keep playing" (secondary) and "Quit run" (primary); the run stops moving behind it; focus is on "Keep playing" (checked in Dark on desktop)
+- [x] Escape inside the dialog closes it and the run resumes (the balance kept rising)
+- [x] The close button (top right) opens the same dialog while running; "Quit run" leaves (to the Design system on a direct visit; the sheet slides away when embedded)
+- [ ] "Keep playing" by click or tap resumes; the held touch buttons do not stick
+- [ ] Switching tab, or rotating the phone, during a run opens the dialog; coming back and choosing Keep playing resumes
+- [ ] On the start and result screens, Escape and the close button leave straight away, with no dialog
+- [ ] The dialog's "Close" link on the start and result screens leaves; the sheet slides away
+- [ ] Reduced motion (the still scenes): Escape or the close button opens the dialog; Keep playing returns to the same scene
+- [ ] Light and Dark, 390px and a real phone; no focus ring on a tap
+- [ ] The payment flows' "Discard payment?" dialog still looks and works the same (Escape does nothing there, as before); the "Continue payment" and "Discard" labels are unchanged
+- [ ] The best run is untouched after quitting
 
 ## 10. Baseline smoke test
 
