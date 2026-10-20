@@ -49,10 +49,12 @@ What you see: on a phone-sized touch device two large Left and Right buttons app
 
 What you see: the run goes through a town: varied buildings on both sides, lamps, benches, hydrants, parked cars, a water tower, all recoloured to the theme (Light, Dark, a Multi-color theme).
 
-- [ ] Copy the proposed City Builder models, texture and `License.txt` to `assets/3d/playground/town/` (list in `requirements.md`)
-- [ ] `js/playground-world.js`: load models, build one `InstancedMesh` per model, place along the track on both sides with seeded variation, per-pack scale from the config (D12, D14)
-- [ ] Recolour the shared texture with the exported theme map (D13)
-- [ ] Log the draw-call count in the console in dev; record it in `validation.md`
+- [x] Copy the proposed City Builder models, texture and `License.txt` to `assets/3d/playground/town/` (list in `requirements.md`)
+- [x] `js/playground-world.js`: load models, build one `InstancedMesh` per model, place along the track on both sides with seeded variation, per-pack scale from the config (D12, D14)
+- [x] Recolour the shared texture with the exported theme map (D13)
+- [x] Log the draw-call count in the console with `?debug` (37 draw calls and about 77,000 triangles with the town, figure and track, desktop, 2026-10-20); record it in `validation.md` when measuring
+
+Note: the town is placed by `js/playground-world.js` (seeded, so it is the same every run), tuned in `CONFIG.world`. The hub and close button got a soft backing so they stay legible over buildings. The app is deployed as source, so the folder URL for the models is resolved at runtime (`@vite-ignore`), which keeps the build free of new warnings.
 
 ## 6. Payday burst, coins and the balance
 

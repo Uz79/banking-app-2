@@ -13,6 +13,7 @@
 import { THREE, createFigure, readTheme, cssColor } from './profile-persona-character.js';
 import { CONFIG } from './playground-config.js';
 import { createTrack } from './playground-track.js';
+import { createTown } from './playground-world.js';
 
 const embedded = window.parent !== window;
 const closeButton = document.querySelector('[data-playground-close]');
@@ -83,6 +84,8 @@ async function mountGame(host) {
     track.ribbon(-half, half, 0.012, track.length - 1.2, track.length, 0.6),
   ]), accentMat);
   scene.add(road, edges);
+  const town = await createTown(track, CONFIG);
+  scene.add(town.group);
 
   /* ── Runner ────────────────────────────────────────────────────────── */
   const figure = await createFigure({ reduced });
@@ -104,6 +107,7 @@ async function mountGame(host) {
     scene.fog.color.copy(bg);
     trackMat.color.copy(bg).lerp(colour('--color-fg'), 0.14);
     accentMat.color.copy(colour('--color-fg-interactive'));
+    town.recolour(theme, bg.clone().lerp(colour('--color-fg'), 0.07));
     figure.recolour(theme);
   }
   applyTheme(true);
@@ -278,7 +282,10 @@ async function mountGame(host) {
       figure.update(dt);
     }
     renderer.render(scene, camera);
+    if (debug && ++frames === 120) console.info('[playground] draw calls', renderer.info.render.calls, 'triangles', renderer.info.render.triangles);
   }
+  let frames = 0;
+  const debug = new URLSearchParams(window.location.search).has('debug');
   requestAnimationFrame(frame);
 }
 

@@ -29,6 +29,14 @@ export const CONFIG = {
   /* Chase camera: behind and above the runner, easing toward its spot. */
   camera: { fov: 52, fovNarrow: 62, distance: 7, height: 3.6, lookAhead: 5, lookHeight: 1.2, follow: 0.5, lag: 3.5 },
 
+  /* The world. Distances are along the track; the town is the first stretch. */
+  world: {
+    seed: 7,
+    scale: 4.5,         /* the town models are about 1 unit; the runner is about 2 */
+    buildingFacing: 0,  /* radians added to a building's turn toward the road */
+    town: { from: 14, to: 250, sidewalk: 3.2, gap: [1, 3.5], lampEvery: 18, propEvery: 11 },
+  },
+
   /* Rendering. */
   maxPixelRatio: 2,
   fogNear: 40,
