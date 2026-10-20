@@ -69,6 +69,7 @@ Persisted in `localStorage` (see `js/storage-migrate.js` for legacy key migratio
 
 ## Persona character (Profile > User Type)
 
+- `js/mode-toggle.js` — the mobile Light/Dark button in the top bar of the four main screens (Overview, Payments, Profile, Design system): calls `UZBankApplyThemeChoice`, keeps the button's accessible name current. The sun or moon is chosen in CSS by `html[data-theme]`. Hidden at 1280px and up, where the sidebar has the control.
 - `js/profile-persona.js` — three sliders set the profile (novice / standard / power): title, story, UI preview and the Legibility preset (Large / Regular / Compact). Each slider also owns part of the character: financial knowledge → headwear (the head is always the Rogue's), banking products → outfit + back, digital affinity → animation loop.
 - `js/profile-persona-character.js` — three.js scene (runtime from jsDelivr). KayKit parts mixed on one shared rig, recoloured to the theme (monochrome + one accent), transparent stage with an overlay-tint shadow and a spotlight on dark backgrounds.
 - `assets/3d/kaykit/` — KayKit Adventurers 2.0 by Kay Lousberg (CC0), pruned to the parts used.

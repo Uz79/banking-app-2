@@ -63,6 +63,7 @@ Registering a new page: see `AGENTS.md` → Conventions (five places).
 
 ## Other systems
 
+- Mobile Light/Dark toggle: `js/mode-toggle.js` and a `.view__mode-toggle` button (the small glyph-only button component) in the top bar of the four main screens under 1280px; it uses the same `UZBankApplyThemeChoice` as the sidebar, so no new storage key
 - Admin: a demo-only switch (`uzBankAdmin` in `localStorage`), signed in from Profile; credentials in `js/admin.js`. Not security
 - Status messages: `js/status-message.js` (component) and `js/status-feed.js` (demo feed, first appearance after 12 s)
 - Payment simulation: `js/payment-state.js` (`uzBankWebPaymentState`), reset from Profile
