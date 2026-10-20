@@ -9395,8 +9395,8 @@ html body .view__main > .view__sticky-header.view__sticky-header[data-scroll-edg
   100% { translate: 0 0; }
 }
 
-/* Forward / deeper: Details, Show all, … */
-:is(a, button):not(.uz-btn--proceed):has(> svg > use[href="#i-arrow-right"]) > svg:has(> use[href="#i-arrow-right"]) {
+/* Forward / deeper: Details, Show all, … (not the Playground steer button: it is a control, not a link onward) */
+:is(a, button):not(.uz-btn--proceed, .playground-touch__btn):has(> svg > use[href="#i-arrow-right"]) > svg:has(> use[href="#i-arrow-right"]) {
   --arrow-dir: 1;
   animation: uz-arrow-nudge var(--arrow-cycle) infinite;
 }
@@ -9468,15 +9468,35 @@ html.is-admin .admin-access__signed-out {
   text-align: left;
 }
 
-.admin-login__error {
-  margin: 0;
-  font-size: var(--fs-text-sm);
-  line-height: var(--lh-text);
-  color: #FF0095;   /* = status error placeholder until status tokens exist */
+.form-field__error-row > svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
 }
 
-html[data-theme="dark"] .admin-login__error {
+/* Error state (Figma TextField, Case = Error): error stroke on the control, icon and message in the row under it */
+.form-field--error .form-field__text-wrap,
+.form-field--error .form-field__text-wrap:focus-within {
+  box-shadow: inset 0 0 0 var(--input-stroke-px, 1px) var(--color-fg-error, #ff0095);
+}
+
+.form-field--error .form-field__text-wrap:focus-within {
+  box-shadow: inset 0 0 0 var(--input-stroke-focus-px, 2px) var(--color-fg-error, #ff0095);
+}
+
+/* = status error placeholder until status tokens exist */
+html[data-theme="dark"] .form-field__error-row {
   color: #FF7AC6;
+}
+
+html[data-theme="dark"] .form-field--error .form-field__text-wrap,
+html[data-theme="dark"] .form-field--error .form-field__text-wrap:focus-within {
+  box-shadow: inset 0 0 0 var(--input-stroke-px, 1px) #FF7AC6;
+}
+
+html[data-theme="dark"] .form-field--error .form-field__text-wrap:focus-within {
+  box-shadow: inset 0 0 0 var(--input-stroke-focus-px, 2px) #FF7AC6;
 }
 
 /* Design system hub (design-system.html) */
@@ -9499,11 +9519,16 @@ html[data-theme="dark"] .admin-login__error {
   background-color: var(--color-bg);
   color: var(--color-fg);
   text-decoration: none;
-  transition: background-color 0.15s ease;
+  transition: box-shadow 0.15s ease;
 }
 
+/* The state tokens are translucent, so they sit over the card as an inset layer (a plain background would show the page through) */
 .ds-hub__card:hover {
-  background-color: color-mix(in srgb, var(--color-bg) 90%, var(--color-fg));
+  box-shadow: inset 0 0 0 100vmax var(--color-surface-state-hover);
+}
+
+.ds-hub__card:active {
+  box-shadow: inset 0 0 0 100vmax var(--color-surface-state-pressed);
 }
 
 .ds-hub__card:focus-visible {
@@ -10690,3 +10715,516 @@ html[data-theme="dark"] .admin-login__error {
 .theme-flow__body { display: flex; flex-direction: column; gap: var(--space-5); }
 .theme-flow .tf-set-color-dialog { margin: auto; } /* global reset zeroes dialog margins */
 .theme-flow .tf-spin__btn svg { width: 0.75rem; height: 0.75rem; }
+
+/* ── Playground (design system, admin): full-screen page, no app chrome ───────── */
+
+.body[data-screen="playground"] .sidebar,
+.body[data-screen="playground"] .tab-bar {
+  display: none;
+}
+
+.body[data-screen="playground"] .app {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+.body[data-screen="playground"] .main-content {
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--color-bg);
+}
+
+.body[data-screen="playground"] .main-content__inner,
+.body[data-screen="playground"] .view--playground,
+.body[data-screen="playground"] .view--playground .view__main {
+  max-width: none;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.body[data-screen="playground"] .view--playground .view__main {
+  position: relative;
+}
+
+.playground-stage {
+  position: absolute;
+  inset: 0;
+}
+
+.playground__close {
+  top: max(var(--space-3), env(safe-area-inset-top, 0px));
+  bottom: auto;
+  right: max(var(--space-3), env(safe-area-inset-right, 0px));
+  margin: 0;
+  z-index: 2;
+  border-radius: 50%;
+  /* Sits over the 3D scene: a soft backing keeps the icon legible on any building or sky. */
+  background-color: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  color: var(--color-fg);
+}
+
+/* The Design system hub opens the page as a flow-style sheet (js/playground-sheet.js): the
+   shell slides like the payment flow (.modal-shell), full screen, with the page in an iframe. */
+.modal-overlay--playground {
+  padding: 0;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.modal-overlay--playground .modal-shell {
+  max-width: none;
+  height: 100%;
+}
+
+.playground-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background-color: var(--color-bg);
+}
+
+/* The page name for assistive tech only; the full-screen page shows no title bar. */
+.playground__title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.playground-stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Playground HUD and overlay (start, pause, finish) */
+
+.playground-hud {
+  position: absolute;
+  top: max(var(--space-3), env(safe-area-inset-top, 0px));
+  left: max(var(--space-4), env(safe-area-inset-left, 0px));
+  z-index: 1;
+  margin: 0;
+  min-height: 2.75rem;
+  padding: 0 var(--space-3);
+  border-radius: 1.375rem;
+  background-color: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-text-md);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+  pointer-events: none;
+}
+
+.playground-hud__name {
+  font-weight: var(--fw-medium);
+}
+
+.playground-hud__pace {
+  color: var(--color-fg-secondary);
+}
+
+.playground-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background-color: var(--color-overlay-scrim);
+}
+
+.playground-overlay[hidden] {
+  display: none;
+}
+
+.playground-panel {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 22.5rem;
+  padding: var(--dialog-padding-block) var(--dialog-padding-inline);
+  border: 0.0625rem solid var(--color-separator);
+  border-radius: var(--radius-regular);
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  box-shadow: 0 0.5rem 2rem var(--color-modal-elevated-shadow);
+  text-align: center;
+}
+
+/* Same type and spacing as the confirmation dialog (.basic-dialog-payment-exit) */
+.playground-panel {
+  --dialog-padding-inline: var(--space-3);
+  --dialog-padding-block: var(--space-3);
+}
+
+.playground-panel__title {
+  margin: 0 0 var(--space-2);
+  font-size: var(--fs-text-lg);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-text);
+}
+
+.playground-panel__text {
+  margin: 0 0 var(--space-3);
+  font-size: var(--fs-text-md);
+  line-height: 1.5;
+  color: var(--color-fg-secondary);
+}
+
+@media (min-width: 1280px) {
+  .playground-panel {
+    --dialog-padding-inline: var(--space-4);
+    --dialog-padding-block: var(--space-4);
+  }
+
+  .playground-panel__title {
+    margin-bottom: var(--space-3);
+  }
+
+  .playground-panel__text {
+    margin-bottom: var(--space-4);
+  }
+}
+
+/* Buttons: secondary first, primary last, like the confirmation dialog */
+.playground-panel__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* Mobile and tablet: bottom sheet, like the confirmation dialog (the still scenes keep their own placement) */
+@media (max-width: 1279px) {
+  .playground-overlay:not(.playground-overlay--step) {
+    align-items: flex-end;
+    padding: 0.25rem;
+    padding-bottom: calc(0.25rem + env(safe-area-inset-bottom, 0px));
+    --form-sheet-slide-depth: calc(100vh + 1rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .playground-overlay:not(.playground-overlay--step) .playground-panel {
+    max-width: none;
+    margin: auto 0 0;
+    animation: form-sheet-panel-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .playground-overlay:not(.playground-overlay--step) .playground-panel {
+    animation: none;
+  }
+}
+
+/* Playground touch steering: two large hold buttons, touch devices only (or ?touch) */
+
+.playground-touch {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  justify-content: space-between;
+  padding:
+    var(--space-4)
+    max(var(--space-4), env(safe-area-inset-right, 0px))
+    max(var(--space-4), env(safe-area-inset-bottom, 0px))
+    max(var(--space-4), env(safe-area-inset-left, 0px));
+  pointer-events: none;
+}
+
+.playground--touch .playground-touch {
+  display: flex;
+}
+
+.playground-touch__btn {
+  box-sizing: border-box;
+  width: 4rem;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0.125rem solid var(--color-separator);
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  color: var(--color-fg);
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.playground-touch__btn:focus-visible {
+  outline: 0.125rem solid var(--color-fg-interactive);
+  outline-offset: 0.25rem;
+}
+
+.playground-touch__btn.is-held {
+  background-color: var(--color-separator);
+}
+
+/* The start, pause and result buttons take focus when a screen opens; the ring waits for the keyboard */
+.playground-overlay[data-quiet] :focus-visible,
+dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
+  outline: none;
+}
+
+.playground-touch__icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: none;
+  pointer-events: none;
+}
+
+/* Playground balance, toast and the screen reader line */
+
+.playground-balance {
+  position: absolute;
+  top: max(var(--space-3), env(safe-area-inset-top, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  margin: 0;
+  min-height: 2.75rem;
+  padding: 0 var(--space-4);
+  border-radius: 1.375rem;
+  background-color: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  white-space: nowrap;
+  font-size: var(--fs-text-md);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+  pointer-events: none;
+}
+
+.playground-balance__label {
+  color: var(--color-fg-secondary);
+}
+
+.playground-balance__value {
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.playground-toast {
+  position: absolute;
+  top: calc(max(var(--space-3), env(safe-area-inset-top, 0px)) + 3.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  margin: 0;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-regular);
+  background-color: var(--color-fg-interactive);
+  color: var(--color-bg);
+  font-size: var(--fs-text-md);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-text);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.playground-toast[hidden] {
+  display: none;
+}
+
+.playground-toast.is-showing {
+  animation: playground-toast 2.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes playground-toast {
+  0% { opacity: 0; transform: translate(-50%, -0.5rem); }
+  10% { opacity: 1; transform: translate(-50%, 0); }
+  80% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .playground-toast.is-showing {
+    animation: none;
+  }
+}
+
+.playground__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Narrow screens: the name, the balance and the close button share one row, so the pace word and the "Balance" label step aside. */
+@media (max-width: 30rem) {
+  .playground-hud__pace,
+  .playground-balance__label {
+    display: none;
+  }
+}
+
+/* Costs at the gates: a neutral toast, not the accent one */
+
+.playground-toast--expense {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  box-shadow: inset 0 0 0 0.125rem var(--color-fg);
+}
+
+/* Playground result screen */
+
+.playground-panel--result {
+  max-width: 26rem;
+  text-align: left;
+}
+
+.playground-panel--result .playground-panel__title {
+  text-align: center;
+}
+
+.playground-result {
+  margin: 0 0 var(--space-4);
+}
+
+.playground-result__badge {
+  display: inline-block;
+  margin: 0 0 var(--space-3);
+  padding: var(--space-1) var(--space-3);
+  border-radius: 1rem;
+  background-color: var(--color-fg-interactive);
+  color: var(--color-bg);
+  font-size: var(--fs-text-sm);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-text);
+}
+
+.playground-result__badge[hidden] {
+  display: none;
+}
+
+.playground-result__total {
+  display: flex;
+  flex-direction: column;
+  margin: 0 0 var(--space-3);
+}
+
+.playground-result__label {
+  font-size: var(--fs-text-sm);
+  color: var(--color-fg-secondary);
+}
+
+.playground-result__amount {
+  font-size: var(--fs-h6);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-h6, var(--lh-text));
+  font-variant-numeric: tabular-nums;
+}
+
+.playground-result__rows {
+  margin: 0 0 var(--space-3);
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--color-separator);
+}
+
+.playground-result__rows li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-separator);
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.playground-result__best {
+  margin: 0;
+  font-size: var(--fs-text-sm);
+  color: var(--color-fg-secondary);
+}
+
+.playground-result__best[hidden] {
+  display: none;
+}
+
+/* Reduced motion: still scenes. The card sits at the bottom so the scene stays visible, and there is nothing to steer. */
+
+.playground-overlay--step {
+  align-items: flex-end;
+  background-color: transparent;
+  padding-bottom: max(var(--space-4), env(safe-area-inset-bottom, 0px));
+}
+
+.playground--stepped .playground-touch {
+  display: none;
+}
+
+.playground-panel__actions [data-overlay-skip][hidden] {
+  display: none;
+}
+
+@media (min-width: 48rem) {
+  .playground-overlay--step {
+    justify-content: flex-start;
+    padding-left: max(var(--space-5), env(safe-area-inset-left, 0px));
+  }
+}
+
+/* Short screens (a phone on its side): the dialog scrolls instead of being cut off, and gets tighter. */
+.playground-overlay {
+  overflow-y: auto;
+}
+
+.playground-panel {
+  margin: auto;
+  flex-shrink: 0;
+}
+
+.playground-overlay--step .playground-panel {
+  margin: auto 0 0;
+}
+
+@media (min-width: 48rem) {
+  .playground-overlay--step .playground-panel {
+    margin: auto auto 0 0;
+  }
+}
+
+@media (max-height: 30rem) {
+  .playground-panel {
+    padding: var(--space-3);
+  }
+
+  .playground-result {
+    margin-bottom: var(--space-3);
+  }
+
+  .playground-result__badge {
+    margin-bottom: var(--space-2);
+  }
+
+  .playground-result__amount {
+    font-size: var(--fs-text-md);
+  }
+
+  .playground-result__rows li {
+    padding: 0.25rem 0;
+  }
+}

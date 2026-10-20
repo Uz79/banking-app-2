@@ -34,6 +34,7 @@ Every shell page shares the same structure: sidebar (desktop) or tab bar (mobile
 | `motion-specimens.html` | motion-specimens | 1 | Admin: motion specimens with live demos |
 | `components.html` | components | 1 | Admin: buttons and states |
 | `character-kit.html` | character-kit | 1 | Admin: the 3D character, live specimen |
+| `playground.html` | playground | 1 | Admin: "Payday run", a full-screen 3D game, opened as a sheet from the Design system page. No page-transition scripts, no sidebar or tab bar |
 | `spa-source.html` | | | Old single-page reference, not the runtime. Do not extend |
 
 Depth drives the page transitions (`js/section-build-boot.js`, `js/section-build-motion.js`): deeper pages enter from the right, back goes left.
@@ -60,9 +61,11 @@ Registering a new page: see `AGENTS.md` → Conventions (five places).
 - `js/profile-persona-character.js`: three.js scene, KayKit Adventurers parts on one shared rig, recoloured to the theme. Modes: Profile (1.5×, interactive), ambient (1× on `AMBIENT_SCREENS`), specimen (`[data-character-specimen]`, Character kit page)
 - Assets: `assets/3d/kaykit/` (CC0). Unused KayKit packs live outside the repo, in the Design System project's `_resources` folder
 - Full documentation: `character-kit.html`
+- The Playground reuses the module: `createFigure()` (the character without a scene), `readTheme`, `monochromeLut`, `preparePalette`, `cssColor` and `THREE` are exported
 
 ## Other systems
 
+- Playground ("Payday run"): `playground.html`, `js/playground.js` (loop, overlays, input, the still version for reduced motion), `js/playground-config.js` (every tuning number), and small modules for the track (curve and distance lookup, no physics, no raycasts), the town, coins, gates, the chest and the forest. One `InstancedMesh` per model part and one shared, theme-recoloured material per world (about 30 to 50 draw calls). KayKit City Builder Bits and Forest Nature Pack (CC0) in `assets/3d/playground/`. The Design system page opens it as a flow-style sheet (`js/playground-sheet.js`, an iframe). One storage key: `uzBankWebPlaygroundBest`. Spec: `specs/2026-10-19-payday-run/`
 - Mobile Light/Dark toggle: `js/mode-toggle.js` and a `.view__mode-toggle` button (the small glyph-only button component) in the top bar of the four main screens under 1280px; it uses the same `UZBankApplyThemeChoice` as the sidebar, so no new storage key
 - Admin: a demo-only switch (`uzBankAdmin` in `localStorage`), signed in from Profile; credentials in `js/admin.js`. Not security
 - Status messages: `js/status-message.js` (component) and `js/status-feed.js` (demo feed, first appearance after 12 s)
@@ -86,7 +89,9 @@ Settled choices, so they don't get re-argued. Add a row when a decision changes 
 | 3D character | three.js with KayKit (CC0), replacing Spline | One rig, mixable parts, theme recolour; documented on `character-kit.html` |
 | Character on main screens | 1× in the lower right, behind content, hidden below 62rem except on Profile | Decoration, reads the saved recipe |
 | Status message timing | First appearance 12 s after a main view lands; back 8 s after dismissal | Demo pacing |
-| Playground placement | A fourth card on the Design system page, admin only, full screen; an easter egg from the avatar may follow later | Not in the customer menu. See `specs/roadmap.md` |
+| Playground placement | A fourth card on the Design system page, admin only, full screen, opened as a flow-style sheet (not a page transition); an easter egg from the avatar may follow later | Not in the customer menu. See `specs/roadmap.md` and D19 in the Payday run spec |
+| Playground and reduced motion | A stepped version of still scenes with Next, not a slowed run | The run is a game of movement; a slowed version would still be motion. Same result card and best run |
+| Playground world | No physics library, no raycasts: the runner is (distance along a curve, sideways offset) and pickups are distance checks | Keeps it light and easy to tune; one config file |
 
 ## Guiding rule
 

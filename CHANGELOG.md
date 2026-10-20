@@ -10,6 +10,18 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 
 ### Added
 - **Mobile Light/Dark toggle.** On Overview, Payments, Profile and Design system, under 1280px, a small glyph-only button in the top left of the top bar swaps Light and Dark. It shows the sun in Light and the moon in Dark, switches instantly through the same function as the sidebar (so Multi-color themes work as before), and keeps no hover fill after a tap on touch screens. It is hidden at 1280px and up, where the sidebar has the control, and is not on the deeper screens, which keep their back arrow. New file `js/mode-toggle.js`; no new storage key.
+- **Playground: "Payday run"** (Design system, admin only). A small 3D game that takes the persona character, the colour themes and the motion out for a run. A fourth card on the Design system page opens `playground.html` as a full-screen sheet that slides up and down like the flow screens, with a close button on the right; Escape pauses, then closes. The runner is the User Type character and its profile sets the pace (Beat jogs, Lena runs, Max sprints). The run goes through a town (KayKit City Builder Bits, CC0) collecting coins from the salary, past gates for rent, groceries and bills, into a savings chest, then through a forest (KayKit Forest Nature Pack, CC0) where trees grow as you close in and the savings compound. It ends on a result screen with a breakdown and a "New best" badge. The world takes the active colour theme. Steering: arrow keys or A/D, or two on-screen buttons on touch devices. With reduced motion the run is a short set of still scenes with Next. All tuning numbers are in `js/playground-config.js`. A "Try it in the Playground" link ends the Character kit page.
+- New `localStorage` key `uzBankWebPlaygroundBest` (best run), listed in `apps/web/README.md`.
+- Assets: `assets/3d/playground/town` and `assets/3d/playground/forest` (about 1.0 MB, CC0, with the pack licences).
+
+### Changed
+- Design system hub: the cards use the shared hover ink and gained a pressed state.
+- Playground: the start and result card follows the confirmation dialog: secondary button first, primary last, the same title size, and a bottom sheet on mobile and tablet.
+- Playground: Escape, the close button and a tab switch during a run now open one "Quit this run?" dialog (Keep playing or Quit run), replacing the "Paused" dialog. It reuses the app's confirmation dialog, which gained optional button and Escape settings that the payment flows do not use.
+- Playground review fixes: the start button no longer shows a focus ring until a key is pressed, the steer buttons use neutral inks, and the Components icon on the Design system hub renders as an outline.
+- Admin sign-in: a wrong password now shows the design system's text field error state (error stroke, warning icon and message under the field) instead of a separate pink line.
+- `js/profile-persona-character.js` now exports `createFigure()` (the character without a scene), `readTheme`, `monochromeLut`, `preparePalette`, `cssColor` and `THREE`, so the Playground reuses the character instead of forking it. `setLoop` takes an optional `timeScale`. The Profile, Character kit and ambient figures behave as before.
+- `AGENTS.md`: a full-screen page with no scroll header does not need an entry in `bindMainScrollChrome`.
 
 ## v1-presentable (2026-10-19)
 

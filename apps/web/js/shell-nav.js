@@ -30,6 +30,7 @@
     components: 'design',            /* design system subpages keep "Design system" selected */
     'motion-specimens': 'design',
     'character-kit': 'design',
+    playground: 'design',
     'design-system': 'design'
   };
 
@@ -44,7 +45,8 @@
     'design-system.html': 0,      /* admin: a dashboard of its own (4th tab) */
     'motion-specimens.html': 1,
     'components.html': 1,
-    'character-kit.html': 1
+    'character-kit.html': 1,
+    'playground.html': 1          /* admin: full screen, closes back to the hub */
   };
 
   function prefersReducedMotion() {

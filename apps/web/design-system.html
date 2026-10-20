@@ -2384,7 +2384,7 @@
           </a>
 
           <a class="ds-hub__card" href="components.html">
-            <svg class="ds-hub__icon" aria-hidden="true" focusable="false"><use href="#i-layers"/></svg>
+            <svg class="ds-hub__icon" style="fill: none" aria-hidden="true" focusable="false"><use href="#i-layers"/></svg>
             <span class="ds-hub__title">Components</span>
             <span class="ds-hub__meta">Buttons — primary, secondary, tonal, sizes and states</span>
             <svg class="uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
@@ -2394,6 +2394,13 @@
             <svg class="ds-hub__icon" style="fill: none" aria-hidden="true" focusable="false"><use href="#i-user"/></svg>
             <span class="ds-hub__title">Character kit</span>
             <span class="ds-hub__meta">The 3D persona character: slots, profiles, colour, staging and motion, with a live specimen</span>
+            <svg class="uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
+          </a>
+
+          <a class="ds-hub__card" href="playground.html">
+            <svg class="ds-hub__icon" style="fill: none" aria-hidden="true" focusable="false"><use href="#i-play"/></svg>
+            <span class="ds-hub__title">Payday run</span>
+            <span class="ds-hub__meta">Playground: a small 3D game that takes the character, the theme and the motion out for a run</span>
             <svg class="uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
           </a>
         </div>
@@ -2433,6 +2440,10 @@
 
 </div>
 
+<div class="modal-overlay modal-overlay--playground" data-playground-overlay role="dialog" aria-modal="true" aria-label="Payday run">
+  <div class="modal-shell"></div>
+</div>
+
 <script src="js/analytics.js"></script>
 <script src="js/payment-state.js"></script>
 <script src="js/data-render.js"></script>
@@ -2447,5 +2458,6 @@
 <script src="js/mode-toggle.js"></script>
 <script src="js/section-build-motion.js"></script>
 <script src="js/shell-nav.js"></script>
+<script src="js/playground-sheet.js"></script>
 </body>
 </html>
