@@ -10871,8 +10871,8 @@ html[data-theme="dark"] .form-field--error .form-field__text-wrap:focus-within {
 
 .playground-touch__btn {
   box-sizing: border-box;
-  width: 5.5rem;
-  height: 5.5rem;
+  width: 4rem;
+  height: 4rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10904,8 +10904,9 @@ html[data-theme="dark"] .form-field--error .form-field__text-wrap:focus-within {
 }
 
 .playground-touch__icon {
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: none;
   pointer-events: none;
 }
 

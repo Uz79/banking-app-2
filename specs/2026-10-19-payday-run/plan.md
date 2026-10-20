@@ -141,6 +141,7 @@ What you see: no focus ring on Start when the game opens; neutral steer buttons;
 
 - [x] D20: quiet focus ring on the overlay buttons (`js/playground.js`, `css/styles.css`)
 - [x] D21: steer buttons in foreground ink with a separator-ink circle (`css/styles.css`)
+- [x] D21 follow-up: steer buttons 64 dp, arrow icon 24 dp with `fill: none`
 - [x] D22: `fill: none` on the Components hub icon (`design-system.html`)
 - [x] D23: error state of the text field in the admin dialog (`js/admin.js`, `css/styles.css`); `alert-triangle` icon
 - [x] `npm run build` clean; checked in the browser (Dark, desktop): quiet ring, steer buttons, hub icon, admin error. Light, 390px and a real phone not rechecked
