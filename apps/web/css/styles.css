@@ -10814,8 +10814,9 @@ html[data-theme="dark"] .form-field--error .form-field__text-wrap:focus-within {
 .playground-panel {
   box-sizing: border-box;
   width: 100%;
-  max-width: 22rem;
-  padding: var(--space-5);
+  max-width: 22.5rem;
+  padding: var(--dialog-padding-block) var(--dialog-padding-inline);
+  border: 0.0625rem solid var(--color-separator);
   border-radius: var(--radius-regular);
   background-color: var(--color-bg);
   color: var(--color-fg);
@@ -10823,28 +10824,68 @@ html[data-theme="dark"] .form-field--error .form-field__text-wrap:focus-within {
   text-align: center;
 }
 
+/* Same type and spacing as the confirmation dialog (.basic-dialog-payment-exit) */
+.playground-panel {
+  --dialog-padding-inline: var(--space-3);
+  --dialog-padding-block: var(--space-3);
+}
+
 .playground-panel__title {
   margin: 0 0 var(--space-2);
-  font-size: var(--fs-h6);
+  font-size: var(--fs-text-lg);
   font-weight: var(--fw-medium);
-  line-height: var(--lh-h6, var(--lh-text));
+  line-height: var(--lh-text);
 }
 
 .playground-panel__text {
-  margin: 0 0 var(--space-4);
+  margin: 0 0 var(--space-3);
   font-size: var(--fs-text-md);
-  line-height: var(--lh-text);
+  line-height: 1.5;
   color: var(--color-fg-secondary);
 }
 
-.playground-panel__title + .playground-panel__actions {
-  margin-top: var(--space-4);
+@media (min-width: 1280px) {
+  .playground-panel {
+    --dialog-padding-inline: var(--space-4);
+    --dialog-padding-block: var(--space-4);
+  }
+
+  .playground-panel__title {
+    margin-bottom: var(--space-3);
+  }
+
+  .playground-panel__text {
+    margin-bottom: var(--space-4);
+  }
 }
 
+/* Buttons: secondary first, primary last, like the confirmation dialog */
 .playground-panel__actions {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-3);
+}
+
+/* Mobile and tablet: bottom sheet, like the confirmation dialog (the still scenes keep their own placement) */
+@media (max-width: 1279px) {
+  .playground-overlay:not(.playground-overlay--step) {
+    align-items: flex-end;
+    padding: 0.25rem;
+    padding-bottom: calc(0.25rem + env(safe-area-inset-bottom, 0px));
+    --form-sheet-slide-depth: calc(100vh + 1rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .playground-overlay:not(.playground-overlay--step) .playground-panel {
+    max-width: none;
+    margin: auto 0 0;
+    animation: form-sheet-panel-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .playground-overlay:not(.playground-overlay--step) .playground-panel {
+    animation: none;
+  }
 }
 
 /* Playground touch steering: two large hold buttons, touch devices only (or ?touch) */
@@ -11130,10 +11171,6 @@ html[data-theme="dark"] .form-field--error .form-field__text-wrap:focus-within {
 @media (max-height: 30rem) {
   .playground-panel {
     padding: var(--space-3);
-  }
-
-  .playground-panel__title {
-    font-size: var(--fs-text-md);
   }
 
   .playground-result {

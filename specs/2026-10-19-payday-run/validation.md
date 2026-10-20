@@ -104,6 +104,14 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [ ] The payment flows' "Discard payment?" dialog still looks and works the same (Escape does nothing there, as before); the "Continue payment" and "Discard" labels are unchanged
 - [ ] The best run is untouched after quitting
 
+## 9d. Dialog language (D25)
+
+- [x] Start screen: Close (secondary) above Start (primary); the title is 18 px, the same as the quit dialog (measured at 390px; Dark)
+- [ ] Result screen: Close above Play again; the still scenes: Skip to result above Next
+- [ ] Under 1280px the card sits at the bottom of the screen and slides up; at 1280px and up it is centred (only the narrow case was seen; a real 1280px window was not)
+- [ ] The card and the quit dialog look alike side by side, in Light and Dark, on a phone
+- [ ] Reduced motion: no slide
+
 ## 10. Baseline smoke test
 
 Copied from `specs/baseline/validation.md`. Run after the checks above. Setup: `cd apps/web && npm run build`, then `npm run dev` and open `http://localhost:5174/overview.html`. Check desktop (1440px) in Light, then repeat the starred (★) items in Dark and at phone width (390px).

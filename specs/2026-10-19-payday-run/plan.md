@@ -153,6 +153,7 @@ What you see: Escape, the close button, or switching tabs during a run opens "Qu
 - [x] `js/payment-exit-confirm.js`: optional `stayLabel`, `onStay`, `escapeStays` (payment flows do not set them)
 - [x] `playground.html`: load `js/dialog-focus.js` and `js/payment-exit-confirm.js`
 - [x] `js/playground.js`: `requestQuit()` for Escape, the top-right close button and automatic pauses; remove the "Paused" overlay; the dialog's Close link on the start and result screens still leaves directly
+- [x] D25: the start and result card matches the confirmation dialog (button order, title size, bottom sheet under 1280px) (`playground.html`, `css/styles.css`)
 - [x] `npm run build` clean; checked on a separate dev server (port 5176, own storage): the dialog text and buttons, focus on Keep playing, Escape inside it resumes, the close button opens it, Quit run leaves (direct visit and in the sheet). Stopped for review
 
 ## 13. Wrap-up

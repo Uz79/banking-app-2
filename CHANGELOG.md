@@ -14,6 +14,7 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Assets: `assets/3d/playground/town` and `assets/3d/playground/forest` (about 1.0 MB, CC0, with the pack licences).
 
 ### Changed
+- Playground: the start and result card follows the confirmation dialog: secondary button first, primary last, the same title size, and a bottom sheet on mobile and tablet.
 - Playground: Escape, the close button and a tab switch during a run now open one "Quit this run?" dialog (Keep playing or Quit run), replacing the "Paused" dialog. It reuses the app's confirmation dialog, which gained optional button and Escape settings that the payment flows do not use.
 - Playground review fixes: the start button no longer shows a focus ring until a key is pressed, the steer buttons use neutral inks, and the Components icon on the Design system hub renders as an outline.
 - Admin sign-in: a wrong password now shows the design system's text field error state (error stroke, warning icon and message under the field) instead of a separate pink line.
