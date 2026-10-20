@@ -2332,6 +2332,9 @@
           <h1 class="playground__title">Payday run</h1>
           <div class="playground-stage" data-playground-stage></div>
           <p class="playground-hud" data-playground-hud><span class="playground-hud__name" data-hud-name></span> <span class="playground-hud__pace" data-hud-pace></span></p>
+          <p class="playground-balance" data-playground-balance><span class="playground-balance__label">Balance</span> <span class="playground-balance__value" data-balance-value>CHF 0.00</span></p>
+          <p class="playground-toast" data-playground-toast hidden></p>
+          <p class="playground__sr" aria-live="polite" data-playground-live></p>
           <div class="playground-touch" data-playground-touch>
             <button type="button" class="playground-touch__btn" data-touch="left" aria-label="Steer left">
               <svg class="playground-touch__icon" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
@@ -2358,6 +2361,7 @@
 </div>
 
 <script src="js/analytics.js"></script>
+<script src="js/payment-state.js"></script>
 <script src="js/profile-persona.js"></script>
 <script type="module" src="js/playground.js"></script>
 </body>

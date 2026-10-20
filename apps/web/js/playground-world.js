@@ -5,6 +5,7 @@
  * Placement is seeded, so the town is the same every run.
  */
 import { THREE, preparePalette, monochromeLut } from './profile-persona-character.js';
+import { seeded } from './playground-track.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js/+esm';
 
 /* A folder of glTF files with their sidecars, resolved at runtime (the app is served as source, not from dist). */
@@ -13,16 +14,6 @@ const BUILDINGS = ['building_A', 'building_B', 'building_C', 'building_D', 'buil
   .map((n) => n + '_withoutBase');
 const MODELS = [...BUILDINGS, 'streetlight', 'bench', 'bush', 'firehydrant', 'trash_A', 'trafficlight_A', 'watertower', 'car_taxi', 'car_sedan'];
 const STREET_PROPS = ['bench', 'firehydrant', 'bush', 'trash_A', 'bush'];
-
-function seeded(seed) {
-  let a = seed | 0;
-  return () => {
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
 
 /* The turn about Y that takes a model's local axis (x, z) onto the direction (x, z). */
 const angleOf = (x, z) => Math.atan2(x, z);

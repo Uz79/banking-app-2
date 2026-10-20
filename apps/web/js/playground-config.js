@@ -37,6 +37,18 @@ export const CONFIG = {
     town: { from: 14, to: 250, sidewalk: 3.2, gap: [1, 3.5], lampEvery: 18, propEvery: 11 },
   },
 
+  /* Money, in CHF. The salary lands at the start as coins on the road; collecting them is how it reaches the balance. */
+  money: { salary: 6000 },
+  coins: {
+    count: 100,       /* the salary is split evenly over this many coins */
+    from: 18, to: 244,
+    spacing: 1.9, gap: 3, lateral: 2.4,
+    radius: 0.55, thickness: 0.14, height: 1.3,
+    spin: 2.6,        /* radians per second */
+    reach: { along: 1.2, across: 1.15 },
+  },
+  burst: { count: 36, life: 1.1, up: [6, 9], out: [2, 5], gravity: 18, size: 0.2 },
+
   /* Rendering. */
   maxPixelRatio: 2,
   fogNear: 40,

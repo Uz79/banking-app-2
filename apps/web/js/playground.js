@@ -14,6 +14,7 @@ import { THREE, createFigure, readTheme, cssColor } from './profile-persona-char
 import { CONFIG } from './playground-config.js';
 import { createTrack } from './playground-track.js';
 import { createTown } from './playground-world.js';
+import { createCoins } from './playground-coins.js';
 
 const embedded = window.parent !== window;
 const closeButton = document.querySelector('[data-playground-close]');
@@ -86,6 +87,8 @@ async function mountGame(host) {
   scene.add(road, edges);
   const town = await createTown(track, CONFIG);
   scene.add(town.group);
+  const coins = createCoins(track, CONFIG);
+  scene.add(coins.group);
 
   /* ── Runner ────────────────────────────────────────────────────────── */
   const figure = await createFigure({ reduced });
@@ -107,6 +110,7 @@ async function mountGame(host) {
     scene.fog.color.copy(bg);
     trackMat.color.copy(bg).lerp(colour('--color-fg'), 0.14);
     accentMat.color.copy(colour('--color-fg-interactive'));
+    coins.recolour(colour('--color-fg-interactive'));
     town.recolour(theme, bg.clone().lerp(colour('--color-fg'), 0.07));
     figure.recolour(theme);
   }
@@ -116,6 +120,41 @@ async function mountGame(host) {
 
   /* ── Game state ────────────────────────────────────────────────────── */
   const input = { left: false, right: false };
+  /* Money: the balance counts up as coins are collected. */
+  const money = (n) => 'CHF ' + ((window.UZBankPayState && window.UZBankPayState.formatMoney) ? window.UZBankPayState.formatMoney(n) : n.toFixed(2));
+  const balanceEl = document.querySelector('[data-balance-value]');
+  const toastEl = document.querySelector('[data-playground-toast]');
+  const liveEl = document.querySelector('[data-playground-live]');
+  let balance = 0;
+  let shown = 0;
+  let collectedCount = 0;
+  let toastTimer = 0;
+  const announce = (text) => { if (liveEl) liveEl.textContent = text; };
+  function toast(text) {
+    if (!toastEl) return;
+    toastEl.textContent = text;
+    toastEl.hidden = false;
+    toastEl.classList.remove('is-showing');
+    void toastEl.offsetWidth; /* restart the fade */
+    toastEl.classList.add('is-showing');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toastEl.hidden = true; }, 2600);
+  }
+  function showBalance(dt) {
+    shown += (balance - shown) * Math.min(1, dt * 10);
+    if (Math.abs(balance - shown) < 0.005) shown = balance;
+    if (balanceEl) balanceEl.textContent = money(shown);
+  }
+  function startRun() {
+    balance = 0; shown = 0; collectedCount = 0;
+    coins.reset();
+    if (balanceEl) balanceEl.textContent = money(0);
+    toast('Salary: ' + money(CONFIG.money.salary));
+    announce('Payday. Salary of ' + money(CONFIG.money.salary) + ' is on the road. Collect the coins.');
+    track.at(s, here);
+    if (!reduced()) coins.burst(figure.actor.position, here.t, here.r);
+    setState('running');
+  }
   /* Touch: two on-screen buttons on touch devices (D4). `?touch` shows them anywhere, for testing. */
   const touchMode = window.matchMedia('(hover: none) and (pointer: coarse)').matches || new URLSearchParams(window.location.search).has('touch');
   document.body.classList.toggle('playground--touch', touchMode);
@@ -159,6 +198,9 @@ async function mountGame(host) {
 
   function reset() {
     s = 0; x = 0; vx = 0;
+    balance = 0; shown = 0; collectedCount = 0;
+    coins.reset();
+    if (balanceEl) balanceEl.textContent = money(0);
     pose(0, true);
     setState('ready');
   }
@@ -204,6 +246,12 @@ async function mountGame(host) {
     x = clamp(x + vx * dt, -limit, limit);
     if (x === limit || x === -limit) vx = 0;
     s += profile.speed * dt;
+    const got = coins.collect(s, x);
+    if (got) {
+      balance += got * coins.value;
+      collectedCount += got;
+      if (Math.floor(collectedCount / 20) !== Math.floor((collectedCount - got) / 20)) announce('Balance ' + money(balance));
+    }
     if (s >= track.length) {
       s = track.length;
       setState('finished');
@@ -249,8 +297,9 @@ async function mountGame(host) {
 
   if (overlay) {
     overlay.querySelector('[data-overlay-primary]').addEventListener('click', () => {
-      if (state === 'ready' || state === 'paused') setState('running');
-      else if (state === 'finished') { reset(); setState('running'); }
+      if (state === 'ready') startRun();
+      else if (state === 'paused') setState('running');
+      else if (state === 'finished') { reset(); startRun(); }
     });
   }
 
@@ -280,11 +329,15 @@ async function mountGame(host) {
       step(dt);
       pose(dt, false);
       figure.update(dt);
+      elapsed += dt;
+      coins.update(dt, elapsed, reduced());
+      showBalance(dt);
     }
     renderer.render(scene, camera);
     if (debug && ++frames === 120) console.info('[playground] draw calls', renderer.info.render.calls, 'triangles', renderer.info.render.triangles);
   }
   let frames = 0;
+  let elapsed = 0;
   const debug = new URLSearchParams(window.location.search).has('debug');
   requestAnimationFrame(frame);
 }

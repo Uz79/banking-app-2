@@ -60,9 +60,11 @@ Note: the town is placed by `js/playground-world.js` (seeded, so it is the same 
 
 What you see: at the start the salary bursts out as coins; the HUD shows the balance in the app's CHF format; running through coins collects them and the balance ticks up.
 
-- [ ] Coins as one `InstancedMesh` in the accent colour; burst at the start (instanced, no per-coin objects); coin layout along the town stretch; pickup by `(s, x)` distance on a flat array (D11, D9)
-- [ ] HUD: balance via `formatMoney` from `js/payment-state.js` (loaded for the formatter only, state untouched), distance or stage marker
-- [ ] Coin and burst sizes and counts in the config
+- [x] Coins as one `InstancedMesh` in the accent colour; burst at the start (instanced, no per-coin objects); coin layout along the town stretch; pickup by `(s, x)` distance on a flat array (D11, D9)
+- [x] HUD: balance via `formatMoney` from `js/payment-state.js` (loaded for the formatter only, state untouched), distance or stage marker
+- [x] Coin and burst sizes and counts in the config
+
+Note: the salary is CHF 6'000 split over 100 coins (CHF 60 each), laid out by `js/playground-coins.js` in lines, waves and zigzags along the town. The balance starts at 0 and the salary shows as a toast at the start (D9). `?debug` also logs draw calls. The balance is announced to screen readers every 20 coins, not on every coin. On narrow screens the pace word and the "Balance" label are hidden so the top row fits.
 
 ## 7. Gates for rent, groceries and bills
 
