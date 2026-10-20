@@ -40,7 +40,6 @@
   <link rel="stylesheet" href="css/typography.css">
   <link rel="stylesheet" href="css/styles.css">
   <script src="js/admin-boot.js" data-guard></script>
-  <script src="js/section-build-boot.js"></script>
 </head>
 <body class="body" data-screen="playground" data-page="playground">
 <div id="uzbank-icon-defs" aria-hidden="true" class="uzbank-icon-defs">
@@ -2327,7 +2326,7 @@
       <!-- ── PLAYGROUND: Payday run (design system, admin, full screen) ── -->
       <section class="view view--active view--playground" data-view="playground">
         <div class="view__main">
-          <a class="view__nav-btn view__nav-btn--leading view__back playground__close" href="design-system.html" aria-label="Close Playground">
+          <a class="view__nav-btn view__nav-btn--trailing playground__close" href="design-system.html" aria-label="Close Playground" data-playground-close>
             <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>
           </a>
           <h1 class="playground__title">Payday run</h1>
@@ -2340,8 +2339,6 @@
 </div>
 
 <script src="js/analytics.js"></script>
-<script src="js/nav-button-motion.js"></script>
-<script src="js/section-build-motion.js"></script>
-<script src="js/shell-nav.js"></script>
+<script type="module" src="js/playground.js"></script>
 </body>
 </html>

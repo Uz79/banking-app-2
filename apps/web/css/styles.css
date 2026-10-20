@@ -10699,9 +10699,30 @@ html[data-theme="dark"] .admin-login__error {
 .playground__close {
   top: max(var(--space-3), env(safe-area-inset-top, 0px));
   bottom: auto;
-  left: max(var(--space-3), env(safe-area-inset-left, 0px));
+  right: max(var(--space-3), env(safe-area-inset-right, 0px));
   margin: 0;
   z-index: 2;
+}
+
+/* The Design system hub opens the page as a flow-style sheet (js/playground-sheet.js): the
+   shell slides like the payment flow (.modal-shell), full screen, with the page in an iframe. */
+.modal-overlay--playground {
+  padding: 0;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.modal-overlay--playground .modal-shell {
+  max-width: none;
+  height: 100%;
+}
+
+.playground-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background-color: var(--color-bg);
 }
 
 /* The page name for assistive tech only; the full-screen page shows no title bar. */

@@ -8,7 +8,7 @@ Roadmap item 2 (`specs/roadmap.md`). A small 3D game on its own design system pa
 
 **In (the whole story, built in order, D1):**
 
-1. A fourth card on the Design system hub, and a full-screen `playground.html` with a close button, admin only
+1. A fourth card on the Design system hub that opens a full-screen `playground.html` as a flow-style sheet, with a close button on the right, admin only
 2. The persona character as the runner, paced by its profile
 3. A spline track, chase camera, keyboard and touch steering
 4. Payday burst: the salary lands as a coin burst at the start
@@ -28,7 +28,7 @@ Roadmap item 2 (`specs/roadmap.md`). A small 3D game on its own design system pa
 - Tilt or swipe steering (D4)
 - A second level, a leaderboard, difficulty settings
 
-**Agreed before this spec (roadmap), confirmed and not re-opened:** placement (fourth hub card, full screen, close button top left with the app's back motion), player (the persona character, profile sets the pace), mechanics (spline track, no physics library, no raycasts, steer within the track width, chase camera, instanced effects), story, look (the world takes the active colour theme), assets (the two KayKit packs, CC0), tuning (one config object), performance (60 fps on a mid-range phone, few draw calls).
+**Agreed before this spec (roadmap), confirmed and not re-opened:** placement (fourth hub card, full screen, close button; changed at review, see D19), player (the persona character, profile sets the pace), mechanics (spline track, no physics library, no raycasts, steer within the track width, chase camera, instanced effects), story, look (the world takes the active colour theme), assets (the two KayKit packs, CC0), tuning (one config object), performance (60 fps on a mid-range phone, few draw calls).
 
 ## Decisions
 
@@ -39,7 +39,7 @@ Roadmap item 2 (`specs/roadmap.md`). A small 3D game on its own design system pa
 | D3 | No sound in v1 | Interview. Avoids autoplay and mute rules, adds no files and no storage key. A follow-up can add it |
 | D4 | Touch: two large on-screen buttons (left, right), hold to steer, shown only on `(hover: none) and (pointer: coarse)`. Keyboard: arrow keys or A/D to steer, Space or Enter to start and restart, Escape to pause. No swipe, no tilt | Interview. Buttons match the keyboard one to one, are discoverable and need no gesture. Tilt needs a permission prompt on iOS and is hard to make accessible |
 | D5 | New page `playground.html`, `data-screen="playground"`, depth 1, root tab `design`. Registered in the places from AGENTS.md that apply to a full-screen page (see Context and D18). Admin only: `js/admin-boot.js` with `data-guard` | Same as `character-kit.html`. Depth 1 under the hub (depth 0) gives the "back" motion on close, which is what the roadmap asks for |
-| D6 | The page is full screen: no sidebar, tab bar, sticky header or status message. The only chrome is the close button (top left, `.view__back` so `js/nav-button-motion.js` and the page transition handle it) and the HUD. The `.body[data-screen="playground"]` layout rules are new, not a copy of a neighbour's | AGENTS.md says to copy the closest page's rules; no existing page is full screen, so this is a deliberate exception |
+| D6 | The page is full screen: no sidebar, tab bar, sticky header or status message. The only chrome is the close button (top right, D19) and the HUD. The `.body[data-screen="playground"]` layout rules are new, not a copy of a neighbour's | AGENTS.md says to copy the closest page's rules; no existing page is full screen, so this is a deliberate exception |
 | D7 | The persona module is reused, not forked. `js/profile-persona-character.js` is refactored so the figure can be created inside any three.js scene (see "What changes in the character module"). `mountStage` keeps exactly today's behaviour | Roadmap: "reuse the module, don't fork it". A fork would drift from the kit |
 | D8 | Pace by profile uses the three clips that exist (`Idle_A`, `Walking_A`, `Running_A`), no new animation files. Beat jogs: `Running_A` at a lower `timeScale` and lower speed. Lena runs: `Running_A` at 1×. Max sprints: `Running_A` at a higher `timeScale` and higher speed. The rig has no sprint clip | Avoids new assets. Speed and `timeScale` are config values (D10) |
 | D9 | Game rules, as starting values to be tuned (all in config): the player starts with the salary, which bursts out as coins that must be collected on the way (collected coins add to the balance); each gate spans the full track width and takes a fixed amount (rent largest, then bills, then groceries) and cannot be dodged; at the chest the remaining balance is deposited automatically; in the forest each tree stage adds a growth rate to the saved amount, one stage per fixed stretch of track. The forest has no coins and no obstacles | Keeps the skill element to steering for coins, with no collision physics (roadmap). Marked for review because the roadmap leaves the rules open |
@@ -52,6 +52,7 @@ Roadmap item 2 (`specs/roadmap.md`). A small 3D game on its own design system pa
 | D16 | Dynamic resolution: if the frame time stays above budget for about a second, the pixel ratio steps down (floor 1), never back up in the same run | Cheap safety net for phones, no extra dependency |
 | D17 | The game state is in memory only. Nothing is stored except the best run (D2). Closing the page mid-run discards the run | Simulation, not backend (Mission principle 6) |
 | D18 | `'playground'` is not added to the `bindMainScrollChrome` list in `js/app-mp.js`: that list only wires the scroll-edge header, and a full-screen page has none. `AGENTS.md` records the exception in its "new page" rule | Review decision. A no-op entry would only mislead the next reader |
+| D19 | Review change: the close button is on the right, and the page opens and closes like the flow screens, not with the page transition. The hub card opens `playground.html` in an iframe inside a full-screen sheet (`js/playground-sheet.js`, `.modal-overlay--playground`) that reuses the payment flow's classes and timing: slides up 0.35 s ease-out with the scrim fading in, and closes by sliding down 0.28 s ease-in. The iframe is created on open and removed after the close, so the WebGL context only lives while the sheet is open. The page closes by `postMessage` (`js/playground.js`). Opened directly (or from the Character kit link later), the close button is a plain link to the hub. `playground.html` therefore does not load the page-transition scripts (`section-build-boot.js`, `section-build-motion.js`, `shell-nav.js`, `nav-button-motion.js`). The NAV_DEPTH and ROOT_TAB entries stay, so other pages that link to it pick the right direction | The page transition (tectonics) is a page-to-page pattern and cannot show the hub underneath; the flow sheet can. An iframe keeps `playground.html` a real registered page |
 
 ## What changes in the character module
 
@@ -109,6 +110,7 @@ Source (read-only): `~/Documents/Projects/AI Portfolio Projects/Design System/_r
 - The icon sprite is embedded into every `*.html` in `apps/web` by `scripts/sync_icons_sprite.py` (glob), so `playground.html` needs the `uzbank-icon-defs` block and is then kept current automatically. Icons needed exist already: `i-x` (close), `i-play` (hub card), `i-arrow-right`.
 - Hub cards live in `design-system.html` at lines 2378 to 2397 (`a.ds-hub__card`, styles at `css/styles.css` 9458). The new card goes under Character kit.
 - Every shell page carries the same inline boot script in `<head>` (`scripts/boot-inline-theme.html`); `playground.html` copies it unchanged.
+- Flow sheets: `.modal-overlay` and `.modal-shell` (`css/styles.css` from line 2340) and `openModalVisual` / `closeModal` in `js/payment-overlay.js` are the pattern D19 copies.
 - The Character kit page loads the character module as `<script type="module">` (line 2682); the Playground imports it from `js/playground.js` instead of via a tag.
 - `localStorage` keys in use are listed in `apps/web/README.md` lines 52 to 59; `uzBankWebPlaygroundBest` is added there.
 - No em dashes in user-facing text (HUD, result screen, hub card, ARIA labels). English, short, plain.

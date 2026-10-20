@@ -14,10 +14,12 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 ## 2. Entry and guard
 
 - [ ] Design system hub shows four cards; "Payday run" is the fourth and its trailing arrow moves like the others
-- [ ] The card opens `playground.html` with the forward page transition
+- [ ] The card opens the page as a sheet that slides up from below with the scrim fading in, like the payment flow; the hub is visible behind it while it moves
 - [ ] Signed out (clear `uzBankAdmin`): opening `playground.html` directly redirects to Profile > Admin access
 - [ ] The page has no sidebar, tab bar, header or status message (wait over 12 s)
-- [ ] The close button is top left, has an accessible name, and returns to the hub with the back motion
+- [ ] The close button is top right, has an accessible name, and slides the sheet down and the scrim out, like closing the payment flow; focus returns to the card and the hub is usable again (not inert, scrolls)
+- [ ] Opening the page directly (`playground.html`) works, and its close button goes to the hub
+- [ ] With reduced motion on, the sheet appears and disappears without sliding and nothing is left behind
 - [ ] Character kit ends with a "Try it in the Playground" link that opens the page
 
 ## 3. The runner
