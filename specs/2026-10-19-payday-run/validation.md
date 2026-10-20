@@ -92,7 +92,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 ## 9c. Quit dialog (group 15, D24)
 
-- [x] While running, Escape opens "Quit this run?" with the text "Your progress in this run will be lost. Your best run stays saved.", "Keep playing" (secondary) and "Quit run" (primary); the run stops moving behind it; focus is on "Keep playing" (checked in Dark on desktop)
+- [x] While running, Escape opens "Quit this run?" with the text "Your progress in this run will be lost. Your best run stays saved.", "Keep playing" (secondary) and "Quit run" (primary); the run stops moving behind it; focus is on "Keep playing" with no focus ring until Tab (checked in Dark on desktop)
 - [x] Escape inside the dialog closes it and the run resumes (the balance kept rising)
 - [x] The close button (top right) opens the same dialog while running; "Quit run" leaves (to the Design system on a direct visit; the sheet slides away when embedded)
 - [ ] "Keep playing" by click or tap resumes; the held touch buttons do not stick

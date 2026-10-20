@@ -10940,7 +10940,8 @@ html[data-theme="dark"] .form-field--error .form-field__text-wrap:focus-within {
 }
 
 /* The start, pause and result buttons take focus when a screen opens; the ring waits for the keyboard */
-.playground-overlay[data-quiet] :focus-visible {
+.playground-overlay[data-quiet] :focus-visible,
+dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
   outline: none;
 }
 

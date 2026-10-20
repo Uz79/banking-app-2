@@ -435,6 +435,12 @@ async function mountGame(host) {
       escapeStays: true,
       onStay: () => { quitOpen = false; if (state === 'paused') setState('running'); },
     });
+    /* Focus starts on Keep playing, but its ring waits for Tab, as on the start and result screens */
+    const dlg = document.querySelector('dialog.basic-dialog-payment-exit');
+    if (dlg) {
+      dlg.dataset.quiet = '';
+      dlg.onkeydown = (e) => { if (e.key === 'Tab') delete dlg.dataset.quiet; };
+    }
   }
   requestClose = requestQuit;
   const pause = () => { if (state === 'running') requestQuit(); };
