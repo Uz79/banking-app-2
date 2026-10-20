@@ -10973,3 +10973,11 @@ html[data-theme="dark"] .admin-login__error {
     display: none;
   }
 }
+
+/* Costs at the gates: a neutral toast, not the accent one */
+
+.playground-toast--expense {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  box-shadow: inset 0 0 0 0.125rem var(--color-fg);
+}

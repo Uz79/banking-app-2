@@ -70,8 +70,10 @@ Note: the salary is CHF 6'000 split over 100 coins (CHF 60 each), laid out by `j
 
 What you see: three labelled gates across the track; passing through each takes its amount off the balance with a clear HUD change.
 
-- [ ] Gate meshes (accent frame, label from a canvas texture, one per kind), placed at config distances; deduction on crossing; HUD delta line (D9)
-- [ ] A short text line in the HUD for each: "Rent", "Groceries", "Bills", with the amount
+- [x] Gate meshes (accent frame, label from a canvas texture, one per kind), placed at config distances; deduction on crossing; HUD delta line (D9)
+- [x] A short text line in the HUD for each: "Rent", "Groceries", "Bills", with the amount
+
+Note: starting values are rent CHF 1'600 at 105, groceries CHF 500 at 160, bills CHF 700 at 210 (of a CHF 6'000 salary). A runner who misses many coins can go below zero at a gate; the balance shows the minus sign. Whether to floor it is for the tuning pass (open question 1).
 
 ## 8. The savings chest
 

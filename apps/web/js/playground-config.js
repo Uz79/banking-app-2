@@ -47,6 +47,14 @@ export const CONFIG = {
     spin: 2.6,        /* radians per second */
     reach: { along: 1.2, across: 1.15 },
   },
+  /* Gates across the whole track: unavoidable costs, taken once when the runner passes. Amounts in CHF. */
+  gates: [
+    { id: 'rent', label: 'Rent', amount: 1600, at: 105 },
+    { id: 'groceries', label: 'Groceries', amount: 500, at: 160 },
+    { id: 'bills', label: 'Bills', amount: 700, at: 210 },
+  ],
+  gate: { height: 7.4, bannerHeight: 1.7, post: 0.5, outset: 0.5 },
+
   burst: { count: 36, life: 1.1, up: [6, 9], out: [2, 5], gravity: 18, size: 0.2 },
 
   /* Rendering. */

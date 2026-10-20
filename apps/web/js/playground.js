@@ -15,6 +15,7 @@ import { CONFIG } from './playground-config.js';
 import { createTrack } from './playground-track.js';
 import { createTown } from './playground-world.js';
 import { createCoins } from './playground-coins.js';
+import { createGates } from './playground-gates.js';
 
 const embedded = window.parent !== window;
 const closeButton = document.querySelector('[data-playground-close]');
@@ -43,6 +44,9 @@ async function mountGame(host) {
     hud.querySelector('[data-hud-name]').textContent = profile.name;
     hud.querySelector('[data-hud-pace]').textContent = profile.pace;
   }
+
+  /* CHF in the app's Swiss format (formatMoney from js/payment-state.js). */
+  const money = (n) => 'CHF ' + ((window.UZBankPayState && window.UZBankPayState.formatMoney) ? window.UZBankPayState.formatMoney(n) : n.toFixed(2));
 
   /* ── Scene ─────────────────────────────────────────────────────────── */
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -89,6 +93,8 @@ async function mountGame(host) {
   scene.add(town.group);
   const coins = createCoins(track, CONFIG);
   scene.add(coins.group);
+  const gates = createGates(track, CONFIG, (n) => money(n).replace(/\.00$/, ''));
+  scene.add(gates.group);
 
   /* ── Runner ────────────────────────────────────────────────────────── */
   const figure = await createFigure({ reduced });
@@ -111,6 +117,7 @@ async function mountGame(host) {
     trackMat.color.copy(bg).lerp(colour('--color-fg'), 0.14);
     accentMat.color.copy(colour('--color-fg-interactive'));
     coins.recolour(colour('--color-fg-interactive'));
+    gates.recolour(colour('--color-fg-interactive'), bg);
     town.recolour(theme, bg.clone().lerp(colour('--color-fg'), 0.07));
     figure.recolour(theme);
   }
@@ -120,8 +127,7 @@ async function mountGame(host) {
 
   /* ── Game state ────────────────────────────────────────────────────── */
   const input = { left: false, right: false };
-  /* Money: the balance counts up as coins are collected. */
-  const money = (n) => 'CHF ' + ((window.UZBankPayState && window.UZBankPayState.formatMoney) ? window.UZBankPayState.formatMoney(n) : n.toFixed(2));
+  /* Money: the balance counts up as coins are collected and down at the gates. */
   const balanceEl = document.querySelector('[data-balance-value]');
   const toastEl = document.querySelector('[data-playground-toast]');
   const liveEl = document.querySelector('[data-playground-live]');
@@ -130,9 +136,10 @@ async function mountGame(host) {
   let collectedCount = 0;
   let toastTimer = 0;
   const announce = (text) => { if (liveEl) liveEl.textContent = text; };
-  function toast(text) {
+  function toast(text, kind = 'income') {
     if (!toastEl) return;
     toastEl.textContent = text;
+    toastEl.classList.toggle('playground-toast--expense', kind === 'expense');
     toastEl.hidden = false;
     toastEl.classList.remove('is-showing');
     void toastEl.offsetWidth; /* restart the fade */
@@ -245,7 +252,13 @@ async function mountGame(host) {
     const limit = half - st.margin;
     x = clamp(x + vx * dt, -limit, limit);
     if (x === limit || x === -limit) vx = 0;
+    const prevS = s;
     s += profile.speed * dt;
+    gates.crossed(prevS, s).forEach((gate) => {
+      balance -= gate.amount;
+      toast(gate.label + ': -' + money(gate.amount), 'expense');
+      announce(gate.label + ' paid, ' + money(gate.amount) + '. Balance ' + money(balance) + '.');
+    });
     const got = coins.collect(s, x);
     if (got) {
       balance += got * coins.value;
