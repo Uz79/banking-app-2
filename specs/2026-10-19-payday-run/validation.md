@@ -31,7 +31,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 ## 4. Controls
 
-- [ ] Keyboard: arrows and A/D steer, Space or Enter starts and restarts, Escape pauses and Resume works
+- [ ] Keyboard: arrows and A/D steer, Space or Enter starts and restarts, Escape pauses while running; Escape again (or on the start or finish screen) closes the game; Resume works with its button
 - [ ] Steering stays inside the track width at both edges
 - [ ] Touch emulation at 390px: Left/Right buttons appear, steer while held, release when the finger slides off
 - [ ] The buttons do not appear with a mouse

@@ -29,6 +29,12 @@ if (embedded && closeButton) {
   });
 }
 
+/* Leave the game: the hub slides the sheet down, or a direct visit goes back to the hub. */
+function closeGame() {
+  if (embedded) window.parent.postMessage({ type: 'uzbank:playground-close' }, window.location.origin);
+  else if (closeButton) window.location.href = closeButton.href;
+}
+
 const stage = document.querySelector('[data-playground-stage]');
 const overlay = document.querySelector('[data-playground-overlay]');
 const hud = document.querySelector('[data-playground-hud]');
@@ -198,7 +204,7 @@ async function mountGame(host) {
 
   const TEXT = {
     ready: { title: 'Payday run', text: touchMode ? 'Hold the left and right buttons to steer.' : 'Steer with the arrow keys or A and D. Escape pauses.', primary: 'Start' },
-    paused: { title: 'Paused', text: '', primary: 'Resume' },
+    paused: { title: 'Paused', text: touchMode ? '' : 'Escape again closes the game.', primary: 'Resume' },
     finished: { title: 'Finish', text: 'You made it to the end of the track.', primary: 'Play again' },
   };
 
@@ -319,8 +325,9 @@ async function mountGame(host) {
     const dir = KEYS[e.key];
     if (dir) { input[dir] = true; e.preventDefault(); return; }
     if (e.key === 'Escape') {
-      if (state === 'running') { setState('paused'); e.preventDefault(); }
-      else if (state === 'paused') { setState('running'); e.preventDefault(); }
+      e.preventDefault();
+      if (state === 'running') setState('paused');
+      else closeGame(); /* ready, paused or finished: Escape leaves, like the flow screens */
     }
   });
   window.addEventListener('keyup', (e) => {

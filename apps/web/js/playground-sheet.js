@@ -79,6 +79,11 @@
     window.setTimeout(end, 300);
   }
 
+  /* Escape closes the sheet when the page itself does not have the keyboard (for example after a click outside it). */
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && isOpen()) { event.preventDefault(); close(); }
+  });
+
   card.addEventListener('click', function (event) {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
