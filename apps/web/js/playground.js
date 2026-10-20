@@ -402,7 +402,7 @@ async function mountGame(host) {
   overlay.dataset.quiet = '';
   window.addEventListener('pointerdown', () => { overlay.dataset.quiet = ''; });
   window.addEventListener('keydown', (e) => {
-    delete overlay.dataset.quiet;
+    if (e.key === 'Tab') delete overlay.dataset.quiet; /* only moving focus shows the ring, not Escape or steering */
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     const dir = KEYS[e.key];
     if (dir) { input[dir] = true; e.preventDefault(); return; }

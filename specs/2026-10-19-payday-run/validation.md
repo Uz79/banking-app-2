@@ -85,7 +85,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 ## 9b. Review fixes (group 14)
 
-- [ ] Opening the game shows no focus ring on Start (mouse, touch); pressing Tab brings the ring back; Enter still starts
+- [ ] Opening the game shows no focus ring on Start (mouse, touch) and none on Resume after Escape; pressing Tab brings the ring back; Enter still starts
 - [ ] Steer buttons: arrows in foreground ink, circle in separator ink, in Light and Dark (checked in Dark on desktop only)
 - [ ] Design system hub: the Components icon is an outline in Light and Dark (checked in Dark)
 - [ ] Admin sign-in with a wrong password: pink stroke on the password field, warning icon and message under it, label unchanged; typing clears it; Light and Dark (checked in Dark)
