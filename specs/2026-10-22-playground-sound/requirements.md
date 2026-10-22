@@ -21,6 +21,7 @@ Roadmap item 5 (`specs/roadmap.md`). The sound follow-up that Payday run left ou
 - Sound in the still (reduced motion) version (D9)
 - A volume slider (mute on or off only)
 - Gameplay changes (roadmap item 6)
+- Settings dialog (visual parameters, theme; possibly the mute button): deferred to roadmap item 7
 
 **Agreed before this spec, confirmed and not re-opened:** Kenney CC0 recordings, copied only the chosen files into `apps/web/assets/audio/`; Web Audio API, no library; footsteps triggered by the run clip's foot contacts (two per cycle) so they follow each profile's `timeScale`, with random variation plus a small pitch and volume spread; the surface switches with the forest; the coin pitch rises for quick pickups and resets after a short pause; sound starts with the Start button, on by default; the HUD mute button is remembered; audio pauses with the Quit dialog and a hidden tab; no footsteps in the still version; volumes and pitch steps in the config.
 
