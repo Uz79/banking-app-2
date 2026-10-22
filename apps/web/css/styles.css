@@ -11432,6 +11432,7 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
 
 /* The slider's own focus ring is drawn on the thumb; here the track also holds the recommended-value tick. */
 .fridge__track {
+  --fridge-thumb: 1.25rem; /* the compact slider's thumb width: the thumb's centre runs inset by half of it */
   position: relative;
   display: flex;
   align-items: center;
@@ -11440,8 +11441,9 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
 .fridge__tick {
   position: absolute;
   top: 50%;
+  left: calc(var(--fridge-thumb) / 2 + (100% - var(--fridge-thumb)) * var(--tick-at, 0.5));
   width: 2px;
-  height: 0.875rem;
+  height: 0.75rem;
   transform: translate(-50%, -50%);
   background: var(--color-fg);
   pointer-events: none;

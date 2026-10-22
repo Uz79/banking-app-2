@@ -148,13 +148,13 @@ function buildField(key, onChange) {
   range.min = '0';
   range.max = String(TRACK);
   range.step = '1';
-  range.className = 'cc-color-slider';
+  range.className = 'cc-color-slider cc-color-slider--compact';
   track.append(range);
   if (def.mark) {
     const tick = document.createElement('span');
     tick.className = 'fridge__tick';
     tick.setAttribute('aria-hidden', 'true');
-    tick.style.left = (100 * def.mark / def.max.times) + '%';
+    tick.style.setProperty('--tick-at', String(def.mark / def.max.times));
     track.append(tick);
   }
   row.append(head, track);
