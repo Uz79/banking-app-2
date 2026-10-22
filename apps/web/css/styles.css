@@ -2547,6 +2547,14 @@ a.show-all-btn {
   }
 }
 
+/* Wide flow sheet (modifier on .modal-shell): the main box width, 960dp, from 1024px. Below that the sheet is
+   unchanged (the 640dp column on tablets, full screen on phones). The content decides what to do with the width. */
+@media (min-width: 1024px) {
+  .modal-shell.modal-shell--wide {
+    --modal-payment-max-width: var(--modal-wide-max-width, 960px);
+  }
+}
+
 /* Mobile / tablet: payment flow is full-viewport — no outer padding, no card radius. */
 @media (max-width: 1023px) {
   .modal-overlay {
@@ -11242,5 +11250,328 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
 
   .playground-result__rows li {
     padding: 0.25rem 0;
+  }
+}
+
+
+/* ── Fridge advisor ("How much should I invest?"): the sheet and the page ─────────── */
+
+/* The sheet is a flow sheet (it reuses .modal--trade-flow for the header, size and motion);
+   the page sits in an iframe filling its body. */
+.modal--fridge-flow .modal__body {
+  position: relative;
+  overflow: hidden;
+}
+
+.fridge-frame {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background-color: var(--color-bg);
+}
+
+/* The page: no app chrome. Framed, the sheet's header is used; on its own, the page shows the same header. */
+.body[data-screen="fridge-advisor"] .sidebar,
+.body[data-screen="fridge-advisor"] .tab-bar {
+  display: none;
+}
+
+.body[data-screen="fridge-advisor"] .app {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+.body[data-screen="fridge-advisor"] .main-content {
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--color-bg);
+}
+
+.body[data-screen="fridge-advisor"] .main-content__inner,
+.body[data-screen="fridge-advisor"] .view--fridge,
+.body[data-screen="fridge-advisor"] .view--fridge .view__main {
+  max-width: none;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.body[data-screen="fridge-advisor"] .view--fridge .view__main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.fridge--framed .fridge__nav {
+  display: none;
+}
+
+/* The page name for assistive tech only; the visible title is in the header. */
+.fridge__title,
+.fridge__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.fridge__stage {
+  position: relative;
+  flex: 0 0 45%;
+  min-height: 0;
+}
+
+.fridge__stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.fridge__panel {
+  flex: 1 1 0%;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  color: var(--color-fg);
+}
+
+.fridge__step {
+  margin: 0;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.fridge__heading {
+  margin: 0;
+  font-size: var(--fs-text-lg);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-text);
+}
+
+/* Focus moves here on each step so a screen reader starts at the new screen; it is not a control, so no ring. */
+.fridge__heading:focus {
+  outline: none;
+}
+
+.fridge__text {
+  margin: 0;
+  font-size: var(--fs-text-md);
+  line-height: 1.5;
+  color: var(--color-fg-secondary);
+}
+
+.fridge__actions {
+  position: sticky;
+  bottom: calc(-1 * var(--space-4));
+  margin-top: auto;
+  /* The button stays in reach when the panel scrolls (a phone with three sliders); the panel's own bottom padding is pulled in. */
+  padding: var(--space-3) 0 max(var(--space-4), env(safe-area-inset-bottom));
+  background-color: var(--color-bg);
+}
+
+.fridge__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.fridge__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.fridge__field-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.fridge__field-label {
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-label);
+}
+
+.fridge__field-value {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--fs-text-md);
+  color: var(--color-fg-secondary);
+}
+
+.fridge__num {
+  width: 6.5rem;
+  height: 2.25rem;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-btn-secondary-border);
+  border-radius: var(--radius-regular);
+  background: transparent;
+  color: var(--color-fg);
+  font: inherit;
+  text-align: right;
+}
+
+.fridge__num:focus-visible {
+  outline: 2px solid var(--color-fg-interactive);
+  outline-offset: 2px;
+}
+
+/* The slider's own focus ring is drawn on the thumb; here the track also holds the recommended-value tick. */
+.fridge__track {
+  --fridge-thumb: 1.25rem; /* the compact slider's thumb width: the thumb's centre runs inset by half of it */
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.fridge__tick {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--fridge-thumb) / 2 + (100% - var(--fridge-thumb)) * var(--tick-at, 0.5));
+  width: 2px;
+  height: 0.75rem;
+  transform: translate(-50%, -50%);
+  background: var(--color-fg);
+  pointer-events: none;
+}
+
+.fridge__note {
+  margin: 0;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.fridge__actions .fridge__note {
+  margin-bottom: var(--space-2);
+}
+
+/* Wide sheet (js sets html.fridge--wide when the sheet is 960dp): the stage on the left at full height, the steps on the right. */
+html.fridge--wide .body[data-screen="fridge-advisor"] .view--fridge .view__main {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+html.fridge--wide .fridge__nav {
+  grid-column: 1 / -1;
+}
+
+html.fridge--wide .fridge__stage {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+html.fridge--wide .fridge__panel {
+  grid-column: 2;
+  grid-row: 2;
+  padding: var(--space-5, var(--space-4)) var(--space-5, var(--space-4)) var(--space-5, var(--space-4)) var(--space-3);
+}
+
+/* Result (screen 7) and closing (screen 8) */
+.fridge__result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+  text-align: center;
+}
+
+.fridge__ring {
+  position: relative;
+  width: 11rem;
+  height: 11rem;
+}
+
+.fridge__ring svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.fridge__ring circle {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+
+.fridge__ring-track {
+  stroke: color-mix(in srgb, var(--color-fg-interactive) 40%, transparent);
+}
+
+.fridge__ring-bar {
+  stroke: var(--color-fg-interactive);
+  transition: stroke-dasharray 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.fridge__ring-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: 0 var(--space-4);
+}
+
+.fridge__ring-label {
+  font-size: var(--fs-text-sm);
+  color: var(--color-fg-secondary);
+}
+
+.fridge__ring-amount,
+.fridge__big {
+  margin: 0;
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-medium);
+  line-height: 1.2;
+  color: var(--color-fg);
+}
+
+.fridge__big {
+  font-size: var(--fs-h2);
+}
+
+.fridge__year {
+  margin: 0;
+  font-size: var(--fs-text-md);
+  color: var(--color-fg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fridge__ring-bar {
+    transition: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .fridge__ring {
+    width: 8.5rem;
+    height: 8.5rem;
+  }
+
+  .fridge__ring-amount {
+    font-size: var(--fs-h5);
   }
 }

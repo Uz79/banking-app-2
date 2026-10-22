@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit e051507507771d467c3c527deff11b0cbaa2118d -->
+<!-- changelog: last-commit 250136f85497d3b846e5801a70cd630b10811c65 -->
 
 ### Decided
 - **Spec-driven workflow.** From now on every change goes through a dated spec folder (`specs/<YYYY-MM-DD>-<name>/`) created with `/feature-spec`, on its own branch, with a validation pass and the baseline smoke test before it reaches `main`. Added `AGENTS.md`, `specs/mission.md`, `specs/tech-spec.md`, `specs/roadmap.md`, `specs/baseline/`, and the `/feature-spec` and `/changelog` skills. The app's code is unchanged. The state before this is tagged `v1-presentable`.
@@ -18,6 +18,11 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - New `localStorage` key `uzBankWebPlaygroundSound`, listed in `apps/web/README.md`.
 - Assets: `assets/audio/playground/` (nine mono WAV files, about 340 KB, Kenney Impact Sounds, CC0, with the licence).
 
+- **Fridge advisor: "How much should I invest?"** (Overview > Offers > Investment). The first step of opening an investment product, as in an advisory meeting. A 3D fridge in the theme colours with the persona beside it: the main compartment is money for daily needs, the reserve drawers are reserves for the unplanned and for bigger purchases, the freezer is what can be invested. Eight screens: an intro, a three-stop tour, two slider screens (monthly salary, left at month end, total assets, reserve for the unplanned with a marker at 3 times the salary, reserve for bigger purchases; each with a typable CHF field) where the shelves and drawers stock up like a real fridge, the result (the doors close, a short cooling moment, the freezer opens; a ring with the amount, the yearly amount and "A rough guide, not financial advice.") and a closing screen. Opens as a flow sheet like Pay; Back, Escape and the "Leave this guide?" dialog work like the other flows. Still versions for reduced motion. Nothing is stored.
+- **Wide flow sheets.** `.modal-shell--wide` makes a flow sheet 960dp wide (the main box width) from 1024px, with the page inside choosing its columns. The fridge advisor is the first user (fridge on the left, steps on the right). Below 1024px nothing changes.
+- Assets: `assets/3d/fridge/` (Kenney Furniture Kit and Food Kit, CC0, with the licences; about 0.4 MB with the texture).
+- Spec: `specs/2026-10-22-fridge-advisor/` (roadmap item 8a).
+
 ### Changed
 - **Dev server:** `npm run dev` now uses port 5175 (it fails instead of moving to another port if that is taken), listens on the network and accepts `*.local` host names, so a phone on the same Wi-Fi can open `http://klaudiuszs-macbook-pro.local:5175/overview.html`. Docs and earlier specs say 5175. `AGENTS.md` tells agents to use port 5199 for their own checks. Dev tooling only; the app is unchanged.
 - `js/profile-persona-character.js`: the figure exposes `loopPhase()` (where the current loop is in its cycle). Nothing else changes.
@@ -29,6 +34,10 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - `js/profile-persona-character.js` now exports `createFigure()` (the character without a scene), `readTheme`, `monochromeLut`, `preparePalette`, `cssColor` and `THREE`, so the Playground reuses the character instead of forking it. `setLoop` takes an optional `timeScale`. The Profile, Character kit and ambient figures behave as before.
 - `AGENTS.md`: a full-screen page with no scroll header does not need an entry in `bindMainScrollChrome`.
 - `AGENTS.md`: ideas found during a feature go onto `specs/roadmap.md` as a new item, committed on the feature branch on their own, with a pointer in the spec's out-of-scope list. The roadmap gained items 5 to 7 (sound, gameplay, a Playground settings dialog).
+
+### Decided
+- **Deploy is source.** `dist` is never deployed (GitHub Pages serves `apps/web` as it is), so runtime-loaded assets need no copy step in the build (fridge advisor D25).
+- Two pre-existing gaps found in the baseline run went onto the roadmap: the All bookings Search button (item 10) and the Household balance on Account details (item 11).
 
 ## v1-presentable (2026-10-19)
 

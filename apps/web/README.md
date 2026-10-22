@@ -65,6 +65,7 @@ Persisted in `localStorage` (see `js/storage-migrate.js` for legacy key migratio
 - `spa-source.html` — wide SPA-style reference (not the primary runtime)
 - `components.html` — button design-system gallery
 - `character-kit.html` — design system: the 3D persona character, with a live specimen
+- `fridge-advisor.html` — "How much should I invest?": the 3D fridge advisor (opened as a sheet from Overview > Offers > Investment)
 - `playground.html` — design system: "Payday run", a small 3D game (full screen, opened as a sheet from the Design system page)
 - `css/tokens.css` — generated from `designs/tokens/`
 - `css/typography.css` — generated responsive type scale
@@ -88,3 +89,12 @@ Persisted in `localStorage` (see `js/storage-migrate.js` for legacy key migratio
 - `assets/3d/playground/town` and `assets/3d/playground/forest` — KayKit City Builder Bits 1.0 and Forest Nature Pack 1.0 by Kay Lousberg (CC0), pruned to the models used; licences included
 - `assets/audio/playground/` — step-town-1..4, step-forest-1..4 and coin as mono WAV, converted from Kenney Impact Sounds (CC0, licence included)
 - Dev URL parameters: `?debug` (draw calls, frame cost), `?touch` (show the touch buttons), `?reduced` (force the still version), `?from=<distance>&money=<chf>` (start partway along the track)
+
+## Fridge advisor (Overview > Offers > Investment)
+
+- `fridge-advisor.html` + `js/fridge-advisor.js` — page, steps, sliders with typable fields, the result formula, the closing screen
+- `js/fridge-advisor-config.js` — every number that decides how it looks (camera poses, doors, food packing, slider ranges, the step copy)
+- `js/fridge-advisor-scene.js` — the scene: the kit fridge, shelves and drawers as boxes, food packed in rows, the persona, the theme
+- `js/fridge-advisor-sheet.js` — Overview opens the page as a wide flow sheet (iframe, `.modal-shell--wide`, slides up and down like Pay)
+- `assets/3d/fridge/` — Kenney Furniture Kit (the fridge) and Food Kit (15 models and the colour map), CC0; the build copies it to `dist`
+- No `localStorage` keys: the values live in memory only. Dev URL parameters: `?reduced` (force the still version), `?open=1` (both doors open)

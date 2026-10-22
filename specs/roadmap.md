@@ -19,7 +19,7 @@ What was agreed before the spec (confirmed in the interview, not re-opened):
 - **Mechanics:** in the style of Shopify's Horizon Drive: a spline track (no physics library, no raycasts), steer left and right within the track width, a chase camera, instanced effects. Keyboard and touch.
 - **Story:** "Payday run". Salary lands (coin burst at the start), the runner collects coins through a small town and passes gates for rent, groceries and bills, deposits what's left in a savings chest, then runs into a forest where trees grow along the track (compound growth). The finish shows the result as a balance in the app's CHF format; the best run is kept.
 - **Look:** the world takes the active colour theme, like the character (monochrome plus one accent).
-- **Assets:** KayKit City Builder Bits 1.0 (free) and Forest Nature Pack 1.0 (free), CC0, already downloaded to `~/Documents/Projects/AI Portfolio Projects/Design System/_resources/`. Copy only the models used into `apps/web/assets/3d/`.
+- **Assets:** KayKit City Builder Bits 1.0 (free) and Forest Nature Pack 1.0 (free), CC0, already downloaded to `~/Documents/Projects/AI Portfolio Projects/Banking App/_resources/`. Copy only the models used into `apps/web/assets/3d/`.
 - **Tuning:** speed curves, camera lag and effect sizes live in one config object with starting values, so feel is tuned by changing numbers.
 - **Performance:** 60 fps on a mid-range phone; few draw calls; reduced motion gives a calm, still alternative.
 
@@ -50,3 +50,26 @@ Acceleration lanes, jumping (the rig has jump clips), a second coin type and a t
 A settings button in the Playground HUD that pauses the run and opens a settings dialog with sections, so changes happen while nothing moves. First two sections: **Visual parameters** (which ones to be defined in the spec interview) and **Theme** (the current Light/Dark choice, so the one-off recolour of the world and character happens behind the dialog). Resume closes it; Escape means Resume. Reuses the confirmation dialog component (payday-run D24).
 
 Open for its interview: which visual parameters (for example render quality or pixel ratio, camera distance), whether Sound moves into the dialog from the HUD, and whether Multi-color themes are picked here or stay in Profile. Measure the paused theme switch on a throttled CPU first: a mid-run switch on a desktop cost about one extra frame, a phone is untested. Own spec when it is picked up.
+
+## 8. "How much should I invest?": the fridge advisor (8a done)
+
+The first step of opening an investment product, as in a bank's advisory meeting. A fridge metaphor: the main compartment is money for daily needs, the reserve drawers are reserves for the unplanned and for bigger purchases, and the freezer is what can be invested. Based on a flow Klaudiusz designed with a bank; the reference frames are in `~/Documents/Projects/AI Portfolio Projects/Banking App/_resources/261022_fridge-food/scenario`.
+
+Split:
+
+- **8a. The flow** (done): entry from Overview > Offers > "Investment", a 3D fridge in the theme colours with the persona character standing next to it, five beats, sliders as the input, the investable amount as the result.
+- **8b. The avatar acting** (later): the character opens the doors, carries items and cheers.
+
+Spec for 8a: `specs/2026-10-22-fridge-advisor/`.
+
+## 9. Investment product opening (later)
+
+What follows "Show suitable products" in item 8: product choice, risk profile, signing. Not started; item 8a ends at that button.
+
+## 10. All bookings: the Search button does nothing
+
+The Search button on `all-bookings-and-payments.html` has no handler. Found during the fridge advisor's baseline run; it predates that branch.
+
+## 11. Account details: Household balance
+
+The account card on Account details shows Household as 10'000 instead of the booked balance (Overview shows 9'900 at the start, 9'400 after a 500 payment). Align it with Overview. Found during the fridge advisor's baseline run; it predates that branch.
