@@ -6,22 +6,22 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 ## 1. Build and config
 
-- [ ] `npm run build` in `apps/web` succeeds with no new warnings
-- [ ] `grep` for `5174` in `AGENTS.md`, `specs/` (apart from this spec folder, which describes the change) and `apps/web/README.md` finds nothing
+- [x] `npm run build` in `apps/web` succeeds with no new warnings
+- [x] `grep` for `5174` in `AGENTS.md`, `specs/` (apart from this spec folder, which describes the change) and `apps/web/README.md` finds nothing
 
 ## 2. Dev server
 
 - [ ] `npm run dev` starts on port 5175 and opens `http://localhost:5175/overview.html` on the Mac
 - [ ] With something already on 5175, `npm run dev` fails with a clear "port in use" error and does not start on another port
-- [ ] The terminal shows a Network URL; the Mac's `.local` name (`http://klaudiuszs-macbook-pro.local:5175/overview.html`) opens the page on the Mac
+- [x] The terminal shows a Network URL; the Mac's `.local` name (`http://klaudiuszs-macbook-pro.local:5175/overview.html`) opens the page on the Mac
 - [ ] On the phone, on the same Wi-Fi, `http://klaudiuszs-macbook-pro.local:5175/overview.html` opens Overview (no "Blocked request" message)
-- [ ] The agent's own run, `npx vite --port 5199 --strictPort --no-open` from `apps/web`, serves on 5199, opens no tab, and stops cleanly
+- [x] The agent's own run, `npx vite --port 5199 --strictPort --no-open` from `apps/web`, serves on 5199, opens no tab, and stops cleanly
 - [ ] The Yahoo proxy path (`/api/yahoo`) still answers through the new setup (Custody account prices still load)
 
 ## 3. Docs
 
-- [ ] `AGENTS.md` Checking work holds the 5175 and 5199 line and reads clearly
-- [ ] `specs/tech-spec.md` has the dev server Decisions row
+- [x] `AGENTS.md` Checking work holds the 5175 and 5199 line and reads clearly
+- [x] `specs/tech-spec.md` has the dev server Decisions row
 
 ## 4. Baseline smoke test
 
@@ -66,4 +66,6 @@ Copied from `specs/baseline/validation.md`. Setup: `cd apps/web && npm run build
 
 ---
 
-Checked on: not yet run.
+Checked on 2026-10-22 against `feature/dev-server-port`, on the Mac, by the agent on port 5199 only (it does not touch 5175, D4), Chrome on macOS. Ticked: the build; no `5174` left outside this spec folder; the terminal prints the Network URL (`http://192.168.1.43:5199/`) and the Mac's own `.local` name answers 200 on the same server; a foreign Host header gets 403 and a `.local` Host header 200; with the port taken, `--strictPort` stops with "Port 5199 is already in use"; the 5199 run opens no tab and stops cleanly; Overview renders from 5199; the AGENTS.md and tech-spec text is in place. `/api/yahoo` reached Yahoo through the proxy but Yahoo answered 429 (rate limit), so the prices were not confirmed.
+
+Not checked, so not ticked: `npm run dev` itself on 5175 opening Overview in the Mac's browser and failing clearly when 5175 is taken (the config values are the same ones tested on 5199, but the real command on 5175 was not run); the phone opening the page through the `.local` name; whether macOS asked about incoming connections; the Custody prices loading; the whole baseline smoke test.
