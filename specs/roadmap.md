@@ -23,7 +23,7 @@ What was agreed before the spec (confirmed in the interview, not re-opened):
 - **Tuning:** speed curves, camera lag and effect sizes live in one config object with starting values, so feel is tuned by changing numbers.
 - **Performance:** 60 fps on a mid-range phone; few draw calls; reduced motion gives a calm, still alternative.
 
-Later, as follow-ups: sound (Web Audio, with a mute button).
+Later, as follow-ups: sound (item 5).
 
 ## 3. Playground easter egg (later)
 
@@ -34,3 +34,19 @@ An entry from the 3D character on the main screens (for example a double tap on 
 A sun or moon button in the top left of the top bar on the four main screens, under 1280px, that swaps Light and Dark. Requested directly on 2026-10-20.
 
 Spec: `specs/2026-10-20-mobile-mode-toggle/` (branch `feature/mobile-mode-toggle`).
+
+## 5. Playground sound: footsteps and coins (done)
+
+Two sounds only, recorded CC0 samples from Kenney played through the Web Audio API (no library): footsteps (hard ground in the town, grass in the forest) and a coin pickup. A mute button in the HUD, remembered. This is the sound follow-up promised under item 2.
+
+Spec: `specs/2026-10-22-playground-sound/`.
+
+## 6. Playground gameplay: lanes, jumping, a second coin, a trophy
+
+Acceleration lanes, jumping (the rig has jump clips), a second coin type and a trophy. The plot is defined by Klaudiusz first; no spec until then.
+
+## 7. Playground settings dialog (later)
+
+A settings button in the Playground HUD that pauses the run and opens a settings dialog with sections, so changes happen while nothing moves. First two sections: **Visual parameters** (which ones to be defined in the spec interview) and **Theme** (the current Light/Dark choice, so the one-off recolour of the world and character happens behind the dialog). Resume closes it; Escape means Resume. Reuses the confirmation dialog component (payday-run D24).
+
+Open for its interview: which visual parameters (for example render quality or pixel ratio, camera distance), whether Sound moves into the dialog from the HUD, and whether Multi-color themes are picked here or stay in Profile. Measure the paused theme switch on a throttled CPU first: a mid-run switch on a desktop cost about one extra frame, a phone is untested. Own spec when it is picked up.

@@ -10766,6 +10766,22 @@ html[data-theme="dark"] .form-field--error .form-field__text-wrap:focus-within {
   color: var(--color-fg);
 }
 
+.playground__sound {
+  top: max(var(--space-3), env(safe-area-inset-top, 0px));
+  bottom: auto;
+  right: calc(max(var(--space-3), env(safe-area-inset-right, 0px)) + 2.75rem + var(--space-2));
+  margin: 0;
+  z-index: 2;
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  color: var(--color-fg);
+}
+
+/* The still version has no sound to mute. */
+.playground--stepped .playground__sound {
+  display: none;
+}
+
 /* The Design system hub opens the page as a flow-style sheet (js/playground-sheet.js): the
    shell slides like the payment flow (.modal-shell), full screen, with the page in an iframe. */
 .modal-overlay--playground {

@@ -77,6 +77,20 @@ export const CONFIG = {
 
   burst: { count: 36, life: 1.1, up: [6, 9], out: [2, 5], gravity: 18, size: 0.2 },
 
+  /* Sound (Web Audio). Volumes are 0 to 1. `footPhases` are the two moments in one run cycle (0 to 1 of the clip)
+     when a foot lands; the steps follow the clip, so they follow each profile's timeScale. A coin picked up within
+     `window` seconds of the last one rises `stepSemitones`, up to `maxSteps`; after a pause it starts low again. */
+  sound: {
+    master: 1,
+    footstep: 0.35,
+    coin: 0.6,
+    surface: { town: 1, forest: 0.9 },
+    pitchSpread: 0.06,
+    volumeSpread: 0.15,
+    footPhases: [0.125, 0.625],
+    coinLadder: { window: 0.5, stepSemitones: 1, maxSteps: 8 },
+  },
+
   /* Rendering. */
   maxPixelRatio: 2,
   fogNear: 40,

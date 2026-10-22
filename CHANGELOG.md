@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit c891cfc5ce14aed0068ab36299d911eec273e61a -->
+<!-- changelog: last-commit d64abe6d0f06f3c85068eae5ec6cdeb339a8dc9e -->
 
 ### Decided
 - **Spec-driven workflow.** From now on every change goes through a dated spec folder (`specs/<YYYY-MM-DD>-<name>/`) created with `/feature-spec`, on its own branch, with a validation pass and the baseline smoke test before it reaches `main`. Added `AGENTS.md`, `specs/mission.md`, `specs/tech-spec.md`, `specs/roadmap.md`, `specs/baseline/`, and the `/feature-spec` and `/changelog` skills. The app's code is unchanged. The state before this is tagged `v1-presentable`.
@@ -14,7 +14,12 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - New `localStorage` key `uzBankWebPlaygroundBest` (best run), listed in `apps/web/README.md`.
 - Assets: `assets/3d/playground/town` and `assets/3d/playground/forest` (about 1.0 MB, CC0, with the pack licences).
 
+- **Playground sound.** Two sounds: footsteps and a coin. Footsteps follow the run clip's foot contacts, so Beat, Lena and Max each get their own cadence, and they change from hard ground to grass at the forest, with a small random pitch and volume spread. The coin pings and climbs in pitch for quick pickups, then starts low again after a short pause. Sound starts with the Start button and is on by default; a round button left of the close button mutes it and is remembered. It pauses with the Quit dialog and when the tab is hidden; the still (reduced motion) version has no sound and no button. Volumes and pitch steps are in `js/playground-config.js`. New `js/playground-audio.js` (Web Audio, no library).
+- New `localStorage` key `uzBankWebPlaygroundSound`, listed in `apps/web/README.md`.
+- Assets: `assets/audio/playground/` (nine mono WAV files, about 340 KB, Kenney Impact Sounds, CC0, with the licence).
+
 ### Changed
+- `js/profile-persona-character.js`: the figure exposes `loopPhase()` (where the current loop is in its cycle). Nothing else changes.
 - Design system hub: the cards use the shared hover ink and gained a pressed state.
 - Playground: the start and result card follows the confirmation dialog: secondary button first, primary last, the same title size, and a bottom sheet on mobile and tablet.
 - Playground: Escape, the close button and a tab switch during a run now open one "Quit this run?" dialog (Keep playing or Quit run), replacing the "Paused" dialog. It reuses the app's confirmation dialog, which gained optional button and Escape settings that the payment flows do not use.
@@ -22,6 +27,7 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Admin sign-in: a wrong password now shows the design system's text field error state (error stroke, warning icon and message under the field) instead of a separate pink line.
 - `js/profile-persona-character.js` now exports `createFigure()` (the character without a scene), `readTheme`, `monochromeLut`, `preparePalette`, `cssColor` and `THREE`, so the Playground reuses the character instead of forking it. `setLoop` takes an optional `timeScale`. The Profile, Character kit and ambient figures behave as before.
 - `AGENTS.md`: a full-screen page with no scroll header does not need an entry in `bindMainScrollChrome`.
+- `AGENTS.md`: ideas found during a feature go onto `specs/roadmap.md` as a new item, committed on the feature branch on their own, with a pointer in the spec's out-of-scope list. The roadmap gained items 5 to 7 (sound, gameplay, a Playground settings dialog).
 
 ## v1-presentable (2026-10-19)
 
