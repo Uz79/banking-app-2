@@ -11481,3 +11481,82 @@ html.fridge--wide .fridge__panel {
   grid-row: 2;
   padding: var(--space-5, var(--space-4)) var(--space-5, var(--space-4)) var(--space-5, var(--space-4)) var(--space-3);
 }
+
+/* Result (screen 7) and closing (screen 8) */
+.fridge__result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+  text-align: center;
+}
+
+.fridge__ring {
+  position: relative;
+  width: 11rem;
+  height: 11rem;
+}
+
+.fridge__ring svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.fridge__ring circle {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+
+.fridge__ring-track {
+  stroke: color-mix(in srgb, var(--color-fg-interactive) 40%, transparent);
+}
+
+.fridge__ring-bar {
+  stroke: var(--color-fg-interactive);
+  transition: stroke-dasharray 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.fridge__ring-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: 0 var(--space-4);
+}
+
+.fridge__ring-label {
+  font-size: var(--fs-text-sm);
+  color: var(--color-fg-secondary);
+}
+
+.fridge__ring-amount,
+.fridge__big {
+  margin: 0;
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-medium);
+  line-height: 1.2;
+  color: var(--color-fg);
+}
+
+.fridge__big {
+  font-size: var(--fs-h2);
+}
+
+.fridge__year {
+  margin: 0;
+  font-size: var(--fs-text-md);
+  color: var(--color-fg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fridge__ring-bar {
+    transition: none;
+  }
+}

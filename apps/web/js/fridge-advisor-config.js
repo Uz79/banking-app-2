@@ -23,8 +23,10 @@ export const CONFIG = {
     pose: {
       intro: { pos: [0.3, 1.2, 5.2], look: [0.3, 1.05, 0], width: 4.1 },
       main: { pos: [-0.84, 2.4, 6], look: [-0.84, 1.05, 0], width: 1.9, height: 2.9, fill: true },
-      reserve: { pos: [-0.84, 2.4, 6], look: [-0.84, 1.05, 0], width: 1.9, height: 2.9, fill: true },
-      freezer: { pos: [-0.84, 2.4, 6], look: [-0.84, 1.05, 0], width: 1.9, height: 2.9, fill: true },
+      /* The drawers, pulled well out, seen from above and close, so their fill is easy to judge. */
+      reserve: { pos: [-0.75, 1.5, 2.6], look: [-0.75, 0.3, 0.2], width: 1.05, height: 1.3, fill: true },
+      /* The freezer at the top, seen from above, so the open door and its contents read. */
+      freezer: { pos: [-0.84, 3.2, 3.0], look: [-0.84, 1.85, 0.1], width: 1.8, height: 1.6, fill: true },
     },
   },
 
@@ -36,7 +38,7 @@ export const CONFIG = {
     main: { y: [0.087, 0.616], boards: [0.33, 0.47], drawerTop: 0.19 }, /* shelves rest on the boards, the drawers are below `drawerTop` */
     freezer: { y: [0.717, 0.893], boards: [] }, /* one open compartment: a board would leave too little height for readable food */
     board: 0.008,
-    drawers: { gap: 0.012, wall: 0.006, front: 0.02, pull: 0.07 }, /* `pull`: how far the drawers stand out, so the camera can look into them */
+    drawers: { gap: 0.012, wall: 0.006, front: 0.02, pull: 0.16 }, /* `pull`: how far the drawers stand out, so the camera can look into them */
   },
 
   /* The light inside (position in the kit's units, intensity in three.js units). */
@@ -45,7 +47,7 @@ export const CONFIG = {
   /* Doors swing about their left edge. Angles in radians, durations in seconds. `glide` is the camera's move
      between stages; `outline` is the accent frame fading in on the compartment being explained or filled. */
   doors: { open: 1.75, swing: 0.6 },
-  motion: { glide: 0.8, outline: 0.25 },
+  motion: { glide: 0.8, outline: 0.25, cool: 1.0, frost: 0.22 }, /* `cool`: the pause with a frost veil before the freezer opens; `frost`: its peak opacity */
   outline: { bar: 0.007 },
 
   /* Food: where it stands and what it is. A compartment is packed like a well-stocked fridge: `rows` rows from back to
@@ -71,7 +73,7 @@ export const CONFIG = {
       bigger: { drawer: 1, rows: 3, ref: { w: 0.07, d: 0.08, h: 0.089 },
         tall: ['grapes', 'loaf'], low: ['pie', 'banana', 'sausage'] },
       freezer: { freezer: true, rows: 3, ref: { w: 0.137, d: 0.095, h: 0.17 },
-        tall: ['popsicle'], low: ['fish', 'meat-raw', 'pie', 'sausage'] },
+        tall: ['carton', 'loaf'], low: ['fish', 'popsicle', 'meat-raw', 'pie', 'sausage'] },
     },
     lay: ['popsicle'],
     /* Slot count of a compartment is round(share x capacity); the compartments and their sliders are in FIELDS. */
@@ -125,5 +127,13 @@ export const STEPS = [
     id: 'reserve-sliders', stage: 'reserve', doors: ['fridge'], outline: 'reserve', fields: ['unplanned', 'bigger'],
     title: 'Your reserves',
     text: 'Set aside money for the unplanned and for bigger purchases. The drawers fill as you go.',
+  },
+  {
+    id: 'result', stage: 'freezer', doors: ['freezer'], outline: 'freezer', cool: true, kind: 'result',
+    title: 'Your freezer', next: 'Show suitable products',
+  },
+  {
+    id: 'closing', stage: 'freezer', doors: ['freezer'], outline: null, kind: 'closing',
+    title: 'You could invest', next: 'Done',
   },
 ];

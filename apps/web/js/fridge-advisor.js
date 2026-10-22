@@ -96,6 +96,13 @@ function shares() {
     bigger: values.bigger / FIELDS.bigger.max,
   };
 }
+/* The result (D9): what can go in the freezer. One month of spending is the salary minus what is left at month end. */
+function investable() {
+  const month = Math.max(0, values.salary - values.left);
+  return Math.max(0, values.assets - month - values.unplanned - values.bigger);
+}
+const onResult = () => STEPS[index].kind === 'result' || STEPS[index].kind === 'closing';
+
 function updateFood() {
   if (!scene) return;
   const share = shares();
@@ -104,6 +111,10 @@ function updateFood() {
     const n = Math.round(share[key] * scene.capacity(key));
     scene.setFill(key, share[key] > 0 ? Math.max(1, n) : 0);
   });
+  /* The freezer holds the investable share of total assets, and only shows it once the result is on screen. */
+  const frozen = values.assets > 0 ? investable() / values.assets : 0;
+  const n = Math.round(frozen * scene.capacity('freezer'));
+  scene.setFill('freezer', onResult() && frozen > 0 ? Math.max(1, n) : 0);
 }
 
 /* ── Steps ─────────────────────────────────────────────────────────── */
@@ -220,6 +231,61 @@ function buildField(key, onChange) {
   return { row, refresh };
 }
 
+const NOTE = 'A rough guide, not financial advice.';
+const CLOSING = 'Choosing a product comes next.';
+
+/* Screen 7: a ring (the investable share of total assets), the amount, the yearly amount and the note (D6, D17). */
+function buildResult() {
+  const amount = investable();
+  const share = values.assets > 0 ? Math.min(1, amount / values.assets) : 0;
+  const box = document.createElement('div');
+  box.className = 'fridge__result';
+  const ring = document.createElement('div');
+  ring.className = 'fridge__ring';
+  ring.setAttribute('aria-hidden', 'true');
+  ring.innerHTML = '<svg viewBox="0 0 120 120" focusable="false"><circle class="fridge__ring-track" cx="60" cy="60" r="52" pathLength="100"/>'
+    + '<circle class="fridge__ring-bar" cx="60" cy="60" r="52" pathLength="100" stroke-dasharray="' + (reduced() ? share * 100 : 0) + ' 100"/></svg>'
+    + '<div class="fridge__ring-text"><span class="fridge__ring-label">You could invest</span><span class="fridge__ring-amount">' + chf(amount) + '</span></div>';
+  if (!reduced()) {
+    const bar = ring.querySelector('.fridge__ring-bar');
+    requestAnimationFrame(() => requestAnimationFrame(() => bar.setAttribute('stroke-dasharray', share * 100 + ' 100')));
+  }
+  const sr = document.createElement('p');
+  sr.className = 'fridge__sr';
+  sr.textContent = 'You could invest ' + chf(amount) + '.';
+  const year = document.createElement('p');
+  year.className = 'fridge__year';
+  year.textContent = 'Left each year: ' + chf(values.left * 12);
+  const note = document.createElement('p');
+  note.className = 'fridge__note';
+  note.textContent = NOTE;
+  box.append(ring, sr, year, note);
+  return box;
+}
+
+/* Screen 8: the amount again and what comes next (D6). */
+function buildClosing() {
+  const box = document.createElement('div');
+  box.className = 'fridge__result';
+  const amount = document.createElement('p');
+  amount.className = 'fridge__big';
+  amount.textContent = chf(investable());
+  const line = document.createElement('p');
+  line.className = 'fridge__text';
+  line.textContent = CLOSING;
+  const note = document.createElement('p');
+  note.className = 'fridge__note';
+  note.textContent = NOTE;
+  box.append(amount, line, note);
+  return box;
+}
+
+/* Done: close the sheet. Nothing is stored, so there is nothing to confirm. */
+function done() {
+  if (framed) send({ type: 'uzbank:fridge-close' });
+  else window.location.href = 'overview.html';
+}
+
 function render(moveFocus) {
   const step = STEPS[index];
   const last = index === STEPS.length - 1;
@@ -233,7 +299,8 @@ function render(moveFocus) {
   heading.textContent = step.title;
   const text = document.createElement('p');
   text.className = 'fridge__text';
-  text.textContent = step.text;
+  text.textContent = step.text || '';
+  text.hidden = !step.text;
   const fields = [];
   const refreshAll = () => { fields.forEach((f) => f.refresh()); gate(); };
   const form = document.createElement('div');
@@ -251,9 +318,8 @@ function render(moveFocus) {
   next.type = 'button';
   next.setAttribute('data-fridge-next', '');
   next.className = 'uz-btn uz-btn--primary uz-btn--md uz-btn--block';
-  next.textContent = 'Next';
-  next.hidden = last; /* the result screens arrive in a later group */
-  next.addEventListener('click', () => go(index + 1));
+  next.textContent = step.next || 'Next';
+  next.addEventListener('click', () => (last ? done() : go(index + 1)));
   /* Step 5 needs a salary: everything else is measured against it (D4). */
   function gate() {
     const blocked = step.id === 'main-sliders' && values.salary <= 0;
@@ -262,12 +328,16 @@ function render(moveFocus) {
     hint.hidden = !blocked;
   }
   actions.append(hint, next);
-  panel.append(caption, heading, text, form, actions);
+  const body = step.kind === 'result' ? buildResult() : step.kind === 'closing' ? buildClosing() : null;
+  panel.append(caption, heading, text, ...(body ? [body] : []), form, actions);
   refreshAll();
   if (moveFocus) heading.focus({ preventScroll: true });
-  announce(caption.textContent + '. ' + step.title + '. ' + step.text);
-  publish({ canBack: index > 0 });
-  if (scene) scene.goTo(step);
+  const amount = chf(investable());
+  announce(caption.textContent + '. ' + (step.kind === 'result' ? 'You could invest ' + amount + '. ' + NOTE
+    : step.kind === 'closing' ? step.title + ' ' + amount + '. ' + CLOSING
+    : step.title + '. ' + step.text));
+  publish({ canBack: index > 0, dirty: step.kind === 'closing' ? false : state.dirty }); /* Done leaves without asking */
+  if (scene) { scene.goTo(step); updateFood(); }
 }
 
 function go(to) {

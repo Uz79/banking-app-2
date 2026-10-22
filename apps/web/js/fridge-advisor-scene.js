@@ -63,12 +63,14 @@ export async function createFridgeScene(host, cfg, { reduced }) {
   /* Shelves and drawers: simple boxes in the theme colours, in the kit's own units, so they sit in its cavity (D13). */
   const boxMats = { board: new THREE.MeshStandardMaterial({ roughness: 0.9 }), drawer: new THREE.MeshStandardMaterial({ roughness: 0.9 }) };
   const interior = new THREE.Group();
-  const box = (mat, x0, x1, y0, y1, z0, z1) => {
+  /* The drawers (and what is in them) stand out while the fridge door is open and slide in when it shuts. */
+  const drawerGroup = new THREE.Group();
+  const box = (mat, x0, x1, y0, y1, z0, z1, parent = interior) => {
     const m = new THREE.Mesh(new THREE.BoxGeometry(x1 - x0, y1 - y0, z1 - z0), mat);
     m.position.set((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2);
     m.castShadow = true;
     m.receiveShadow = true;
-    interior.add(m);
+    parent.add(m);
   };
   {
     const { x: [x0, x1], z: [z0, z1], main, freezer, board, drawers } = cfg.interior;
@@ -80,14 +82,14 @@ export async function createFridgeScene(host, cfg, { reduced }) {
     const half = (x1 - x0 - drawers.gap) / 2;
     [[x0, x0 + half], [x1 - half, x1]].forEach(([a, b]) => {
       const bottom = main.y[0], top = main.drawerTop - board, w = drawers.wall, p = drawers.pull;
-      box(boxMats.drawer, a, b, bottom, bottom + w, z0 + p, z1 + p);
-      box(boxMats.drawer, a, b, bottom, top, z0 + p, z0 + p + w);
-      box(boxMats.drawer, a, a + w, bottom, top, z0 + p, z1 + p);
-      box(boxMats.drawer, b - w, b, bottom, top, z0 + p, z1 + p);
-      box(boxMats.drawer, a, b, bottom, bottom + drawers.front, z1 + p - w, z1 + p);
+      box(boxMats.drawer, a, b, bottom, bottom + w, z0 + p, z1 + p, drawerGroup);
+      box(boxMats.drawer, a, b, bottom, top, z0 + p, z0 + p + w, drawerGroup);
+      box(boxMats.drawer, a, a + w, bottom, top, z0 + p, z1 + p, drawerGroup);
+      box(boxMats.drawer, b - w, b, bottom, top, z0 + p, z1 + p, drawerGroup);
+      box(boxMats.drawer, a, b, bottom, bottom + drawers.front, z1 + p - w, z1 + p, drawerGroup);
     });
   }
-  model.add(interior);
+  model.add(interior, drawerGroup);
 
   /* ── Food: fixed slots, each with a model fitted to it (D11, D12) ──── */
   /* All food models share one texture (the kit's colour map), recoloured to the theme's ramp like the Playground world. */
@@ -179,7 +181,7 @@ export async function createFridgeScene(host, cfg, { reduced }) {
         holder.rotation.y = (rand() - 0.5) * 2 * f.jitterYaw;
         holder.scale.setScalar(0.0001);
         holder.visible = false;
-        model.add(holder);
+        (spec.drawer !== undefined ? drawerGroup : model).add(holder);
         items.push({ holder, on: false, tw: null });
       });
     }
@@ -229,6 +231,11 @@ export async function createFridgeScene(host, cfg, { reduced }) {
     outlines.reserve = frame(main.y[0], main.drawerTop, cfg.interior.drawers.pull);
     outlines.freezer = frame(freezer.y[0], freezer.y[1]);
   }
+  /* The frost veil of the cooling moment: a faint sheet over the closed doors (D5, D7). */
+  const frostMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false });
+  const frost = new THREE.Mesh(new THREE.PlaneGeometry(0.43, 0.92), frostMat);
+  frost.position.set(0.215, 0.46, 0.02);
+  model.add(frost);
   /* The fridge light: the cavity would otherwise sit in the shadow of its own shell. */
   const fridgeLight = new THREE.PointLight(0xffffff, cfg.light.intensity, 0, 2);
   fridgeLight.position.set(...cfg.light.main);
@@ -243,9 +250,11 @@ export async function createFridgeScene(host, cfg, { reduced }) {
 
   /* Doors swing about the vertical axis through their hinge (the door node's origin). */
   const angle = { freezer: 0, fridge: 0 };
+  drawerGroup.position.z = -cfg.interior.drawers.pull; /* the fridge starts shut */
   function setDoor(name, value) {
     angle[name] = value;
     doors[name].rotation.y = -value;
+    if (name === 'fridge') drawerGroup.position.z = -cfg.interior.drawers.pull * (1 - value / cfg.doors.open);
     dirty = true;
   }
 
@@ -281,6 +290,7 @@ export async function createFridgeScene(host, cfg, { reduced }) {
     if (mats.metal) mats.metal.color.copy(mix(0.45));
     if (mats.glass) mats.glass.color.copy(mix(0.3));
     outlineMat.color.copy(colour('--color-fg-interactive'));
+    frostMat.color.copy(fg);
     boxMats.board.color.copy(mix(theme.dark ? 0.55 : 0.45));
     boxMats.drawer.color.copy(mix(theme.dark ? 0.4 : 0.3));
     figure.recolour(theme);
@@ -362,12 +372,19 @@ export async function createFridgeScene(host, cfg, { reduced }) {
   }
 
   const doorTween = { fridge: null, freezer: null };
-  function swingDoor(name, open) {
+  function swingDoor(name, open, done) {
     const end = open ? cfg.doors.open : 0;
     cancel(doorTween[name]);
     const start = angle[name];
-    if (start === end) return;
-    doorTween[name] = tween(cfg.doors.swing, (k) => setDoor(name, start + (end - start) * k));
+    if (start === end) { if (done) done(); return; }
+    doorTween[name] = tween(cfg.doors.swing, (k) => setDoor(name, start + (end - start) * k), done);
+  }
+
+  /* The cooling moment: a frost veil rises and fades, then `done`. */
+  let coolTween = null;
+  function cool(done) {
+    cancel(coolTween);
+    coolTween = tween(cfg.motion.cool, (k) => { frostMat.opacity = Math.sin(Math.PI * k) * cfg.motion.frost; }, () => { frostMat.opacity = 0; if (done) done(); });
   }
 
   let outlineName = null;
@@ -398,9 +415,27 @@ export async function createFridgeScene(host, cfg, { reduced }) {
     if (!figureTween) figure.actor.visible = false;
   }
 
+  /* `seq` lets a newer stage cancel what an older one still had queued (the cooling sequence). */
+  let seq = 0;
   function goTo(step) {
+    const mine = ++seq;
     showFigure(step.stage === 'intro');
     glideTo(step.stage);
+    /* Arriving at the result with the fridge open: the door shuts, a short cooling moment, then the freezer opens (D4, D15). */
+    if (step.cool && angle.fridge > 0 && !reduced()) {
+      setOutline(null);
+      swingDoor('fridge', false, () => {
+        if (mine !== seq) return;
+        cool(() => {
+          if (mine !== seq) return;
+          swingDoor('freezer', true);
+          setOutline(step.outline);
+        });
+      });
+      return;
+    }
+    cancel(coolTween);
+    frostMat.opacity = 0;
     ['fridge', 'freezer'].forEach((d) => swingDoor(d, step.doors.includes(d)));
     setOutline(step.outline);
   }

@@ -61,10 +61,10 @@ What you see: screens 5 and 6: moving a slider updates its CHF value and fills s
 
 What you see: screen 7: the door closes, a short cooling moment, the freezer opens, a ring with the investable amount, the yearly amount, the note and "Show suitable products"; screen 8 follows and Done closes the flow.
 
-- [ ] `js/fridge-advisor.js`: the formula as one function (D9), the result panel (ring, amount, yearly amount, note, button), the announcement of the result, the closing screen and Done (D6, D17)
-- [ ] `js/fridge-advisor-scene.js`: close both doors, the cooling moment (a short frost tint and a pause, in the config), open the freezer, fill it by the investable share of total assets (D11)
-- [ ] Reduced motion: no cooling, the freezer simply shows open (D15)
-- [ ] Check an amount that would be negative (shows CHF 0), exactly 0 assets, and a large amount
+- [x] `js/fridge-advisor.js`: the formula as one function (D9), the result panel (ring, amount, yearly amount, note, button), the announcement of the result, the closing screen and Done (D6, D17)
+- [x] `js/fridge-advisor-scene.js`: close both doors, the cooling moment (a short frost tint and a pause, in the config), open the freezer, fill it by the investable share of total assets (D11)
+- [x] Reduced motion: no cooling, the freezer simply shows open (D15)
+- [x] Check an amount that would be negative (shows CHF 0), exactly 0 assets, and a large amount
 
 ## 6. Phone layout, keyboard and polish
 
