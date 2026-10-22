@@ -2,7 +2,7 @@
 
 Branch: `feature/playground-sound`. Decisions are cited as D1 to D15 from `requirements.md`.
 
-Each group ends with something to hear or see in the browser (`cd apps/web && npm run dev`, `http://localhost:5174/overview.html`, signed in as admin, then open the Playground). On the feature branch each group is committed on its own once implementation is approved. Nothing is merged to `main` without an explicit ask.
+Each group ends with something to hear or see in the browser (`cd apps/web && npm run dev`, `http://localhost:5175/overview.html`, signed in as admin, then open the Playground). On the feature branch each group is committed on its own once implementation is approved. Nothing is merged to `main` without an explicit ask.
 
 ## 1. Sound files and the audio module
 

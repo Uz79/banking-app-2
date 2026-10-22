@@ -7,7 +7,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 ## 1. Build and config
 
 - [ ] `npm run build` in `apps/web` succeeds with no new warnings
-- [ ] `grep` for `5174` in `AGENTS.md`, `specs/` and `apps/web/README.md` finds nothing
+- [ ] `grep` for `5174` in `AGENTS.md`, `specs/` (apart from this spec folder, which describes the change) and `apps/web/README.md` finds nothing
 
 ## 2. Dev server
 
