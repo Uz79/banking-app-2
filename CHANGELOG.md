@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit bf7f235d435a42072dfdc946b7b8e81b6b77556d -->
+<!-- changelog: last-commit 250136f85497d3b846e5801a70cd630b10811c65 -->
 
 ### Decided
 - **Spec-driven workflow.** From now on every change goes through a dated spec folder (`specs/<YYYY-MM-DD>-<name>/`) created with `/feature-spec`, on its own branch, with a validation pass and the baseline smoke test before it reaches `main`. Added `AGENTS.md`, `specs/mission.md`, `specs/tech-spec.md`, `specs/roadmap.md`, `specs/baseline/`, and the `/feature-spec` and `/changelog` skills. The app's code is unchanged. The state before this is tagged `v1-presentable`.
@@ -34,6 +34,10 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - `js/profile-persona-character.js` now exports `createFigure()` (the character without a scene), `readTheme`, `monochromeLut`, `preparePalette`, `cssColor` and `THREE`, so the Playground reuses the character instead of forking it. `setLoop` takes an optional `timeScale`. The Profile, Character kit and ambient figures behave as before.
 - `AGENTS.md`: a full-screen page with no scroll header does not need an entry in `bindMainScrollChrome`.
 - `AGENTS.md`: ideas found during a feature go onto `specs/roadmap.md` as a new item, committed on the feature branch on their own, with a pointer in the spec's out-of-scope list. The roadmap gained items 5 to 7 (sound, gameplay, a Playground settings dialog).
+
+### Decided
+- **Deploy is source.** `dist` is never deployed (GitHub Pages serves `apps/web` as it is), so runtime-loaded assets need no copy step in the build (fridge advisor D25).
+- Two pre-existing gaps found in the baseline run went onto the roadmap: the All bookings Search button (item 10) and the Household balance on Account details (item 11).
 
 ## v1-presentable (2026-10-19)
 
