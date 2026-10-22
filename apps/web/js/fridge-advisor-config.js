@@ -28,7 +28,7 @@ export const CONFIG = {
       /* The drawers, pulled well out, seen from above and close, with a little of the shelf above. */
       reserve: { pos: [-0.75, 1.5, 2.43], look: [-0.75, 0.29, 0.03], width: 1.0, height: 0.9, fill: true },
       /* The freezer at the top, seen from above, close enough that the open door is partly cropped and the contents read. */
-      freezer: { pos: [-0.75, 3.35, 2.9], look: [-0.75, 2.0, 0], width: 1.2, height: 1.1, fill: true },
+      freezer: { pos: [-0.85, 3.35, 2.9], look: [-0.85, 2.0, 0], width: 1.2, height: 1.1, fill: true },
     },
   },
 
