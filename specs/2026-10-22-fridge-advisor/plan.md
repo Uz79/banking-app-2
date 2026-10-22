@@ -8,12 +8,14 @@ Review stops (requested at review): after group 1, after group 2, and after grou
 
 What you see: on Overview, Offers > Investment opens an empty full-screen sheet that slides up like the payment flow, with Back hidden and a close button; the close slides it down.
 
-- [ ] Copy `kitchenFridge.glb`, the 15 food models (D12), `Textures/colormap.png` and both `License.txt` into `apps/web/assets/3d/fridge/` (a `furniture` and a `food` folder, like the Playground's `town` and `forest`)
-- [ ] `fridge-advisor.html`: head and boot script as `playground.html` (title "UZ Bank – Fridge advisor", no `admin-boot.js`, no page-transition scripts), icon sprite, `body.body[data-screen="fridge-advisor"][data-page="fridge-advisor"]`, `h1`, stage, panel, Back and close buttons (D1, D3, D16)
-- [ ] Register the page (D1): `vite.config.js`, `NAV_DEPTH` in `js/section-build-boot.js` and `js/shell-nav.js`, `ROOT_TAB_BY_SCREEN` in `js/shell-nav.js`, the `.body[data-screen="fridge-advisor"]` rules in `css/styles.css`
-- [ ] `js/fridge-advisor-sheet.js` and the sheet markup and CSS on `overview.html` (copy the Playground's overlay, `.modal-overlay--playground`); `overview.html`: the Investment item links to `fridge-advisor.html` (D2)
-- [ ] `js/fridge-advisor.js`: close by `postMessage`, the exit dialog logic (D3), Escape
-- [ ] Check the build emits `fridge-advisor.html`
+- [x] Copy `kitchenFridge.glb`, the 15 food models (D12), `Textures/colormap.png` and both `License.txt` into `apps/web/assets/3d/fridge/` (a `furniture` and a `food` folder, like the Playground's `town` and `forest`)
+- [x] `fridge-advisor.html`: head and boot script as `playground.html` (title "UZ Bank – Fridge advisor", no `admin-boot.js`, no page-transition scripts), icon sprite, `body.body[data-screen="fridge-advisor"][data-page="fridge-advisor"]`, `h1`, stage, panel, Back and close buttons (D1, D3, D16)
+- [x] Register the page (D1): `vite.config.js`, `NAV_DEPTH` in `js/section-build-boot.js` and `js/shell-nav.js`, `ROOT_TAB_BY_SCREEN` in `js/shell-nav.js`, the `.body[data-screen="fridge-advisor"]` rules in `css/styles.css`
+- [x] `js/fridge-advisor-sheet.js` and the sheet markup and CSS on `overview.html` (copy the Playground's overlay, `.modal-overlay--playground`); `overview.html`: the Investment item links to `fridge-advisor.html` (D2)
+- [x] `js/fridge-advisor.js`: close by `postMessage`, the exit dialog logic (D3), Escape
+- [x] Check the build emits `fridge-advisor.html`
+
+Note on group 1 (built 2026-10-22): to look and move exactly like the payment and trade flows, the sheet on `overview.html` is a real flow sheet (`.modal-overlay > .modal-shell > .modal.modal--trade-flow.modal--fridge-flow`, with `.modal__nav` for Back, title and close) and only the page content lives in the iframe in its body. So the header is the flows' own, not a copy; the page talks to the sheet by `postMessage` (state: can go back, has entries; Escape; Back) and shows the same header itself only when opened on its own (`html.fridge--framed` hides it). The sheet is the flows' 640px column on desktop and full screen on a phone, so the desktop two-column layout in D16 does not fit and is flagged for review.
 
 ## 2. The fridge and the figure in the theme (stop here for review: the hollow-or-boxes decision)
 

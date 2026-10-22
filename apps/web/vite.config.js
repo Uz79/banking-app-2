@@ -40,6 +40,7 @@ export default {
         components: resolve(dir, 'components.html'),             // admin only
         characterKit: resolve(dir, 'character-kit.html'),        // admin only
         playground: resolve(dir, 'playground.html'),             // admin only, full screen
+        fridgeAdvisor: resolve(dir, 'fridge-advisor.html'),      // opens as a sheet from Overview > Offers
       },
     },
   },

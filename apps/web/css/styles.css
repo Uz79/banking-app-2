@@ -11244,3 +11244,100 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
     padding: 0.25rem 0;
   }
 }
+
+
+/* ── Fridge advisor ("How much should I invest?"): the sheet and the page ─────────── */
+
+/* The sheet is a flow sheet (it reuses .modal--trade-flow for the header, size and motion);
+   the page sits in an iframe filling its body. */
+.modal--fridge-flow .modal__body {
+  position: relative;
+  overflow: hidden;
+}
+
+.fridge-frame {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background-color: var(--color-bg);
+}
+
+/* The page: no app chrome. Framed, the sheet's header is used; on its own, the page shows the same header. */
+.body[data-screen="fridge-advisor"] .sidebar,
+.body[data-screen="fridge-advisor"] .tab-bar {
+  display: none;
+}
+
+.body[data-screen="fridge-advisor"] .app {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+.body[data-screen="fridge-advisor"] .main-content {
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--color-bg);
+}
+
+.body[data-screen="fridge-advisor"] .main-content__inner,
+.body[data-screen="fridge-advisor"] .view--fridge,
+.body[data-screen="fridge-advisor"] .view--fridge .view__main {
+  max-width: none;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.body[data-screen="fridge-advisor"] .view--fridge .view__main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.fridge--framed .fridge__nav {
+  display: none;
+}
+
+/* The page name for assistive tech only; the visible title is in the header. */
+.fridge__title,
+.fridge__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.fridge__stage {
+  position: relative;
+  flex: 1 1 0%;
+  min-height: 0;
+}
+
+.fridge__stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.fridge__panel {
+  flex: 0 0 auto;
+  padding: var(--space-4);
+  color: var(--color-fg);
+}
+
+.fridge__text {
+  margin: 0;
+  font-size: var(--fs-text-md);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}

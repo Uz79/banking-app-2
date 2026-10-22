@@ -2599,7 +2599,7 @@
                 <svg class="list-item__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
               </div>
               <div class="divider"></div>
-              <a class="list-item" href="investment-product-details.html">
+              <a class="list-item" href="fridge-advisor.html">
                 <svg class="list-item__icon" aria-hidden="true" focusable="false"><use href="#i-trending-up"/></svg>
                 <div class="list-item__content type-stack-tight">
                   <span class="list-item__title type-sm type-trim">Investment</span>
@@ -3107,6 +3107,25 @@
   </div>
 </div>
 
+<div class="modal-overlay modal-overlay--fridge" data-fridge-overlay role="dialog" aria-modal="true" aria-label="How much should I invest?" aria-hidden="true">
+  <div class="modal-shell modal-shell--offscreen modal-shell--no-transition">
+    <div class="modal modal--trade-flow modal--fridge-flow">
+      <div class="modal__nav">
+        <button class="modal__back modal__back--hidden" type="button" aria-hidden="true" tabindex="-1" data-fridge-back>
+          <svg class="modal__back-icon" role="img" aria-label="Back" focusable="false"><use href="#i-arrow-left"/></svg>
+        </button>
+        <div class="modal__title-stack">
+          <span class="modal__title">How much should I invest?</span>
+        </div>
+        <button class="modal__close" type="button" aria-label="Close" data-fridge-close>
+          <svg class="modal__close-icon" role="img" aria-label="" focusable="false"><use href="#i-x"/></svg>
+        </button>
+      </div>
+      <div class="modal__body" data-fridge-body></div>
+    </div>
+  </div>
+</div>
+
 <script src="js/analytics.js"></script>
 <script src="js/dialog-focus.js"></script>
 <script src="js/form-field-sheet.js"></script>
@@ -3118,6 +3137,7 @@
 <script src="js/app-mp.js"></script>
 <script src="js/iat-overlay.js"></script>
 <script src="js/investment-product-details.js"></script>
+<script src="js/fridge-advisor-sheet.js"></script>
 <script src="js/nav-button-motion.js"></script>
 <script src="js/cta-pulse.js"></script>
 <script src="js/step-indicator.js"></script>
