@@ -14,7 +14,12 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - New `localStorage` key `uzBankWebPlaygroundBest` (best run), listed in `apps/web/README.md`.
 - Assets: `assets/3d/playground/town` and `assets/3d/playground/forest` (about 1.0 MB, CC0, with the pack licences).
 
+- **Playground sound.** Two sounds: footsteps and a coin. Footsteps follow the run clip's foot contacts, so Beat, Lena and Max each get their own cadence, and they change from hard ground to grass at the forest, with a small random pitch and volume spread. The coin pings and climbs in pitch for quick pickups, then starts low again after a short pause. Sound starts with the Start button and is on by default; a round button left of the close button mutes it and is remembered. It pauses with the Quit dialog and when the tab is hidden; the still (reduced motion) version has no sound and no button. Volumes and pitch steps are in `js/playground-config.js`. New `js/playground-audio.js` (Web Audio, no library).
+- New `localStorage` key `uzBankWebPlaygroundSound`, listed in `apps/web/README.md`.
+- Assets: `assets/audio/playground/` (nine mono WAV files, about 340 KB, Kenney Impact Sounds, CC0, with the licence).
+
 ### Changed
+- `js/profile-persona-character.js`: the figure exposes `loopPhase()` (where the current loop is in its cycle). Nothing else changes.
 - Design system hub: the cards use the shared hover ink and gained a pressed state.
 - Playground: the start and result card follows the confirmation dialog: secondary button first, primary last, the same title size, and a bottom sheet on mobile and tablet.
 - Playground: Escape, the close button and a tab switch during a run now open one "Quit this run?" dialog (Keep playing or Quit run), replacing the "Paused" dialog. It reuses the app's confirmation dialog, which gained optional button and Escape settings that the payment flows do not use.

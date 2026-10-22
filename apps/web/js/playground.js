@@ -18,6 +18,7 @@ import { createCoins } from './playground-coins.js';
 import { createGates } from './playground-gates.js';
 import { createChest } from './playground-chest.js';
 import { createForest } from './playground-forest.js';
+import { createAudio } from './playground-audio.js';
 
 const embedded = window.parent !== window;
 const closeLinks = [...document.querySelectorAll('[data-playground-close]')]; /* the X button and the dialog's Close */
@@ -166,6 +167,33 @@ async function mountGame(host) {
   new MutationObserver(() => requestAnimationFrame(() => applyTheme(false)))
     .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'style', 'class'] });
 
+  /* ── Sound: footsteps and coins (roadmap item 5) ─────────────────── */
+  const audio = createAudio(CONFIG);
+  const soundBtn = document.querySelector('[data-playground-sound]');
+  function syncSoundButton() {
+    if (!soundBtn) return;
+    const off = audio.isMuted();
+    soundBtn.setAttribute('aria-pressed', String(off));
+    soundBtn.setAttribute('aria-label', off ? 'Unmute sound' : 'Mute sound');
+    soundBtn.querySelector('use').setAttribute('href', off ? '#i-volume-x' : '#i-volume-2');
+  }
+  if (soundBtn) {
+    syncSoundButton();
+    soundBtn.addEventListener('click', () => { audio.setMuted(!audio.isMuted()); syncSoundButton(); });
+  }
+  /* A step plays each time the run clip crosses one of its foot-contact phases, so the cadence follows the profile's timeScale. */
+  let lastPhase = 0;
+  function footsteps() {
+    const phase = figure.loopPhase();
+    if (state === 'running') {
+      const wrapped = phase < lastPhase;
+      for (const p of CONFIG.sound.footPhases) {
+        if (wrapped ? (p > lastPhase || p <= phase) : (p > lastPhase && p <= phase)) audio.footstep(s < CONFIG.forest.from ? 'town' : 'forest');
+      }
+    }
+    lastPhase = phase;
+  }
+
   /* ── Game state ────────────────────────────────────────────────────── */
   const input = { left: false, right: false };
   /* Money: the balance counts up as coins are collected and down at the gates. */
@@ -250,6 +278,8 @@ async function mountGame(host) {
     announce('Payday. Salary of ' + money(CONFIG.money.salary) + ' is on the road. Collect the coins.');
     track.at(s, here);
     if (!reduced()) coins.burst(figure.actor.position, here.t, here.r);
+    audio.unlock(); /* inside the Start click: the browser's rule for sound */
+    lastPhase = figure.loopPhase();
     setState('running');
   }
   /* Touch: two on-screen buttons on touch devices (D4). `?touch` shows them anywhere, for testing. */
@@ -303,6 +333,8 @@ async function mountGame(host) {
   function setState(next) {
     state = next;
     dirty = true;
+    if (next === 'paused') audio.suspend();
+    else if (next === 'running') audio.resume();
     if (next === 'running') figure.setLoop(CONFIG.runClip, { timeScale: profile.timeScale });
     else if (next !== 'paused') figure.setLoop(CONFIG.idleClip);
     showOverlay(next);
@@ -389,6 +421,7 @@ async function mountGame(host) {
     }
     const got = coins.collect(s, x);
     if (got && !deposited) {
+      audio.coin();
       balance += got * coins.value;
       collectedCount += got;
       if (Math.floor(collectedCount / 20) !== Math.floor((collectedCount - got) / 20)) announce('Balance ' + money(balance));
@@ -445,7 +478,7 @@ async function mountGame(host) {
   requestClose = requestQuit;
   const pause = () => { if (state === 'running') requestQuit(); };
   window.addEventListener('blur', pause);
-  document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) { audio.suspend(); pause(); } });
   window.matchMedia('(orientation: portrait)').addEventListener('change', pause);
 
   /* Hold a button to steer. Pointer capture keeps the hold when the finger slides off the button. */
@@ -586,6 +619,7 @@ async function mountGame(host) {
       step(dt);
       pose(dt, false);
       figure.update(dt);
+      footsteps();
       elapsed += dt;
       coins.update(dt, elapsed, reduced());
       forest.update(s, reduced());

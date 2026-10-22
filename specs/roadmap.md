@@ -35,7 +35,7 @@ A sun or moon button in the top left of the top bar on the four main screens, un
 
 Spec: `specs/2026-10-20-mobile-mode-toggle/` (branch `feature/mobile-mode-toggle`).
 
-## 5. Playground sound: footsteps and coins
+## 5. Playground sound: footsteps and coins (done)
 
 Two sounds only, recorded CC0 samples from Kenney played through the Web Audio API (no library): footsteps (hard ground in the town, grass in the forest) and a coin pickup. A mute button in the HUD, remembered. This is the sound follow-up promised under item 2.
 

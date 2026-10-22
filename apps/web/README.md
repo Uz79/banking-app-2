@@ -57,6 +57,7 @@ Persisted in `localStorage` (see `js/storage-migrate.js` for legacy key migratio
 | `uzBankWebPaymentState` | Demo payment balances and bookings |
 | `uzBankWebSavedColorThemes_v2` | Profile > Theme saved theme cards |
 | `uzBankWebBuiltinThemesSeeded_v1` | Built-in theme cards seeded once |
+| `uzBankWebPlaygroundSound` | Design system > Payday run: `on` or `off`, the HUD mute button (missing means on) |
 | `uzBankWebPlaygroundBest` | Design system > Payday run: the best run, `{ "balance": number, "date": "YYYY-MM-DD" }` |
 
 ## Source layout
@@ -82,6 +83,8 @@ Persisted in `localStorage` (see `js/storage-migrate.js` for legacy key migratio
 - `playground.html` + `js/playground.js` — page, game loop, overlays (start, pause, result), keyboard and touch input, the still version for reduced motion
 - `js/playground-config.js` — every number that decides how it feels (speeds per profile, steering, camera, track, coins, gates, chest, forest growth, rendering)
 - `js/playground-track.js` (the curve and distance lookup), `js/playground-world.js` (the town), `js/playground-coins.js`, `js/playground-gates.js`, `js/playground-chest.js`, `js/playground-forest.js`
+- `js/playground-audio.js` — the two sounds (footsteps, coin) through the Web Audio API; unlocked by the Start click, muted by the HUD button
 - `js/playground-sheet.js` — the Design system page opens the game as a flow-style sheet (iframe, slides up and down like the payment flow)
 - `assets/3d/playground/town` and `assets/3d/playground/forest` — KayKit City Builder Bits 1.0 and Forest Nature Pack 1.0 by Kay Lousberg (CC0), pruned to the models used; licences included
+- `assets/audio/playground/` — step-town-1..4, step-forest-1..4 and coin as mono WAV, converted from Kenney Impact Sounds (CC0, licence included)
 - Dev URL parameters: `?debug` (draw calls, frame cost), `?touch` (show the touch buttons), `?reduced` (force the still version), `?from=<distance>&money=<chf>` (start partway along the track)

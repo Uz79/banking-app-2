@@ -373,7 +373,14 @@ export async function createFigure({ reduced = () => window.matchMedia('(prefers
     if (!reduced()) mixer.update(dt);
   }
 
-  return { actor, mixer, setRecipe, setLoop, recolour, update };
+  /* Where the current loop is in its cycle, 0 to 1 (the Playground times footsteps by it). */
+  function loopPhase() {
+    if (!loopAction) return 0;
+    const d = loopAction.getClip().duration;
+    return d ? (loopAction.time % d) / d : 0;
+  }
+
+  return { actor, mixer, setRecipe, setLoop, loopPhase, recolour, update };
 }
 
 /* ── Stage ────────────────────────────────────────────────────────────── */

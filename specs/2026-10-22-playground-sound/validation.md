@@ -6,14 +6,14 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 ## 1. Build and assets
 
-- [ ] `npm run build` in `apps/web` succeeds with no new warnings
+- [x] `npm run build` in `apps/web` succeeds with no new warnings
 - [ ] `dist/assets/audio/playground/` contains the nine WAV files and `License.txt`, about 330 KB in total
 - [ ] The browser console shows no errors (also with the sound files blocked: the game runs silently)
 
 ## 2. Start and the autoplay rule
 
-- [ ] First visit (nothing in `localStorage`): sound is on, the button shows the on icon
-- [ ] Nothing plays on the start screen, only after pressing Start
+- [x] First visit (nothing in `localStorage`): sound is on, the button shows the on icon
+- [x] Nothing plays on the start screen, only after pressing Start
 - [ ] Play again after the result screen plays sound again
 - [ ] Opening the Playground from the Design system sheet (iframe) and directly (`playground.html`) both give sound
 - [ ] Chrome and Safari both play (desktop); a phone browser if available
@@ -21,7 +21,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 ## 3. Footsteps
 
 - [ ] Feet land with the animation, two sounds per stride, for each profile (Newbie, All-rounder, Power user); Max's steps are faster than Beat's
-- [ ] Hard-ground steps in the town; they switch to grass in the forest, at the first trees, not before
+- [x] Hard-ground steps in the town; they switch to grass in the forest, at the first trees, not before
 - [ ] No two identical sounds back to back; the volume and pitch vary slightly
 - [ ] No steps on the start screen, while paused, in the Quit dialog, or on the result screen
 - [ ] Steps stay in time after a pause and resume
@@ -35,9 +35,9 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 ## 5. Mute button
 
-- [ ] It sits top right, immediately left of the close button, same size and style; at 390px the name, balance, sound and close do not overlap
-- [ ] Click and Enter/Space toggle it; the icon changes between on and muted; muting is instant, also mid-run, and unmuting brings the sound back without restarting
-- [ ] The setting survives a reload (`uzBankWebPlaygroundSound` is `on` or `off` in `localStorage`)
+- [x] It sits top right, immediately left of the close button, same size and style; at 390px the name, balance, sound and close do not overlap
+- [x] Click and Enter/Space toggle it; the icon changes between on and muted; muting is instant, also mid-run, and unmuting brings the sound back without restarting
+- [x] The setting survives a reload (`uzBankWebPlaygroundSound` is `on` or `off` in `localStorage`)
 - [ ] Screen reader name and state are right ("Mute sound" / "Unmute sound", `aria-pressed`)
 - [ ] Keyboard focus ring is visible (`--color-fg-interactive`); it also works with Tab order top row to close
 - [ ] Light, Dark and a Multi-color theme: icon and button take the tokens
@@ -52,7 +52,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 ## 7. Reduced motion
 
-- [ ] With `?reduced` (and the system setting): no footsteps, no coin sound, and the mute button is hidden
+- [x] With `?reduced` (and the system setting): no footsteps, no coin sound, and the mute button is hidden
 - [ ] Switching the system setting live while on the start screen switches to the still version without leaving sound running
 
 ## 8. Baseline smoke test
@@ -99,4 +99,6 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 
 ---
 
-Checked on: not yet run.
+Checked on 2026-10-22 against `feature/playground-sound`, Chrome on macOS (desktop), served by `npm run dev`; the 390px layout through a same-origin iframe. Sound was verified by counting `AudioBufferSourceNode.start` calls and their buffer lengths and pitch, not by ear: steps every 0.5 s for Lena (two per cycle) on concrete samples in the town and grass samples from `?from=262`; coins at pitch 1.0 then 1.059; no new sounds while the Quit dialog was open and sound back after Keep playing; mute stopped new sounds and wrote `off`/`on` to `uzBankWebPlaygroundSound`; the button is hidden with `?reduced`; no overlap of name, balance, sound and close at 390px. The build passes (the audio files are served from the source tree like the 3D assets, which the deploy uploads).
+
+Not checked, so not ticked: how it sounds (volume balance, whether the steps feel in time with the feet, the coin ladder by ear); Safari and any phone; Beat and Max cadence; Light and a Multi-color theme for the button; the hidden-tab, rotation and Quit run paths; Play again; the sheet (iframe) entry; blocked storage; screen reader wording; the focus ring; live reduced-motion switching; and the whole baseline smoke test.
