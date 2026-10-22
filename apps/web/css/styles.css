@@ -2547,6 +2547,14 @@ a.show-all-btn {
   }
 }
 
+/* Wide flow sheet (modifier on .modal-shell): the main box width, 960dp, from 1024px. Below that the sheet is
+   unchanged (the 640dp column on tablets, full screen on phones). The content decides what to do with the width. */
+@media (min-width: 1024px) {
+  .modal-shell.modal-shell--wide {
+    --modal-payment-max-width: var(--modal-wide-max-width, 960px);
+  }
+}
+
 /* Mobile / tablet: payment flow is full-viewport — no outer padding, no card radius. */
 @media (max-width: 1023px) {
   .modal-overlay {
@@ -11448,4 +11456,26 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
 
 .fridge__actions .fridge__note {
   margin-bottom: var(--space-2);
+}
+
+/* Wide sheet (js sets html.fridge--wide when the sheet is 960dp): the stage on the left at full height, the steps on the right. */
+html.fridge--wide .body[data-screen="fridge-advisor"] .view--fridge .view__main {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+html.fridge--wide .fridge__nav {
+  grid-column: 1 / -1;
+}
+
+html.fridge--wide .fridge__stage {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+html.fridge--wide .fridge__panel {
+  grid-column: 2;
+  grid-row: 2;
+  padding: var(--space-5, var(--space-4)) var(--space-5, var(--space-4)) var(--space-5, var(--space-4)) var(--space-3);
 }

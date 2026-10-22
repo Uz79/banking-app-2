@@ -45,6 +45,12 @@ What you see: screens 5 and 6: moving a slider updates its CHF value and fills s
 - [x] `js/fridge-advisor-scene.js`: slots and the food models fitted to them, `round(share x capacity)` items, fixed order, the 0.16 s scale-in (D11, D12)
 - [x] Check a very small and a very large salary, left at month end equal to the salary, and lowering the salary after setting the other values
 
+### Wide layout (D21, added after group 4)
+
+- [x] `.modal-shell--wide` modifier in `css/styles.css` (960dp from 1024px), set on the fridge sheet in `overview.html`
+- [x] `js/fridge-advisor.js`: `html.fridge--wide` from the parent viewport; CSS: two-column grid (stage left, panel right, header across)
+- [x] Camera poses re-checked in the wide layout (intro width 4.1, reserve width 1.9); the stacked layout and the phone to be re-checked in group 6
+
 ## 5. The result and the closing screen
 
 What you see: screen 7: the door closes, a short cooling moment, the freezer opens, a ring with the investable amount, the yearly amount, the note and "Show suitable products"; screen 8 follows and Done closes the flow.

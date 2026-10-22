@@ -18,10 +18,10 @@ export const CONFIG = {
     fov: 36,
     fovNarrow: 44,
     pose: {
-      intro: { pos: [0.3, 1.2, 5.2], look: [0.3, 1.05, 0], width: 3.5 },
+      intro: { pos: [0.3, 1.2, 5.2], look: [0.3, 1.05, 0], width: 4.1 },
       /* The fridge's body is centred on x = fridge.x; its front is at about z = -0.05. */
       main: { pos: [-0.9, 1.0, 3.5], look: [-0.9, 0.85, -0.1], width: 2.4 },
-      reserve: { pos: [-0.9, 1.0, 2.3], look: [-0.9, 0.36, 0.05], width: 1.5 },
+      reserve: { pos: [-0.9, 1.0, 2.3], look: [-0.9, 0.36, 0.05], width: 1.9 },
       freezer: { pos: [-0.9, 1.95, 2.1], look: [-0.9, 1.85, -0.1], width: 1.8 },
     },
   },

@@ -93,6 +93,7 @@ Settled choices, so they don't get re-argued. Add a row when a decision changes 
 | Playground and reduced motion | A stepped version of still scenes with Next, not a slowed run | The run is a game of movement; a slowed version would still be motion. Same result card and best run |
 | Dev server | Port 5175, strict (it fails if the port is taken), listening on the network, `.local` hosts allowed. A phone on the same Wi-Fi opens it through the Mac's `.local` name. Agents use 5199 for their own checks | A fixed URL that docs and the phone can rely on. Anyone on the same network can reach the server while it runs. See `specs/2026-10-22-dev-server-port/` |
 | Playground world | No physics library, no raycasts: the runner is (distance along a curve, sideways offset) and pickups are distance checks | Keeps it light and easy to tune; one config file |
+| Wide flow sheets | `.modal-shell--wide` on a flow sheet's shell makes it 960dp wide (the main box width) from 1024px, via `--modal-wide-max-width` (default 960px); below that the sheet is unchanged. The page inside decides its columns. First user: the fridge advisor (stage left, steps right) | A reusable modifier of the payment-flow sheet, not a one-off. The iframe is only 960 wide, so the page asks the parent viewport (`matchMedia` on `window.parent`) rather than its own |
 
 ## Guiding rule
 

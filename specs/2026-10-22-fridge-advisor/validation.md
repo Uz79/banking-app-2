@@ -13,7 +13,8 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 ## 2. Entry and the sheet
 
-- [ ] Side by side with the payment flow (Pay) and the trade flow (Custody account > a position > Buy): the sheet looks and moves the same, so a customer cannot tell it is a separate page: slide-in and slide-out timing and direction, the scrim, the header, the Back button (position, size, icon, hover and pressed states), the close button, the sheet's corners and width on desktop, and the bottom-sheet behaviour on phone
+- [ ] Side by side with the payment flow (Pay) and the trade flow (Custody account > a position > Buy): the sheet looks and moves the same, so a customer cannot tell it is a separate page: slide-in and slide-out timing and direction, the scrim, the header, the Back button (position, size, icon, hover and pressed states), the close button, the sheet's corners on desktop (its width differs on purpose from 1024px, D21), and the bottom-sheet behaviour on phone
+- [ ] Wide layout (D21): at 1024px and wider the sheet is 960dp wide with the stage on the left at full height and the text, sliders and buttons on the right, the header across the top; at 1023px and below it is stacked (640dp column, full screen on a phone); resizing across 1024px switches the layout without a reload; the camera frames the fridge and the figure in both layouts on every step; `.modal-shell--wide` leaves the payment and trade flows unchanged
 - [ ] Overview > Offers > Investment opens the flow as a sheet that slides up with the scrim fading in, like the payment flow; Overview is visible behind it while it moves
 - [ ] The Investment item no longer opens `investment-product-details.html`; the account row and performance card on Overview still do
 - [ ] Opening `fridge-advisor.html` directly works and its close button goes back to Overview

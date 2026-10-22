@@ -20,6 +20,15 @@ const reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
 const forceReduced = new URLSearchParams(window.location.search).has('reduced');
 const reduced = () => forceReduced || reduceMQ.matches;
 
+/* The sheet is wide (two columns) from a 1024px viewport; the page asks the viewport that decides it. */
+function syncLayout() {
+  let wide = false;
+  try { wide = (framed ? window.parent : window).matchMedia('(min-width: 1024px)').matches; } catch (e) { /* stacked */ }
+  document.documentElement.classList.toggle('fridge--wide', wide);
+}
+syncLayout();
+window.addEventListener('resize', syncLayout);
+
 /* What the sheet's header needs to know: whether Back is available and whether anything has been entered. */
 let state = { canBack: false, dirty: false };
 function publish(next) {
