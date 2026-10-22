@@ -48,19 +48,30 @@ export const CONFIG = {
   motion: { glide: 0.8, outline: 0.25 },
   outline: { bar: 0.007 },
 
-  /* Food: where it stands and what it is. Slots are in the kit's units; `surface` is the height of the board an item
-     stands on, `h` the free height above it. A shelf is a row of slots across; a drawer is a grid (cols x rows).
-     `models` repeat in order where a compartment has more slots than distinct items (D11, D12). `lay` lets a tall
-     model lie on its side to fit a low shelf. */
+  /* Food: where it stands and what it is. A compartment is packed like a well-stocked fridge: `rows` rows from back to
+     front, tall items (`tall`) behind and low ones (`low`) in front so the back row stays visible, items almost touching
+     (`gap`), a little seeded rotation and offset so it is not a grid, the same every time. Every item keeps the size it
+     would have in `ref` (the slot it used to stand in, in the kit's units), shrunk only to fit its row's depth and height.
+     How many fit is the capacity; items appear back row first, left to right, then the next row (D11, D12, D22).
+     A shelf stands on `surface` with `h` free above it; a drawer is `drawer` 0 (left) or 1 (right); `lay` lets a model
+     lie on its side. */
   food: {
     appear: 0.16,
+    gap: 0.004, jitterX: 0.003, jitterZ: 0.004, jitterYaw: 0.2,
+    heightByRow: 0.35, /* each row toward the front may be this much lower than the one behind (share of the height) */
     shelves: {
-      salary: { surface: 0.47, h: 0.12, cols: 2, rows: 1, models: ['carton', 'cheese'] },
-      left: { surface: 0.33, h: 0.12, cols: 2, rows: 1, models: ['soda-bottle', 'pot-stew'] },
-      assets: { surface: 0.19, h: 0.12, cols: 2, rows: 1, models: ['apple', 'banana'] },
-      unplanned: { drawer: 0, cols: 1, rows: 2, models: ['cabbage', 'egg'] },
-      bigger: { drawer: 1, cols: 1, rows: 2, models: ['grapes', 'loaf'] },
-      freezer: { surfaces: [0.717], hs: [0.17], cols: 2, rows: 2, models: ['popsicle', 'fish', 'meat-raw', 'pie'] },
+      salary: { surface: 0.47, h: 0.12, rows: 2, ref: { w: 0.137, d: 0.18, h: 0.12 },
+        tall: ['carton', 'soda-bottle'], low: ['cheese', 'egg', 'pot-stew'] },
+      left: { surface: 0.33, h: 0.12, rows: 2, ref: { w: 0.137, d: 0.18, h: 0.12 },
+        tall: ['cabbage', 'carton'], low: ['apple', 'pie', 'egg'] },
+      assets: { surface: 0.19, h: 0.12, rows: 2, ref: { w: 0.137, d: 0.18, h: 0.12 },
+        tall: ['grapes', 'soda-bottle'], low: ['apple', 'banana', 'cheese'] },
+      unplanned: { drawer: 0, rows: 3, ref: { w: 0.07, d: 0.08, h: 0.089 },
+        tall: ['cabbage'], low: ['meat-raw', 'egg', 'fish'] },
+      bigger: { drawer: 1, rows: 3, ref: { w: 0.07, d: 0.08, h: 0.089 },
+        tall: ['grapes', 'loaf'], low: ['pie', 'banana', 'sausage'] },
+      freezer: { freezer: true, rows: 3, ref: { w: 0.137, d: 0.095, h: 0.17 },
+        tall: ['popsicle'], low: ['fish', 'meat-raw', 'pie', 'sausage'] },
     },
     lay: ['popsicle'],
     /* Slot count of a compartment is round(share x capacity); the compartments and their sliders are in FIELDS. */

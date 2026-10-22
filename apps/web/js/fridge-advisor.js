@@ -99,7 +99,11 @@ function shares() {
 function updateFood() {
   if (!scene) return;
   const share = shares();
-  Object.keys(share).forEach((key) => scene.setFill(key, Math.round(share[key] * scene.capacity(key))));
+  /* Round to the nearest item, but any value above 0 shows at least one. */
+  Object.keys(share).forEach((key) => {
+    const n = Math.round(share[key] * scene.capacity(key));
+    scene.setFill(key, share[key] > 0 ? Math.max(1, n) : 0);
+  });
 }
 
 /* ── Steps ─────────────────────────────────────────────────────────── */

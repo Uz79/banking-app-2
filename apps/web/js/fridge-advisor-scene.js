@@ -44,7 +44,7 @@ export async function createFridgeScene(host, cfg, { reduced }) {
 
   /* ── The fridge ───────────────────────────────────────────────────── */
   const loader = new GLTFLoader();
-  const foodNames = [...new Set(Object.values(cfg.food.shelves).flatMap((sh) => sh.models))];
+  const foodNames = [...new Set(Object.values(cfg.food.shelves).flatMap((sh) => [...sh.tall, ...sh.low]))];
   const [gltf, ...foodGltfs] = await Promise.all([
     loader.loadAsync(FRIDGE_URL),
     ...foodNames.map((n) => loader.loadAsync(FOOD_DIR + n + '.glb').catch((err) => { console.warn('[fridge-advisor] food model failed', n, err); return null; })),
@@ -98,67 +98,96 @@ export async function createFridgeScene(host, cfg, { reduced }) {
   const foodPalette = foodMaterial ? preparePalette(foodMaterial) : null;
   Object.values(foodModels).forEach((root) => root.traverse((o) => { if (o.isMesh) { o.material = foodMaterial; o.castShadow = true; o.receiveShadow = true; } }));
 
-  /* The slots of a compartment, in the order they fill (front and bottom first). */
-  function slotsOf(spec) {
-    const { x: [x0, x1], z: [z0, z1], main, board, drawers } = cfg.interior;
-    const slots = [];
-    const grid = (xa, xb, za, zb, surface, h) => {
-      const dx = (xb - xa) / spec.cols, dz = (zb - za) / spec.rows;
-      for (let r = 0; r < spec.rows; r++) {
-        for (let c = 0; c < spec.cols; c++) {
-          slots.push({ x: xa + dx * (c + 0.5), z: zb - dz * (r + 0.5), y: surface, w: dx, d: dz, h });
-        }
-      }
-    };
+  /* The floor of a compartment: x and z range, the board's height and the free height above it. */
+  function areaOf(spec) {
+    const { x: [x0, x1], z: [z0, z1], main, freezer, board, drawers } = cfg.interior;
     if (spec.drawer !== undefined) {
       const half = (x1 - x0 - drawers.gap) / 2, wall = drawers.wall;
       const a = spec.drawer === 0 ? x0 : x1 - half;
-      const surface = main.y[0] + wall;
-      grid(a + wall, a + half - wall, z0 + wall + drawers.pull, z1 - wall + drawers.pull, surface, main.drawerTop - board - surface);
-    } else if (spec.surfaces) {
-      spec.surfaces.forEach((y, i) => grid(x0, x1, z0 + 0.01, z1 - 0.01, y, spec.hs[i]));
-    } else {
-      grid(x0, x1, z0 + 0.01, z1 - 0.01, spec.surface, spec.h);
+      const y = main.y[0] + wall;
+      return { x0: a + wall, x1: a + half - wall, z0: z0 + wall + drawers.pull, z1: z1 - wall + drawers.pull, y, h: main.drawerTop - board - y };
     }
-    return slots;
+    if (spec.freezer) return { x0: x0 + 0.005, x1: x1 - 0.005, z0: z0 + 0.01, z1: z1 - 0.01, y: freezer.y[0], h: freezer.y[1] - freezer.y[0] - 0.005 };
+    return { x0, x1, z0: z0 + 0.01, z1: z1 - 0.01, y: spec.surface, h: spec.h };
   }
 
-  /* A model stood in a slot: the orientation that lets it grow largest, scaled by its bounding box to fit. */
-  function makeItem(name, slot) {
+  /* Small seeded random numbers: the same arrangement on every visit. */
+  function seeded(text) {
+    let h = 1779033703 ^ text.length;
+    for (let i = 0; i < text.length; i++) { h = Math.imul(h ^ text.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    let a = h >>> 0;
+    return () => { a = (a + 0x6D2B79F5) >>> 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+
+  /* A model for a row: the orientation that would grow largest in the compartment's `ref` slot, at that size, shrunk only
+     to the row's depth and height. Returns the object with its footprint (width, depth, height). */
+  const orient = {};
+  function makeItem(name, ref, capD, capH) {
     const obj = foodModels[name].clone(true);
-    const tries = [[0, 0, 0], [0, Math.PI / 2, 0]];
-    if (cfg.food.lay.includes(name)) tries.push([0, 0, Math.PI / 2], [0, Math.PI / 2, Math.PI / 2]);
-    const size = new THREE.Vector3(), box = new THREE.Box3();
+    if (!orient[name]) {
+      const tries = [[0, 0, 0], [0, Math.PI / 2, 0]];
+      if (cfg.food.lay.includes(name)) tries.push([0, 0, Math.PI / 2], [0, Math.PI / 2, Math.PI / 2]);
+      const box = new THREE.Box3();
+      orient[name] = tries.map((r) => {
+        obj.rotation.set(...r); obj.scale.setScalar(1); obj.updateMatrixWorld(true);
+        return { r, size: box.setFromObject(obj).getSize(new THREE.Vector3()) };
+      });
+    }
     let best = null;
-    tries.forEach((r) => {
-      obj.rotation.set(...r);
-      obj.scale.setScalar(1);
-      obj.updateMatrixWorld(true);
-      box.setFromObject(obj).getSize(size);
-      const fit = Math.min(slot.w * 0.92 / size.x, slot.d * 0.92 / size.z, slot.h / size.y);
-      if (!best || fit > best.fit) best = { r, fit };
+    orient[name].forEach((o) => {
+      const fit = Math.min(ref.w * 0.92 / o.size.x, ref.d * 0.92 / o.size.z, ref.h / o.size.y);
+      if (!best || fit > best.fit) best = { o, fit };
     });
-    obj.rotation.set(...best.r);
-    obj.scale.setScalar(best.fit);
+    const { o } = best;
+    const scale = Math.min(best.fit, capD / o.size.z, capH / o.size.y);
+    obj.rotation.set(...o.r);
+    obj.scale.setScalar(scale);
     obj.updateMatrixWorld(true);
-    box.setFromObject(obj);
+    const box = new THREE.Box3().setFromObject(obj);
     obj.position.set(-(box.min.x + box.max.x) / 2, -box.min.y, -(box.min.z + box.max.z) / 2);
     const holder = new THREE.Group();
-    holder.position.set(slot.x, slot.y, slot.z);
     holder.add(obj);
-    holder.scale.setScalar(0.0001);
-    holder.visible = false;
-    model.add(holder);
-    return { holder, on: false, tw: null };
+    return { holder, w: o.size.x * scale, d: o.size.z * scale, h: o.size.y * scale };
+  }
+
+  /* Pack a compartment: rows from back to front, each filled left to right with items that fit, tight but not touching. */
+  function pack(key, spec) {
+    const area = areaOf(spec), rand = seeded(key), f = cfg.food;
+    const pitch = (area.z1 - area.z0) / spec.rows;
+    const items = [];
+    for (let r = 0; r < spec.rows; r++) {
+      const front = spec.rows > 1 ? r / (spec.rows - 1) : 0;
+      const capH = area.h * (1 - f.heightByRow * front);
+      const pool = (r === 0 ? spec.tall : r === spec.rows - 1 ? spec.low : [...spec.low, ...spec.tall]).filter((n) => foodModels[n]);
+      if (!pool.length) continue;
+      /* A seeded shuffle, so neighbours differ. */
+      const order = pool.map((n) => [rand(), n]).sort((a, b) => a[0] - b[0]).map((e) => e[1]);
+      const row = [];
+      let x = area.x0, k = 0, misses = 0;
+      while (misses < order.length) {
+        const it = makeItem(order[k++ % order.length], spec.ref, pitch * 1.3, capH);
+        if (x + it.w > area.x1) { misses++; continue; }
+        misses = 0;
+        row.push({ ...it, x: x + it.w / 2 });
+        x += it.w + f.gap;
+      }
+      if (!row.length) continue;
+      const slack = Math.max(0, area.x1 - x + f.gap) / 2; /* centre the row */
+      row.forEach((it) => {
+        const holder = it.holder;
+        holder.position.set(it.x + slack + (rand() - 0.5) * 2 * f.jitterX, area.y, area.z0 + pitch * (r + 0.5) + (rand() - 0.5) * 2 * f.jitterZ);
+        holder.rotation.y = (rand() - 0.5) * 2 * f.jitterYaw;
+        holder.scale.setScalar(0.0001);
+        holder.visible = false;
+        model.add(holder);
+        items.push({ holder, on: false, tw: null });
+      });
+    }
+    return items;
   }
 
   const fills = {};
-  Object.entries(cfg.food.shelves).forEach(([key, spec]) => {
-    fills[key] = slotsOf(spec)
-      .map((slot, i) => ({ name: spec.models[i % spec.models.length], slot }))
-      .filter((it) => foodModels[it.name])
-      .map((it) => makeItem(it.name, it.slot));
-  });
+  Object.entries(cfg.food.shelves).forEach(([key, spec]) => { fills[key] = pack(key, spec); });
 
   /* Show `count` items of a compartment, always the first ones, so adding never reshuffles (D11). */
   function setFill(key, count) {
