@@ -14,7 +14,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [ ] `npm run dev` starts on port 5175 and opens `http://localhost:5175/overview.html` on the Mac
 - [ ] With something already on 5175, `npm run dev` fails with a clear "port in use" error and does not start on another port
 - [x] The terminal shows a Network URL; the Mac's `.local` name (`http://klaudiuszs-macbook-pro.local:5175/overview.html`) opens the page on the Mac
-- [ ] On the phone, on the same Wi-Fi, `http://klaudiuszs-macbook-pro.local:5175/overview.html` opens Overview (no "Blocked request" message)
+- [x] On the phone, on the same Wi-Fi, `http://klaudiuszs-macbook-pro.local:5175/overview.html` opens Overview (no "Blocked request" message)
 - [x] The agent's own run, `npx vite --port 5199 --strictPort --no-open` from `apps/web`, serves on 5199, opens no tab, and stops cleanly
 - [ ] The Yahoo proxy path (`/api/yahoo`) still answers through the new setup (Custody account prices still load)
 
@@ -69,3 +69,5 @@ Copied from `specs/baseline/validation.md`. Setup: `cd apps/web && npm run build
 Checked on 2026-10-22 against `feature/dev-server-port`, on the Mac, by the agent on port 5199 only (it does not touch 5175, D4), Chrome on macOS. Ticked: the build; no `5174` left outside this spec folder; the terminal prints the Network URL (`http://192.168.1.43:5199/`) and the Mac's own `.local` name answers 200 on the same server; a foreign Host header gets 403 and a `.local` Host header 200; with the port taken, `--strictPort` stops with "Port 5199 is already in use"; the 5199 run opens no tab and stops cleanly; Overview renders from 5199; the AGENTS.md and tech-spec text is in place. `/api/yahoo` reached Yahoo through the proxy but Yahoo answered 429 (rate limit), so the prices were not confirmed.
 
 Not checked, so not ticked: `npm run dev` itself on 5175 opening Overview in the Mac's browser and failing clearly when 5175 is taken (the config values are the same ones tested on 5199, but the real command on 5175 was not run); the phone opening the page through the `.local` name; whether macOS asked about incoming connections; the Custody prices loading; the whole baseline smoke test.
+
+Reported by Klaudiusz on 2026-10-22: macOS did not ask about incoming connections (the firewall is off or Node was already allowed earlier), and the phone loaded the page. The phone check is ticked on that report; which URL the phone used (the `.local` name or the Network IP) was not recorded. Still open: `npm run dev` on 5175 opening Overview on the Mac and failing clearly when 5175 is taken, Custody prices loading, and the baseline smoke test.
