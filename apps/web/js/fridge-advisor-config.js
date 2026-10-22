@@ -17,12 +17,14 @@ export const CONFIG = {
   camera: {
     fov: 36,
     fovNarrow: 44,
+    /* `width` and `height` are what must stay in view (world units); `fill` backs the camera to exactly that, so the
+       fridge fills the stage whatever its shape. Without it `pos` is also the nearest the camera may come. The tour and the
+       slider screens all frame the whole fridge, with the open door and its shadow inside (about 85% of the stage height). */
     pose: {
       intro: { pos: [0.3, 1.2, 5.2], look: [0.3, 1.05, 0], width: 4.1 },
-      /* The fridge's body is centred on x = fridge.x; its front is at about z = -0.05. */
-      main: { pos: [-0.9, 1.0, 3.5], look: [-0.9, 0.85, -0.1], width: 2.4 },
-      reserve: { pos: [-0.9, 1.0, 2.3], look: [-0.9, 0.36, 0.05], width: 1.9 },
-      freezer: { pos: [-0.9, 1.95, 2.1], look: [-0.9, 1.85, -0.1], width: 1.8 },
+      main: { pos: [-0.84, 2.4, 6], look: [-0.84, 1.05, 0], width: 1.9, height: 2.9, fill: true },
+      reserve: { pos: [-0.84, 2.4, 6], look: [-0.84, 1.05, 0], width: 1.9, height: 2.9, fill: true },
+      freezer: { pos: [-0.84, 2.4, 6], look: [-0.84, 1.05, 0], width: 1.9, height: 2.9, fill: true },
     },
   },
 
@@ -32,7 +34,7 @@ export const CONFIG = {
   interior: {
     x: [0.078, 0.352], z: [-0.25, -0.05],
     main: { y: [0.087, 0.616], boards: [0.33, 0.47], drawerTop: 0.19 }, /* shelves rest on the boards, the drawers are below `drawerTop` */
-    freezer: { y: [0.717, 0.893], boards: [0.8] },
+    freezer: { y: [0.717, 0.893], boards: [] }, /* one open compartment: a board would leave too little height for readable food */
     board: 0.008,
     drawers: { gap: 0.012, wall: 0.006, front: 0.02, pull: 0.07 }, /* `pull`: how far the drawers stand out, so the camera can look into them */
   },
@@ -53,13 +55,12 @@ export const CONFIG = {
   food: {
     appear: 0.16,
     shelves: {
-      salary: { surface: 0.47, h: 0.12, cols: 4, rows: 1, models: ['carton', 'cheese', 'egg', 'loaf'] },
-      left: { surface: 0.33, h: 0.12, cols: 4, rows: 1, models: ['sausage', 'pot-stew', 'pie', 'soda-bottle'] },
-      assets: { surface: 0.19, h: 0.12, cols: 4, rows: 1, models: ['apple', 'banana', 'grapes', 'cabbage'] },
-      unplanned: { drawer: 0, cols: 2, rows: 2, models: ['meat-raw', 'fish', 'cabbage', 'apple'] },
-      bigger: { drawer: 1, cols: 2, rows: 2, models: ['pie', 'cheese', 'banana', 'loaf'] },
-      freezer: { surfaces: [0.717, 0.8], hs: [0.07, 0.085], cols: 4, rows: 1,
-        models: ['popsicle', 'fish', 'meat-raw', 'pie', 'sausage', 'popsicle', 'fish', 'meat-raw'] },
+      salary: { surface: 0.47, h: 0.12, cols: 2, rows: 1, models: ['carton', 'cheese'] },
+      left: { surface: 0.33, h: 0.12, cols: 2, rows: 1, models: ['soda-bottle', 'pot-stew'] },
+      assets: { surface: 0.19, h: 0.12, cols: 2, rows: 1, models: ['apple', 'banana'] },
+      unplanned: { drawer: 0, cols: 1, rows: 2, models: ['cabbage', 'egg'] },
+      bigger: { drawer: 1, cols: 1, rows: 2, models: ['grapes', 'loaf'] },
+      freezer: { surfaces: [0.717], hs: [0.17], cols: 2, rows: 2, models: ['popsicle', 'fish', 'meat-raw', 'pie'] },
     },
     lay: ['popsicle'],
     /* Slot count of a compartment is round(share x capacity); the compartments and their sliders are in FIELDS. */

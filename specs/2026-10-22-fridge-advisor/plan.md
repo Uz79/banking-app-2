@@ -51,6 +51,12 @@ What you see: screens 5 and 6: moving a slider updates its CHF value and fills s
 - [x] `js/fridge-advisor.js`: `html.fridge--wide` from the parent viewport; CSS: two-column grid (stage left, panel right, header across)
 - [x] Camera poses re-checked in the wide layout (intro width 4.1, reserve width 1.9); the stacked layout and the phone to be re-checked in group 6
 
+### Framing and food size (D22, added after group 4)
+
+- [x] Poses frame the whole fridge by `width` and `height` (`fill`), high key light, persona hidden after the intro
+- [x] Food about twice as large: capacities 2 per shelf and drawer, 4 in the freezer
+- [ ] Phone (390px) framing and the result screen's pose to be checked in groups 5 and 6
+
 ## 5. The result and the closing screen
 
 What you see: screen 7: the door closes, a short cooling moment, the freezer opens, a ring with the investable amount, the yearly amount, the note and "Show suitable products"; screen 8 follows and Done closes the flow.

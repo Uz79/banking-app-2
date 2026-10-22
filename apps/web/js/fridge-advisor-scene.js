@@ -26,7 +26,7 @@ export async function createFridgeScene(host, cfg, { reduced }) {
 
   const hemi = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
   const key = new THREE.DirectionalLight(0xffffff, 2);
-  key.position.set(2.5, 5, 4);
+  key.position.set(0.8, 7, 2.5); /* high, so the shadows stay small and under the fridge */
   key.castShadow = true;
   key.shadow.mapSize.set(1024, 1024);
   Object.assign(key.shadow.camera, { left: -4, right: 4, top: 4, bottom: -1, near: 0.5, far: 14 });
@@ -280,8 +280,8 @@ export async function createFridgeScene(host, cfg, { reduced }) {
     const tanHalf = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
     out.look.set(...p.look);
     out.pos.set(...p.pos).sub(out.look);
-    const fit = p.width / (2 * tanHalf * camera.aspect);
-    out.pos.setLength(Math.max(out.pos.length(), fit)).add(out.look);
+    const fit = Math.max(p.width / (2 * tanHalf * camera.aspect), p.height ? p.height / (2 * tanHalf) : 0);
+    out.pos.setLength(p.fill ? fit : Math.max(out.pos.length(), fit)).add(out.look);
     return out;
   }
   function applyCamera() {
@@ -360,7 +360,17 @@ export async function createFridgeScene(host, cfg, { reduced }) {
   }
 
   /* Go to a stage: the camera glides, doors swing, the outline moves. */
+  /* The persona stands next to the closed fridge on the intro; on the tour and the sliders the fridge fills the stage and it steps out. */
+  let figureTween = null;
+  function showFigure(on) {
+    cancel(figureTween);
+    if (on) { figure.actor.visible = true; dirty = true; return; }
+    figureTween = tween(cfg.motion.glide, () => {}, () => { figure.actor.visible = false; dirty = true; });
+    if (!figureTween) figure.actor.visible = false;
+  }
+
   function goTo(step) {
+    showFigure(step.stage === 'intro');
     glideTo(step.stage);
     ['fridge', 'freezer'].forEach((d) => swingDoor(d, step.doors.includes(d)));
     setOutline(step.outline);
