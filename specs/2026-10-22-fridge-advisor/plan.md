@@ -32,10 +32,10 @@ Note on group 2 (built 2026-10-22): the kit fridge is hollow (D13), so its cavit
 
 What you see: screens 1 to 4: the intro, then the camera glides to the main compartment, the reserve drawers and the freezer, each door opening with a short explanation card; Back and Next move through them.
 
-- [ ] `js/fridge-advisor.js`: the step list and state (screens 1 to 8, D4), the panel, Next, Back, progress, the live region (D18), focus to the heading on each step
-- [ ] `js/fridge-advisor-scene.js`: `goTo(stage)` with the eased glide and the door swing (D7); the accent outline on the active compartment (D5)
-- [ ] Copy for screens 1 to 4 in the config (English, no em dashes)
-- [ ] Reduced motion: stage poses applied at once, doors snap (D15)
+- [x] `js/fridge-advisor.js`: the step list and state (screens 1 to 8, D4), the panel, Next, Back, progress, the live region (D18), focus to the heading on each step
+- [x] `js/fridge-advisor-scene.js`: `goTo(stage)` with the eased glide and the door swing (D7); the accent outline on the active compartment (D5)
+- [x] Copy for screens 1 to 4 in the config (English, no em dashes)
+- [x] Reduced motion: stage poses applied at once, doors snap (D15)
 
 ## 4. Sliders and food (stop here for review of the food amounts)
 

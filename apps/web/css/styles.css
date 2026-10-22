@@ -11317,7 +11317,7 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
 
 .fridge__stage {
   position: relative;
-  flex: 1 1 0%;
+  flex: 0 0 45%;
   min-height: 0;
 }
 
@@ -11330,14 +11330,43 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
 }
 
 .fridge__panel {
-  flex: 0 0 auto;
+  flex: 1 1 0%;
+  min-height: 0;
+  overflow-y: auto;
   padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
   color: var(--color-fg);
+}
+
+.fridge__step {
+  margin: 0;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.fridge__heading {
+  margin: 0;
+  font-size: var(--fs-text-lg);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-text);
+}
+
+/* Focus moves here on each step so a screen reader starts at the new screen; it is not a control, so no ring. */
+.fridge__heading:focus {
+  outline: none;
 }
 
 .fridge__text {
   margin: 0;
   font-size: var(--fs-text-md);
-  line-height: var(--lh-text);
+  line-height: 1.5;
   color: var(--color-fg-secondary);
+}
+
+.fridge__actions {
+  margin-top: auto;
+  padding-top: var(--space-3);
 }

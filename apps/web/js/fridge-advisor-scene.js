@@ -82,6 +82,30 @@ export async function createFridgeScene(host, cfg, { reduced }) {
     });
   }
   model.add(interior);
+
+  /* The accent outline: a thin frame around the compartment being explained or filled (D5). */
+  const outlineMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 });
+  const outlines = {};
+  {
+    const { x: [x0, x1], main, freezer } = cfg.interior;
+    const bar = cfg.outline.bar, z = -0.03;
+    const frame = (y0, y1) => {
+      const g = new THREE.Group();
+      const add = (w, h, cx, cy) => {
+        const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, bar), outlineMat);
+        m.position.set(cx, cy, z);
+        g.add(m);
+      };
+      add(x1 - x0, bar, (x0 + x1) / 2, y0); add(x1 - x0, bar, (x0 + x1) / 2, y1);
+      add(bar, y1 - y0, x0, (y0 + y1) / 2); add(bar, y1 - y0, x1, (y0 + y1) / 2);
+      g.visible = false;
+      model.add(g);
+      return g;
+    };
+    outlines.main = frame(main.y[0], main.y[1]);
+    outlines.reserve = frame(main.y[0], main.drawerTop);
+    outlines.freezer = frame(freezer.y[0], freezer.y[1]);
+  }
   /* The fridge light: the cavity would otherwise sit in the shadow of its own shell. */
   const fridgeLight = new THREE.PointLight(0xffffff, cfg.light.intensity, 0, 2);
   fridgeLight.position.set(...cfg.light.main);
@@ -133,6 +157,7 @@ export async function createFridgeScene(host, cfg, { reduced }) {
     if (mats.metalDark) mats.metalDark.color.copy(mix(theme.dark ? 0.22 : 0.3));
     if (mats.metal) mats.metal.color.copy(mix(0.45));
     if (mats.glass) mats.glass.color.copy(mix(0.3));
+    outlineMat.color.copy(colour('--color-fg-interactive'));
     boxMats.board.color.copy(mix(theme.dark ? 0.55 : 0.45));
     boxMats.drawer.color.copy(mix(theme.dark ? 0.4 : 0.3));
     figure.recolour(theme);
@@ -143,21 +168,97 @@ export async function createFridgeScene(host, cfg, { reduced }) {
 
   /* ── Camera ───────────────────────────────────────────────────────── */
   const look = new THREE.Vector3();
-  const want = new THREE.Vector3();
+  const cam = { pos: new THREE.Vector3(), look: new THREE.Vector3() };
   let pose = cfg.camera.pose.intro;
-  /* From the pose, backed away along the line of sight until its `width` fits the stage. */
-  function placeCamera() {
+  /* The pose, backed away along the line of sight until its `width` fits the stage. */
+  function target(p, out) {
     const tanHalf = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
-    want.set(...pose.pos).sub(look.set(...pose.look));
-    const fit = pose.width / (2 * tanHalf * camera.aspect);
-    want.setLength(Math.max(want.length(), fit)).add(look);
-    camera.position.copy(want);
+    out.look.set(...p.look);
+    out.pos.set(...p.pos).sub(out.look);
+    const fit = p.width / (2 * tanHalf * camera.aspect);
+    out.pos.setLength(Math.max(out.pos.length(), fit)).add(out.look);
+    return out;
+  }
+  function applyCamera() {
+    camera.position.copy(cam.pos);
+    look.copy(cam.look);
     camera.lookAt(look);
     dirty = true;
   }
-  function setPose(name) {
+
+  /* ── Motion: one small tween list (camera glide, door swing, outline fade) ── */
+  /* easeOutQuart stands in for the app's ease-out curve; everything is instant with reduced motion (D15). */
+  const ease = (t) => 1 - Math.pow(1 - t, 4);
+  const tweens = [];
+  /* Returns the running tween (or null when it ran at once), so a newer one can replace it. */
+  function tween(duration, apply, done) {
+    if (reduced() || duration <= 0) { apply(1); dirty = true; if (done) done(); return null; }
+    const tw = { t: 0, duration, apply, done };
+    tweens.push(tw);
+    return tw;
+  }
+  function cancel(tw) {
+    const i = tw ? tweens.indexOf(tw) : -1;
+    if (i >= 0) tweens.splice(i, 1);
+  }
+  function runTweens(dt) {
+    for (let i = tweens.length - 1; i >= 0; i--) {
+      const tw = tweens[i];
+      tw.t += dt;
+      const p = Math.min(1, tw.t / tw.duration);
+      tw.apply(ease(p));
+      dirty = true;
+      if (p >= 1) { tweens.splice(tweens.indexOf(tw), 1); if (tw.done) tw.done(); }
+    }
+  }
+
+  const from = { pos: new THREE.Vector3(), look: new THREE.Vector3() };
+  const to = { pos: new THREE.Vector3(), look: new THREE.Vector3() };
+  let cameraTween = null;
+  function glideTo(name) {
     pose = cfg.camera.pose[name];
-    placeCamera();
+    cancel(cameraTween);
+    from.pos.copy(cam.pos); from.look.copy(cam.look);
+    target(pose, to);
+    cameraTween = tween(cfg.motion.glide, (k) => {
+      cam.pos.lerpVectors(from.pos, to.pos, k);
+      cam.look.lerpVectors(from.look, to.look, k);
+      applyCamera();
+    });
+  }
+
+  const doorTween = { fridge: null, freezer: null };
+  function swingDoor(name, open) {
+    const end = open ? cfg.doors.open : 0;
+    cancel(doorTween[name]);
+    const start = angle[name];
+    if (start === end) return;
+    doorTween[name] = tween(cfg.doors.swing, (k) => setDoor(name, start + (end - start) * k));
+  }
+
+  let outlineName = null;
+  let outlineTween = null;
+  function setOutline(name) {
+    if (name === outlineName) return;
+    const prev = outlineName;
+    outlineName = name;
+    cancel(outlineTween);
+    if (name) {
+      Object.entries(outlines).forEach(([k, g]) => { g.visible = k === name; });
+      outlineMat.opacity = 0;
+      outlineTween = tween(cfg.motion.outline, (k) => { outlineMat.opacity = k; });
+    } else if (prev) {
+      const start = outlineMat.opacity;
+      outlineTween = tween(cfg.motion.outline, (k) => { outlineMat.opacity = start * (1 - k); },
+        () => { if (!outlineName) outlines[prev].visible = false; });
+    }
+  }
+
+  /* Go to a stage: the camera glides, doors swing, the outline moves. */
+  function goTo(step) {
+    glideTo(step.stage);
+    ['fridge', 'freezer'].forEach((d) => swingDoor(d, step.doors.includes(d)));
+    setOutline(step.outline);
   }
 
   /* ── Size and loop ────────────────────────────────────────────────── */
@@ -167,11 +268,12 @@ export async function createFridgeScene(host, cfg, { reduced }) {
     camera.aspect = w / h;
     camera.fov = w / h < 0.9 ? cfg.camera.fovNarrow : cfg.camera.fov;
     camera.updateProjectionMatrix();
-    placeCamera();
+    if (!tweens.length) { target(pose, cam); applyCamera(); }
   }
   new ResizeObserver(resize).observe(host);
   resize();
-  setPose('intro');
+  target(pose, cam);
+  applyCamera();
 
   const clock = new THREE.Clock();
   function frame() {
@@ -179,6 +281,7 @@ export async function createFridgeScene(host, cfg, { reduced }) {
     const dt = Math.min(clock.getDelta(), 0.05);
     if (document.hidden) return;
     figure.update(dt);
+    runTweens(dt);
     if (dirty || !reduced()) {
       dirty = false;
       renderer.render(scene, camera);
@@ -192,5 +295,5 @@ export async function createFridgeScene(host, cfg, { reduced }) {
     renderer.forceContextLoss();
   });
 
-  return { setDoor, setPose, scene, camera, fridge, figure, doors, redraw: () => { dirty = true; } };
+  return { setDoor, goTo, scene, camera, fridge, figure, doors, redraw: () => { dirty = true; } };
 }

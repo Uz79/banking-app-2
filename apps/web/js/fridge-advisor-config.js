@@ -18,7 +18,11 @@ export const CONFIG = {
     fov: 36,
     fovNarrow: 44,
     pose: {
-      intro: { pos: [0.3, 1.3, 6.0], look: [0.3, 1.0, 0], width: 3.9 },
+      intro: { pos: [0.3, 1.2, 5.2], look: [0.3, 1.05, 0], width: 3.5 },
+      /* The fridge's body is centred on x = fridge.x; its front is at about z = -0.05. */
+      main: { pos: [-0.9, 1.0, 3.5], look: [-0.9, 0.85, -0.1], width: 2.4 },
+      reserve: { pos: [-0.9, 0.6, 2.4], look: [-0.9, 0.4, -0.1], width: 2.0 },
+      freezer: { pos: [-0.9, 1.95, 2.1], look: [-0.9, 1.85, -0.1], width: 1.8 },
     },
   },
 
@@ -36,6 +40,37 @@ export const CONFIG = {
   /* The light inside (position in the kit's units, intensity in three.js units). */
   light: { intensity: 0.45, main: [0.215, 0.6, -0.03], freezer: [0.215, 0.88, -0.03] },
 
-  /* Doors swing about their left edge. Angles in radians, durations in seconds. */
+  /* Doors swing about their left edge. Angles in radians, durations in seconds. `glide` is the camera's move
+     between stages; `outline` is the accent frame fading in on the compartment being explained or filled. */
   doors: { open: 1.75, swing: 0.6 },
+  motion: { glide: 0.8, outline: 0.25 },
+  outline: { bar: 0.007 },
 };
+
+/**
+ * The screens, in order (D4). `stage` is the camera pose, `doors` which doors stand open, `outline` the compartment
+ * marked with the accent. Copy is English, short and plain, with no em dashes (D17). Steps 5 to 8 arrive with the
+ * sliders and the result.
+ */
+export const STEPS = [
+  {
+    id: 'intro', stage: 'intro', doors: [], outline: null,
+    title: 'Let\'s look at your finances',
+    text: 'The fridge helps you look at your financial situation. Each compartment stands for a different part of your wealth.',
+  },
+  {
+    id: 'tour-main', stage: 'main', doors: ['fridge'], outline: 'main',
+    title: 'The main compartment',
+    text: 'This is the money for your daily needs.',
+  },
+  {
+    id: 'tour-reserve', stage: 'reserve', doors: ['fridge'], outline: 'reserve',
+    title: 'The reserve drawers',
+    text: 'These hold money you have set aside for unplanned expenses or a bigger goal, like a new car.',
+  },
+  {
+    id: 'tour-freezer', stage: 'freezer', doors: ['freezer'], outline: 'freezer',
+    title: 'The freezer',
+    text: 'This is money you will not need for now, and which should be invested.',
+  },
+];
