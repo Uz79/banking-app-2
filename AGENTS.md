@@ -49,8 +49,10 @@ These are the app's unwritten rules, written down. Most bugs in this repo came f
 There are no automated tests. The gates for every branch:
 
 1. `npm run build` in `apps/web` succeeds.
-2. The feature's own `validation.md`, checked in a real browser (`npm run dev`, `http://localhost:5174/overview.html`): Light and Dark, desktop and phone width (390px), keyboard, reduced motion.
+2. The feature's own `validation.md`, checked in a real browser (`npm run dev`, `http://localhost:5175/overview.html`): Light and Dark, desktop and phone width (390px), keyboard, reduced motion.
 3. The baseline smoke test in `specs/baseline/validation.md`, so nothing that worked before is broken.
+
+My dev server runs on 5175. For your own browser checks use port 5199 (`npx vite --port 5199 --strictPort --no-open`) and stop it when done.
 
 A check that wasn't run is not a pass. Each `validation.md` ends with a dated "Checked on" line saying when, where and how, and what was not checked.
 

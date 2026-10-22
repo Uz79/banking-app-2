@@ -1,6 +1,6 @@
 # Playground sound: validation
 
-Branch: `feature/playground-sound`. Tick each item in a real browser (`cd apps/web && npm run dev`, `http://localhost:5174/overview.html`, signed in as admin). Unless a line says otherwise, check Light and Dark, and desktop (1440px) and phone (390px). Use headphones or speakers; sound cannot be checked from a screenshot.
+Branch: `feature/playground-sound`. Tick each item in a real browser (`cd apps/web && npm run dev`, `http://localhost:5175/overview.html`, signed in as admin). Unless a line says otherwise, check Light and Dark, and desktop (1440px) and phone (390px). Use headphones or speakers; sound cannot be checked from a screenshot.
 
 A check that wasn't run is not a pass. The "Checked on" line at the bottom is filled in when the checks are run.
 

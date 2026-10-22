@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit d64abe6d0f06f3c85068eae5ec6cdeb339a8dc9e -->
+<!-- changelog: last-commit e051507507771d467c3c527deff11b0cbaa2118d -->
 
 ### Decided
 - **Spec-driven workflow.** From now on every change goes through a dated spec folder (`specs/<YYYY-MM-DD>-<name>/`) created with `/feature-spec`, on its own branch, with a validation pass and the baseline smoke test before it reaches `main`. Added `AGENTS.md`, `specs/mission.md`, `specs/tech-spec.md`, `specs/roadmap.md`, `specs/baseline/`, and the `/feature-spec` and `/changelog` skills. The app's code is unchanged. The state before this is tagged `v1-presentable`.
@@ -19,6 +19,7 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Assets: `assets/audio/playground/` (nine mono WAV files, about 340 KB, Kenney Impact Sounds, CC0, with the licence).
 
 ### Changed
+- **Dev server:** `npm run dev` now uses port 5175 (it fails instead of moving to another port if that is taken), listens on the network and accepts `*.local` host names, so a phone on the same Wi-Fi can open `http://klaudiuszs-macbook-pro.local:5175/overview.html`. Docs and earlier specs say 5175. `AGENTS.md` tells agents to use port 5199 for their own checks. Dev tooling only; the app is unchanged.
 - `js/profile-persona-character.js`: the figure exposes `loopPhase()` (where the current loop is in its cycle). Nothing else changes.
 - Design system hub: the cards use the shared hover ink and gained a pressed state.
 - Playground: the start and result card follows the confirmation dialog: secondary button first, primary last, the same title size, and a bottom sheet on mobile and tablet.

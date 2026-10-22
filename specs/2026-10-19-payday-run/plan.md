@@ -2,7 +2,7 @@
 
 Branch: `feature/payday-run`. Decisions are cited as D1 to D18 from `requirements.md`.
 
-Each group ends with something to look at in the browser (`cd apps/web && npm run dev`, `http://localhost:5174/overview.html`, signed in as admin). On the feature branch each group is committed on its own once implementation is approved. Nothing is merged to `main` without an explicit ask.
+Each group ends with something to look at in the browser (`cd apps/web && npm run dev`, `http://localhost:5175/overview.html`, signed in as admin). On the feature branch each group is committed on its own once implementation is approved. Nothing is merged to `main` without an explicit ask.
 
 ## 1. Hub card and an empty full-screen page
 

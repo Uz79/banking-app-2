@@ -1,6 +1,6 @@
 # Payday run: validation
 
-Branch: `feature/payday-run`. Tick each item in a real browser (`cd apps/web && npm run dev`, `http://localhost:5174/overview.html`). Unless a line says otherwise, check Light and Dark, and desktop (1440px) and phone (390px).
+Branch: `feature/payday-run`. Tick each item in a real browser (`cd apps/web && npm run dev`, `http://localhost:5175/overview.html`). Unless a line says otherwise, check Light and Dark, and desktop (1440px) and phone (390px).
 
 A check that wasn't run is not a pass. The "Checked on" line at the bottom is filled in when the checks are run.
 
@@ -121,7 +121,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 ## 10. Baseline smoke test
 
-Copied from `specs/baseline/validation.md`. Run after the checks above. Setup: `cd apps/web && npm run build`, then `npm run dev` and open `http://localhost:5174/overview.html`. Check desktop (1440px) in Light, then repeat the starred (★) items in Dark and at phone width (390px).
+Copied from `specs/baseline/validation.md`. Run after the checks above. Setup: `cd apps/web && npm run build`, then `npm run dev` and open `http://localhost:5175/overview.html`. Check desktop (1440px) in Light, then repeat the starred (★) items in Dark and at phone width (390px).
 
 ### Build
 

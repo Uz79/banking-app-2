@@ -4,7 +4,7 @@ Scope: `apps/web`. The other folders (`apps/ios`, `apps/backend`, `packages/`, `
 
 ## Stack
 
-- Vanilla HTML, CSS and JavaScript, multi-page, built with Vite (`npm run dev` on port 5174, `npm run build`)
+- Vanilla HTML, CSS and JavaScript, multi-page, built with Vite (`npm run dev` on port 5175, `npm run build`)
 - Classic `<script>` files for the app shell; ES modules only where a library needs them (the 3D character)
 - three.js 0.170 from jsDelivr, loaded only by the 3D character module
 - Deployed to GitHub Pages by `.github/workflows/deploy.yml` on every push to `main` (it uploads `apps/web` after a build)
@@ -91,6 +91,7 @@ Settled choices, so they don't get re-argued. Add a row when a decision changes 
 | Status message timing | First appearance 12 s after a main view lands; back 8 s after dismissal | Demo pacing |
 | Playground placement | A fourth card on the Design system page, admin only, full screen, opened as a flow-style sheet (not a page transition); an easter egg from the avatar may follow later | Not in the customer menu. See `specs/roadmap.md` and D19 in the Payday run spec |
 | Playground and reduced motion | A stepped version of still scenes with Next, not a slowed run | The run is a game of movement; a slowed version would still be motion. Same result card and best run |
+| Dev server | Port 5175, strict (it fails if the port is taken), listening on the network, `.local` hosts allowed. A phone on the same Wi-Fi opens it through the Mac's `.local` name. Agents use 5199 for their own checks | A fixed URL that docs and the phone can rely on. Anyone on the same network can reach the server while it runs. See `specs/2026-10-22-dev-server-port/` |
 | Playground world | No physics library, no raycasts: the runner is (distance along a curve, sideways offset) and pickups are distance checks | Keeps it light and easy to tune; one config file |
 
 ## Guiding rule

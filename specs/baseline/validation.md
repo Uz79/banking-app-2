@@ -2,7 +2,7 @@
 
 Run before merging any branch into `main`, after the feature's own `validation.md`. Its purpose is to prove nothing that worked before is broken. Copy this checklist into the branch's `validation.md` (as a final section) and tick it there; leave this file unticked.
 
-Setup: `cd apps/web && npm run build`, then `npm run dev` and open `http://localhost:5174/overview.html`. Check desktop (1440px) in Light, then repeat the starred (★) items in Dark and at phone width (390px).
+Setup: `cd apps/web && npm run build`, then `npm run dev` and open `http://localhost:5175/overview.html`. Check desktop (1440px) in Light, then repeat the starred (★) items in Dark and at phone width (390px).
 
 ## 1. Build
 
