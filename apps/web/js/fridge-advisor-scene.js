@@ -3,10 +3,11 @@
  * persona beside it, in the active theme (D5). Shelves, drawers and food are added by later task groups.
  * The theme comes from the same helpers the Playground world uses; the scene only draws when something moved.
  */
-import { THREE, createFigure, readTheme, cssColor } from './profile-persona-character.js';
+import { THREE, createFigure, readTheme, cssColor, preparePalette, monochromeLut } from './profile-persona-character.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js/+esm';
 
 const FRIDGE_URL = new URL(/* @vite-ignore */ '../assets/3d/fridge/furniture/kitchenFridge.glb', import.meta.url).href;
+const FOOD_DIR = new URL(/* @vite-ignore */ '../assets/3d/fridge/food/', import.meta.url).href;
 
 export async function createFridgeScene(host, cfg, { reduced }) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -42,7 +43,12 @@ export async function createFridgeScene(host, cfg, { reduced }) {
   scene.add(floor);
 
   /* ── The fridge ───────────────────────────────────────────────────── */
-  const gltf = await new GLTFLoader().loadAsync(FRIDGE_URL);
+  const loader = new GLTFLoader();
+  const foodNames = [...new Set(Object.values(cfg.food.shelves).flatMap((sh) => sh.models))];
+  const [gltf, ...foodGltfs] = await Promise.all([
+    loader.loadAsync(FRIDGE_URL),
+    ...foodNames.map((n) => loader.loadAsync(FOOD_DIR + n + '.glb').catch((err) => { console.warn('[fridge-advisor] food model failed', n, err); return null; })),
+  ]);
   const fridge = new THREE.Group();
   const model = gltf.scene.children[0];
   model.position.set(-0.215, 0, 0); /* centre the body on x = 0 */
@@ -73,15 +79,103 @@ export async function createFridgeScene(host, cfg, { reduced }) {
     /* Two drawers side by side under the lowest shelf: an open tray each (floor, back, sides, a low front). */
     const half = (x1 - x0 - drawers.gap) / 2;
     [[x0, x0 + half], [x1 - half, x1]].forEach(([a, b]) => {
-      const bottom = main.y[0], top = main.drawerTop - board, w = drawers.wall;
-      box(boxMats.drawer, a, b, bottom, bottom + w, z0, z1);
-      box(boxMats.drawer, a, b, bottom, top, z0, z0 + w);
-      box(boxMats.drawer, a, a + w, bottom, top, z0, z1);
-      box(boxMats.drawer, b - w, b, bottom, top, z0, z1);
-      box(boxMats.drawer, a, b, bottom, bottom + drawers.front, z1 - w, z1);
+      const bottom = main.y[0], top = main.drawerTop - board, w = drawers.wall, p = drawers.pull;
+      box(boxMats.drawer, a, b, bottom, bottom + w, z0 + p, z1 + p);
+      box(boxMats.drawer, a, b, bottom, top, z0 + p, z0 + p + w);
+      box(boxMats.drawer, a, a + w, bottom, top, z0 + p, z1 + p);
+      box(boxMats.drawer, b - w, b, bottom, top, z0 + p, z1 + p);
+      box(boxMats.drawer, a, b, bottom, bottom + drawers.front, z1 + p - w, z1 + p);
     });
   }
   model.add(interior);
+
+  /* ── Food: fixed slots, each with a model fitted to it (D11, D12) ──── */
+  /* All food models share one texture (the kit's colour map), recoloured to the theme's ramp like the Playground world. */
+  const foodModels = {};
+  foodNames.forEach((n, i) => { if (foodGltfs[i]) foodModels[n] = foodGltfs[i].scene; });
+  let foodMaterial = null;
+  Object.values(foodModels).forEach((root) => root.traverse((o) => { if (o.isMesh && !foodMaterial) foodMaterial = o.material; }));
+  const foodPalette = foodMaterial ? preparePalette(foodMaterial) : null;
+  Object.values(foodModels).forEach((root) => root.traverse((o) => { if (o.isMesh) { o.material = foodMaterial; o.castShadow = true; o.receiveShadow = true; } }));
+
+  /* The slots of a compartment, in the order they fill (front and bottom first). */
+  function slotsOf(spec) {
+    const { x: [x0, x1], z: [z0, z1], main, board, drawers } = cfg.interior;
+    const slots = [];
+    const grid = (xa, xb, za, zb, surface, h) => {
+      const dx = (xb - xa) / spec.cols, dz = (zb - za) / spec.rows;
+      for (let r = 0; r < spec.rows; r++) {
+        for (let c = 0; c < spec.cols; c++) {
+          slots.push({ x: xa + dx * (c + 0.5), z: zb - dz * (r + 0.5), y: surface, w: dx, d: dz, h });
+        }
+      }
+    };
+    if (spec.drawer !== undefined) {
+      const half = (x1 - x0 - drawers.gap) / 2, wall = drawers.wall;
+      const a = spec.drawer === 0 ? x0 : x1 - half;
+      const surface = main.y[0] + wall;
+      grid(a + wall, a + half - wall, z0 + wall + drawers.pull, z1 - wall + drawers.pull, surface, main.drawerTop - board - surface);
+    } else if (spec.surfaces) {
+      spec.surfaces.forEach((y, i) => grid(x0, x1, z0 + 0.01, z1 - 0.01, y, spec.hs[i]));
+    } else {
+      grid(x0, x1, z0 + 0.01, z1 - 0.01, spec.surface, spec.h);
+    }
+    return slots;
+  }
+
+  /* A model stood in a slot: the orientation that lets it grow largest, scaled by its bounding box to fit. */
+  function makeItem(name, slot) {
+    const obj = foodModels[name].clone(true);
+    const tries = [[0, 0, 0], [0, Math.PI / 2, 0]];
+    if (cfg.food.lay.includes(name)) tries.push([0, 0, Math.PI / 2], [0, Math.PI / 2, Math.PI / 2]);
+    const size = new THREE.Vector3(), box = new THREE.Box3();
+    let best = null;
+    tries.forEach((r) => {
+      obj.rotation.set(...r);
+      obj.scale.setScalar(1);
+      obj.updateMatrixWorld(true);
+      box.setFromObject(obj).getSize(size);
+      const fit = Math.min(slot.w * 0.92 / size.x, slot.d * 0.92 / size.z, slot.h / size.y);
+      if (!best || fit > best.fit) best = { r, fit };
+    });
+    obj.rotation.set(...best.r);
+    obj.scale.setScalar(best.fit);
+    obj.updateMatrixWorld(true);
+    box.setFromObject(obj);
+    obj.position.set(-(box.min.x + box.max.x) / 2, -box.min.y, -(box.min.z + box.max.z) / 2);
+    const holder = new THREE.Group();
+    holder.position.set(slot.x, slot.y, slot.z);
+    holder.add(obj);
+    holder.scale.setScalar(0.0001);
+    holder.visible = false;
+    model.add(holder);
+    return { holder, on: false, tw: null };
+  }
+
+  const fills = {};
+  Object.entries(cfg.food.shelves).forEach(([key, spec]) => {
+    fills[key] = slotsOf(spec)
+      .map((slot, i) => ({ name: spec.models[i % spec.models.length], slot }))
+      .filter((it) => foodModels[it.name])
+      .map((it) => makeItem(it.name, it.slot));
+  });
+
+  /* Show `count` items of a compartment, always the first ones, so adding never reshuffles (D11). */
+  function setFill(key, count) {
+    (fills[key] || []).forEach((item, i) => {
+      const on = i < count;
+      if (on === item.on) return;
+      item.on = on;
+      cancel(item.tw);
+      const start = item.holder.scale.x, end = on ? 1 : 0.0001;
+      if (on) item.holder.visible = true;
+      item.tw = tween(cfg.food.appear, (k) => { item.holder.scale.setScalar(start + (end - start) * k); },
+        () => { if (!item.on) item.holder.visible = false; });
+      if (!item.tw && !on) item.holder.visible = false;
+    });
+    dirty = true;
+  }
+  const capacity = (key) => (fills[key] || []).length;
 
   /* The accent outline: a thin frame around the compartment being explained or filled (D5). */
   const outlineMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 });
@@ -89,11 +183,11 @@ export async function createFridgeScene(host, cfg, { reduced }) {
   {
     const { x: [x0, x1], main, freezer } = cfg.interior;
     const bar = cfg.outline.bar, z = -0.03;
-    const frame = (y0, y1) => {
+    const frame = (y0, y1, dz = 0) => {
       const g = new THREE.Group();
       const add = (w, h, cx, cy) => {
         const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, bar), outlineMat);
-        m.position.set(cx, cy, z);
+        m.position.set(cx, cy, z + dz);
         g.add(m);
       };
       add(x1 - x0, bar, (x0 + x1) / 2, y0); add(x1 - x0, bar, (x0 + x1) / 2, y1);
@@ -103,7 +197,7 @@ export async function createFridgeScene(host, cfg, { reduced }) {
       return g;
     };
     outlines.main = frame(main.y[0], main.y[1]);
-    outlines.reserve = frame(main.y[0], main.drawerTop);
+    outlines.reserve = frame(main.y[0], main.drawerTop, cfg.interior.drawers.pull);
     outlines.freezer = frame(freezer.y[0], freezer.y[1]);
   }
   /* The fridge light: the cavity would otherwise sit in the shadow of its own shell. */
@@ -161,6 +255,17 @@ export async function createFridgeScene(host, cfg, { reduced }) {
     boxMats.board.color.copy(mix(theme.dark ? 0.55 : 0.45));
     boxMats.drawer.color.copy(mix(theme.dark ? 0.4 : 0.3));
     figure.recolour(theme);
+    if (foodPalette) {
+      const lut = monochromeLut(theme);
+      const img = new ImageData(new Uint8ClampedArray(foodPalette.orig.data), foodPalette.size, foodPalette.size);
+      const d = img.data;
+      for (let i = 0; i < foodPalette.L.length; i++) {
+        const j = Math.max(0, Math.min(255, Math.round(foodPalette.L[i] * 255))) * 3;
+        d[i * 4] = lut[j]; d[i * 4 + 1] = lut[j + 1]; d[i * 4 + 2] = lut[j + 2];
+      }
+      foodPalette.ctx.putImageData(img, 0, 0);
+      foodPalette.tex.needsUpdate = true;
+    }
   }
   applyTheme(true);
   new MutationObserver(() => requestAnimationFrame(() => applyTheme(false)))
@@ -295,5 +400,5 @@ export async function createFridgeScene(host, cfg, { reduced }) {
     renderer.forceContextLoss();
   });
 
-  return { setDoor, goTo, scene, camera, fridge, figure, doors, redraw: () => { dirty = true; } };
+  return { setDoor, goTo, setFill, capacity, scene, camera, fridge, figure, doors, redraw: () => { dirty = true; } };
 }

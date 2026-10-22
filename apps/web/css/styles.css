@@ -11370,3 +11370,82 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
   margin-top: auto;
   padding-top: var(--space-3);
 }
+
+.fridge__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.fridge__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.fridge__field-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.fridge__field-label {
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-label);
+}
+
+.fridge__field-value {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--fs-text-md);
+  color: var(--color-fg-secondary);
+}
+
+.fridge__num {
+  width: 6.5rem;
+  height: 2.25rem;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-btn-secondary-border);
+  border-radius: var(--radius-regular);
+  background: transparent;
+  color: var(--color-fg);
+  font: inherit;
+  text-align: right;
+}
+
+.fridge__num:focus-visible {
+  outline: 2px solid var(--color-fg-interactive);
+  outline-offset: 2px;
+}
+
+/* The slider's own focus ring is drawn on the thumb; here the track also holds the recommended-value tick. */
+.fridge__track {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.fridge__tick {
+  position: absolute;
+  top: 50%;
+  width: 2px;
+  height: 0.875rem;
+  transform: translate(-50%, -50%);
+  background: var(--color-fg);
+  pointer-events: none;
+}
+
+.fridge__note {
+  margin: 0;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.fridge__actions .fridge__note {
+  margin-bottom: var(--space-2);
+}

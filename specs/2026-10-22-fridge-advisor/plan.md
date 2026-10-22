@@ -41,9 +41,9 @@ What you see: screens 1 to 4: the intro, then the camera glides to the main comp
 
 What you see: screens 5 and 6: moving a slider updates its CHF value and fills shelves and drawers; the 3 times salary marker shows on the unplanned reserve; Next stays off until a salary is set.
 
-- [ ] `js/fridge-advisor.js`: the five sliders on `.cc-color-slider` with a typable number field each, `aria-valuetext`, the non-linear assets track and the keyboard steps, the marker and its line, the clamps (D10, D10b), the Next rule on screen 5 (D4), a first-visit state of all zeros (D8)
-- [ ] `js/fridge-advisor-scene.js`: slots and the food models fitted to them, `round(share x capacity)` items, fixed order, the 0.16 s scale-in (D11, D12)
-- [ ] Check a very small and a very large salary, left at month end equal to the salary, and lowering the salary after setting the other values
+- [x] `js/fridge-advisor.js`: the five sliders on `.cc-color-slider` with a typable number field each, `aria-valuetext`, the non-linear assets track and the keyboard steps, the marker and its line, the clamps (D10, D10b), the Next rule on screen 5 (D4), a first-visit state of all zeros (D8)
+- [x] `js/fridge-advisor-scene.js`: slots and the food models fitted to them, `round(share x capacity)` items, fixed order, the 0.16 s scale-in (D11, D12)
+- [x] Check a very small and a very large salary, left at month end equal to the salary, and lowering the salary after setting the other values
 
 ## 5. The result and the closing screen
 
