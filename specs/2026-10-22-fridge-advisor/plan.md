@@ -21,10 +21,12 @@ Note on group 1 (built 2026-10-22): to look and move exactly like the payment an
 
 What you see: the closed fridge with the persona standing next to it, in the active theme, in Light, Dark and a Multi-color theme.
 
-- [ ] `js/fridge-advisor-config.js`: first version (scale, camera poses, door angles and durations, capacities, ranges, `maxPixelRatio`) (D7, D10, D11, D19)
-- [ ] `js/fridge-advisor-scene.js`: renderer, scene, camera, lights; load `kitchenFridge.glb`; theme recolour through the shared helpers; the figure from `createFigure()` in `Idle_A` (D5, D14)
-- [ ] Render the fridge open and decide D13 (hollow or boxes); build shelves and drawers as boxes in the theme colours; hinge the two doors and test their swing
-- [ ] Re-apply the theme on `data-theme` and token changes; resize with the stage; render only when something changed (D19)
+- [x] `js/fridge-advisor-config.js`: first version (scale, camera poses, door angles and durations, capacities, ranges, `maxPixelRatio`) (D7, D10, D11, D19)
+- [x] `js/fridge-advisor-scene.js`: renderer, scene, camera, lights; load `kitchenFridge.glb`; theme recolour through the shared helpers; the figure from `createFigure()` in `Idle_A` (D5, D14)
+- [x] Render the fridge open and decide D13 (hollow or boxes); build shelves and drawers as boxes in the theme colours; hinge the two doors and test their swing
+- [x] Re-apply the theme on `data-theme` and token changes; resize with the stage; render only when something changed (D19)
+
+Note on group 2 (built 2026-10-22): the kit fridge is hollow (D13), so its cavity is used and only shelves and drawers are boxes. The persona stands beside it in `Idle_A` with the recipe from `UZBankPersona`; the theme (the kit's four materials mapped to the theme neutrals, the boxes, the figure) re-applies on theme changes; `?open=1` shows both doors open, for inspection. The camera backs away on a narrow stage so the fridge and the figure fit inside the 640px sheet (D16). Group 2 does not animate the doors yet (group 3). The sound feature merged earlier is unaffected.
 
 ## 3. Intro and the tour
 

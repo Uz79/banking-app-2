@@ -1,0 +1,196 @@
+/**
+ * Fridge advisor: the 3D scene. The kit fridge (Kenney Furniture Kit, CC0) with its two doors, the
+ * persona beside it, in the active theme (D5). Shelves, drawers and food are added by later task groups.
+ * The theme comes from the same helpers the Playground world uses; the scene only draws when something moved.
+ */
+import { THREE, createFigure, readTheme, cssColor } from './profile-persona-character.js';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js/+esm';
+
+const FRIDGE_URL = new URL(/* @vite-ignore */ '../assets/3d/fridge/furniture/kitchenFridge.glb', import.meta.url).href;
+
+export async function createFridgeScene(host, cfg, { reduced }) {
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, cfg.maxPixelRatio));
+  renderer.setClearColor(0x000000, 0);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.NoToneMapping;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.domElement.setAttribute('aria-hidden', 'true');
+  host.appendChild(renderer.domElement);
+
+  let dirty = true; /* something changed that a still frame has to show */
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(cfg.camera.fov, 1, 0.1, 100);
+
+  const hemi = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
+  const key = new THREE.DirectionalLight(0xffffff, 2);
+  key.position.set(2.5, 5, 4);
+  key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024);
+  Object.assign(key.shadow.camera, { left: -4, right: 4, top: 4, bottom: -1, near: 0.5, far: 14 });
+  key.shadow.bias = -0.0006;
+  key.shadow.normalBias = 0.02;
+  const rim = new THREE.DirectionalLight(0xffffff, 0);
+  rim.position.set(-3, 3, -4);
+  scene.add(hemi, key, rim);
+
+  /* A floor that only catches the shadows of the fridge and the figure. */
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(14, 14), new THREE.ShadowMaterial({ opacity: 0.25 }));
+  floor.rotation.x = -Math.PI / 2;
+  floor.receiveShadow = true;
+  scene.add(floor);
+
+  /* ── The fridge ───────────────────────────────────────────────────── */
+  const gltf = await new GLTFLoader().loadAsync(FRIDGE_URL);
+  const fridge = new THREE.Group();
+  const model = gltf.scene.children[0];
+  model.position.set(-0.215, 0, 0); /* centre the body on x = 0 */
+  const doors = { freezer: model.getObjectByName('doorFreezer'), fridge: model.getObjectByName('doorFridge') };
+  const mats = {};
+  model.traverse((o) => {
+    if (!o.isMesh) return;
+    o.castShadow = true;
+    o.receiveShadow = true;
+    mats[o.material.name] = o.material;
+  });
+  /* Shelves and drawers: simple boxes in the theme colours, in the kit's own units, so they sit in its cavity (D13). */
+  const boxMats = { board: new THREE.MeshStandardMaterial({ roughness: 0.9 }), drawer: new THREE.MeshStandardMaterial({ roughness: 0.9 }) };
+  const interior = new THREE.Group();
+  const box = (mat, x0, x1, y0, y1, z0, z1) => {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(x1 - x0, y1 - y0, z1 - z0), mat);
+    m.position.set((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2);
+    m.castShadow = true;
+    m.receiveShadow = true;
+    interior.add(m);
+  };
+  {
+    const { x: [x0, x1], z: [z0, z1], main, freezer, board, drawers } = cfg.interior;
+    const shelf = (y) => box(boxMats.board, x0, x1, y - board, y, z0, z1);
+    main.boards.forEach(shelf);
+    freezer.boards.forEach(shelf);
+    shelf(main.drawerTop);
+    /* Two drawers side by side under the lowest shelf: an open tray each (floor, back, sides, a low front). */
+    const half = (x1 - x0 - drawers.gap) / 2;
+    [[x0, x0 + half], [x1 - half, x1]].forEach(([a, b]) => {
+      const bottom = main.y[0], top = main.drawerTop - board, w = drawers.wall;
+      box(boxMats.drawer, a, b, bottom, bottom + w, z0, z1);
+      box(boxMats.drawer, a, b, bottom, top, z0, z0 + w);
+      box(boxMats.drawer, a, a + w, bottom, top, z0, z1);
+      box(boxMats.drawer, b - w, b, bottom, top, z0, z1);
+      box(boxMats.drawer, a, b, bottom, bottom + drawers.front, z1 - w, z1);
+    });
+  }
+  model.add(interior);
+  /* The fridge light: the cavity would otherwise sit in the shadow of its own shell. */
+  const fridgeLight = new THREE.PointLight(0xffffff, cfg.light.intensity, 0, 2);
+  fridgeLight.position.set(...cfg.light.main);
+  model.add(fridgeLight);
+  const freezerLight = new THREE.PointLight(0xffffff, cfg.light.intensity * 0.6, 0, 2);
+  freezerLight.position.set(...cfg.light.freezer);
+  model.add(freezerLight);
+  fridge.add(model);
+  fridge.scale.setScalar(cfg.fridge.scale);
+  fridge.position.set(cfg.fridge.x, 0, 0);
+  scene.add(fridge);
+
+  /* Doors swing about the vertical axis through their hinge (the door node's origin). */
+  const angle = { freezer: 0, fridge: 0 };
+  function setDoor(name, value) {
+    angle[name] = value;
+    doors[name].rotation.y = -value;
+    dirty = true;
+  }
+
+  /* ── The persona, standing beside the fridge ──────────────────────── */
+  const figure = await createFigure({ reduced });
+  const persona = (window.UZBankPersona && window.UZBankPersona.read()) || null;
+  figure.setRecipe((persona && persona.recipe) || { outfit: 'barbarian', head: 'rogue', headwear: 'none', back: 'none' }, false);
+  figure.actor.position.set(cfg.figure.x, 0, cfg.figure.z);
+  figure.actor.rotation.y = cfg.figure.yaw;
+  scene.add(figure.actor);
+  figure.setLoop(cfg.figure.idle);
+  figure.mixer.update(0.4);
+
+  /* ── Theme ────────────────────────────────────────────────────────── */
+  let themeKey = '';
+  function applyTheme(force) {
+    const theme = readTheme();
+    if (!force && theme.key === themeKey) return;
+    themeKey = theme.key;
+    dirty = true;
+    hemi.color.set(theme.sky);
+    hemi.groundColor.set(theme.dark ? '#1E2026' : '#DCDEE3');
+    hemi.intensity = theme.light.fill;
+    key.intensity = theme.light.key;
+    rim.intensity = theme.light.rim;
+    const colour = (name) => new THREE.Color().setRGB(...cssColor(name).map((v) => v / 255), THREE.SRGBColorSpace);
+    const bg = colour('--color-bg');
+    const fg = colour('--color-fg');
+    const mix = (amount) => bg.clone().lerp(fg, amount);
+    /* The kit's four materials, mapped to the theme's neutrals. */
+    if (mats.metalLight) mats.metalLight.color.copy(mix(theme.dark ? 0.3 : 0.15));
+    if (mats.metalDark) mats.metalDark.color.copy(mix(theme.dark ? 0.22 : 0.3));
+    if (mats.metal) mats.metal.color.copy(mix(0.45));
+    if (mats.glass) mats.glass.color.copy(mix(0.3));
+    boxMats.board.color.copy(mix(theme.dark ? 0.55 : 0.45));
+    boxMats.drawer.color.copy(mix(theme.dark ? 0.4 : 0.3));
+    figure.recolour(theme);
+  }
+  applyTheme(true);
+  new MutationObserver(() => requestAnimationFrame(() => applyTheme(false)))
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'style', 'class'] });
+
+  /* ── Camera ───────────────────────────────────────────────────────── */
+  const look = new THREE.Vector3();
+  const want = new THREE.Vector3();
+  let pose = cfg.camera.pose.intro;
+  /* From the pose, backed away along the line of sight until its `width` fits the stage. */
+  function placeCamera() {
+    const tanHalf = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
+    want.set(...pose.pos).sub(look.set(...pose.look));
+    const fit = pose.width / (2 * tanHalf * camera.aspect);
+    want.setLength(Math.max(want.length(), fit)).add(look);
+    camera.position.copy(want);
+    camera.lookAt(look);
+    dirty = true;
+  }
+  function setPose(name) {
+    pose = cfg.camera.pose[name];
+    placeCamera();
+  }
+
+  /* ── Size and loop ────────────────────────────────────────────────── */
+  function resize() {
+    const w = host.clientWidth || 1, h = host.clientHeight || 1;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.fov = w / h < 0.9 ? cfg.camera.fovNarrow : cfg.camera.fov;
+    camera.updateProjectionMatrix();
+    placeCamera();
+  }
+  new ResizeObserver(resize).observe(host);
+  resize();
+  setPose('intro');
+
+  const clock = new THREE.Clock();
+  function frame() {
+    requestAnimationFrame(frame);
+    const dt = Math.min(clock.getDelta(), 0.05);
+    if (document.hidden) return;
+    figure.update(dt);
+    if (dirty || !reduced()) {
+      dirty = false;
+      renderer.render(scene, camera);
+    }
+  }
+  requestAnimationFrame(frame);
+
+  window.addEventListener('pagehide', (e) => {
+    if (e.persisted) return;
+    renderer.dispose();
+    renderer.forceContextLoss();
+  });
+
+  return { setDoor, setPose, scene, camera, fridge, figure, doors, redraw: () => { dirty = true; } };
+}
