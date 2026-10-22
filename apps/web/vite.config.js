@@ -10,8 +10,10 @@ const dir = dirname(fileURLToPath(import.meta.url));
 export default {
   root: dir,
   server: {
-    port: 5174,
+    port: 5175,
     strictPort: true,
+    host: true,              // reachable from a phone on the same Wi-Fi
+    allowedHosts: ['.local'], // the Mac's Bonjour name, e.g. klaudiuszs-macbook-pro.local
     open: '/overview.html',
     proxy: {
       '/api/yahoo': {
