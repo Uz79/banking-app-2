@@ -22,11 +22,13 @@ export const CONFIG = {
        slider screens all frame the whole fridge, with the open door and its shadow inside (about 85% of the stage height). */
     pose: {
       intro: { pos: [0.3, 1.2, 5.2], look: [0.3, 1.05, 0], width: 4.1 },
-      main: { pos: [-0.84, 2.4, 6], look: [-0.84, 1.05, 0], width: 1.9, height: 2.9, fill: true },
-      /* The drawers, pulled well out, seen from above and close, so their fill is easy to judge. */
-      reserve: { pos: [-0.75, 1.5, 2.6], look: [-0.75, 0.3, 0.2], width: 1.05, height: 1.3, fill: true },
-      /* The freezer at the top, seen from above, so the open door and its contents read. */
-      freezer: { pos: [-0.84, 3.2, 3.0], look: [-0.84, 1.85, 0.1], width: 1.8, height: 1.6, fill: true },
+      /* Each pose looks at the middle of its subject (the compartment, the drawers, the freezer), so the subject sits in the
+         centre of the stage; `pos` only gives the direction to look from. */
+      main: { pos: [-0.75, 2.25, 6], look: [-0.75, 0.88, 0], width: 2.0, height: 2.9, fill: true },
+      /* The drawers, pulled well out, seen from above and close, with a little of the shelf above. */
+      reserve: { pos: [-0.75, 1.5, 2.43], look: [-0.75, 0.29, 0.03], width: 1.0, height: 0.9, fill: true },
+      /* The freezer at the top, seen from above, close enough that the open door is partly cropped and the contents read. */
+      freezer: { pos: [-0.75, 3.35, 2.9], look: [-0.75, 2.0, 0], width: 1.2, height: 1.1, fill: true },
     },
   },
 
