@@ -55,7 +55,7 @@ What you see: screens 5 and 6: moving a slider updates its CHF value and fills s
 
 - [x] Poses frame the whole fridge by `width` and `height` (`fill`), high key light, persona hidden after the intro
 - [x] Food about twice as large: capacities 2 per shelf and drawer, 4 in the freezer
-- [ ] Phone (390px) framing and the result screen's pose to be checked in groups 5 and 6
+- [x] Phone (390px) framing and the result screen's pose to be checked in groups 5 and 6
 
 ## 5. The result and the closing screen
 
@@ -70,12 +70,12 @@ What you see: screen 7: the door closes, a short cooling moment, the freezer ope
 
 What you see: the flow at 390px and by keyboard only, in Light and Dark.
 
-- [ ] Phone layout (D16): the scene on top, the panel below, Next full width; landscape phone scrolls the panel if needed
-- [ ] Keyboard through every step and every slider; focus rings; Escape and the exit dialog (D3); screen reader wording (D18)
-- [ ] Contrast of text on the panel and of the value labels in Light, Dark and a Multi-color theme
+- [x] Phone layout (D16): the scene on top, the panel below, Next full width; landscape phone scrolls the panel if needed
+- [x] Keyboard through every step and every slider; focus rings; Escape and the exit dialog (D3); screen reader wording (D18)
+- [x] Contrast of text on the panel and of the value labels in Light and Dark (a Multi-color theme not checked)
 
 ## 7. Wrap-up
 
-- [ ] `npm run build` in `apps/web` succeeds
-- [ ] Run `validation.md`, including the baseline smoke test copied there; fill in the "Checked on" line
-- [ ] Docs: `specs/roadmap.md` (8a done, the spec link); `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the Pages table row for `fridge-advisor.html`, a Decisions row for the formula and the sheet, the assets); `apps/web/README.md` (the new files and assets, no new key); `AGENTS.md` only if a convention changed
+- [x] `npm run build` in `apps/web` succeeds
+- [x] Run `validation.md`, including the baseline smoke test copied there; fill in the "Checked on" line
+- [x] Docs: `specs/roadmap.md` (8a done, the spec link); `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the Pages table row for `fridge-advisor.html`, a Decisions row for the formula and the sheet, the assets); `apps/web/README.md` (the new files and assets, no new key); `AGENTS.md` only if a convention changed

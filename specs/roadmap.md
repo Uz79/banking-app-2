@@ -51,13 +51,13 @@ A settings button in the Playground HUD that pauses the run and opens a settings
 
 Open for its interview: which visual parameters (for example render quality or pixel ratio, camera distance), whether Sound moves into the dialog from the HUD, and whether Multi-color themes are picked here or stay in Profile. Measure the paused theme switch on a throttled CPU first: a mid-run switch on a desktop cost about one extra frame, a phone is untested. Own spec when it is picked up.
 
-## 8. "How much should I invest?": the fridge advisor
+## 8. "How much should I invest?": the fridge advisor (8a done)
 
 The first step of opening an investment product, as in a bank's advisory meeting. A fridge metaphor: the main compartment is money for daily needs, the reserve drawers are reserves for the unplanned and for bigger purchases, and the freezer is what can be invested. Based on a flow Klaudiusz designed with a bank; the reference frames are in `~/Documents/Projects/AI Portfolio Projects/Banking App/_resources/261022_fridge-food/scenario`.
 
 Split:
 
-- **8a. The flow** (first): entry from Overview > Offers > "Investment", a 3D fridge in the theme colours with the persona character standing next to it, five beats, sliders as the input, the investable amount as the result.
+- **8a. The flow** (done): entry from Overview > Offers > "Investment", a 3D fridge in the theme colours with the persona character standing next to it, five beats, sliders as the input, the investable amount as the result.
 - **8b. The avatar acting** (later): the character opens the doors, carries items and cheers.
 
 Spec for 8a: `specs/2026-10-22-fridge-advisor/`.
