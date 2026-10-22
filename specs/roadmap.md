@@ -19,7 +19,7 @@ What was agreed before the spec (confirmed in the interview, not re-opened):
 - **Mechanics:** in the style of Shopify's Horizon Drive: a spline track (no physics library, no raycasts), steer left and right within the track width, a chase camera, instanced effects. Keyboard and touch.
 - **Story:** "Payday run". Salary lands (coin burst at the start), the runner collects coins through a small town and passes gates for rent, groceries and bills, deposits what's left in a savings chest, then runs into a forest where trees grow along the track (compound growth). The finish shows the result as a balance in the app's CHF format; the best run is kept.
 - **Look:** the world takes the active colour theme, like the character (monochrome plus one accent).
-- **Assets:** KayKit City Builder Bits 1.0 (free) and Forest Nature Pack 1.0 (free), CC0, already downloaded to `~/Documents/Projects/AI Portfolio Projects/Design System/_resources/`. Copy only the models used into `apps/web/assets/3d/`.
+- **Assets:** KayKit City Builder Bits 1.0 (free) and Forest Nature Pack 1.0 (free), CC0, already downloaded to `~/Documents/Projects/AI Portfolio Projects/Banking App/_resources/`. Copy only the models used into `apps/web/assets/3d/`.
 - **Tuning:** speed curves, camera lag and effect sizes live in one config object with starting values, so feel is tuned by changing numbers.
 - **Performance:** 60 fps on a mid-range phone; few draw calls; reduced motion gives a calm, still alternative.
 

@@ -85,6 +85,7 @@ Settled choices, so they don't get re-argued. Add a row when a decision changes 
 | Need | Decision | Notes |
 |---|---|---|
 | Changing the process | Spec-driven workflow adopted in place on 2026-10-19; the code was not rebuilt | A rebuild would have meant weeks of parity work on a presentable app. The pre-process state is tagged `v1-presentable` |
+| Deploy | Deploy = source: GitHub Pages serves `apps/web` as it is (`path: apps/web` in `deploy.yml`), `dist` is never deployed | Assets loaded at run time by a computed URL (3D models, audio) need no copy step in the build |
 | Default look | UZ Bank navy on white / white on navy, shown as the built-in "UZ Bank" theme card | Nothing changes until a user picks a theme |
 | Light/Dark with colour themes | The sidebar toggle stays; each theme remembers its own Light and Dark contrast | Cached tokens per shell; switching is instant on every page |
 | Interactive ink | `--color-fg-interactive` for focus rings, selected states and sliders; follows Cartography for filled primary buttons and active segments | Secondary buttons and nav stay neutral |

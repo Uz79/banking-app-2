@@ -1,20 +1,7 @@
-import { cpSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const dir = dirname(fileURLToPath(import.meta.url));
-
-/**
- * Files a script fetches at run time by a computed URL are not seen by Vite, so the build does not emit them.
- * They are copied as they are, to the path the built script resolves them to (assets/ next to the scripts).
- */
-const copyRuntimeAssets = (...folders) => ({
-  name: 'copy-runtime-assets',
-  apply: 'build',
-  closeBundle() {
-    folders.forEach((f) => cpSync(resolve(dir, f), resolve(dir, 'dist', f), { recursive: true }));
-  },
-});
 
 /**
  * Static multi-page banking shell (overview / payments / …): link CSS from HTML as usual.
@@ -22,7 +9,6 @@ const copyRuntimeAssets = (...folders) => ({
  */
 export default {
   root: dir,
-  plugins: [copyRuntimeAssets('assets/3d/fridge')],
   server: {
     port: 5175,
     strictPort: true,
