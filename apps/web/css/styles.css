@@ -11375,8 +11375,12 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
 }
 
 .fridge__actions {
+  position: sticky;
+  bottom: calc(-1 * var(--space-4));
   margin-top: auto;
-  padding-top: var(--space-3);
+  /* The button stays in reach when the panel scrolls (a phone with three sliders); the panel's own bottom padding is pulled in. */
+  padding: var(--space-3) 0 max(var(--space-4), env(safe-area-inset-bottom));
+  background-color: var(--color-bg);
 }
 
 .fridge__fields {
@@ -11558,5 +11562,16 @@ html.fridge--wide .fridge__panel {
 @media (prefers-reduced-motion: reduce) {
   .fridge__ring-bar {
     transition: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .fridge__ring {
+    width: 8.5rem;
+    height: 8.5rem;
+  }
+
+  .fridge__ring-amount {
+    font-size: var(--fs-h5);
   }
 }
