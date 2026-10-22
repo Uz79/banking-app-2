@@ -23,6 +23,7 @@ Roadmap item 8a (`specs/roadmap.md`). "How much should I invest?": the first ste
 - Remembering entered values (D8: no storage key)
 - Real accounts: the flow never reads or writes `uzBankWebPaymentState`
 - Sound
+- Gaps found in the baseline run, not from this branch: All bookings Search button (roadmap item 10), Account details Household balance (roadmap item 11)
 
 **Agreed before this spec, confirmed and not re-opened:** the entry; the sheet; English copy; the Kenney fridge, with doors as separate nodes; the five beats; sliders as input, food as visualisation; the result formula's shape and the yearly amount (the formula is flagged for confirmation, D9); the one-line note; reduced motion as still frames; copy only the models used; reuse `createFigure` from `js/profile-persona-character.js`, no fork.
 

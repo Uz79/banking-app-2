@@ -60,7 +60,7 @@ Registering a new page: see `AGENTS.md` → Conventions (five places).
 
 - `js/profile-persona.js`: User Type sliders → profile (Newbie, All-rounder, Power user) and a part recipe; persists `uzBankWebPersonaProfile`; exposes `window.UZBankPersona`
 - `js/profile-persona-character.js`: three.js scene, KayKit Adventurers parts on one shared rig, recoloured to the theme. Modes: Profile (1.5×, interactive), ambient (1× on `AMBIENT_SCREENS`), specimen (`[data-character-specimen]`, Character kit page)
-- Assets: `assets/3d/kaykit/` (CC0). Unused KayKit packs live outside the repo, in the Design System project's `_resources` folder
+- Assets: `assets/3d/kaykit/` (CC0). Unused KayKit packs live outside the repo, in `~/Documents/Projects/AI Portfolio Projects/Banking App/_resources/`
 - Full documentation: `character-kit.html`
 - The Playground reuses the module: `createFigure()` (the character without a scene), `readTheme`, `monochromeLut`, `preparePalette`, `cssColor` and `THREE` are exported
 

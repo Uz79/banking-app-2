@@ -65,3 +65,11 @@ Spec for 8a: `specs/2026-10-22-fridge-advisor/`.
 ## 9. Investment product opening (later)
 
 What follows "Show suitable products" in item 8: product choice, risk profile, signing. Not started; item 8a ends at that button.
+
+## 10. All bookings: the Search button does nothing
+
+The Search button on `all-bookings-and-payments.html` has no handler. Found during the fridge advisor's baseline run; it predates that branch.
+
+## 11. Account details: Household balance
+
+The account card on Account details shows Household as 10'000 instead of the booked balance (Overview shows 9'900 at the start, 9'400 after a 500 payment). Align it with Overview. Found during the fridge advisor's baseline run; it predates that branch.
