@@ -60,7 +60,7 @@ Split:
 - **8a. The flow** (first): entry from Overview > Offers > "Investment", a 3D fridge in the theme colours with the persona character standing next to it, five beats, sliders as the input, the investable amount as the result.
 - **8b. The avatar acting** (later): the character opens the doors, carries items and cheers.
 
-Spec for 8a: not yet written.
+Spec for 8a: `specs/2026-10-22-fridge-advisor/`.
 
 ## 9. Investment product opening (later)
 
