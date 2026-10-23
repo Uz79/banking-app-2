@@ -66,13 +66,13 @@ Spec for 8a: `specs/2026-10-22-fridge-advisor/`.
 
 What follows "Show suitable products" in item 8: product choice, risk profile, signing. Not started; item 8a ends at that button.
 
-## 10. All bookings: the Search button does nothing
+## 10. All bookings: the Search button does nothing (done)
 
 Spec: `specs/2026-10-23-bookings-search-and-balance/` (together with item 11).
 
 The Search button on `all-bookings-and-payments.html` has no handler. Found during the fridge advisor's baseline run; it predates that branch.
 
-## 11. Account details: Household balance
+## 11. Account details: Household balance (done)
 
 Spec: `specs/2026-10-23-bookings-search-and-balance/` (together with item 10). The spec found that the transfer and trade flows and the All bookings card carry their own constant balances too, and that the Overview and Account details totals use the fixed registered figure.
 
