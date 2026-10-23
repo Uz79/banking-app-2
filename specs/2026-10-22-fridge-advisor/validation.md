@@ -122,3 +122,24 @@ Update, 2026-10-22 (baseline run completed, Chrome on macOS, port 5199, 2391px w
 - Passed: status message appears after about 14 s and a tap dismisses it. Overview > Account details > All bookings and back. Pay end to end (recipient search filters, recipient, amount, schedule, summary, confirmation; Household went 9'900 to 9'400 and "Lena Fischer -500.00" shows under Today on Account details). Internal transfer (Household to Savings, 500; balances 8'900 and 25'500). Custody account > Apple > Buy opens and its close button asks "Discard order?". All bookings: Executed/Pending tabs and month chips switch. Profile User Type (slider changed the character; the title "Newbie" is correct, the profile follows the average of the three sliders). Legibility: Compact and Default presets, Typeface (Georgia and back), Font and Paddings sliders. Theme: Custom 02 (orange) recoloured Overview, the character and the fridge advisor (outline, sliders and Next in the accent); the UZ Bank card restored the navy default. Demo data reset restored Household to the starting 9'900. Design system (admin): hub lists Motion, Components, Character kit and Payday run; Motion and Components open and the back arrow returns to the hub; Character kit specimen loads and its profile buttons change the figure. Tab through Overview: focus ring visible on the sidebar and the quick actions.
 - Not run: the Search button on All bookings does nothing (it has no handler, and the page is unchanged from `main`, so it predates this branch); the Payday run page; Light and phone-width (390px) repeats of the starred items; reduced motion through the system setting; Overview > Account details card shows Household 10'000 while Overview shows the booked balance (looks like the same pre-existing behaviour, not compared against `main`).
 - Build: `npm run build` passes after removing the `copyRuntimeAssets` plugin (D25).
+
+## 9. The compartment tint (group 8, D26)
+
+Branch `feature/fridge-compartment-tint`. Same setup as above.
+
+- [ ] `npm run build` in `apps/web` succeeds with no new warnings; the browser console shows no errors
+- [ ] No outline bars anywhere, on any step
+- [ ] Step 2 and 5: the back wall, side walls and shelves are tinted; the drawers, the freezer, the fridge body and the doors are not
+- [ ] Step 3 and 6: only the drawer bodies are tinted
+- [ ] Step 4 and 7: only the freezer interior is tinted; on step 7 it tints as the freezer opens, after the cooling moment, and matches the result ring
+- [ ] The tint fades between compartments with the camera move (0.25 s) and never shows two compartments at full tint
+- [ ] The food stays neutral and readable on the tint (a full compartment: step 5 with large values, step 6, step 7)
+- [ ] Light (34%), Dark (25%), a Monochrome theme (a soft wash, not a bright block) and a Multi-color theme (accent hue)
+- [ ] Switching Light/Dark or the theme while the page is open re-tints
+- [ ] Desktop wide layout and 390px
+- [ ] Reduced motion (`?reduced`): the tint switches at once; the cooling frost on step 7 as before
+- [ ] Back and Next across all steps (tint follows, including going back from the result)
+- [ ] Baseline smoke test (section 8) re-run
+
+Checked on: not yet.
+
