@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 19e682da0266f2acdc2099ad0916ad6bde19231e -->
+<!-- changelog: last-commit 884b6b5045fcd3c80d0e66ada5d7b66a3ee7d675 -->
 
 ### Decided
 - **Spec-driven workflow.** From now on every change goes through a dated spec folder (`specs/<YYYY-MM-DD>-<name>/`) created with `/feature-spec`, on its own branch, with a validation pass and the baseline smoke test before it reaches `main`. Added `AGENTS.md`, `specs/mission.md`, `specs/tech-spec.md`, `specs/roadmap.md`, `specs/baseline/`, and the `/feature-spec` and `/changelog` skills. The app's code is unchanged. The state before this is tagged `v1-presentable`.
@@ -13,8 +13,6 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 
 ### Added
 - **All bookings search.** The Search button opens an inline bar under the toolbar that filters bookings by payee or amount across all months, hides empty day groups, shows an empty state and a match count for screen readers, and closes with Escape. The month chips are dimmed while a query is typed. No new storage key.
-
-### Added
 - **Mobile Light/Dark toggle.** On Overview, Payments, Profile and Design system, under 1280px, a small glyph-only button in the top left of the top bar swaps Light and Dark. It shows the sun in Light and the moon in Dark, switches instantly through the same function as the sidebar (so Multi-color themes work as before), and keeps no hover fill after a tap on touch screens. It is hidden at 1280px and up, where the sidebar has the control, and is not on the deeper screens, which keep their back arrow. New file `js/mode-toggle.js`; no new storage key.
 - **Playground: "Payday run"** (Design system, admin only). A small 3D game that takes the persona character, the colour themes and the motion out for a run. A fourth card on the Design system page opens `playground.html` as a full-screen sheet that slides up and down like the flow screens, with a close button on the right; Escape pauses, then closes. The runner is the User Type character and its profile sets the pace (Beat jogs, Lena runs, Max sprints). The run goes through a town (KayKit City Builder Bits, CC0) collecting coins from the salary, past gates for rent, groceries and bills, into a savings chest, then through a forest (KayKit Forest Nature Pack, CC0) where trees grow as you close in and the savings compound. It ends on a result screen with a breakdown and a "New best" badge. The world takes the active colour theme. Steering: arrow keys or A/D, or two on-screen buttons on touch devices. With reduced motion the run is a short set of still scenes with Next. All tuning numbers are in `js/playground-config.js`. A "Try it in the Playground" link ends the Character kit page.
 - New `localStorage` key `uzBankWebPlaygroundBest` (best run), listed in `apps/web/README.md`.
