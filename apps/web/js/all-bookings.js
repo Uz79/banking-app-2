@@ -295,6 +295,13 @@
         var next = g.nextElementSibling;
         if (next && next.classList.contains('divider')) setHidden(next, !any);
       });
+      /* No divider under the last visible group. */
+      if (query) {
+        var shown = groups.filter(function (g) { return !g.classList.contains('is-search-hidden'); });
+        var last = shown[shown.length - 1];
+        var tail = last && last.nextElementSibling;
+        if (tail && tail.classList.contains('divider')) setHidden(tail, true);
+      }
       page.classList.toggle('all-bookings--searching', !!query);
       root.querySelectorAll('[data-bookings-month]').forEach(function (chip) {
         if (query) chip.setAttribute('aria-disabled', 'true');
