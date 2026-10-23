@@ -79,3 +79,14 @@ What you see: the flow at 390px and by keyboard only, in Light and Dark.
 - [x] `npm run build` in `apps/web` succeeds
 - [x] Run `validation.md`, including the baseline smoke test copied there; fill in the "Checked on" line
 - [x] Docs: `specs/roadmap.md` (8a done, the spec link); `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the Pages table row for `fridge-advisor.html`, a Decisions row for the formula and the sheet, the assets); `apps/web/README.md` (the new files and assets, no new key); `AGENTS.md` only if a convention changed
+
+## 8. The compartment tint (follow-up, 2026-10-23: D26)
+
+Branch: `feature/fridge-compartment-tint`. What you see: no outline on any step; the active compartment's interior is tinted with the accent and fades to the next one with the camera move.
+
+- [x] `js/fridge-advisor-config.js`: replace `outline: { bar }` with `tint: { light: 0.34, dark: 0.25 }` and update the comment on `motion.outline` (it now times the tint fade); the `outline` key on the steps keeps naming the compartment
+- [x] `js/fridge-advisor-scene.js`: remove the outline frames and `outlineMat`; own materials for the main shelves, the drawers and the inner wall panels of the main compartment and the freezer; `setOutline` tweens a 0 to 1 amount per compartment (instant with reduced motion); colours set in `applyTheme` from the background, the accent and `CONFIG.tint` (the throwaway `?tint=` flag from the prototype goes)
+- [x] The result step tints the freezer when it opens (after the cooling moment), the same moment as today's outline
+- [x] Check steps 2 to 7 in Light, Dark, a Monochrome theme and a Multi-color theme, desktop and 390px, with the food in place; adjust the numbers only if something is unreadable
+- [x] Docs: `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` if it mentions the outline; this spec's `validation.md` section 9; the README only if a file or key changed (none expected)
+
