@@ -29,12 +29,11 @@
   var MAX_BOOKINGS = 5;
   var SCHEMA_VERSION = 2;
 
-  // Household account in CHF — this is the *registered* end-of-yesterday
-  // balance, the "settled" number shown in the account list everywhere.
-  // It stays fixed for the entire session: new payments add to today's
-  // running ledger but do NOT change this displayed balance (only tomorrow,
-  // hypothetically, would today's outflows show up here).
-  // Registered Household balance = end of yesterday (start of today) in CHF.
+  // Household account in CHF. INITIAL_HOUSEHOLD is the *registered* balance, the
+  // end of yesterday: it stays fixed and feeds only the Yesterday and day headers
+  // of the bookings lists. Every place that shows a Household or Savings balance
+  // shows the *running* balance (accountBalances in getState()): what is left after
+  // today's bookings and transfers, so no page disagrees with another.
   // Yesterday mock outflows (USD) sum to 430; 10'430 − 430 = 10'000 USD header
   // on the Yesterday group. Today opens at CHF 10'000; Apple −100 → Today
   // header CHF 9'900 (see account-details bookings card / Figma).
@@ -47,15 +46,14 @@
   // payments the user commits in-session.
   var STATIC_TODAY_OUTFLOW = 100.00;
 
-  // Fixed sibling account balances (not editable in this prototype).
+  // Opening balances of the sibling accounts. Savings moves with internal transfers;
+  // the custody and retirement accounts are fixed in this prototype.
   // The overview page shows a sum across all 4 accounts; account-details
   // shows a smaller "All accounts" sum across Household + Savings only,
-  // matching the carousel on that page.
+  // matching the carousel on that page. Both sums use the running balances.
   var SAVINGS    = 25000;
   var DEPOSIT    = 20000;
   var RETIREMENT = 10000;
-  var OVERVIEW_OTHER_TOTAL        = SAVINGS + DEPOSIT + RETIREMENT; // 55'000
-  var ACCOUNT_DETAILS_OTHER_TOTAL = SAVINGS;                         // 25'000
 
   /* ── 8 recipient records ─────────────────────────────────────────
    * Mix of CH / DE / AT / FR / IT names so the random picker feels
@@ -320,10 +318,10 @@
         household: householdRunning,
         savings: savingsRunning
       },
-      // Page-specific sums of "registered" balances. They reflect the
-      // settled (yesterday-end) state and don't shift with today's bookings.
-      overviewAccountsTotal:        state.household + OVERVIEW_OTHER_TOTAL,
-      accountDetailsAccountsTotal:  state.household + ACCOUNT_DETAILS_OTHER_TOTAL,
+      // Page-specific sums of the running balances, so each total adds up to
+      // the rows under it after a payment or a transfer.
+      overviewAccountsTotal:        Math.round((householdRunning + savingsRunning + DEPOSIT + RETIREMENT) * 100) / 100,
+      accountDetailsAccountsTotal:  Math.round((householdRunning + savingsRunning) * 100) / 100,
       positions: clonePositions(state.positions),
       bookings: state.bookings.map(function (b) {
         var row = {

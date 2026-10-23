@@ -29,6 +29,16 @@
     },
   };
 
+  /* Household and Savings show the running balance from the shared state; the table above is the fallback. */
+  function balanceFor(key) {
+    var pay = window.UZBankPayState;
+    if (pay && typeof pay.getState === 'function') {
+      var amount = (pay.getState().accountBalances || {})[key];
+      if (amount != null) return pay.formatMoney(amount);
+    }
+    return ACCOUNTS[key].balance;
+  }
+
   function accountKeyFromQuery() {
     var params = new URLSearchParams(window.location.search);
     var key = params.get('account') || 'savings';
@@ -105,7 +115,7 @@
     if (title) title.textContent = data.title;
     if (subtitle) subtitle.textContent = data.iban;
     if (currency) currency.textContent = data.currency;
-    if (value) value.textContent = data.balance;
+    if (value) value.textContent = balanceFor(key);
     if (icon) icon.setAttribute('href', '#' + data.icon);
     summary.setAttribute('aria-label', data.title);
   }
@@ -243,15 +253,116 @@
     onScroll();
   }
 
+  /* Search (D5 to D10): an inline bar under the toolbar that filters the static rows by name or amount. */
+  function bindSearch(root) {
+    var toggle = root.querySelector('[data-all-bookings-search-toggle]');
+    var bar = root.querySelector('[data-all-bookings-search]');
+    var input = root.querySelector('[data-all-bookings-search-input]');
+    var clear = root.querySelector('[data-all-bookings-search-clear]');
+    var empty = root.querySelector('[data-all-bookings-search-empty]');
+    var status = root.querySelector('[data-all-bookings-search-status]');
+    var list = root.querySelector('.all-bookings__list');
+    var page = root.querySelector('.all-bookings');
+    if (!toggle || !bar || !input || !list) return;
+
+    var groups = Array.prototype.slice.call(list.querySelectorAll('.booking-group'));
+    var rows = Array.prototype.slice.call(list.querySelectorAll('.booking-row')).map(function (row) {
+      var name = (row.querySelector('.booking-row__name') || {}).textContent || '';
+      var amount = (row.querySelector('.booking-row__value') || {}).textContent || '';
+      return { el: row, text: (name + ' ' + amount + ' ' + amount.replace(/'/g, '')).toLowerCase() };
+    });
+
+    function reducedMotion() {
+      return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+
+    function setHidden(el, hide) {
+      el.classList.toggle('is-search-hidden', hide);
+    }
+
+    function filter() {
+      var query = input.value.trim().toLowerCase();
+      var matches = 0;
+      rows.forEach(function (r) {
+        var show = !query || r.text.indexOf(query) !== -1;
+        setHidden(r.el, !show);
+        if (show) matches += 1;
+      });
+      groups.forEach(function (g) {
+        var any = !query || g.querySelector('.booking-row:not(.is-search-hidden)');
+        setHidden(g, !any);
+        /* The divider after a hidden group goes with it. */
+        var next = g.nextElementSibling;
+        if (next && next.classList.contains('divider')) setHidden(next, !any);
+      });
+      /* No divider under the last visible group. */
+      if (query) {
+        var shown = groups.filter(function (g) { return !g.classList.contains('is-search-hidden'); });
+        var last = shown[shown.length - 1];
+        var tail = last && last.nextElementSibling;
+        if (tail && tail.classList.contains('divider')) setHidden(tail, true);
+      }
+      page.classList.toggle('all-bookings--searching', !!query);
+      root.querySelectorAll('[data-bookings-month]').forEach(function (chip) {
+        if (query) chip.setAttribute('aria-disabled', 'true');
+        else chip.removeAttribute('aria-disabled');
+      });
+      clear.classList.toggle('recipient-search__clear--hidden', !input.value);
+      if (empty) {
+        empty.hidden = !(query && matches === 0);
+        empty.textContent = query ? 'No bookings match \u201c' + input.value.trim() + '\u201d' : 'No bookings match';
+      }
+      if (status) {
+        status.textContent = query ? (matches === 0 ? 'No bookings match' : matches + (matches === 1 ? ' booking' : ' bookings')) : '';
+      }
+    }
+
+    function setOpen(open, focusTarget) {
+      bar.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (!open) {
+        input.value = '';
+        filter();
+        if (focusTarget !== false) toggle.focus();
+      } else {
+        /* Focus after the bar is visible; at once with reduced motion. */
+        window.setTimeout(function () { input.focus(); }, reducedMotion() ? 0 : 30);
+      }
+    }
+
+    toggle.addEventListener('click', function () {
+      setOpen(!bar.classList.contains('is-open'));
+    });
+    input.addEventListener('input', filter);
+    clear.addEventListener('click', function () {
+      input.value = '';
+      filter();
+      input.focus();
+    });
+    bar.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && bar.classList.contains('is-open')) {
+        e.preventDefault();
+        setOpen(false);
+      }
+    });
+    root.querySelectorAll('[data-bookings-month]').forEach(function (chip) {
+      chip.addEventListener('click', function (e) {
+        if (chip.getAttribute('aria-disabled') === 'true') e.stopImmediatePropagation();
+      }, true);
+    });
+  }
+
   function init() {
     var root = document.querySelector('[data-view="all-bookings"]');
     if (!root) return;
 
     var key = accountKeyFromQuery();
     applyAccount(root, key);
+    document.addEventListener('uzbank:state-changed', function () { applyAccount(root, key); });
     window.__UZ_ACTIVE_ACCOUNT__ = key;
     bindSegmented(root, 'data-bookings-status');
     bindMonthChips(root);
+    bindSearch(root);
     bindStickyHeights(root);
     bindMonthMerge(root);
 
