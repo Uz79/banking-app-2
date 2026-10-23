@@ -35,17 +35,21 @@
   /* ── Household balance — appears in 4-5 places per page ─────────── */
 
   function renderHouseholdBalance(state) {
-    var formatted = fmt(state.household);
     var running = state.accountBalances && state.accountBalances.household;
+    var formatted = fmt(running != null ? running : state.household);
 
     // overview.html: running balance after today's bookings (payments + trades)
     document.querySelectorAll('[data-account="household"] .product-item__value').forEach(function (el) {
       el.textContent = running != null ? fmt(running) : formatted;
     });
 
-    // account-details.html: first carousel slide is Household (registered balance)
-    var firstSlide = document.querySelector('.carousel__slides .carousel__slide:first-child .list-item__value');
-    if (firstSlide) firstSlide.textContent = formatted;
+    // account-details.html: the carousel slides (Household, Savings) show the running balances
+    var balances = state.accountBalances || {};
+    document.querySelectorAll('.carousel__slides .carousel__slide[data-account-key]').forEach(function (slide) {
+      var amount = balances[slide.getAttribute('data-account-key')];
+      var value = slide.querySelector('.list-item__value');
+      if (value && amount != null) value.textContent = fmt(amount);
+    });
 
     // Payment modal: debit-account rows (not IAT — those are painted by iat-overlay.js)
     var paymentRoot = document.querySelector('.modal-overlay:not(#uz-iat-overlay) .modal--payment-flow');

@@ -29,6 +29,16 @@
     },
   };
 
+  /* Household and Savings show the running balance from the shared state; the table above is the fallback. */
+  function balanceFor(key) {
+    var pay = window.UZBankPayState;
+    if (pay && typeof pay.getState === 'function') {
+      var amount = (pay.getState().accountBalances || {})[key];
+      if (amount != null) return pay.formatMoney(amount);
+    }
+    return ACCOUNTS[key].balance;
+  }
+
   function accountKeyFromQuery() {
     var params = new URLSearchParams(window.location.search);
     var key = params.get('account') || 'savings';
@@ -105,7 +115,7 @@
     if (title) title.textContent = data.title;
     if (subtitle) subtitle.textContent = data.iban;
     if (currency) currency.textContent = data.currency;
-    if (value) value.textContent = data.balance;
+    if (value) value.textContent = balanceFor(key);
     if (icon) icon.setAttribute('href', '#' + data.icon);
     summary.setAttribute('aria-label', data.title);
   }
@@ -249,6 +259,7 @@
 
     var key = accountKeyFromQuery();
     applyAccount(root, key);
+    document.addEventListener('uzbank:state-changed', function () { applyAccount(root, key); });
     window.__UZ_ACTIVE_ACCOUNT__ = key;
     bindSegmented(root, 'data-bookings-status');
     bindMonthChips(root);

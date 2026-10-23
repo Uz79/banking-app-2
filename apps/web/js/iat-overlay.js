@@ -10,12 +10,20 @@
 
   /* ── Account catalogue ─────────────────────────────────────────── */
 
+  /* Household and Savings show the running balance from the shared state (the constant is the fallback). */
+  function liveBalance(key, fallback) {
+    var pay = window.UZBankPayState;
+    if (!pay || typeof pay.getState !== 'function') return fallback;
+    var amount = (pay.getState().accountBalances || {})[key];
+    return amount != null ? pay.formatMoney(amount) : fallback;
+  }
+
   var ACCOUNTS = {
     household: {
       key: 'household',
       name: 'Household',
       iban: 'CH35 0900 0000 2470 2920 1',
-      balance: "10'000.00",
+      get balance() { return liveBalance('household', "10'000.00"); },
       currency: 'CHF',
       icon: '#i-home'
     },
@@ -23,7 +31,7 @@
       key: 'savings',
       name: 'Savings Account',
       iban: 'CH35 0900 0000 2470 2920 2',
-      balance: "25'000.00",
+      get balance() { return liveBalance('savings', "25'000.00"); },
       currency: 'CHF',
       icon: '#i-anchor'
     },
