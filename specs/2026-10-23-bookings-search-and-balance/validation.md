@@ -27,7 +27,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [ ] Typing "coop" leaves only Coop rows and their day groups; "100" matches amounts; matching ignores case and surrounding spaces
 - [ ] No match shows the empty state with the query; clearing the field (clear button) restores the full list and keeps the bar open
 - [ ] Closing the bar restores every row and day group
-- [ ] The sticky header grows and shrinks with the bar and nothing jumps; the month bar, the month chips and the merge into the dock still work with the bar open, closed, and with a search active
+- [ ] The bar opens under the toolbar without moving the sticky header; the month bar and the merge into the dock still work with the bar open and closed; the month chips are inert and dimmed while a query is typed and work again after clearing
 - [ ] Switching the tabs (Executed, Pending, Recurring) with a search active keeps the filter
 - [ ] The live region announces the match count; a screen reader reads the field's label (not checked unless a screen reader is run)
 - [ ] Keyboard: Tab reaches the button, the field and the clear button in order, with a visible focus ring

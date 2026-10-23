@@ -16,16 +16,16 @@ What you see: pay CHF 500 from Overview; Overview, Account details (card, carous
 
 What you see: the Search button opens a field under the toolbar (not yet filtering), in Light and Dark, with the sticky header and the month bar still correct.
 
-- [ ] `all-bookings-and-payments.html`: the search field row inside `[data-all-bookings-sticky-header]` (label, `type="search"` input, clear button), an empty-state line and a polite live region next to the list
-- [ ] `css/styles.css`: `.all-bookings__search*` rules (tokens only, narrow selectors, the open transition with a `prefers-reduced-motion` path, focus ring)
-- [ ] `js/all-bookings.js`: toggle open and close (`aria-expanded`, focus in and back out), `syncStickyHeights` after each change (D7)
+- [ ] `all-bookings-and-payments.html`: the search bar in `.all-bookings__intro` under the toolbar (D7: the `recipient-search__*` field, icon, input and clear classes, `role="search"`), an empty-state line and a polite live region
+- [ ] `css/styles.css`: `.all-bookings__search*` rules (tokens only, narrow selectors, the open transition with a `prefers-reduced-motion` path) and the dimmed state of the month chips while a query is typed
+- [ ] `js/all-bookings.js`: toggle open and close (`aria-expanded`, focus in and back out); the month chips stay inert while a query is typed (D7)
 
 ## 3. The search behaviour (D5, D6)
 
 What you see: typing narrows the list, empty day groups disappear, a no-match line shows, Escape closes and restores the list.
 
 - [ ] `js/all-bookings.js`: filter the static rows by name or amount text across all months, hide empty day groups, the empty state, the live region count, clear button, Escape (D5, D6, D8)
-- [ ] Check the month chips and the month merge while a search is active (D7 and the open question)
+- [ ] Check the month chips, the month merge and the dividers while a search is active (D7 and the open question)
 
 ## 4. Wrap-up
 

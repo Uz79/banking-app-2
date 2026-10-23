@@ -2414,10 +2414,26 @@
                     <button type="button" class="segmented__option" role="tab" aria-selected="false" data-bookings-status="pending">Pending</button>
                     <button type="button" class="segmented__option" role="tab" aria-selected="false" data-bookings-status="recurring">Recurring</button>
                   </div>
-                  <button type="button" class="uz-btn uz-btn--sm uz-btn--secondary all-bookings__search-btn" aria-label="Search bookings">
+                  <button type="button" class="uz-btn uz-btn--sm uz-btn--secondary all-bookings__search-btn" aria-label="Search bookings" aria-expanded="false" data-all-bookings-search-toggle>
                     <svg class="uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-search"/></svg>
                     <span class="all-bookings__search-label">Search</span>
                   </button>
+                </div>
+
+                <div class="all-bookings__search" data-all-bookings-search>
+                  <div class="all-bookings__search-inner" role="search">
+                    <div class="recipient-search__field-wrap">
+                      <span class="recipient-search__icon" aria-hidden="true">
+                        <svg class="recipient-search__icon-svg" focusable="false"><use href="#i-search"/></svg>
+                      </span>
+                      <input class="recipient-search__input" type="search" name="bookings-query" autocomplete="off" placeholder="Search bookings" enterkeyhint="search" aria-label="Search bookings" data-all-bookings-search-input />
+                      <button type="button" class="recipient-search__clear recipient-search__clear--hidden" aria-label="Clear search" data-all-bookings-search-clear>
+                        <svg class="recipient-search__clear-icon" aria-hidden="true" focusable="false"><use href="#i-x-circle"/></svg>
+                      </button>
+                    </div>
+                    <p class="all-bookings__search-empty" data-all-bookings-search-empty hidden>No bookings match</p>
+                    <p class="visually-hidden" role="status" aria-live="polite" data-all-bookings-search-status></p>
+                  </div>
                 </div>
               </div>
 

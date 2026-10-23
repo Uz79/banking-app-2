@@ -2231,6 +2231,59 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
   display: none;
 }
 
+/* Search bar (D5 to D9): opens under the toolbar, in the scrolling intro. The field is the Pay recipient search's. */
+.all-bookings__search {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin-top: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows 0.2s ease,
+    margin-top 0.2s ease,
+    opacity 0.2s ease,
+    visibility 0s linear 0.2s;
+}
+
+.all-bookings__search.is-open {
+  grid-template-rows: 1fr;
+  margin-top: var(--space-2);
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.all-bookings__search-inner {
+  min-height: 0;
+  overflow: hidden;
+  /* Room for the field's focus ring inside the clipped box. */
+  padding: 0.125rem;
+  margin: -0.125rem;
+}
+
+.all-bookings__search-empty {
+  margin: var(--space-2) 0 0;
+  font-size: var(--fs-text-sm);
+  color: var(--color-fg);
+}
+
+/* Rows and groups a query filters out; the month chips are inert while a query is typed (D7). */
+.all-bookings__list .is-search-hidden {
+  display: none;
+}
+
+.all-bookings--searching .all-bookings__month-chip {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .all-bookings__search,
+  .all-bookings__search.is-open {
+    transition: none;
+  }
+}
+
 /* Stuck (mobile): merged nav card — full-bleed, square, no stroke. */
 @media (max-width: 1023px) {
   .body[data-screen="all-bookings"].all-bookings--month-merged .all-bookings__sticky-header {
