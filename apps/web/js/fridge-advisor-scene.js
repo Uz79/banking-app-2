@@ -61,7 +61,11 @@ export async function createFridgeScene(host, cfg, { reduced }) {
     mats[o.material.name] = o.material;
   });
   /* Shelves and drawers: simple boxes in the theme colours, in the kit's own units, so they sit in its cavity (D13). */
-  const boxMats = { board: new THREE.MeshStandardMaterial({ roughness: 0.9 }), drawer: new THREE.MeshStandardMaterial({ roughness: 0.9 }) };
+  const boxMats = { board: new THREE.MeshStandardMaterial({ roughness: 0.9 }) };
+  /* The active compartment takes an accent tint (D26), so its shelves, drawers and inner wall panels have materials of their own. */
+  const mk = () => new THREE.MeshStandardMaterial({ roughness: 0.9 });
+  const tintMats = { main: { shelf: mk(), wall: mk() }, reserve: { drawer: mk() }, freezer: { wall: mk() } };
+  tintMats.main.wall.transparent = true; tintMats.freezer.wall.transparent = true;
   const interior = new THREE.Group();
   /* The drawers (and what is in them) stand out while the fridge door is open and slide in when it shuts. */
   const drawerGroup = new THREE.Group();
@@ -75,18 +79,26 @@ export async function createFridgeScene(host, cfg, { reduced }) {
   {
     const { x: [x0, x1], z: [z0, z1], main, freezer, board, drawers } = cfg.interior;
     const shelf = (y) => box(boxMats.board, x0, x1, y - board, y, z0, z1);
-    main.boards.forEach(shelf);
+    const shelfM = (y) => box(tintMats.main.shelf, x0, x1, y - board, y, z0, z1);
+    main.boards.forEach(shelfM);
     freezer.boards.forEach(shelf);
-    shelf(main.drawerTop);
+    shelfM(main.drawerTop);
+    /* Inner wall panels (back and sides), a hair inside the kit's cavity: its walls share one material with the fridge body. */
+    const t = 0.002;
+    const walls = (mat, y0, y1) => {
+      box(mat, x0, x1, y0, y1, z0, z0 + t); box(mat, x0, x0 + t, y0, y1, z0, z1); box(mat, x1 - t, x1, y0, y1, z0, z1);
+    };
+    walls(tintMats.main.wall, main.y[0], main.y[1]);
+    walls(tintMats.freezer.wall, freezer.y[0], freezer.y[1]);
     /* Two drawers side by side under the lowest shelf: an open tray each (floor, back, sides, a low front). */
     const half = (x1 - x0 - drawers.gap) / 2;
     [[x0, x0 + half], [x1 - half, x1]].forEach(([a, b]) => {
       const bottom = main.y[0], top = main.drawerTop - board, w = drawers.wall, p = drawers.pull;
-      box(boxMats.drawer, a, b, bottom, bottom + w, z0 + p, z1 + p, drawerGroup);
-      box(boxMats.drawer, a, b, bottom, top, z0 + p, z0 + p + w, drawerGroup);
-      box(boxMats.drawer, a, a + w, bottom, top, z0 + p, z1 + p, drawerGroup);
-      box(boxMats.drawer, b - w, b, bottom, top, z0 + p, z1 + p, drawerGroup);
-      box(boxMats.drawer, a, b, bottom, bottom + drawers.front, z1 + p - w, z1 + p, drawerGroup);
+      box(tintMats.reserve.drawer, a, b, bottom, bottom + w, z0 + p, z1 + p, drawerGroup);
+      box(tintMats.reserve.drawer, a, b, bottom, top, z0 + p, z0 + p + w, drawerGroup);
+      box(tintMats.reserve.drawer, a, a + w, bottom, top, z0 + p, z1 + p, drawerGroup);
+      box(tintMats.reserve.drawer, b - w, b, bottom, top, z0 + p, z1 + p, drawerGroup);
+      box(tintMats.reserve.drawer, a, b, bottom, bottom + drawers.front, z1 + p - w, z1 + p, drawerGroup);
     });
   }
   model.add(interior, drawerGroup);
@@ -208,28 +220,17 @@ export async function createFridgeScene(host, cfg, { reduced }) {
   }
   const capacity = (key) => (fills[key] || []).length;
 
-  /* The accent outline: a thin frame around the compartment being explained or filled (D5). */
-  const outlineMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 });
-  const outlines = {};
-  {
-    const { x: [x0, x1], main, freezer } = cfg.interior;
-    const bar = cfg.outline.bar, z = -0.03;
-    const frame = (y0, y1, dz = 0) => {
-      const g = new THREE.Group();
-      const add = (w, h, cx, cy) => {
-        const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, bar), outlineMat);
-        m.position.set(cx, cy, z + dz);
-        g.add(m);
-      };
-      add(x1 - x0, bar, (x0 + x1) / 2, y0); add(x1 - x0, bar, (x0 + x1) / 2, y1);
-      add(bar, y1 - y0, x0, (y0 + y1) / 2); add(bar, y1 - y0, x1, (y0 + y1) / 2);
-      g.visible = false;
-      model.add(g);
-      return g;
-    };
-    outlines.main = frame(main.y[0], main.y[1]);
-    outlines.reserve = frame(main.y[0], main.drawerTop, cfg.interior.drawers.pull);
-    outlines.freezer = frame(freezer.y[0], freezer.y[1]);
+  /* The compartment tint (replaces the outline): how much of the accent each compartment has, 0 to 1. */
+  const tintAmt = { main: 0, reserve: 0, freezer: 0 };
+  let tintBase = {}, tintColour = new THREE.Color();
+  function paintTint() {
+    const mix = (m, base, amt) => m.color.copy(base).lerp(tintColour, amt);
+    mix(tintMats.main.shelf, tintBase.board, tintAmt.main);
+    mix(tintMats.reserve.drawer, tintBase.drawer, tintAmt.reserve);
+    tintMats.main.wall.color.copy(tintColour); tintMats.main.wall.opacity = tintAmt.main;
+    tintMats.freezer.wall.color.copy(tintColour); tintMats.freezer.wall.opacity = tintAmt.freezer;
+    tintMats.main.wall.visible = tintAmt.main > 0.001; tintMats.freezer.wall.visible = tintAmt.freezer > 0.001;
+    dirty = true;
   }
   /* The frost veil of the cooling moment: a faint sheet over the closed doors (D5, D7). */
   const frostMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false });
@@ -289,10 +290,11 @@ export async function createFridgeScene(host, cfg, { reduced }) {
     if (mats.metalDark) mats.metalDark.color.copy(mix(theme.dark ? 0.22 : 0.3));
     if (mats.metal) mats.metal.color.copy(mix(0.45));
     if (mats.glass) mats.glass.color.copy(mix(0.3));
-    outlineMat.color.copy(colour('--color-fg-interactive'));
+    tintColour = bg.clone().lerp(colour('--color-fg-interactive'), cfg.tint[theme.dark ? 'dark' : 'light']);
     frostMat.color.copy(fg);
     boxMats.board.color.copy(mix(theme.dark ? 0.55 : 0.45));
-    boxMats.drawer.color.copy(mix(theme.dark ? 0.4 : 0.3));
+    tintBase = { board: mix(theme.dark ? 0.55 : 0.45), drawer: mix(theme.dark ? 0.4 : 0.3) };
+    paintTint();
     figure.recolour(theme);
     if (foodPalette) {
       const lut = monochromeLut(theme);
@@ -330,7 +332,7 @@ export async function createFridgeScene(host, cfg, { reduced }) {
     dirty = true;
   }
 
-  /* ── Motion: one small tween list (camera glide, door swing, outline fade) ── */
+  /* ── Motion: one small tween list (camera glide, door swing, tint fade) ── */
   /* easeOutQuart stands in for the app's ease-out curve; everything is instant with reduced motion (D15). */
   const ease = (t) => 1 - Math.pow(1 - t, 4);
   const tweens = [];
@@ -391,21 +393,16 @@ export async function createFridgeScene(host, cfg, { reduced }) {
   let outlineTween = null;
   function setOutline(name) {
     if (name === outlineName) return;
-    const prev = outlineName;
     outlineName = name;
     cancel(outlineTween);
-    if (name) {
-      Object.entries(outlines).forEach(([k, g]) => { g.visible = k === name; });
-      outlineMat.opacity = 0;
-      outlineTween = tween(cfg.motion.outline, (k) => { outlineMat.opacity = k; });
-    } else if (prev) {
-      const start = outlineMat.opacity;
-      outlineTween = tween(cfg.motion.outline, (k) => { outlineMat.opacity = start * (1 - k); },
-        () => { if (!outlineName) outlines[prev].visible = false; });
-    }
+    const start = { ...tintAmt };
+    outlineTween = tween(cfg.motion.outline, (k) => {
+      Object.keys(tintAmt).forEach((c) => { tintAmt[c] = start[c] + ((c === name ? 1 : 0) - start[c]) * k; });
+      paintTint();
+    });
   }
 
-  /* Go to a stage: the camera glides, doors swing, the outline moves. */
+  /* Go to a stage: the camera glides, doors swing, the tint moves. */
   /* The persona stands next to the closed fridge on the intro; on the tour and the sliders the fridge fills the stage and it steps out. */
   let figureTween = null;
   function showFigure(on) {

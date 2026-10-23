@@ -47,10 +47,11 @@ export const CONFIG = {
   light: { intensity: 0.45, main: [0.215, 0.6, -0.03], freezer: [0.215, 0.88, -0.03] },
 
   /* Doors swing about their left edge. Angles in radians, durations in seconds. `glide` is the camera's move
-     between stages; `outline` is the accent frame fading in on the compartment being explained or filled. */
+     between stages; `outline` is the fade of the accent tint onto the compartment being explained or filled (D26). */
   doors: { open: 1.75, swing: 0.6 },
   motion: { glide: 0.8, outline: 0.25, cool: 1.0, frost: 0.22 }, /* `cool`: the pause with a frost veil before the freezer opens; `frost`: its peak opacity */
-  outline: { bar: 0.007 },
+  /* The compartment tint (D26): how much of the accent (--color-fg-interactive) is mixed into the background, 0 to 1. */
+  tint: { light: 0.34, dark: 0.25 },
 
   /* Food: where it stands and what it is. A compartment is packed like a well-stocked fridge: `rows` rows from back to
      front, tall items (`tall`) behind and low ones (`low`) in front so the back row stays visible, items almost touching
@@ -96,7 +97,7 @@ export const FIELDS = {
 
 /**
  * The screens, in order (D4). `stage` is the camera pose, `doors` which doors stand open, `outline` the compartment
- * marked with the accent. Copy is English, short and plain, with no em dashes (D17). Steps 7 and 8 arrive with the
+ * tinted with the accent. Copy is English, short and plain, with no em dashes (D17). Steps 7 and 8 arrive with the
  * result. `fields` are the sliders shown on a screen.
  */
 export const STEPS = [

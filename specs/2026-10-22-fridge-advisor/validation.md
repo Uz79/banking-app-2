@@ -127,13 +127,14 @@ Update, 2026-10-22 (baseline run completed, Chrome on macOS, port 5199, 2391px w
 
 Branch `feature/fridge-compartment-tint`. Same setup as above.
 
-- [ ] `npm run build` in `apps/web` succeeds with no new warnings; the browser console shows no errors
-- [ ] No outline bars anywhere, on any step
-- [ ] Step 2 and 5: the back wall, side walls and shelves are tinted; the drawers, the freezer, the fridge body and the doors are not
-- [ ] Step 3 and 6: only the drawer bodies are tinted
-- [ ] Step 4 and 7: only the freezer interior is tinted; on step 7 it tints as the freezer opens, after the cooling moment, and matches the result ring
+- [x] `npm run build` in `apps/web` succeeds with no new warnings
+- [ ] The browser console shows no errors
+- [x] No outline bars anywhere, on any step (screens 2 to 7 seen)
+- [x] Step 2 and 5: the back wall, side walls and shelves are tinted; the drawers, the freezer, the fridge body and the doors are not
+- [x] Step 3 and 6: only the drawer bodies are tinted
+- [x] Step 4 and 7: only the freezer interior is tinted; on step 7 it tints as the freezer opens, after the cooling moment, and matches the result ring
 - [ ] The tint fades between compartments with the camera move (0.25 s) and never shows two compartments at full tint
-- [ ] The food stays neutral and readable on the tint (a full compartment: step 5 with large values, step 6, step 7)
+- [x] The food stays neutral and readable on the tint (a full compartment: step 5 with large values, step 6, step 7)
 - [ ] Light (34%), Dark (25%), a Monochrome theme (a soft wash, not a bright block) and a Multi-color theme (accent hue)
 - [ ] Switching Light/Dark or the theme while the page is open re-tints
 - [ ] Desktop wide layout and 390px
@@ -141,5 +142,5 @@ Branch `feature/fridge-compartment-tint`. Same setup as above.
 - [ ] Back and Next across all steps (tint follows, including going back from the result)
 - [ ] Baseline smoke test (section 8) re-run
 
-Checked on: not yet.
+Checked on 2026-10-23 against `feature/fridge-compartment-tint`, Chrome on macOS, dev server on port 5199, 2391px wide (wide layout). Dark (UZ Bank navy, Monochrome): screens 2 to 7 with food in place, the tint at 25%; the freezer tints on the result after the cooling moment. Light (UZ Bank, Monochrome): screens 2 to 4, a soft wash that is faint on the freezer. Light with a Multi-color theme (orange, 34%): screens 2 to 4, a clear accent tint; on the freezer the back and side walls are tinted, its floor and ceiling (kit surfaces) stay neutral. The fade between screens was seen as steps changed. Not checked: the console for errors (tracking started late), the phone width (390px), reduced motion, a Multi-color theme in Dark, a live Light/Dark switch through the app's own toggle while the fridge is open (flipping `data-theme` by hand does not update the tokens, so it proved nothing), going Back from the result, the baseline re-run.
 

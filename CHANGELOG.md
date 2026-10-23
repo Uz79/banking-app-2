@@ -24,6 +24,7 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-10-22-fridge-advisor/` (roadmap item 8a).
 
 ### Changed
+- **Fridge advisor: the active compartment is tinted instead of outlined.** The accent outline bars are gone. The interior of the compartment being explained or filled (walls and shelves, the drawers, or the freezer) takes a tint of the accent, lighter in Light and a matching darker step in Dark, and fades to the next compartment with the camera. The fridge body, doors and food stay neutral.
 - **Dev server:** `npm run dev` now uses port 5175 (it fails instead of moving to another port if that is taken), listens on the network and accepts `*.local` host names, so a phone on the same Wi-Fi can open `http://klaudiuszs-macbook-pro.local:5175/overview.html`. Docs and earlier specs say 5175. `AGENTS.md` tells agents to use port 5199 for their own checks. Dev tooling only; the app is unchanged.
 - `js/profile-persona-character.js`: the figure exposes `loopPhase()` (where the current loop is in its cycle). Nothing else changes.
 - Design system hub: the cards use the shared hover ink and gained a pressed state.
