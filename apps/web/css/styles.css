@@ -2220,6 +2220,11 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
 
 .all-bookings__toolbar .all-bookings__search .recipient-search__field-wrap {
   width: 100%;
+  /* The standard text field height (2.5rem, as the form fields), so the field lines up with the tabs next to it. */
+  box-sizing: border-box;
+  height: 2.5rem;
+  min-height: 2.5rem;
+  padding-block: 0;
 }
 
 @media (max-width: 47.99rem) {
