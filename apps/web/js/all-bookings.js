@@ -378,6 +378,89 @@
     return { index: index, filter: filter };
   }
 
+  /* In-app bookings (D10): the payments, transfers and trades of the viewed account, from the shared state.
+     Executed ones go into the Today group (newest first), pending and recurring ones into their tab under a date label. */
+  function escapeHtml(text) {
+    return String(text).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function buildRow(pay, b) {
+    var row = document.createElement('div');
+    row.className = 'booking-row';
+    row.setAttribute('data-source', 'state');
+    row.setAttribute('data-booking-id', b.id);
+    row.setAttribute('data-status', b.status || 'executed');
+    var sign = b.direction === 'in' ? '+' : '-';
+    row.innerHTML =
+      '<svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#' + escapeHtml(b.icon || 'i-corner-up-right') + '"/></svg>' +
+      '<span class="booking-row__name">' + escapeHtml(b.recipientName) + '</span>' +
+      '<span class="booking-row__amount">' +
+        '<span class="booking-row__currency">' + escapeHtml(b.currency) + '</span>' +
+        '<span class="booking-row__value">' + sign + pay.formatMoney(b.amount) + '</span>' +
+      '</span>';
+    return row;
+  }
+
+  function dateSortKey(label) {
+    var m = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec(label || '');
+    return m ? m[3] + m[2] + m[1] : '';
+  }
+
+  function renderBookings(root, accountKey) {
+    var pay = window.UZBankPayState;
+    if (!pay || typeof pay.getState !== 'function') return;
+    root.querySelectorAll('[data-source="state"]').forEach(function (n) { n.remove(); });
+
+    var mine = (pay.getState().bookings || []).filter(function (b) {
+      return (b.accountKey || 'household') === accountKey;
+    });
+
+    var today = root.querySelector('[data-all-bookings-panel="executed"] .booking-group[data-day="today"]');
+    if (today) {
+      var header = today.querySelector('.booking-group__header');
+      var executed = mine.filter(function (b) { return (b.status || 'executed') === 'executed'; });
+      var after = header;
+      for (var i = executed.length - 1; i >= 0; i--) {
+        var row = buildRow(pay, executed[i]);
+        after.parentNode.insertBefore(row, after.nextSibling);
+        after = row;
+      }
+      /* The Today header follows the bookings: its static figure plus what moved today. */
+      var value = today.querySelector('.booking-group__balance-value');
+      if (value) {
+        if (!value.hasAttribute('data-base')) value.setAttribute('data-base', value.textContent.replace(/'/g, ''));
+        var net = executed.reduce(function (sum, b) { return sum + (b.direction === 'in' ? b.amount : -b.amount); }, 0);
+        value.textContent = pay.formatMoney(Math.round((parseFloat(value.getAttribute('data-base')) + net) * 100) / 100);
+      }
+    }
+
+    [['pending', 'Execute on '], ['recurring', 'Next on ']].forEach(function (def) {
+      var panel = root.querySelector('[data-all-bookings-panel="' + def[0] + '"]');
+      if (!panel) return;
+      var list = mine.filter(function (b) { return b.status === def[0]; });
+      var dates = [];
+      list.forEach(function (b) { if (dates.indexOf(b.executeOn) === -1) dates.push(b.executeOn); });
+      dates.sort(function (a, b) { return dateSortKey(a) < dateSortKey(b) ? -1 : 1; });
+      var anchor = panel.firstChild;
+      dates.forEach(function (date) {
+        var group = document.createElement('div');
+        group.className = 'booking-group';
+        group.setAttribute('data-source', 'state');
+        group.innerHTML = '<header class="booking-group__header"><span class="booking-group__label">' + escapeHtml(def[1] + (date || '')) + '</span></header>';
+        list.filter(function (b) { return b.executeOn === date; }).reverse().forEach(function (b) {
+          group.appendChild(buildRow(pay, b));
+        });
+        var divider = document.createElement('div');
+        divider.className = 'divider';
+        divider.setAttribute('data-source', 'state');
+        panel.insertBefore(group, anchor);
+        panel.insertBefore(divider, anchor);
+      });
+    });
+  }
+
   function init() {
     var root = document.querySelector('[data-view="all-bookings"]');
     if (!root) return;
@@ -387,7 +470,17 @@
     document.addEventListener('uzbank:state-changed', function () { applyAccount(root, key); });
     window.__UZ_ACTIVE_ACCOUNT__ = key;
     bindMonthChips(root);
-    bindTabs(root, bindSearch(root));
+    var search = bindSearch(root);
+    bindTabs(root, search);
+    function refreshBookings() {
+      renderBookings(root, key);
+      if (search) {
+        search.index();
+        search.filter();
+      }
+    }
+    refreshBookings();
+    document.addEventListener('uzbank:state-changed', refreshBookings);
     bindStickyHeights(root);
     bindMonthMerge(root);
 
