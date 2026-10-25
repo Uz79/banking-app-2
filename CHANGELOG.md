@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 884b6b5045fcd3c80d0e66ada5d7b66a3ee7d675 -->
+<!-- changelog: last-commit a573f0599ecfab82a39cd69013a613c05fd426f4 -->
 
 ### Decided
 - **Spec-driven workflow.** From now on every change goes through a dated spec folder (`specs/<YYYY-MM-DD>-<name>/`) created with `/feature-spec`, on its own branch, with a validation pass and the baseline smoke test before it reaches `main`. Added `AGENTS.md`, `specs/mission.md`, `specs/tech-spec.md`, `specs/roadmap.md`, `specs/baseline/`, and the `/feature-spec` and `/changelog` skills. The app's code is unchanged. The state before this is tagged `v1-presentable`.
