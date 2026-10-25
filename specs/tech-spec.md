@@ -27,7 +27,7 @@ Every shell page shares the same structure: sidebar (desktop) or tab bar (mobile
 | `profile.html` | profile | 0 | User Type, Legibility, Theme tabs; admin access; demo data reset |
 | `account-details.html` | account-details | 1 | Account with bookings |
 | `investment-product-details.html` | investment-product-details | 1 | Custody account, positions, trade |
-| `all-bookings-and-payments.html` | all-bookings | 2 | Executed, pending, recurring |
+| `all-bookings-and-payments.html` | all-bookings | 2 | Executed, pending, recurring (each its own list, filled from `UZBankPayState`), an always-visible search field |
 | `details-of-position.html` | details-of-position | 2 | Position chart, buy and sell |
 | `account-information.html` | | | Account information overlay content |
 | `design-system.html` | design-system | 0 | Admin hub: Motion, Components, Character kit |

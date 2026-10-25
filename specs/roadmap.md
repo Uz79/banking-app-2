@@ -78,7 +78,7 @@ Spec: `specs/2026-10-23-bookings-search-and-balance/` (together with item 10). T
 
 The account card on Account details shows Household as 10'000 instead of the booked balance (Overview shows 9'900 at the start, 9'400 after a 500 payment). Align it with Overview. Found during the fridge advisor's baseline run; it predates that branch.
 
-## 12. All bookings: make the page real
+## 12. All bookings: make the page real (done)
 
 Spec: `specs/2026-10-25-all-bookings-real/` (branch `feature/all-bookings-real`).
 
