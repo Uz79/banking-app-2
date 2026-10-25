@@ -2410,18 +2410,11 @@
 
                 <div class="all-bookings__toolbar">
                   <div class="segmented segmented--sm" role="tablist" aria-label="Booking status">
-                    <button type="button" class="segmented__option segmented__option--active" role="tab" aria-selected="true" data-bookings-status="executed">Executed</button>
-                    <button type="button" class="segmented__option" role="tab" aria-selected="false" data-bookings-status="pending">Pending</button>
-                    <button type="button" class="segmented__option" role="tab" aria-selected="false" data-bookings-status="recurring">Recurring</button>
+                    <button type="button" class="segmented__option segmented__option--active" role="tab" id="all-bookings-tab-executed" aria-selected="true" aria-controls="all-bookings-panel-executed" data-bookings-status="executed">Executed</button>
+                    <button type="button" class="segmented__option" role="tab" id="all-bookings-tab-pending" aria-selected="false" aria-controls="all-bookings-panel-pending" data-bookings-status="pending">Pending</button>
+                    <button type="button" class="segmented__option" role="tab" id="all-bookings-tab-recurring" aria-selected="false" aria-controls="all-bookings-panel-recurring" data-bookings-status="recurring">Recurring</button>
                   </div>
-                  <button type="button" class="uz-btn uz-btn--sm uz-btn--secondary all-bookings__search-btn" aria-label="Search bookings" aria-expanded="false" data-all-bookings-search-toggle>
-                    <svg class="uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-search"/></svg>
-                    <span class="all-bookings__search-label">Search</span>
-                  </button>
-                </div>
-
-                <div class="all-bookings__search" data-all-bookings-search>
-                  <div class="all-bookings__search-inner" role="search">
+                  <div class="all-bookings__search" role="search" data-all-bookings-search>
                     <div class="recipient-search__field-wrap">
                       <span class="recipient-search__icon" aria-hidden="true">
                         <svg class="recipient-search__icon-svg" focusable="false"><use href="#i-search"/></svg>
@@ -2431,10 +2424,10 @@
                         <svg class="recipient-search__clear-icon" aria-hidden="true" focusable="false"><use href="#i-x-circle"/></svg>
                       </button>
                     </div>
-                    <p class="all-bookings__search-empty" data-all-bookings-search-empty hidden>No bookings match</p>
-                    <p class="visually-hidden" role="status" aria-live="polite" data-all-bookings-search-status></p>
                   </div>
                 </div>
+                <p class="all-bookings__search-empty" data-all-bookings-search-empty hidden>No bookings match</p>
+                <p class="visually-hidden" role="status" aria-live="polite" data-all-bookings-search-status></p>
               </div>
 
               <div

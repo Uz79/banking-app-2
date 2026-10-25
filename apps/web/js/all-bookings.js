@@ -75,7 +75,7 @@
   }
 
   function scrollToMonth(root, monthKey) {
-    var anchor = root.querySelector('[data-bookings-month-start="' + monthKey + '"]');
+    var anchor = monthAnchors[monthKey] || root.querySelector('[data-bookings-month-start="' + monthKey + '"]');
     var scrollEl = document.querySelector('.main-content');
     if (!anchor || !scrollEl) return;
 
@@ -94,7 +94,7 @@
   function bindMonthChips(root) {
     root.querySelectorAll('[data-bookings-month]').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        if (btn.getAttribute('tabindex') === '-1') return;
+        if (btn.getAttribute('tabindex') === '-1' || btn.getAttribute('aria-disabled') === 'true') return;
         var monthKey = btn.getAttribute('data-bookings-month');
         setActiveMonth(root, monthKey);
         scrollToMonth(root, monthKey);
@@ -253,31 +253,42 @@
     onScroll();
   }
 
-  /* Search (D5 to D10): an inline bar under the toolbar that filters the static rows by name or amount. */
+  /* Search (D1 to D4): an always-visible field that filters the active tab's rows by name or amount.
+     The month chips follow the filtered list: a month with no match is dimmed, the others jump to their first visible group. */
+  var monthAnchors = {};
+
   function bindSearch(root) {
-    var toggle = root.querySelector('[data-all-bookings-search-toggle]');
     var bar = root.querySelector('[data-all-bookings-search]');
     var input = root.querySelector('[data-all-bookings-search-input]');
     var clear = root.querySelector('[data-all-bookings-search-clear]');
     var empty = root.querySelector('[data-all-bookings-search-empty]');
     var status = root.querySelector('[data-all-bookings-search-status]');
-    var list = root.querySelector('.all-bookings__list');
-    var page = root.querySelector('.all-bookings');
-    if (!toggle || !bar || !input || !list) return;
+    if (!bar || !input) return null;
 
-    var groups = Array.prototype.slice.call(list.querySelectorAll('.booking-group'));
-    var rows = Array.prototype.slice.call(list.querySelectorAll('.booking-row')).map(function (row) {
-      var name = (row.querySelector('.booking-row__name') || {}).textContent || '';
-      var amount = (row.querySelector('.booking-row__value') || {}).textContent || '';
-      return { el: row, text: (name + ' ' + amount + ' ' + amount.replace(/'/g, '')).toLowerCase() };
-    });
-
-    function reducedMotion() {
-      return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    }
+    var panel = null;
+    var groups = [];
+    var rows = [];
 
     function setHidden(el, hide) {
       el.classList.toggle('is-search-hidden', hide);
+    }
+
+    /* Read the rows of a panel (again after the list is rendered anew). */
+    function index(nextPanel) {
+      if (nextPanel) panel = nextPanel;
+      groups = [];
+      rows = [];
+      if (!panel) return;
+      var month = null;
+      Array.prototype.forEach.call(panel.querySelectorAll('.booking-group'), function (g) {
+        month = g.getAttribute('data-bookings-month-start') || month;
+        groups.push({ el: g, month: month });
+      });
+      Array.prototype.forEach.call(panel.querySelectorAll('.booking-row'), function (row) {
+        var name = (row.querySelector('.booking-row__name') || {}).textContent || '';
+        var amount = (row.querySelector('.booking-row__value') || {}).textContent || '';
+        rows.push({ el: row, text: (name + ' ' + amount + ' ' + amount.replace(/'/g, '')).toLowerCase() });
+      });
     }
 
     function filter() {
@@ -288,23 +299,34 @@
         setHidden(r.el, !show);
         if (show) matches += 1;
       });
+      var shown = [];
+      var seen = {};
+      monthAnchors = {};
       groups.forEach(function (g) {
-        var any = !query || g.querySelector('.booking-row:not(.is-search-hidden)');
-        setHidden(g, !any);
+        var any = !query || g.el.querySelector('.booking-row:not(.is-search-hidden)');
+        setHidden(g.el, !any);
         /* The divider after a hidden group goes with it. */
-        var next = g.nextElementSibling;
+        var next = g.el.nextElementSibling;
         if (next && next.classList.contains('divider')) setHidden(next, !any);
+        if (any) {
+          shown.push(g.el);
+          if (g.month && !seen[g.month]) {
+            seen[g.month] = true;
+            monthAnchors[g.month] = g.el;
+          }
+        }
       });
       /* No divider under the last visible group. */
       if (query) {
-        var shown = groups.filter(function (g) { return !g.classList.contains('is-search-hidden'); });
         var last = shown[shown.length - 1];
         var tail = last && last.nextElementSibling;
         if (tail && tail.classList.contains('divider')) setHidden(tail, true);
       }
-      page.classList.toggle('all-bookings--searching', !!query);
       root.querySelectorAll('[data-bookings-month]').forEach(function (chip) {
-        if (query) chip.setAttribute('aria-disabled', 'true');
+        var key = chip.getAttribute('data-bookings-month');
+        var none = !!query && !seen[key];
+        chip.classList.toggle('is-search-empty', none);
+        if (none) chip.setAttribute('aria-disabled', 'true');
         else chip.removeAttribute('aria-disabled');
       });
       clear.classList.toggle('recipient-search__clear--hidden', !input.value);
@@ -317,39 +339,22 @@
       }
     }
 
-    function setOpen(open, focusTarget) {
-      bar.classList.toggle('is-open', open);
-      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      if (!open) {
-        input.value = '';
-        filter();
-        if (focusTarget !== false) toggle.focus();
-      } else {
-        /* Focus after the bar is visible; at once with reduced motion. */
-        window.setTimeout(function () { input.focus(); }, reducedMotion() ? 0 : 30);
-      }
-    }
-
-    toggle.addEventListener('click', function () {
-      setOpen(!bar.classList.contains('is-open'));
-    });
     input.addEventListener('input', filter);
     clear.addEventListener('click', function () {
       input.value = '';
       filter();
       input.focus();
     });
-    bar.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && bar.classList.contains('is-open')) {
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && input.value) {
         e.preventDefault();
-        setOpen(false);
+        input.value = '';
+        filter();
       }
     });
-    root.querySelectorAll('[data-bookings-month]').forEach(function (chip) {
-      chip.addEventListener('click', function (e) {
-        if (chip.getAttribute('aria-disabled') === 'true') e.stopImmediatePropagation();
-      }, true);
-    });
+
+    index(root.querySelector('.all-bookings__list'));
+    return { index: index, filter: filter };
   }
 
   function init() {
