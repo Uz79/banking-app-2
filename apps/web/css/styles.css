@@ -4732,23 +4732,6 @@ button.debit-account:focus-visible {
     margin-inline: auto;
   }
 
-  /* Desktop: standard-button/small-secondary — icon + “Search” label. */
-  .all-bookings__search-btn.uz-btn--secondary {
-    width: auto;
-    height: auto;
-    min-width: 0;
-    min-height: calc(var(--btn-height-sm, 2rem) * var(--appearance-font-scale, 1));
-    max-width: none;
-    max-height: none;
-    padding: var(--btn-pad-y-sm, 0) var(--btn-pad-x-sm, var(--space-2));
-    border-radius: var(--radius-small);
-    background-color: var(--color-btn-secondary-bg);
-  }
-
-  .all-bookings__search-btn .all-bookings__search-label {
-    display: inline;
-  }
-
   /* Desktop sticky nav — card chrome only while content scrolls below. */
   .body[data-screen="overview"] .view__nav[data-scroll-edge-nav],
   .body[data-screen="motion-specimens"] .view__sticky-header[data-scroll-edge-nav],
