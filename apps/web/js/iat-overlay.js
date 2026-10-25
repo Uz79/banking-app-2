@@ -185,6 +185,13 @@
     });
   }
 
+  /* What the schedule step chose: a recurring transfer, a later one ("immediately" off) or one that runs now. */
+  function scheduleStatus() {
+    var active = execTypeGroup && execTypeGroup.querySelector('.segmented__option--active');
+    if (active && active.getAttribute('data-exec') === 'recurring') return 'recurring';
+    return live.immediately ? 'executed' : 'pending';
+  }
+
   function commitTransfer() {
     collectRecipientStep();
     if (live.fromKey === live.toKey || live.amount <= 0) return;
@@ -198,7 +205,9 @@
       toName: to.name,
       amount: live.amount,
       currency: live.currency,
-      dateISO: new Date().toISOString()
+      dateISO: new Date().toISOString(),
+      status: scheduleStatus(),
+      executeOn: live.dateLabel
     });
   }
 
@@ -354,6 +363,11 @@
     live.amount = 500.00;
     live.immediately = true;
     live.dateLabel = formatTodayDate();
+    if (execTypeGroup) {
+      execTypeGroup.querySelectorAll('.segmented__option').forEach(function (b) {
+        b.classList.toggle('segmented__option--active', b.getAttribute('data-exec') === 'single');
+      });
+    }
 
     /* Reset to first step */
     goToStep('recipient', false);

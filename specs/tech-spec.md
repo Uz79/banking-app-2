@@ -27,7 +27,7 @@ Every shell page shares the same structure: sidebar (desktop) or tab bar (mobile
 | `profile.html` | profile | 0 | User Type, Legibility, Theme tabs; admin access; demo data reset |
 | `account-details.html` | account-details | 1 | Account with bookings |
 | `investment-product-details.html` | investment-product-details | 1 | Custody account, positions, trade |
-| `all-bookings-and-payments.html` | all-bookings | 2 | Executed, pending, recurring |
+| `all-bookings-and-payments.html` | all-bookings | 2 | Executed, pending, recurring (each its own list, filled from `UZBankPayState`), an always-visible search field |
 | `details-of-position.html` | details-of-position | 2 | Position chart, buy and sell |
 | `account-information.html` | | | Account information overlay content |
 | `design-system.html` | design-system | 0 | Admin hub: Motion, Components, Character kit |
@@ -98,6 +98,7 @@ Settled choices, so they don't get re-argued. Add a row when a decision changes 
 | Playground world | No physics library, no raycasts: the runner is (distance along a curve, sideways offset) and pickups are distance checks | Keeps it light and easy to tune; one config file |
 | Wide flow sheets | `.modal-shell--wide` on a flow sheet's shell makes it 960dp wide (the main box width) from 1024px, via `--modal-wide-max-width` (default 960px); below that the sheet is unchanged. The page inside decides its columns. First user: the fridge advisor (stage left, steps right) | A reusable modifier of the payment-flow sheet, not a one-off. The iframe is only 960 wide, so the page asks the parent viewport (`matchMedia` on `window.parent`) rather than its own |
 | Fridge advisor | A rough guide, not advice: investable = max(0, total assets - one month of spending - reserve for the unplanned - reserve for bigger purchases), where a month of spending is salary minus what is left at month end. Opens as a flow sheet from the Offers list. Nothing is remembered; the scene is the fridge metaphor with the persona, in the theme colours | Klaudiusz confirmed the formula. Item 9 (product opening) continues from "Show suitable products" |
+| Search pattern | An inline search field filters the current view; a Search button opens a separate search view or flow (like the payment recipient search) | Decided 2026-10-25. First user: All bookings (`specs/2026-10-25-all-bookings-real/`) |
 
 ## Guiding rule
 

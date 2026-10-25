@@ -138,11 +138,25 @@
     return step.querySelectorAll('.form-field')[idx] || null;
   }
 
+  /** What the schedule step chose: a recurring or standing order, a later payment
+   *  ("as soon as possible" off) or one that runs now. */
+  function scheduleStatus() {
+    var step = $step('schedule');
+    if (!step) return 'executed';
+    var active = step.querySelector('.segmented__option--active');
+    var mode = active ? active.textContent.trim() : 'Single';
+    if (mode !== 'Single') return 'recurring';
+    var toggle = step.querySelector('.toggle');
+    return toggle && !toggle.classList.contains('toggle--active') ? 'pending' : 'executed';
+  }
+
   function resetPaymentDefaults() {
     live.amount = DEFAULT_AMOUNT;
     live.currency = DEFAULT_CURRENCY;
     live.dateLabel = formatTodayDate();
     resetScheduleToggleOn();
+    var firstMode = $step('schedule') && $step('schedule').querySelectorAll('.segmented__option');
+    if (firstMode) firstMode.forEach(function (b, i) { b.classList.toggle('segmented__option--active', i === 0); });
   }
 
   /** Recipient step — fills IBAN, Bank, Name, Street, City, Country */
@@ -939,7 +953,9 @@
           recipient: live.recipient,
           amount:    live.amount,
           currency:  live.currency,
-          dateISO:   new Date().toISOString()
+          dateISO:   new Date().toISOString(),
+          status:    scheduleStatus(),
+          executeOn: live.dateLabel
         };
         if (editingBookingId && window.UZBankPayState && window.UZBankPayState.updatePayment) {
           window.UZBankPayState.updatePayment(editingBookingId, payData);

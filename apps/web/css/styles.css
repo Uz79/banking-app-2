@@ -2208,57 +2208,32 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
 }
 
 .all-bookings__toolbar .segmented--sm {
-  flex: 1;
+  flex: 0 0 auto;
   min-width: 0;
 }
 
-/* Search — standard-button/small-secondary (mobile: icon-only 32×32; desktop: icon + label). */
-.all-bookings__search-btn.uz-btn--secondary {
-  flex-shrink: 0;
-  background-color: var(--color-btn-secondary-bg);
-  width: var(--btn-height-sm, 2rem);
-  height: var(--btn-height-sm, 2rem);
-  min-width: var(--btn-height-sm, 2rem);
-  min-height: var(--btn-height-sm, 2rem);
-  max-width: var(--btn-height-sm, 2rem);
-  max-height: var(--btn-height-sm, 2rem);
-  padding: 0;
-  border-radius: var(--radius-small);
-  box-sizing: border-box;
+/* Search (always visible): fills the rest of the toolbar row; on a phone it takes its own row under the tabs. The field is the Pay recipient search's. */
+.all-bookings__toolbar .all-bookings__search {
+  flex: 1 1 0;
+  min-width: 0;
 }
 
-.all-bookings__search-btn .all-bookings__search-label {
-  display: none;
+.all-bookings__toolbar .all-bookings__search .recipient-search__field-wrap {
+  width: 100%;
 }
 
-/* Search bar (D5 to D9): opens under the toolbar, in the scrolling intro. The field is the Pay recipient search's. */
-.all-bookings__search {
-  display: grid;
-  grid-template-rows: 0fr;
-  margin-top: 0;
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    grid-template-rows 0.2s ease,
-    margin-top 0.2s ease,
-    opacity 0.2s ease,
-    visibility 0s linear 0.2s;
-}
+@media (max-width: 47.99rem) {
+  .all-bookings__toolbar {
+    flex-wrap: wrap;
+  }
 
-.all-bookings__search.is-open {
-  grid-template-rows: 1fr;
-  margin-top: var(--space-2);
-  opacity: 1;
-  visibility: visible;
-  transition-delay: 0s;
-}
+  .all-bookings__toolbar .segmented--sm {
+    flex: 1 1 100%;
+  }
 
-.all-bookings__search-inner {
-  min-height: 0;
-  overflow: hidden;
-  /* Room for the field's focus ring inside the clipped box. */
-  padding: 0.125rem;
-  margin: -0.125rem;
+  .all-bookings__toolbar .all-bookings__search {
+    flex: 1 1 100%;
+  }
 }
 
 .all-bookings__search-empty {
@@ -2267,21 +2242,19 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
   color: var(--color-fg);
 }
 
-/* Rows and groups a query filters out; the month chips are inert while a query is typed (D7). */
+/* Rows and groups a query filters out; a month chip with no match is dimmed and inert. */
 .all-bookings__list .is-search-hidden {
   display: none;
 }
 
-.all-bookings--searching .all-bookings__month-chip {
-  opacity: 0.4;
-  pointer-events: none;
+.all-bookings--no-months .all-bookings__month-bar,
+.all-bookings--no-months .all-bookings__month-dock {
+  display: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .all-bookings__search,
-  .all-bookings__search.is-open {
-    transition: none;
-  }
+.all-bookings__month-chip.is-search-empty {
+  opacity: 0.4;
+  pointer-events: none;
 }
 
 /* Stuck (mobile): merged nav card — full-bleed, square, no stroke. */
@@ -2935,7 +2908,11 @@ a.show-all-btn {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-1) var(--space-2);
+  /* The standard text field height (2.5rem, as the form fields), so it lines up with controls beside it. */
+  box-sizing: border-box;
+  height: 2.5rem;
+  min-height: 2.5rem;
+  padding: 0 var(--space-2);
   border: none;
   border-radius: var(--radius-small);
   background-color: var(--color-input-surface);
@@ -4757,23 +4734,6 @@ button.debit-account:focus-visible {
     max-width: min(calc(1440px + 2 * var(--space-5)), 100%);
     width: 100%;
     margin-inline: auto;
-  }
-
-  /* Desktop: standard-button/small-secondary — icon + “Search” label. */
-  .all-bookings__search-btn.uz-btn--secondary {
-    width: auto;
-    height: auto;
-    min-width: 0;
-    min-height: calc(var(--btn-height-sm, 2rem) * var(--appearance-font-scale, 1));
-    max-width: none;
-    max-height: none;
-    padding: var(--btn-pad-y-sm, 0) var(--btn-pad-x-sm, var(--space-2));
-    border-radius: var(--radius-small);
-    background-color: var(--color-btn-secondary-bg);
-  }
-
-  .all-bookings__search-btn .all-bookings__search-label {
-    display: inline;
   }
 
   /* Desktop sticky nav — card chrome only while content scrolls below. */
