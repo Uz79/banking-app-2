@@ -124,7 +124,7 @@
     group.querySelectorAll('[data-source="state"]').forEach(function (n) { n.remove(); });
 
     var accountBookings = (state.bookings || []).filter(function (b) {
-      return (b.accountKey || 'household') === accountKey;
+      return (b.accountKey || 'household') === accountKey && (!b.status || b.status === 'executed');
     });
     if (accountBookings.length === 0) return;
 

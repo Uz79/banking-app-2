@@ -2,7 +2,7 @@
  * UZ Bank Web — payment state
  *
  * Single source of truth for everything the payment flow + dashboard
- * shares: 8 recipients, the running list of booked payments (max 5, FIFO),
+ * shares: 8 recipients, the running list of bookings (max 100, oldest dropped),
  * and the live Household account balance.
  *
  * Persistence:
@@ -17,7 +17,8 @@
  *   getRecipients()             → array of 8 recipient records (read-only)
  *   pickRandomRecipient()       → one recipient picked at random
  *   getState()                  → snapshot { household, bookings[], etc. }
- *   commitPayment({ recipient, amount, currency, dateISO }) → records the booking, debits balance
+ *   commitPayment({ recipient, amount, currency, dateISO, status?, executeOn? }) → records the booking, debits balance
+ *                               (status 'pending' or 'recurring' records it without moving money; default 'executed')
  *   reset()                     → wipe storage, restore initial state
  *   formatMoney(n)              → "10'000.00" Swiss style
  *   STORAGE_KEY                 → string constant (for boot-script reuse)
@@ -26,7 +27,8 @@
   'use strict';
 
   var STORAGE_KEY  = 'uzBankWebPaymentState';
-  var MAX_BOOKINGS = 5;
+  // Stored bookings (payments, transfers and trades together); the oldest are dropped past this.
+  var MAX_BOOKINGS = 100;
   var SCHEMA_VERSION = 2;
 
   // Household account in CHF. INITIAL_HOUSEHOLD is the *registered* balance, the
@@ -212,7 +214,7 @@
       var parsed = JSON.parse(raw);
       if (!parsed) return defaultState();
       var b = Array.isArray(parsed.bookings) ? parsed.bookings : [];
-      var cap = MAX_BOOKINGS * 4;
+      var cap = MAX_BOOKINGS;
       if (parsed.schemaVersion === SCHEMA_VERSION) {
         return {
           schemaVersion: SCHEMA_VERSION,
@@ -272,6 +274,12 @@
     } catch (e) { /* ignore in environments without CustomEvent */ }
   }
 
+  // A booking is executed unless it says otherwise: older stored bookings have no status.
+  // Pending and recurring bookings have not moved any money, so no balance counts them.
+  function isExecuted(b) {
+    return !b.status || b.status === 'executed';
+  }
+
   function accountRunningBalance(accountKey) {
     var key = accountKey || 'household';
     var base = key === 'savings' ? SAVINGS : INITIAL_HOUSEHOLD;
@@ -280,6 +288,7 @@
     }
     state.bookings.forEach(function (b) {
       if ((b.accountKey || 'household') !== key) return;
+      if (!isExecuted(b)) return;
       var amt = typeof b.amount === 'number' ? b.amount : 0;
       if (b.direction === 'in') base += amt;
       else base -= amt;
@@ -300,6 +309,7 @@
     // since the prototype doesn't simulate day rollover.
     var dynamicTodayOutflow = state.bookings.reduce(function (sum, b) {
       if ((b.accountKey || 'household') !== 'household') return sum;
+      if (!isExecuted(b)) return sum;
       if (b.direction === 'in') return sum;
       return sum + (typeof b.amount === 'number' ? b.amount : 0);
     }, 0);
@@ -334,6 +344,8 @@
           icon: b.icon || 'i-corner-up-right',
           direction: b.direction || 'out'
         };
+        row.status = b.status || 'executed';
+        if (b.executeOn) row.executeOn = b.executeOn;
         if (b.kind) row.kind = b.kind;
         if (b.fromKey) row.fromKey = b.fromKey;
         if (b.toKey) row.toKey = b.toKey;
@@ -373,6 +385,15 @@
 
   /* ── Commit / reset ──────────────────────────────────────────────── */
 
+  // Copies the schedule a flow collected (status, execute-on date) onto a booking.
+  function applySchedule(booking, source) {
+    var status = source && source.status;
+    if (status === 'pending' || status === 'recurring') {
+      booking.status = status;
+      if (source.executeOn) booking.executeOn = source.executeOn;
+    }
+  }
+
   function commitPayment(payment) {
     if (!payment || typeof payment.amount !== 'number' || payment.amount <= 0) return;
 
@@ -386,6 +407,7 @@
       icon: 'i-corner-up-right',
       direction: 'out'
     };
+    applySchedule(booking, payment);
 
     state.bookings.push(booking);
     if (state.bookings.length > MAX_BOOKINGS) {
@@ -423,6 +445,7 @@
       fromName: transfer.fromName,
       toName: transfer.toName
     });
+    applySchedule(state.bookings[state.bookings.length - 1], transfer);
 
     state.bookings.push({
       id: 'iat_in_' + suffix,
@@ -439,8 +462,9 @@
       fromName: transfer.fromName,
       toName: transfer.toName
     });
+    applySchedule(state.bookings[state.bookings.length - 1], transfer);
 
-    var cap = MAX_BOOKINGS * 4;
+    var cap = MAX_BOOKINGS;
     if (state.bookings.length > cap) {
       state.bookings.splice(0, state.bookings.length - cap);
     }
@@ -503,7 +527,7 @@
       quantity: order.quantity
     });
 
-    var cap = MAX_BOOKINGS * 4;
+    var cap = MAX_BOOKINGS;
     if (state.bookings.length > cap) {
       state.bookings.splice(0, state.bookings.length - cap);
     }
