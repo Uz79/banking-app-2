@@ -45,17 +45,36 @@
     return ACCOUNTS[key] ? key : 'savings';
   }
 
-  function bindSegmented(root, attr) {
-    root.querySelectorAll('[' + attr + ']').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var group = btn.closest('[role="tablist"], .segmented');
-        if (!group) return;
-        group.querySelectorAll('.segmented__option').forEach(function (opt) {
-          opt.classList.remove('segmented__option--active');
-          opt.setAttribute('aria-selected', 'false');
-        });
-        btn.classList.add('segmented__option--active');
-        btn.setAttribute('aria-selected', 'true');
+  /* Tabs (D5, D6): one list per status; the month bar and dock belong to Executed only. */
+  function bindTabs(root, search) {
+    var tabs = Array.prototype.slice.call(root.querySelectorAll('[data-bookings-status]'));
+    var panels = {};
+    root.querySelectorAll('[data-all-bookings-panel]').forEach(function (p) {
+      panels[p.getAttribute('data-all-bookings-panel')] = p;
+    });
+
+    function select(status) {
+      tabs.forEach(function (tab) {
+        var on = tab.getAttribute('data-bookings-status') === status;
+        tab.classList.toggle('segmented__option--active', on);
+        tab.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      Object.keys(panels).forEach(function (key) {
+        panels[key].hidden = key !== status;
+      });
+      document.body.classList.toggle('all-bookings--no-months', status !== 'executed');
+      if (status !== 'executed' && root.__cancelMerge) root.__cancelMerge();
+      var scrollEl = document.querySelector('.main-content');
+      if (scrollEl) scrollEl.scrollTo({ top: 0 });
+      if (search) {
+        search.index(panels[status]);
+        search.filter();
+      }
+    }
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        select(tab.getAttribute('data-bookings-status'));
       });
     });
   }
@@ -241,6 +260,7 @@
     }
 
     function onScroll() {
+      if (document.body.classList.contains('all-bookings--no-months')) return;
       if (shouldMerge()) {
         if (!merged && !merging) beginMerge();
       } else if (shouldUnmerge() && (merged || merging)) {
@@ -248,6 +268,7 @@
       }
     }
 
+    root.__cancelMerge = cancelMerge;
     scrollEl.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
     onScroll();
@@ -365,9 +386,8 @@
     applyAccount(root, key);
     document.addEventListener('uzbank:state-changed', function () { applyAccount(root, key); });
     window.__UZ_ACTIVE_ACCOUNT__ = key;
-    bindSegmented(root, 'data-bookings-status');
     bindMonthChips(root);
-    bindSearch(root);
+    bindTabs(root, bindSearch(root));
     bindStickyHeights(root);
     bindMonthMerge(root);
 

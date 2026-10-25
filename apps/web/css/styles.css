@@ -2247,6 +2247,11 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
   display: none;
 }
 
+.all-bookings--no-months .all-bookings__month-bar,
+.all-bookings--no-months .all-bookings__month-dock {
+  display: none;
+}
+
 .all-bookings__month-chip.is-search-empty {
   opacity: 0.4;
   pointer-events: none;
