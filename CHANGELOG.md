@@ -11,6 +11,9 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 ### Added
 - **Playground settings dialog.** A settings button in the Payday run HUD pauses the run and opens a dialog: Quality, Camera distance, Effects and Fog (remembered in `uzBankWebPlaygroundSettings`), a Sound switch (replaces the HUD mute button) and Light/Dark, which the Design system page behind the sheet follows. Resume or Escape continues the run. The dialog is 640px wide on desktop and a bottom sheet under 1280px.
 
+### Added
+- **Vercel Web Analytics.** `js/analytics.js` loads Vercel's cookie-free script on the production host only (`banking-app-2-bay.vercel.app`), never on localhost, previews or GitHub Pages. `apps/web/vercel.json` adds the entry paths `/from-cv`, `/from-portfolio` and `/from-linkedin`, each serving the Overview, so every source is its own row under Pages. `?analytics=off` keeps the script from loading in a browser (`uzBankWebAnalyticsOff`), `?analytics=on` clears it.
+
 ### Changed
 - **One running balance rule.** Household and Savings show the running balance (registered balance plus payments and transfers made in the app) on Overview, Account details (both carousel slides), the All bookings card, the payment sheet's debit rows and the internal transfer sheet. The Overview and Account details totals add up from the same figures. The registered balance stays only for the Yesterday and day headers.
 

@@ -20,11 +20,11 @@ What you see: after the branch is pushed, the Vercel preview serves `/from-cv`, 
 
 ## 3. Wrap-up
 
-- [ ] `npm run build` in `apps/web`
-- [ ] Re-run what group 1 left open, with the results in `validation.md`:
+- [x] `npm run build` in `apps/web`
+- [x] Re-run what group 1 left open, with the results in `validation.md`:
   - blocked or throwing storage: the script is still injected on the counted host (tested with the `localhost` copy of `analytics.js`) and the page shows no error
   - the 13 pages still load `js/analytics.js`, and `index.html`, `account-information.html` and `spa-source.html` are unchanged
   - Light and Dark, a Multi-color theme and 390px: not applicable, no UI
-- [ ] The baseline smoke test
-- [ ] The validation pass (`validation.md`), including the baseline smoke test, with the dated "Checked on" line filled in; the production check is listed as Klaudiusz's
-- [ ] Docs: `specs/roadmap.md` item 13 linked to this spec (the loader lives in `analytics.js`, not in each head), marked done only once Klaudiusz has seen it work in production; `CHANGELOG.md` under Unreleased; `specs/tech-spec.md` Decisions row (counted host, source paths, opt-out flag); `apps/web/README.md` key (group 1)
+- [x] The baseline smoke test
+- [x] The validation pass (`validation.md`), including the baseline smoke test, with the dated "Checked on" line filled in; the production check is listed as Klaudiusz's
+- [x] Docs: `specs/roadmap.md` item 13 linked to this spec (the loader lives in `analytics.js`, not in each head), marked done only once Klaudiusz has seen it work in production; `CHANGELOG.md` under Unreleased; `specs/tech-spec.md` Decisions row (counted host, source paths, opt-out flag); `apps/web/README.md` key (group 1)
