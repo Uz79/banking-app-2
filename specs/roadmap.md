@@ -86,9 +86,9 @@ Spec: `specs/2026-10-25-all-bookings-real/` (branch `feature/all-bookings-real`)
 
 The tabs (Executed, Pending, Recurring) only move the highlight and all show the same static list, and the payments and transfers made in the app do not appear in it. Found while writing the spec for items 10 and 11, which leaves it as it is. The spec also replaces the Search button of item 10 with an always-visible search field in the toolbar, and records that pattern in `tech-spec.md`.
 
-## 13. Web Analytics (Vercel) (planned)
+## 13. Web Analytics (Vercel)
 
-Status: planned. No spec folder yet; it gets one via `/feature-spec` later.
+Spec: `specs/2026-10-26-web-analytics/` (branch `feature/web-analytics`). Interview outcome: paths `/from-cv`, `/from-portfolio`, `/from-linkedin`; no visible feedback for the opt-out; the parameter is removed from the address bar; the opt-out affects only the Vercel script. The loader lives in `js/analytics.js` instead of a tag in every head.
 
 - **Why:** see real visitors and where they come from (LinkedIn, and the PDFs sent out: CV, portfolio). Cookie-free, no personal data, so no consent banner.
 - **How:** Vercel Web Analytics on the Hobby plan. The app is static HTML, so the `/_vercel/insights/script.js` tag (deferred, with the queue stub) goes in the `<head>` of every page. It loads only when `location.hostname` equals the production domain: not localhost, not `*.local`, not Vercel preview URLs.
