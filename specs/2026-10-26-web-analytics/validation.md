@@ -30,7 +30,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 ## 4. Source paths (D5, D6): preview and production, not testable on 5199
 
 - [x] `apps/web/vercel.json` is valid JSON with exactly the three decided rewrites
-- [x] Vercel preview, checked by Klaudiusz (preview URL not recorded here): `/from-cv`, `/from-portfolio` and `/from-linkedin` each load the Overview with the path kept; the nav works; a payment flow opened at `/from-cv#pay/...` works; the Profile 3D character loads; an unknown path gives 404; no insights request; no console errors. Not mentioned as checked by Klaudiusz: the nav active state on the source paths and going on to Account details and back (they said the nav works)
+- [x] Vercel preview, checked by Klaudiusz on https://banking-app-2-git-feature-web-analytics-uz79-s-projects.vercel.app: `/from-cv`, `/from-portfolio` and `/from-linkedin` each load the Overview with the path kept; the nav works; a payment flow opened at `/from-cv#pay/...` works; the Profile 3D character loads; an unknown path gives 404; no insights request; no console errors. Nav active state on `/from-cv`, as reported by Klaudiusz: the active tab follows Overview, Payments, and back (not seen by the agent)
 - [ ] Production, by Klaudiusz after the merge: `/from-cv` shows up under Pages in Vercel Analytics, and the pushState question in `requirements.md` is answered
 
 Read Visitors, not Page views, for reach; payment and trade flows add page views per step.
@@ -74,7 +74,7 @@ Read Visitors, not Page views, for reach; payment and trade flows add page views
 - [x] Tab through Overview: focus is always visible
 - [ ] With reduced motion on (System Settings → Accessibility → Display), page transitions and the character are still, and nothing is stuck mid-animation
 
-Checked on 2026-10-26 against `feature/web-analytics`, Chrome, vite on 5199, desktop (about 2391px wide), a 390px iframe for the phone check, mostly by script plus screenshots; Vercel preview checked by Klaudiusz (section 4).
+Checked on 2026-10-26 against `feature/web-analytics`, Chrome, vite on 5199, desktop (about 2391px wide), a 390px iframe for the phone check, mostly by script plus screenshots; Vercel preview checked by Klaudiusz (section 4, their own report).
 
 Checked: the loader and the opt-out (section 2 and 3, including blocked storage and the injection path through a copy of `analytics.js` with the host constant swapped to `localhost`); the 13 pages that load `analytics.js` and the 3 that do not; `vercel.json`; `npm run build`; the baseline smoke test run on this branch: Overview with sidebar and character, mode toggle surviving a reload, the Open payment message appearing, the Pay flow end to end (a booking is stored), an internal transfer, Custody account to a position to Buy and its Discard dialog, Profile (User Type slider changes the title, character and preview; the Comfortable and Default presets change type and spacing app-wide; a Multi-color theme recolours Overview and the UZ Bank card restores navy on white with no colour cache; Reset demo data clears the bookings), the Design system hub, Motion specimens, Components and Character kit pages loading, Overview in the dark mode at 390px with the tab bar and no sideways scroll, Tab focus ring visible on Overview.
 
