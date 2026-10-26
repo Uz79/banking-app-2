@@ -6,9 +6,9 @@ Branch: `feature/web-analytics`. Decisions are cited as D1 to D12 from `requirem
 
 What you see: on 5199 nothing about Vercel is requested and the console is clean; `?analytics=off` sets the flag and cleans the address bar, `?analytics=on` clears it; the existing screen and event hooks still fire.
 
-- [ ] `apps/web/js/analytics.js`: constant for the counted host; `isCountedHost(hostname)` exposed on `UZBankAnalytics`; read and clean `?analytics=` (replaceState); read the flag; inject the queue stub and the deferred script only when allowed; all in try/catch
-- [ ] `apps/web/README.md`: `uzBankWebAnalyticsOff` in the storage keys table
-- [ ] Check on 5199: no request to `/_vercel/insights/script.js`, no console errors; the flag is set and cleared by the two parameters, the address bar is cleaned and keeps the hash and other parameters; `isCountedHost` is true for the production host only; hooks still fire (`uzbank:screen`)
+- [x] `apps/web/js/analytics.js`: constant for the counted host; `isCountedHost(hostname)` exposed on `UZBankAnalytics`; read and clean `?analytics=` (replaceState); read the flag; inject the queue stub and the deferred script only when allowed; all in try/catch
+- [x] `apps/web/README.md`: `uzBankWebAnalyticsOff` in the storage keys table
+- [x] Check on 5199: no request to `/_vercel/insights/script.js`, no console errors; the flag is set and cleared by the two parameters, the address bar is cleaned and keeps the hash and other parameters; `isCountedHost` is true for the production host only; hooks still fire (`uzbank:screen`)
 
 ## 2. Source entry paths (D5, D6, D10)
 

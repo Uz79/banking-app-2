@@ -11,21 +11,21 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 ## 2. The loader (D1 to D4, D10)
 
-- [ ] On 5199 (localhost): no request to `/_vercel/insights/script.js` and no `window.va` stub on Overview and on one other page (Network tab or `performance.getEntriesByType('resource')`)
-- [ ] `UZBankAnalytics.isCountedHost('banking-app-2-bay.vercel.app')` is true; false for `localhost`, `127.0.0.1`, `x.local`, a `*.vercel.app` preview name, a GitHub Pages name, and a look-alike such as `banking-app-2-bay.vercel.app.example.com`
-- [ ] With the flag set, even the counted host name would not load it (read the code path, or call the guard with a stubbed host)
-- [ ] First visit, nothing in localStorage: no error, no key created
-- [ ] `uzbank:screen` still fires on load and on a hash step (`#pay/recipient-search`); `UZBankAnalytics.track` still emits `uzbank:event`
+- [x] On 5199 (localhost): no request to `/_vercel/insights/script.js` and no `window.va` stub on Overview and on one other page (Network tab or `performance.getEntriesByType('resource')`)
+- [x] `UZBankAnalytics.isCountedHost('banking-app-2-bay.vercel.app')` is true; false for `localhost`, `127.0.0.1`, `x.local`, a `*.vercel.app` preview name, a GitHub Pages name, and a look-alike such as `banking-app-2-bay.vercel.app.example.com`
+- [x] With the flag set, even the counted host name would not load it (read the code path, or call the guard with a stubbed host)
+- [x] First visit, nothing in localStorage: no error, no key created
+- [x] `uzbank:screen` still fires on load and on a hash step (`#pay/recipient-search`); `UZBankAnalytics.track` still emits `uzbank:event`
 - [ ] The 13 pages that load `analytics.js` still do; `index.html`, `account-information.html` and `spa-source.html` are unchanged
 
 ## 3. Opt-out (D7 to D9, D11)
 
-- [ ] `?analytics=off` sets `uzBankWebAnalyticsOff` to `1`; the address bar loses the parameter but keeps the path, another parameter (`?account=x`) and the hash
-- [ ] `?analytics=on` removes the key and cleans the address bar the same way
-- [ ] Another value (`?analytics=maybe`) changes nothing; the parameter is left alone
+- [x] `?analytics=off` sets `uzBankWebAnalyticsOff` to `1`; the address bar loses the parameter but keeps the path, another parameter (`?account=x`) and the hash
+- [x] `?analytics=on` removes the key and cleans the address bar the same way
+- [x] Another value (`?analytics=maybe`) changes nothing; the parameter is left alone
 - [ ] Nothing visible happens on screen; Light and Dark, a Multi-color theme and 390px unaffected
 - [ ] Storage blocked or throwing: the page loads, no console error
-- [ ] The flag survives a reload and a visit to another page
+- [x] The flag survives a reload and a visit to another page
 
 ## 4. Source paths (D5, D6): preview and production, not testable on 5199
 
@@ -39,4 +39,4 @@ Read Visitors, not Page views, for reach; payment and trade flows add page views
 
 Copy the checklist from `specs/baseline/validation.md` here when the branch reaches this step, and tick it.
 
-Checked on: not yet.
+Checked on: not yet. Group 1 progress, 2026-10-26, 5199, Chrome desktop: items ticked above in sections 2 and 3 were run (the loader path with the host constant swapped to `localhost` in a copy of the file, to see the injected tag, `defer`, the stub and the flag blocking it). Not yet run: the 13-pages and untouched-pages check, blocked storage, Light/Dark/390px, the baseline, sections 1 (final build and console pass) and 4.

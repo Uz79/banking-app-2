@@ -34,6 +34,54 @@
     }
   }
 
+  /* Vercel Web Analytics (roadmap item 13): counted on the production host only, never on localhost, previews or GitHub Pages.
+     ?analytics=off stores a flag that keeps the script from loading in this browser; ?analytics=on clears it. */
+  var COUNTED_HOST = 'banking-app-2-bay.vercel.app';
+  var OPT_OUT_KEY = 'uzBankWebAnalyticsOff';
+
+  function isCountedHost(hostname) {
+    return hostname === COUNTED_HOST;
+  }
+
+  function applyOptOutParam() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var v = params.get('analytics');
+      if (v !== 'off' && v !== 'on') return;
+      try {
+        if (v === 'off') window.localStorage.setItem(OPT_OUT_KEY, '1');
+        else window.localStorage.removeItem(OPT_OUT_KEY);
+      } catch (e) {}
+      params.delete('analytics');
+      var q = params.toString();
+      window.history.replaceState(window.history.state, '', window.location.pathname + (q ? '?' + q : '') + window.location.hash);
+    } catch (e) {}
+  }
+
+  function optedOut() {
+    try {
+      return window.localStorage.getItem(OPT_OUT_KEY) === '1';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function loadVercelAnalytics() {
+    try {
+      applyOptOutParam();
+      if (optedOut() || !isCountedHost(window.location.hostname)) return;
+      window.va = window.va || function () {
+        (window.vaq = window.vaq || []).push(arguments);
+      };
+      var el = document.createElement('script');
+      el.defer = true;
+      el.src = '/_vercel/insights/script.js';
+      document.head.appendChild(el);
+    } catch (e) {}
+  }
+
+  loadVercelAnalytics();
+
   function currentScreenId() {
     var b = document.body;
     return (b && b.getAttribute('data-screen')) || '';
@@ -53,6 +101,7 @@
 
   window.UZBankAnalytics = {
     screen: emitScreen,
+    isCountedHost: isCountedHost,
     /**
      * Track named interactions (clicks, submits, flow steps).
      * @param {string} name — e.g. 'pay_cta', 'payment_confirm'
