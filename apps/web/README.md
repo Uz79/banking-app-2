@@ -60,6 +60,7 @@ Persisted in `localStorage` (see `js/storage-migrate.js` for legacy key migratio
 | `uzBankWebPlaygroundSound` | Design system > Payday run: `on` or `off`, the Sound switch in the settings dialog (missing means on) |
 | `uzBankWebPlaygroundSettings` | Design system > Payday run settings dialog: JSON `{ quality, camera, effects, fog }`; anything missing or unknown falls back to the default |
 | `uzBankWebPlaygroundBest` | Design system > Payday run: the best run, `{ "balance": number, "date": "YYYY-MM-DD" }` |
+| `uzBankWebAnalyticsOff` | `1` when `?analytics=off` was used on this device: the Vercel analytics script is not loaded (`?analytics=on` removes it) |
 
 ## Source layout
 

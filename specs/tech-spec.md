@@ -100,6 +100,7 @@ Settled choices, so they don't get re-argued. Add a row when a decision changes 
 | Fridge advisor | A rough guide, not advice: investable = max(0, total assets - one month of spending - reserve for the unplanned - reserve for bigger purchases), where a month of spending is salary minus what is left at month end. Opens as a flow sheet from the Offers list. Nothing is remembered; the scene is the fridge metaphor with the persona, in the theme colours | Klaudiusz confirmed the formula. Item 9 (product opening) continues from "Show suitable products" |
 | Search pattern | An inline search field filters the current view; a Search button opens a separate search view or flow (like the payment recipient search) | Decided 2026-10-25. First user: All bookings (`specs/2026-10-25-all-bookings-real/`) |
 | Light/Dark outside `app-mp.js` | A page that does not load `js/app-mp.js` (the Playground) switches the mode with `setMode` in `js/playground-settings.js`, which mirrors `UZBankApplyThemeChoice` (cached tokens, `data-theme`, `uzBankWebTheme`); the sheet's parent follows by `postMessage` | Decided 2026-10-26. `specs/2026-10-25-playground-settings-dialog/` |
+| Visitor analytics | Vercel Web Analytics, loaded by `js/analytics.js` on `banking-app-2-bay.vercel.app` only; source entry paths are rewrites in `apps/web/vercel.json` (one segment); `?analytics=off` or `on` sets or clears `uzBankWebAnalyticsOff` | Decided 2026-10-26. `specs/2026-10-26-web-analytics/` |
 
 ## Guiding rule
 
