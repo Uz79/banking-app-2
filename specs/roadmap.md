@@ -45,7 +45,7 @@ Spec: `specs/2026-10-22-playground-sound/`.
 
 Acceleration lanes, jumping (the rig has jump clips), a second coin type and a trophy. The plot is defined by Klaudiusz first; no spec until then.
 
-## 7. Playground settings dialog (done, baseline smoke test pending)
+## 7. Playground settings dialog (done)
 
 A settings button in the Playground HUD that pauses the run and opens a settings dialog with sections, so changes happen while nothing moves. First two sections: **Visual parameters** (which ones to be defined in the spec interview) and **Theme** (the current Light/Dark choice, so the one-off recolour of the world and character happens behind the dialog). Resume closes it; Escape means Resume. Reuses the confirmation dialog component (payday-run D24).
 
