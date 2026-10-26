@@ -6,11 +6,11 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 ## 1. Build and repo
 
-- [ ] `npm run build` in `apps/web` succeeds, and `git status` is clean after it (nothing tracked changed)
-- [ ] `.github/` no longer exists
-- [ ] `grep -rniE "github pages|deploy.yml" . --exclude-dir=node_modules --exclude-dir=.git` lists only history: `CHANGELOG.md` (line 15 and the new entry), `specs/roadmap.md`, the fridge advisor D25, the finished web-analytics spec files, and this spec
-- [ ] `specs/tech-spec.md` lines 10 and 88, `AGENTS.md` 17 and `CHANGELOG.md` 52 say Vercel; the `Unreleased` entry exists; the `analytics.js:37` comment no longer says GitHub Pages and the file's behaviour is untouched (the diff is the comment only)
-- [ ] No em dashes in the new or changed user-facing and doc text
+- [x] `npm run build` in `apps/web` succeeds, and `git status` is clean after it (nothing tracked changed)
+- [x] `.github/` no longer exists
+- [x] `grep -rniE "github pages|deploy.yml" . --exclude-dir=node_modules --exclude-dir=.git` lists only history: `CHANGELOG.md` (line 15 and the new entry), `specs/roadmap.md`, the fridge advisor D25, the finished web-analytics spec files, and this spec
+- [x] `specs/tech-spec.md` lines 10 and 88, `AGENTS.md` 17 and `CHANGELOG.md` 52 say Vercel; the `Unreleased` entry exists; the `analytics.js:37` comment no longer says GitHub Pages and the file's behaviour is untouched (the diff is the comment only)
+- [x] No em dashes in the new or changed user-facing and doc text
 
 ## 2. The app is unchanged (reduced baseline)
 
