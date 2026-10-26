@@ -57,7 +57,8 @@ Persisted in `localStorage` (see `js/storage-migrate.js` for legacy key migratio
 | `uzBankWebPaymentState` | Demo payment balances and bookings |
 | `uzBankWebSavedColorThemes_v2` | Profile > Theme saved theme cards |
 | `uzBankWebBuiltinThemesSeeded_v1` | Built-in theme cards seeded once |
-| `uzBankWebPlaygroundSound` | Design system > Payday run: `on` or `off`, the HUD mute button (missing means on) |
+| `uzBankWebPlaygroundSound` | Design system > Payday run: `on` or `off`, the Sound switch in the settings dialog (missing means on) |
+| `uzBankWebPlaygroundSettings` | Design system > Payday run settings dialog: JSON `{ quality, camera, effects, fog }`; anything missing or unknown falls back to the default |
 | `uzBankWebPlaygroundBest` | Design system > Payday run: the best run, `{ "balance": number, "date": "YYYY-MM-DD" }` |
 
 ## Source layout

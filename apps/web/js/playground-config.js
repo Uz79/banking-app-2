@@ -95,4 +95,11 @@ export const CONFIG = {
   maxPixelRatio: 2,
   fogNear: 40,
   fogFar: 140,
+
+  /* The settings dialog (roadmap item 7): what each choice multiplies or caps. The middle or top choice is today's look. */
+  settings: {
+    quality: { low: 1, medium: 1.5, high: 2 },                       /* pixel ratio cap; `high` equals maxPixelRatio */
+    camera: { close: 0.8, default: 1, far: 1.25 },                   /* times the chase camera's distance and height */
+    fog: { near: 0.7, default: 1, far: 1.4 },                        /* times fogNear and fogFar */
+  },
 };

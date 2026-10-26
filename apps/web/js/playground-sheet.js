@@ -93,5 +93,9 @@
   window.addEventListener('message', function (event) {
     if (event.origin !== window.location.origin || !frame || event.source !== frame.contentWindow) return;
     if (event.data && event.data.type === 'uzbank:playground-close') close();
+    /* A Light or Dark change made in the settings dialog: bring this page in step, as the sidebar toggle would. */
+    if (event.data && event.data.type === 'uzbank:playground-mode' && typeof window.UZBankApplyThemeChoice === 'function') {
+      window.UZBankApplyThemeChoice(event.data.mode);
+    }
   });
 })();

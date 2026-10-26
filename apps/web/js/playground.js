@@ -19,6 +19,7 @@ import { createGates } from './playground-gates.js';
 import { createChest } from './playground-chest.js';
 import { createForest } from './playground-forest.js';
 import { createAudio } from './playground-audio.js';
+import { readSettings, writeSettings, currentMode, setMode } from './playground-settings.js';
 
 const embedded = window.parent !== window;
 const closeLinks = [...document.querySelectorAll('[data-playground-close]')]; /* the X button and the dialog's Close */
@@ -69,6 +70,10 @@ async function mountGame(host) {
   /* `?reduced` forces the still version, for testing where the system setting cannot be flipped. */
   const forceReduced = new URLSearchParams(window.location.search).has('reduced');
   const reduced = () => forceReduced || reduceMQ.matches;
+  /* The settings dialog's visual choices (roadmap item 7); each maps to a multiplier or cap in CONFIG.settings. */
+  const cfg = readSettings();
+  const presets = CONFIG.settings;
+  let camMul = presets.camera[cfg.camera];
   let dirty = true; /* something changed that a still frame has to show (paused and still scenes only redraw when it is set) */
 
   const persona = (window.UZBankPersona && window.UZBankPersona.read()) || null;
@@ -84,7 +89,7 @@ async function mountGame(host) {
 
   /* ── Scene ─────────────────────────────────────────────────────────── */
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, CONFIG.maxPixelRatio));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, presets.quality[cfg.quality]));
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.NoToneMapping;
@@ -94,7 +99,7 @@ async function mountGame(host) {
   host.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
-  scene.fog = new THREE.Fog(0xffffff, CONFIG.fogNear, CONFIG.fogFar);
+  scene.fog = new THREE.Fog(0xffffff, CONFIG.fogNear * presets.fog[cfg.fog], CONFIG.fogFar * presets.fog[cfg.fog]);
   const camera = new THREE.PerspectiveCamera(CONFIG.camera.fov, 1, 0.1, 400);
 
   const hemi = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
@@ -169,18 +174,6 @@ async function mountGame(host) {
 
   /* ── Sound: footsteps and coins (roadmap item 5) ─────────────────── */
   const audio = createAudio(CONFIG);
-  const soundBtn = document.querySelector('[data-playground-sound]');
-  function syncSoundButton() {
-    if (!soundBtn) return;
-    const off = audio.isMuted();
-    soundBtn.setAttribute('aria-pressed', String(off));
-    soundBtn.setAttribute('aria-label', off ? 'Unmute sound' : 'Mute sound');
-    soundBtn.querySelector('use').setAttribute('href', off ? '#i-volume-x' : '#i-volume-2');
-  }
-  if (soundBtn) {
-    syncSoundButton();
-    soundBtn.addEventListener('click', () => { audio.setMuted(!audio.isMuted()); syncSoundButton(); });
-  }
   /* A step plays each time the run clip crosses one of its foot-contact phases, so the cadence follows the profile's timeScale. */
   let lastPhase = 0;
   function footsteps() {
@@ -277,7 +270,7 @@ async function mountGame(host) {
     toast('Salary: ' + money(CONFIG.money.salary));
     announce('Payday. Salary of ' + money(CONFIG.money.salary) + ' is on the road. Collect the coins.');
     track.at(s, here);
-    if (!reduced()) coins.burst(figure.actor.position, here.t, here.r);
+    if (!reduced() && cfg.effects) coins.burst(figure.actor.position, here.t, here.r);
     audio.unlock(); /* inside the Start click: the browser's rule for sound */
     lastPhase = figure.loopPhase();
     setState('running');
@@ -368,9 +361,9 @@ async function mountGame(host) {
     heading.set(here.t.x * speed + here.r.x * vx, 0, here.t.z * speed + here.r.z * vx);
     figure.actor.rotation.set(0, Math.atan2(heading.x, heading.z), vx * CONFIG.steer.lean * 0.1, 'XYZ');
 
-    behind(s - c.distance, back);
+    behind(s - c.distance * camMul, back);
     const wantX = back.p.x + back.r.x * x * c.follow;
-    const wantY = c.height;
+    const wantY = c.height * camMul;
     const wantZ = back.p.z + back.r.z * x * c.follow;
     const lookX = px + here.t.x * c.lookAhead, lookZ = pz + here.t.z * c.lookAhead;
     const k = snap ? 1 : 1 - Math.exp(-c.lag * dt);
@@ -437,7 +430,7 @@ async function mountGame(host) {
   overlay.dataset.quiet = '';
   window.addEventListener('pointerdown', () => { overlay.dataset.quiet = ''; });
   window.addEventListener('keydown', (e) => {
-    if (quitOpen) return; /* the dialog has the keyboard; its own Escape means Keep playing */
+    if (quitOpen || settingsOpen) return; /* a dialog has the keyboard; its own Escape means Keep playing or Resume */
     if (e.key === 'Tab') delete overlay.dataset.quiet; /* only moving focus shows the ring, not Escape or steering */
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     const dir = KEYS[e.key];
@@ -454,7 +447,7 @@ async function mountGame(host) {
   /* One dialog for Escape, the close button and an automatic pause (tab switch, rotation): the run waits while it is open. */
   let quitOpen = false;
   function requestQuit() {
-    if (quitOpen) return;
+    if (quitOpen || settingsOpen) return;
     if (state !== 'running' && state !== 'stepping') { closeGame(); return; } /* nothing to lose on the start and result screens */
     input.left = input.right = false;
     releaseTouch();
@@ -622,7 +615,7 @@ async function mountGame(host) {
       footsteps();
       elapsed += dt;
       coins.update(dt, elapsed, reduced());
-      forest.update(s, reduced());
+      forest.update(s, reduced() || !cfg.effects);
       showBalance(dt);
     }
     /* Paused and still scenes only redraw when something changed; everything else draws every frame. */
@@ -647,7 +640,7 @@ async function mountGame(host) {
   let elapsed = 0;
   let renderCpu = 0;
   const debug = new URLSearchParams(window.location.search).has('debug');
-  const cullRange = CONFIG.fogFar + 15;
+  let cullRange = scene.fog.far + 15;
 
   /* Dynamic resolution (D16): if frames keep taking longer than about 24 ms while running, step the
      pixel ratio down by a quarter, to a floor of 1. It never goes back up during this visit. */
@@ -663,6 +656,123 @@ async function mountGame(host) {
       slow = 0;
       if (debug) console.info('[playground] pixel ratio lowered to', pixelRatio);
     }
+  }
+
+
+  /* ── Settings dialog (roadmap item 7) ─────────────────────────────── */
+  const settingsDlg = document.querySelector('[data-playground-settings-dialog]');
+  const settingsBtn = document.querySelector('[data-playground-settings]');
+  let settingsOpen = false;
+  let resumeAfterSettings = false;
+
+  /* Apply the visual choices to the scene. The dialog is open and the run paused, so the next redraw shows the effect. */
+  function applyVisual() {
+    camMul = presets.camera[cfg.camera];
+    const fogMul = presets.fog[cfg.fog];
+    scene.fog.near = CONFIG.fogNear * fogMul;
+    scene.fog.far = CONFIG.fogFar * fogMul;
+    cullRange = scene.fog.far + 15;
+    pixelRatio = Math.min(window.devicePixelRatio, presets.quality[cfg.quality]);
+    renderer.setPixelRatio(pixelRatio);
+    resize();
+    forest.update(s, reduced() || !cfg.effects);
+    pose(0, true);
+    dirty = true;
+  }
+
+  const radios = (name) => [...settingsDlg.querySelectorAll('[data-setting="' + name + '"][role="radio"]')];
+  function syncSettings() {
+    const values = { quality: cfg.quality, camera: cfg.camera, fog: cfg.fog, mode: currentMode() };
+    Object.keys(values).forEach((name) => radios(name).forEach((b) => {
+      const on = b.dataset.value === values[name];
+      b.setAttribute('aria-checked', String(on));
+      b.tabIndex = on ? 0 : -1;
+      b.classList.toggle('segmented__option--active', on);
+    }));
+    [['effects', cfg.effects], ['sound', !audio.isMuted()]].forEach(([name, on]) => {
+      const sw = settingsDlg.querySelector('[role="switch"][data-setting="' + name + '"]');
+      sw.setAttribute('aria-checked', String(on));
+      sw.classList.toggle('toggle--active', on);
+      sw.firstElementChild.classList.toggle('toggle__thumb--active', on);
+    });
+    settingsDlg.querySelector('[data-settings-resume]').textContent = state === 'paused' ? 'Resume' : 'Done';
+  }
+
+  function choose(name, value) {
+    if (name === 'mode') {
+      setMode(value); /* the MutationObserver above recolours the world and the character */
+      if (embedded) window.parent.postMessage({ type: 'uzbank:playground-mode', mode: value }, window.location.origin);
+    } else {
+      cfg[name] = value;
+      writeSettings(cfg);
+      applyVisual();
+    }
+    syncSettings();
+  }
+
+  function openSettings() {
+    if (settingsOpen || quitOpen) return;
+    input.left = input.right = false;
+    releaseTouch();
+    resumeAfterSettings = state === 'running';
+    if (resumeAfterSettings) setState('paused');
+    settingsOpen = true;
+    syncSettings();
+    settingsDlg.showModal();
+    const first = settingsDlg.querySelector('[role="radio"][tabindex="0"]');
+    if (first) first.focus({ preventScroll: true });
+  }
+
+  let settingsClosing = false;
+  function closeSettings() {
+    if (!settingsOpen || settingsClosing) return;
+    if (reduceMQ.matches) { settingsDlg.close(); return; }
+    settingsClosing = true;
+    settingsDlg.classList.add('playground-settings--closing');
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      settingsClosing = false;
+      settingsDlg.classList.remove('playground-settings--closing');
+      settingsDlg.close();
+    };
+    settingsDlg.querySelector('.playground-settings__surface').addEventListener('animationend', finish, { once: true });
+    window.setTimeout(finish, 420);
+  }
+
+  if (settingsDlg && settingsBtn) {
+    settingsBtn.addEventListener('click', openSettings);
+    settingsDlg.addEventListener('cancel', (e) => { e.preventDefault(); closeSettings(); }); /* Escape means Resume */
+    settingsDlg.addEventListener('close', () => {
+      settingsOpen = false;
+      settingsBtn.focus({ preventScroll: true });
+      if (resumeAfterSettings && state === 'paused') setState('running');
+      resumeAfterSettings = false;
+    });
+    settingsDlg.querySelector('[data-settings-resume]').addEventListener('click', closeSettings);
+    settingsDlg.addEventListener('click', (e) => {
+      if (e.target === settingsDlg) { closeSettings(); return; } /* a click on the scrim, like Resume */
+      const b = e.target.closest('[data-setting]');
+      if (!b) return;
+      if (b.getAttribute('role') === 'switch') {
+        const on = b.getAttribute('aria-checked') !== 'true';
+        if (b.dataset.setting === 'sound') audio.setMuted(!on);
+        else { cfg.effects = on; writeSettings(cfg); applyVisual(); }
+        syncSettings();
+      } else choose(b.dataset.setting, b.dataset.value);
+    });
+    /* Arrow keys move through a radio group, as native radios do. */
+    settingsDlg.addEventListener('keydown', (e) => {
+      const b = e.target.closest('[role="radio"]');
+      const dir = { ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1, ArrowDown: 1 }[e.key];
+      if (!b || !dir) return;
+      e.preventDefault();
+      const group = radios(b.dataset.setting);
+      const next = group[(group.indexOf(b) + dir + group.length) % group.length];
+      choose(next.dataset.setting, next.dataset.value);
+      next.focus();
+    });
   }
 
   window.addEventListener('pagehide', (e) => {

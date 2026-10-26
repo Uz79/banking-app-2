@@ -10787,7 +10787,8 @@ html[data-theme="dark"] .form-field--error .form-field__text-wrap:focus-within {
   color: var(--color-fg);
 }
 
-.playground__sound {
+/* The settings button takes the sound button's old place, left of the close button. */
+.playground__settings {
   top: max(var(--space-3), env(safe-area-inset-top, 0px));
   bottom: auto;
   right: calc(max(var(--space-3), env(safe-area-inset-right, 0px)) + 2.75rem + var(--space-2));
@@ -10796,11 +10797,6 @@ html[data-theme="dark"] .form-field--error .form-field__text-wrap:focus-within {
   border-radius: 50%;
   background-color: color-mix(in srgb, var(--color-bg) 72%, transparent);
   color: var(--color-fg);
-}
-
-/* The still version has no sound to mute. */
-.playground--stepped .playground__sound {
-  display: none;
 }
 
 /* The Design system hub opens the page as a flow-style sheet (js/playground-sheet.js): the
@@ -11586,5 +11582,145 @@ html.fridge--wide .fridge__panel {
 
   .fridge__ring-amount {
     font-size: var(--fs-h5);
+  }
+}
+
+/* Playground settings dialog: the card of the confirmation dialog (.basic-dialog-payment-exit__surface), a form inside */
+dialog.playground-settings {
+  margin: 0;
+  padding: max(var(--space-4), env(safe-area-inset-top, 0px))
+    max(var(--space-4), env(safe-area-inset-right, 0px))
+    max(var(--space-4), env(safe-area-inset-bottom, 0px))
+    max(var(--space-4), env(safe-area-inset-left, 0px));
+  border: none;
+  background: transparent;
+  outline: none;
+  max-height: none;
+  max-width: none;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  z-index: 220;
+}
+
+dialog.playground-settings[open] {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+}
+
+dialog.playground-settings::backdrop {
+  background: var(--color-overlay-scrim);
+  animation: form-sheet-backdrop-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+dialog.playground-settings[open] .playground-settings__surface {
+  animation: basic-dialog-surface-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+dialog.playground-settings.playground-settings--closing[open]::backdrop {
+  animation: form-sheet-backdrop-out 0.28s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+dialog.playground-settings.playground-settings--closing[open] .playground-settings__surface {
+  animation: basic-dialog-surface-out 0.28s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@media (max-width: 1279px) {
+  dialog.playground-settings[open] {
+    position: fixed;
+    inset: 0;
+    max-width: 100vw;
+    max-height: 100vh;
+    max-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: stretch;
+    padding: 0.25rem;
+    padding-bottom: calc(0.25rem + env(safe-area-inset-bottom, 0px));
+    --form-sheet-slide-depth: calc(100vh + 1rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  dialog.playground-settings[open] .playground-settings__surface {
+    animation: form-sheet-panel-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+    width: 100%;
+    max-width: none;
+    margin-top: auto;
+    box-shadow: 0 0.25rem 1.5rem var(--color-modal-elevated-shadow);
+  }
+
+  dialog.playground-settings.playground-settings--closing[open] .playground-settings__surface {
+    animation: form-sheet-panel-out 0.28s cubic-bezier(0.4, 0, 1, 1) forwards;
+  }
+}
+
+/* Wider than the confirmation dialog: the form is as wide as the payment flow (640px) */
+@media (min-width: 1280px) {
+  dialog.playground-settings .playground-settings__surface {
+    width: min(var(--modal-payment-max-width, 640px), 100%);
+  }
+}
+
+.playground-settings__section {
+  margin: 0 0 var(--space-3);
+}
+
+.playground-settings__heading {
+  margin: 0 0 var(--space-2);
+  font-size: var(--fs-text-sm);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.playground-settings__row {
+  margin: 0 0 var(--space-3);
+}
+
+.playground-settings__row:last-child {
+  margin-bottom: 0;
+}
+
+.playground-settings__row--switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.playground-settings__label {
+  display: block;
+  margin: 0 0 var(--space-1);
+  font-size: var(--fs-text-md);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+}
+
+.playground-settings__row--switch .playground-settings__label {
+  margin: 0;
+}
+
+.playground-settings__segmented {
+  width: 100%;
+}
+
+/* The still version has no burst, growth or sound to set. */
+.playground--stepped [data-still-hide] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  dialog.playground-settings::backdrop,
+  dialog.playground-settings.playground-settings--closing[open]::backdrop {
+    animation: none;
+    opacity: 1;
+  }
+
+  dialog.playground-settings[open] .playground-settings__surface,
+  dialog.playground-settings.playground-settings--closing[open] .playground-settings__surface {
+    animation: none;
+    transform: none;
   }
 }
