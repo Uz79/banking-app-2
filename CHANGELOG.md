@@ -8,6 +8,9 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 ### Decided
 - **Spec-driven workflow.** From now on every change goes through a dated spec folder (`specs/<YYYY-MM-DD>-<name>/`) created with `/feature-spec`, on its own branch, with a validation pass and the baseline smoke test before it reaches `main`. Added `AGENTS.md`, `specs/mission.md`, `specs/tech-spec.md`, `specs/roadmap.md`, `specs/baseline/`, and the `/feature-spec` and `/changelog` skills. The app's code is unchanged. The state before this is tagged `v1-presentable`.
 
+### Added
+- **Playground settings dialog.** A settings button in the Payday run HUD pauses the run and opens a dialog: Quality, Camera distance, Effects and Fog (remembered in `uzBankWebPlaygroundSettings`), a Sound switch (replaces the HUD mute button) and Light/Dark, which the Design system page behind the sheet follows. Resume or Escape continues the run.
+
 ### Changed
 - **One running balance rule.** Household and Savings show the running balance (registered balance plus payments and transfers made in the app) on Overview, Account details (both carousel slides), the All bookings card, the payment sheet's debit rows and the internal transfer sheet. The Overview and Account details totals add up from the same figures. The registered balance stays only for the Yesterday and day headers.
 
