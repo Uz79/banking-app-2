@@ -59,7 +59,7 @@ The first step of opening an investment product, as in a bank's advisory meeting
 
 Split:
 
-- **8a. The flow** (done): entry from Overview > Offers > "Investment", a 3D fridge in the theme colours with the persona character standing next to it, five beats, sliders as the input, the investable amount as the result.
+- **8a. The flow** (done): entry from Overview > Offers > "Investment", a 3D fridge in the theme colours with the persona character standing next to it, five beats, sliders as the input, the investable amount as the result. The follow-up that tints the active compartment instead of outlining it is also done (D26, `feature/fridge-compartment-tint`).
 - **8b. The avatar acting** (later): the character opens the doors, carries items and cheers.
 
 Spec for 8a: `specs/2026-10-22-fridge-advisor/`.
@@ -95,3 +95,18 @@ Spec: `specs/2026-10-26-web-analytics/` (branch `feature/web-analytics`). Interv
 - **Source entry paths:** Vercel rewrites in `vercel.json`, for example `/from-cv`, `/from-portfolio` and `/from-linkedin`, each serving `overview.html` while the URL keeps the source path, so every source is its own row under Pages. The exact list of paths is decided in the spec.
 - **Own visits:** `?analytics=off` stores a localStorage flag so the script never loads in that browser; `?analytics=on` removes it. The flag is checked before the script loads. The new key goes into the localStorage list in `apps/web/README.md`.
 - **Limits to note:** 50,000 events a month shared across all Vercel projects, a one-month reporting window, no custom events, no UTM report on Hobby. PDFs already sent keep their old links and count as direct.
+
+## 14. Booking balance: dropping the oldest booking refunds its money
+
+When the bookings list is full and the oldest booking is dropped, its amount is refunded to the balance. The balance should not change when a booking leaves the list. Found at the end of `specs/2026-10-25-all-bookings-real/`.
+
+## 15. Transfer confirmation copy: "will be executed now"
+
+The transfer confirmation still says the transfer "will be executed now". The copy needs another look. Found at the end of `specs/2026-10-25-all-bookings-real/`.
+
+## 16. Open checks
+
+Checks that were not run on merged branches. Each is a pass to do and record, not a feature:
+
+- **Playground settings dialog** (`specs/2026-10-25-playground-settings-dialog/validation.md`): the recolour cost on a throttled CPU, on a phone, and at a 2x pixel ratio.
+- **All bookings** (`specs/2026-10-25-all-bookings-real/validation.md`): reduced motion and a screen reader.
