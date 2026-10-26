@@ -14,7 +14,7 @@ Read all three before making non-trivial changes. If a change doesn't fit what t
 
 ## Protect the presentable state
 
-The app is shown to people as it is. `main` deploys to GitHub Pages on every push (`.github/workflows/deploy.yml`), so anything merged is live.
+The app is shown to people as it is. `main` deploys to Vercel on every push (other branches get a preview URL), so anything merged is live.
 
 - Never work on `main` directly. Every change happens on a feature branch and reaches `main` only after its `validation.md` is done, including the baseline smoke test (`specs/baseline/validation.md`).
 - The tag `v1-presentable` marks the state before the spec-driven process began. It is the fallback if something goes badly wrong.
@@ -48,7 +48,7 @@ These are the app's unwritten rules, written down. Most bugs in this repo came f
 
 There are no automated tests. The gates for every branch:
 
-1. `npm run build` in `apps/web` succeeds.
+1. `npm run build` in `apps/web` succeeds. Vercel runs the same build on every deploy and a failing build does not go live, but that check is only visible in the Vercel dashboard and on the preview, so run it yourself first.
 2. The feature's own `validation.md`, checked in a real browser (`npm run dev`, `http://localhost:5175/overview.html`): Light and Dark, desktop and phone width (390px), keyboard, reduced motion.
 3. The baseline smoke test in `specs/baseline/validation.md`, so nothing that worked before is broken.
 

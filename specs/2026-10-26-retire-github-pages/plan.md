@@ -6,12 +6,12 @@ Branch: `feature/retire-github-pages`. Decisions are cited as D1 to D12 from `re
 
 What you see: no `.github` folder; `grep -rn "GitHub Pages"` finds only history (`CHANGELOG.md:15`, the finished spec files) and this spec.
 
-- [ ] Delete `.github/workflows/deploy.yml` (`git rm`), which leaves no `.github` folder
-- [ ] `specs/tech-spec.md`: line 10 (deployed to Vercel on every push to `main`) and line 88 (the "Deploy" Decisions row: Vercel serves `apps/web` as it is, with the settings of D4 and D5)
-- [ ] `AGENTS.md`: line 17 (`main` deploys to Vercel on every push, branches get a preview URL, no workflow path) and the build-check wording of D12 under "Checking work"
-- [ ] `CHANGELOG.md`: line 52 says Vercel; a `Changed` entry under `Unreleased` (GitHub Pages retired, Vercel is the only host, the build runs on Vercel as a gate)
-- [ ] `apps/web/js/analytics.js`: the comment at line 37 only, "GitHub Pages" dropped
-- [ ] Check: `grep -rniE "github pages|deploy.yml" . --exclude-dir=node_modules --exclude-dir=.git` lists only the allowed history
+- [x] Delete `.github/workflows/deploy.yml` (`git rm`), which leaves no `.github` folder
+- [x] `specs/tech-spec.md`: line 10 (deployed to Vercel on every push to `main`) and line 88 (the "Deploy" Decisions row: Vercel serves `apps/web` as it is, with the settings of D4 and D5)
+- [x] `AGENTS.md`: line 17 (`main` deploys to Vercel on every push, branches get a preview URL, no workflow path) and the build-check wording of D12 under "Checking work"
+- [x] `CHANGELOG.md`: line 52 says Vercel; a `Changed` entry under `Unreleased` (GitHub Pages retired, Vercel is the only host, the build runs on Vercel as a gate)
+- [x] `apps/web/js/analytics.js`: the comment at line 37 only, "GitHub Pages" dropped
+- [x] Check: `grep -rniE "github pages|deploy.yml" . --exclude-dir=node_modules --exclude-dir=.git` lists only history: `CHANGELOG.md` (line 15 and the new entry), `specs/roadmap.md`, the fridge advisor D25 and the web-analytics spec files, and this spec
 
 ## 2. The Vercel settings (D4 to D8), by Klaudiusz
 
