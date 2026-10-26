@@ -58,6 +58,7 @@
     } catch (e) {}
   }
 
+  /* Blocked or throwing storage means no flag: that visitor cannot have opted out, so they are still counted. */
   function optedOut() {
     try {
       return window.localStorage.getItem(OPT_OUT_KEY) === '1';

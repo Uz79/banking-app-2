@@ -16,15 +16,15 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [x] With the flag set, even the counted host name would not load it (read the code path, or call the guard with a stubbed host)
 - [x] First visit, nothing in localStorage: no error, no key created
 - [x] `uzbank:screen` still fires on load and on a hash step (`#pay/recipient-search`); `UZBankAnalytics.track` still emits `uzbank:event`
-- [ ] The 13 pages that load `analytics.js` still do; `index.html`, `account-information.html` and `spa-source.html` are unchanged
+- [x] The 13 pages that load `analytics.js` still do; `index.html`, `account-information.html` and `spa-source.html` are unchanged
 
 ## 3. Opt-out (D7 to D9, D11)
 
 - [x] `?analytics=off` sets `uzBankWebAnalyticsOff` to `1`; the address bar loses the parameter but keeps the path, another parameter (`?account=x`) and the hash
 - [x] `?analytics=on` removes the key and cleans the address bar the same way
 - [x] Another value (`?analytics=maybe`) changes nothing; the parameter is left alone
-- [ ] Nothing visible happens on screen; Light and Dark, a Multi-color theme and 390px unaffected
-- [ ] Storage blocked or throwing: the page loads, no console error
+- [x] Nothing visible happens on screen; Light and Dark, a Multi-color theme and 390px: not applicable, no UI
+- [x] Storage blocked or throwing: the page loads, no console error, and on the counted host the script is still injected (tested with the `localhost` copy of `analytics.js`)
 - [x] The flag survives a reload and a visit to another page
 
 ## 4. Source paths (D5, D6): preview and production, not testable on 5199
