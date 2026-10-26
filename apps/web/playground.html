@@ -2329,8 +2329,8 @@
           <a class="view__nav-btn view__nav-btn--trailing playground__close" href="design-system.html" aria-label="Close Playground" data-playground-close>
             <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>
           </a>
-          <button type="button" class="view__nav-btn view__nav-btn--trailing playground__sound" aria-label="Mute sound" aria-pressed="false" data-playground-sound>
-            <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-volume-2"/></svg>
+          <button type="button" class="view__nav-btn view__nav-btn--trailing playground__settings" aria-label="Settings" aria-haspopup="dialog" data-playground-settings>
+            <svg class="view__nav-btn-icon" aria-hidden="true" focusable="false"><use href="#i-settings"/></svg>
           </button>
           <h1 class="playground__title">Payday run</h1>
           <div class="playground-stage" data-playground-stage></div>
@@ -2369,6 +2369,66 @@
     </div>
   </main>
 </div>
+
+<dialog class="playground-settings" aria-labelledby="playgroundSettingsTitle" data-playground-settings-dialog>
+  <div class="basic-dialog-payment-exit__surface playground-settings__surface">
+    <h2 class="basic-dialog-payment-exit__title" id="playgroundSettingsTitle">Settings</h2>
+    <section class="playground-settings__section" aria-labelledby="pgs-visual">
+      <h3 class="playground-settings__heading" id="pgs-visual">Visual</h3>
+        <div class="playground-settings__row">
+          <span class="playground-settings__label" id="pgs-quality">Quality</span>
+          <div class="segmented segmented--sm playground-settings__segmented" role="radiogroup" aria-labelledby="pgs-quality">
+            <button type="button" class="segmented__option" role="radio" aria-checked="false" data-setting="quality" data-value="low">Low</button>
+            <button type="button" class="segmented__option" role="radio" aria-checked="false" data-setting="quality" data-value="medium">Medium</button>
+            <button type="button" class="segmented__option" role="radio" aria-checked="false" data-setting="quality" data-value="high">High</button>
+          </div>
+        </div>
+        <div class="playground-settings__row">
+          <span class="playground-settings__label" id="pgs-camera">Camera distance</span>
+          <div class="segmented segmented--sm playground-settings__segmented" role="radiogroup" aria-labelledby="pgs-camera">
+            <button type="button" class="segmented__option" role="radio" aria-checked="false" data-setting="camera" data-value="close">Close</button>
+            <button type="button" class="segmented__option" role="radio" aria-checked="false" data-setting="camera" data-value="default">Default</button>
+            <button type="button" class="segmented__option" role="radio" aria-checked="false" data-setting="camera" data-value="far">Far</button>
+          </div>
+        </div>
+        <div class="playground-settings__row playground-settings__row--switch" data-still-hide>
+          <span class="playground-settings__label" id="pgs-effects">Effects</span>
+          <button type="button" class="toggle" role="switch" aria-checked="false" aria-labelledby="pgs-effects" data-setting="effects">
+            <span class="toggle__thumb"></span>
+          </button>
+        </div>
+        <div class="playground-settings__row">
+          <span class="playground-settings__label" id="pgs-fog">Fog</span>
+          <div class="segmented segmented--sm playground-settings__segmented" role="radiogroup" aria-labelledby="pgs-fog">
+            <button type="button" class="segmented__option" role="radio" aria-checked="false" data-setting="fog" data-value="near">Near</button>
+            <button type="button" class="segmented__option" role="radio" aria-checked="false" data-setting="fog" data-value="default">Default</button>
+            <button type="button" class="segmented__option" role="radio" aria-checked="false" data-setting="fog" data-value="far">Far</button>
+          </div>
+        </div>
+    </section>
+    <section class="playground-settings__section" aria-labelledby="pgs-sound-h" data-still-hide>
+      <h3 class="playground-settings__heading" id="pgs-sound-h">Sound</h3>
+        <div class="playground-settings__row playground-settings__row--switch">
+          <span class="playground-settings__label" id="pgs-sound">Sound</span>
+          <button type="button" class="toggle" role="switch" aria-checked="false" aria-labelledby="pgs-sound" data-setting="sound">
+            <span class="toggle__thumb"></span>
+          </button>
+        </div>
+    </section>
+    <section class="playground-settings__section" aria-labelledby="pgs-theme-h">
+      <h3 class="playground-settings__heading" id="pgs-theme-h">Theme</h3>
+        <div class="playground-settings__row">
+          <div class="segmented segmented--sm playground-settings__segmented" role="radiogroup" aria-label="Theme">
+            <button type="button" class="segmented__option" role="radio" aria-checked="false" data-setting="mode" data-value="light">Light</button>
+            <button type="button" class="segmented__option" role="radio" aria-checked="false" data-setting="mode" data-value="dark">Dark</button>
+          </div>
+        </div>
+    </section>
+    <div class="basic-dialog-payment-exit__actions">
+      <button type="button" class="uz-btn uz-btn--primary uz-btn--md" data-settings-resume>Resume</button>
+    </div>
+  </div>
+</dialog>
 
 <script src="js/analytics.js"></script>
 <script src="js/payment-state.js"></script>
