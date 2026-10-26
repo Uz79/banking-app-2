@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/from-cv", "destination": "/overview.html" },
+    { "source": "/from-portfolio", "destination": "/overview.html" },
+    { "source": "/from-linkedin", "destination": "/overview.html" }
+  ]
+}

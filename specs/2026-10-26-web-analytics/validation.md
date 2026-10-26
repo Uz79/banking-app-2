@@ -29,7 +29,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 ## 4. Source paths (D5, D6): preview and production, not testable on 5199
 
-- [ ] `apps/web/vercel.json` is valid JSON with exactly the three decided rewrites
+- [x] `apps/web/vercel.json` is valid JSON with exactly the three decided rewrites
 - [ ] Vercel preview (after Klaudiusz pushes the branch): `/from-cv`, `/from-portfolio`, `/from-linkedin` each load the Overview with the path kept; the nav active state is right; going on to Account details and back works; a payment flow opened there keeps `/from-cv#pay/...`; no script request (preview is not the counted host)
 - [ ] Production, by Klaudiusz after the merge: `/from-cv` shows up under Pages in Vercel Analytics, and the pushState question in `requirements.md` is answered
 

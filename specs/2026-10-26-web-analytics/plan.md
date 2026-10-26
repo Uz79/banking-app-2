@@ -14,8 +14,8 @@ What you see: on 5199 nothing about Vercel is requested and the console is clean
 
 What you see: after the branch is pushed, the Vercel preview serves `/from-cv`, `/from-portfolio` and `/from-linkedin` as the Overview with the path kept in the address bar.
 
-- [ ] `apps/web/vercel.json` (new): three rewrites to `/overview.html`, nothing else
-- [ ] Check what can be checked locally: the file is valid JSON and matches the decided paths
+- [x] `apps/web/vercel.json` (new): three rewrites to `/overview.html`, nothing else
+- [x] Check what can be checked locally: the file is valid JSON and matches the decided paths
 - [ ] After the push (Klaudiusz): on the preview, `/from-cv` loads, the nav works, no script request (preview is not the counted host)
 
 ## 3. Wrap-up
