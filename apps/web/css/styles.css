@@ -11657,6 +11657,13 @@ dialog.playground-settings.playground-settings--closing[open] .playground-settin
   }
 }
 
+/* Wider than the confirmation dialog: the form is as wide as the payment flow (640px) */
+@media (min-width: 1280px) {
+  dialog.playground-settings .playground-settings__surface {
+    width: min(var(--modal-payment-max-width, 640px), 100%);
+  }
+}
+
 .playground-settings__section {
   margin: 0 0 var(--space-3);
 }
