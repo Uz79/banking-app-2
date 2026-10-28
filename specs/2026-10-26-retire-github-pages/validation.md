@@ -25,12 +25,12 @@ Only a comment changed in app code, so only the starred baseline items are run, 
 
 ## 3. The Vercel build gate (D5 to D8), by Klaudiusz, on the branch's preview
 
-- [ ] The settings of plan group 2 are in place (the Install Command override is off, Node 22.x, source files outside the root directory included)
-- [ ] The build log of the branch's deployment shows the install, `tokens:build`, `vite build` and the cleanup, and the deployment is Ready
-- [ ] The preview serves the app: Overview, a payment flow, Profile and its 3D character load; the three source paths (`/from-cv`, `/from-portfolio`, `/from-linkedin`) still serve the Overview; an unknown path gives 404
-- [ ] `/dist/overview.html` and `/node_modules/` on the preview give 404 (the cleanup worked, D6)
-- [ ] A runtime-loaded asset works (the Playground or the fridge advisor loads its 3D models and sound), which is what "deploy is source" protects
-- [ ] The gate: a deliberately failing build (for example a syntax error in `scripts/generate-tokens-css.mjs` on a throwaway branch, never on this one) gives a deployment in the Error state and does not change the production site. Optional, and done on a throwaway branch only
+- [x] The settings of plan group 2 are in place (the Install Command override is off, Node 22.x, source files outside the root directory included). Klaudiusz's report that they made the group 2 changes; the individual values were not read back
+- [ ] The build log of the branch's deployment shows the install, `tokens:build`, `vite build` and the cleanup, and the deployment is Ready. Partly: the build ran (304 log lines, `vite build` "built in 1.47s", Build Completed after 9 s, not a static deploy) and the deployment served; the top of the log (the install and `tokens:build`) was not seen, and the cleanup step itself is not in the seen part of the log (its effect is checked below). The deployment still holds 2,303 files, the same as the source-only deploy (reported by Klaudiusz from a separate Claude in Chrome check, not seen by this agent)
+- [x] The preview serves the app: Overview, a payment flow, Profile and its 3D character load; the three source paths (`/from-cv`, `/from-portfolio`, `/from-linkedin`) still serve the Overview; an unknown path gives 404 (Overview with the 3D character, the Pay flow up to the recipient list, Profile with the character and sliders; the three paths return 200 and serve the Overview; reported by Klaudiusz from a separate Claude in Chrome check, not seen by this agent)
+- [x] `/dist/overview.html` and `/node_modules/` on the preview give 404 (the cleanup worked, D6) (reported by Klaudiusz from a separate Claude in Chrome check, not seen by this agent)
+- [x] A runtime-loaded asset works (the Playground or the fridge advisor loads its 3D models and sound), which is what "deploy is source" protects (the fridge advisor opens with the fridge and the character, and the fridge and food models return 200; sound not checked; no console errors seen; reported by Klaudiusz from a separate Claude in Chrome check, not seen by this agent)
+- [ ] The gate: a deliberately failing build (for example a syntax error in `scripts/generate-tokens-css.mjs` on a throwaway branch, never on this one) gives a deployment in the Error state and does not change the production site. Optional, and done on a throwaway branch only. Not done
 
 ## 4. After the merge and push, by Klaudiusz
 
@@ -38,4 +38,4 @@ Only a comment changed in app code, so only the starred baseline items are run, 
 - [ ] The Vercel production deployment for the merge commit is Ready, and `banking-app-2-bay.vercel.app` serves the app
 - [ ] After Klaudiusz unpublishes Pages (GitHub Settings, Pages): the `github.io` address no longer serves the app
 
-Checked on 2026-10-28 against `feature/retire-github-pages`, Chrome, vite on 5199, desktop (about 2391px wide), by script plus screenshots: sections 1 and 2 only. Not checked: the phone width and dark repeats of the baseline items, the rest of the baseline (this is the reduced run, see section 2), sections 3 and 4 (the Vercel settings, the preview, the merge and the Pages unpublish), which are Klaudiusz's and still open.
+Checked on 2026-10-28 against `feature/retire-github-pages`, Chrome, vite on 5199, desktop (about 2391px wide), by script plus screenshots: sections 1 and 2 only. Not checked: the phone width and dark repeats of the baseline items, the rest of the baseline (this is the reduced run, see section 2), sections 3 and 4 (the Vercel settings, the preview, the merge and the Pages unpublish), which are Klaudiusz's and still open. Section 3 on 2026-10-28: reported by Klaudiusz from a separate Claude in Chrome check, not seen by this agent, on the branch preview after the group 2 settings; the top of the build log and the optional failing-build check are not covered. Section 4 is still open.

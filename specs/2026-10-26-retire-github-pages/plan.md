@@ -17,16 +17,16 @@ What you see: no `.github` folder; `grep -rn "GitHub Pages"` finds only history 
 
 What you see: a preview deployment of the branch that built with `npm run build`, serves the source tree, and has no `/dist/` or `/node_modules/`.
 
-- [ ] Klaudiusz sets, in Vercel, Settings, Build and Deployment (root `apps/web`):
+- [x] Klaudiusz sets, in Vercel, Settings, Build and Deployment (root `apps/web`):
   - Framework Preset: **Other** (unchanged)
   - Build Command, Override on: `npm run build && rm -rf dist node_modules`
   - Install Command: **Override off** (default, `npm install`)
   - Output Directory, Override on: `.` (unchanged)
   - Root Directory: `apps/web` (unchanged); "Include source files outside of the Root Directory" **on**
   - Node.js Version: **22.x** (needs `^20.19.0 || >=22.12.0`)
-- [ ] Redeploy the branch and read the build log: install runs, `tokens:build` and `vite build` run, the cleanup runs, the deployment is Ready
-- [ ] Preview checks of `validation.md` section 3
-- [ ] If the log or the checks show a problem that is more than a setting value (D10): stop and take the fallback decision to Klaudiusz, with the log
+- [x] Redeploy the branch and read the build log: install runs, `tokens:build` and `vite build` run, the cleanup runs, the deployment is Ready (`vite build` and Build Completed seen; the top of the log, with the install and `tokens:build`, was not; the cleanup is shown by the result, see validation section 3)
+- [x] Preview checks of `validation.md` section 3
+- [x] No problem beyond a setting value, so no fallback. If the log or the checks show a problem that is more than a setting value (D10): stop and take the fallback decision to Klaudiusz, with the log
 
 ## 3. Wrap-up
 
