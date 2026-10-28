@@ -110,3 +110,7 @@ Checks that were not run on merged branches. Each is a pass to do and record, no
 
 - **Playground settings dialog** (`specs/2026-10-25-playground-settings-dialog/validation.md`): the recolour cost on a throttled CPU, on a phone, and at a 2x pixel ratio.
 - **All bookings** (`specs/2026-10-25-all-bookings-real/validation.md`): reduced motion and a screen reader.
+
+## 17. Retire GitHub Pages (done)
+
+Spec: `specs/2026-10-26-retire-github-pages/` (branch `feature/retire-github-pages`). Vercel becomes the only host: the Pages workflow is deleted, the docs say Vercel, and the build runs on Vercel as a gate (build command `npm run build && rm -rf dist node_modules`, install command default, output `.` still serving `apps/web` as source). Klaudiusz changes the Vercel settings and unpublishes the Pages site after the merge.

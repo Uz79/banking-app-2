@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit c4b4679b5149c7d591bfaa9ade3d776b2e327070 -->
+<!-- changelog: last-commit 12c08321fc39691140884e80119dc36611bb301b -->
 
 ### Decided
 - **Spec-driven workflow.** From now on every change goes through a dated spec folder (`specs/<YYYY-MM-DD>-<name>/`) created with `/feature-spec`, on its own branch, with a validation pass and the baseline smoke test before it reaches `main`. Added `AGENTS.md`, `specs/mission.md`, `specs/tech-spec.md`, `specs/roadmap.md`, `specs/baseline/`, and the `/feature-spec` and `/changelog` skills. The app's code is unchanged. The state before this is tagged `v1-presentable`.
@@ -15,6 +15,7 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - **Vercel Web Analytics.** `js/analytics.js` loads Vercel's cookie-free script on the production host only (`banking-app-2-bay.vercel.app`), never on localhost, previews or GitHub Pages. `apps/web/vercel.json` adds the entry paths `/from-cv`, `/from-portfolio` and `/from-linkedin`, each serving the Overview, so every source is its own row under Pages. `?analytics=off` keeps the script from loading in a browser (`uzBankWebAnalyticsOff`), `?analytics=on` clears it.
 
 ### Changed
+- **GitHub Pages retired.** Vercel (`banking-app-2-bay.vercel.app`) is the only host. The Pages workflow is deleted, and the docs say Vercel. The build now runs on Vercel as a gate: a failing `npm run build` fails the deployment and the previous production deployment stays live. The deploy still serves `apps/web` as source.
 - **One running balance rule.** Household and Savings show the running balance (registered balance plus payments and transfers made in the app) on Overview, Account details (both carousel slides), the All bookings card, the payment sheet's debit rows and the internal transfer sheet. The Overview and Account details totals add up from the same figures. The registered balance stays only for the Yesterday and day headers.
 
 ### Added
@@ -49,7 +50,7 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - `AGENTS.md`: ideas found during a feature go onto `specs/roadmap.md` as a new item, committed on the feature branch on their own, with a pointer in the spec's out-of-scope list. The roadmap gained items 5 to 7 (sound, gameplay, a Playground settings dialog).
 
 ### Decided
-- **Deploy is source.** `dist` is never deployed (GitHub Pages serves `apps/web` as it is), so runtime-loaded assets need no copy step in the build (fridge advisor D25).
+- **Deploy is source.** `dist` is never deployed (Vercel serves `apps/web` as it is), so runtime-loaded assets need no copy step in the build (fridge advisor D25).
 - Two pre-existing gaps found in the baseline run went onto the roadmap: the All bookings Search button (item 10) and the Household balance on Account details (item 11).
 
 ## v1-presentable (2026-10-19)

@@ -34,7 +34,7 @@
     }
   }
 
-  /* Vercel Web Analytics (roadmap item 13): counted on the production host only, never on localhost, previews or GitHub Pages.
+  /* Vercel Web Analytics (roadmap item 13): counted on the production host only, never on localhost or previews.
      ?analytics=off stores a flag that keeps the script from loading in this browser; ?analytics=on clears it. */
   var COUNTED_HOST = 'banking-app-2-bay.vercel.app';
   var OPT_OUT_KEY = 'uzBankWebAnalyticsOff';
