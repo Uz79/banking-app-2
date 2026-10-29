@@ -22,6 +22,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [ ] A new tab starts fresh (sessionStorage); bad JSON in the draft starts fresh without errors
 - [ ] `investment-opening.html` opened on its own shows its own header and works without the sheet; with no fridge amount the amount starts empty (D9)
 - [ ] Escape in the opening behaves like the close button
+- [x] The exit prompt's Keep going (click or Escape) returns focus to what had it: an option in the page or the header's X; Leave (click or keyboard) returns it to Investment, ring visible from the keyboard (2026-10-29, Chrome, 5199)
 
 ## 3. Screens 1 to 4 (D5 to D9)
 

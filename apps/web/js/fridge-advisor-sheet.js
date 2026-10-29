@@ -142,9 +142,34 @@
     if (!isOpen() || closing) return;
     if (!pageState.dirty || typeof window.UZBankPaymentExitPrompt !== 'function') { close(); return; }
     var prompt = PROMPTS[framePage()] || PROMPTS[FRIDGE.src];
-    window.UZBankPaymentExitPrompt(close, {
+    /* What had the keyboard inside the sheet before the prompt: the header's X or Back, or a control in the page. */
+    var before = document.activeElement;
+    var inner = null;
+    try { if (before === frame) inner = frame.contentDocument.activeElement; } catch (err) { /* ignore */ }
+    /* The prompt hands focus back to what had it before it opened when it closes, which can be after the sheet has
+       gone, so both answers set focus again once it has closed. */
+    function afterPrompt(fn) {
+      var dialog = document.querySelector('dialog.basic-dialog-payment-exit');
+      if (dialog) dialog.addEventListener('close', fn, { once: true });
+    }
+    window.UZBankPaymentExitPrompt(function () {
+      /* Leave: back on Investment, unless the sheet is still closing (then finish() does it). */
+      afterPrompt(function () { if (!isOpen()) opener.focus(); });
+      close();
+    }, {
       title: prompt.title,
       message: prompt.message,
+      /* Keep going: focus returns to what had it before (falling back to the page in the frame). */
+      onStay: function () {
+        afterPrompt(function () {
+          if (!frame) return;
+          if (before && before !== frame && before !== document.body && overlay.contains(before)) { before.focus(); return; }
+          try {
+            frame.contentWindow.focus();
+            if (inner && inner.isConnected && inner !== frame.contentDocument.body) inner.focus();
+          } catch (err) { frame.focus(); }
+        });
+      },
       leaveLabel: 'Leave',
       stayLabel: 'Keep going',
       escapeStays: true
