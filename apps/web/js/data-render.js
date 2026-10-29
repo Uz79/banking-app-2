@@ -157,6 +157,28 @@
     if (yesterdayEl) yesterdayEl.textContent = fmt(state.yesterdayBalance);
   }
 
+  /* ── Asset management mandates (Overview, 9a D21) ───────────────────
+   * One row per mandate after Retirement savings 3a: pending until a transfer funds it, so the amount is in the
+   * secondary style and the Accounts & investment total does not count it. */
+
+  function renderMandates(state) {
+    var host = document.querySelector('[data-mandates]');
+    if (!host) return;
+    host.innerHTML = (state.mandates || []).map(function (m) {
+      return '<div class="divider"></div>' +
+        '<div class="product-item" data-source="state">' +
+          '<svg class="product-item__icon" aria-hidden="true" focusable="false"><use href="#i-trending-up"/></svg>' +
+          '<div class="product-item__info type-stack-tight">' +
+            '<span class="product-item__name type-sm type-trim">Asset management</span>' +
+            '<span class="product-item__iban type-xs type-trim">' + escapeHtml(m.strategyName || m.strategy) + '</span>' +
+          '</div>' +
+          '<span class="product-item__amount product-item__amount--pending">' +
+            'Pending: CHF ' + escapeHtml(fmt(m.amount).replace(/\.00$/, '')) +
+          '</span>' +
+        '</div>';
+    }).join('');
+  }
+
   /* ── Render entrypoint ──────────────────────────────────────────── */
 
   function renderAll() {
@@ -165,6 +187,7 @@
     renderAccountSum(state);
     renderBookings(state);
     renderDayBalances(state);
+    renderMandates(state);
   }
 
   function onDocumentReady(fn) {

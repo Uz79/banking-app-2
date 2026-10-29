@@ -1555,6 +1555,21 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
   color: var(--color-fg);
 }
 
+/* Overview: asset management mandates (9a D21), rows in the same list as the accounts. Pending: no money has moved. */
+.product-mandates {
+  display: contents;
+}
+
+.product-mandates .product-item {
+  cursor: default;
+}
+
+.product-item__amount--pending {
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
 /* ── List item ────────────────────────────────────────── */
 
 .list-item {
@@ -2578,6 +2593,17 @@ a.show-all-btn {
 @media (min-width: 1024px) {
   .modal-shell.modal-shell--wide {
     --modal-payment-max-width: var(--modal-wide-max-width, 960px);
+  }
+}
+
+/* Fixed-height flow sheet (modifier on .modal-shell): from 1024px the sheet keeps one height whatever the step holds,
+   so a short step does not leave the sheet jumping in size and a long one scrolls inside it (9a D26). Never taller
+   than the viewport allows. Below 1024px the sheet is full screen, as every flow sheet. */
+@media (min-width: 1024px) {
+  .modal-shell.modal-shell--fixed-height > .modal {
+    --modal-fixed-height: clamp(480px, 60vh, 640px);
+    height: min(var(--modal-fixed-height), calc(100dvh - 2 * var(--space-4)));
+    max-height: min(var(--modal-fixed-height), calc(100dvh - 2 * var(--space-4)));
   }
 }
 
@@ -11495,7 +11521,7 @@ html.fridge--wide .fridge__panel {
   padding: var(--space-5, var(--space-4)) var(--space-5, var(--space-4)) var(--space-5, var(--space-4)) var(--space-3);
 }
 
-/* Result (screen 7) and closing (screen 8) */
+/* Result (screen 7) */
 .fridge__result {
   display: flex;
   flex-direction: column;
@@ -11558,10 +11584,6 @@ html.fridge--wide .fridge__panel {
   color: var(--color-fg);
 }
 
-.fridge__big {
-  font-size: var(--fs-h2);
-}
-
 .fridge__year {
   margin: 0;
   font-size: var(--fs-text-md);
@@ -11583,6 +11605,694 @@ html.fridge--wide .fridge__panel {
   .fridge__ring-amount {
     font-size: var(--fs-h5);
   }
+}
+
+/* ── Investment opening ("Open asset management"): follows the fridge in the same sheet ─────────── */
+
+/* The sheet goes from the fridge's 960 to the flows' 640 when the opening loads, and back for "Start over" (9a D2).
+   Below 1024px the wide rule does not apply, so nothing moves. Closing keeps its own transform-only transition. */
+.modal-overlay--fridge .modal-shell {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), max-width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* The height follows the width: the opening's fixed height (D26) eases in with the narrowing. */
+.modal-overlay--fridge .modal {
+  transition: height 0.3s cubic-bezier(0.22, 1, 0.36, 1), max-height 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Opening straight at the opening (a resumed draft): the height is set while the sheet is parked, not eased. */
+.modal-overlay--fridge .modal-shell--no-transition > .modal {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-overlay--fridge .modal-shell,
+  .modal-overlay--fridge .modal {
+    transition: none;
+  }
+}
+
+/* The page: no app chrome, like the fridge. Framed, the sheet's header is used; on its own, the page shows the same header. */
+.body[data-screen="investment-opening"] .sidebar,
+.body[data-screen="investment-opening"] .tab-bar {
+  display: none;
+}
+
+.body[data-screen="investment-opening"] .app {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+.body[data-screen="investment-opening"] .main-content {
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--color-bg);
+}
+
+.body[data-screen="investment-opening"] .main-content__inner,
+.body[data-screen="investment-opening"] .view--opening,
+.body[data-screen="investment-opening"] .view--opening .view__main {
+  max-width: none;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.body[data-screen="investment-opening"] .view--opening .view__main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.opening--framed .opening__nav {
+  display: none;
+}
+
+/* The page name for assistive tech only; the visible title is in the header. */
+.opening__title,
+.opening__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Framed, the indicator sits right under the sheet's header, as in the payment flow. */
+.opening--framed .opening__steps {
+  padding-top: 0;
+}
+
+.opening__steps {
+  padding-top: var(--space-1);
+}
+
+/* One column, the flows' width when the page is opened on its own on a wide screen. */
+.opening__panel {
+  flex: 1 1 0%;
+  min-height: 0;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  overflow-y: auto;
+  padding: var(--space-4) var(--space-4) 0; /* the actions carry the bottom space, so Next sits at one height (D26) */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  color: var(--color-fg);
+}
+
+.opening__heading {
+  margin: 0;
+  font-size: var(--fs-text-lg);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-text);
+}
+
+/* Focus moves here on each screen so a screen reader starts at the new screen; it is not a control, so no ring. */
+.opening__heading:focus {
+  outline: none;
+}
+
+.opening__text {
+  margin: 0;
+  font-size: var(--fs-text-md);
+  line-height: 1.5;
+  color: var(--color-fg-secondary);
+}
+
+.opening__actions {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: auto;
+  /* Pinned at the bottom of the screen, scrolling or not: the same place on every step. */
+  padding: var(--space-3) 0 max(var(--space-4), env(safe-area-inset-bottom));
+  background-color: var(--color-bg);
+}
+
+.opening__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.opening__topics {
+  margin: 0;
+  padding-left: var(--space-4);
+  font-size: var(--fs-text-md);
+  line-height: 1.5;
+  color: var(--color-fg);
+}
+
+/* The question above an option group; the space above separates two questions on one screen. */
+.opening__label {
+  margin: var(--space-2) 0 0;
+  font-size: var(--fs-text-md);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+}
+
+.opening__body > .opening__label:first-child {
+  margin-top: 0;
+}
+
+.opening__note {
+  margin: 0;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+/* The check's notes (above the suggestion, a recommendation that changed): the same text, with a line in the accent. */
+.opening__note--check {
+  padding-left: var(--space-2);
+  border-left: 2px solid var(--color-fg-interactive);
+  color: var(--color-fg);
+}
+
+.opening__actions .opening__hint {
+  margin-bottom: var(--space-1);
+}
+
+/* Option cards (D6): a radio group of full-width buttons; the chosen one has the accent border and a filled dot.
+   Compact, so every step fits the 640 sheet without scrolling (D27). */
+.opening-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+/* Short labels (purpose, horizon): two columns at every width. */
+.opening-options--grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.opening-option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  width: 100%;
+  padding: var(--space-1) var(--space-2) var(--space-1) calc(var(--space-2) + 1.5rem);
+  border: 1px solid var(--color-btn-secondary-border);
+  border-radius: var(--radius-regular);
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* The radio dot, drawn from the border and the accent. */
+.opening-option::before {
+  content: "";
+  position: absolute;
+  top: calc(var(--space-1) + 0.25rem);
+  left: var(--space-2);
+  width: 1rem;
+  height: 1rem;
+  box-sizing: border-box;
+  border: 2px solid var(--color-fg-secondary);
+  border-radius: 50%;
+}
+
+.opening-option:hover:not([aria-disabled="true"]) {
+  background: var(--color-surface-state-hover);
+}
+
+.opening-option:focus-visible {
+  outline: 0.125rem solid var(--color-fg-interactive);
+  outline-offset: 2px;
+}
+
+.opening-option[aria-checked="true"] {
+  background: var(--color-bg-secondary);
+  border-color: var(--color-fg-interactive);
+  box-shadow: inset 0 0 0 1px var(--color-fg-interactive);
+}
+
+.opening-option[aria-checked="true"]::before {
+  border-color: var(--color-fg-interactive);
+  border-width: 5px;
+}
+
+.opening-option[aria-disabled="true"] {
+  cursor: default;
+  color: var(--color-fg-disabled);
+}
+
+.opening-option[aria-disabled="true"]::before {
+  border-color: var(--color-fg-disabled);
+}
+
+.opening-option__label {
+  font-size: var(--fs-text-md);
+  line-height: var(--lh-text);
+}
+
+.opening-option__line {
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.opening-option[aria-disabled="true"] .opening-option__line,
+.opening-option[aria-disabled="true"] .opening-meter__label {
+  color: var(--color-fg-disabled);
+}
+
+/* Strategy cards (D11): one column at every width, the sheet is 640 at most. */
+.opening-option__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.125rem var(--space-2);
+}
+
+.opening-option__name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.opening-option--card .opening-option__label {
+  font-weight: var(--fw-medium);
+}
+
+.opening-option__tag {
+  flex-shrink: 0;
+  padding: 0.125rem var(--space-2);
+  border-radius: var(--radius-pill);
+  /* The primary button's pair: the theme engine keeps its text readable on every theme. */
+  background: var(--color-btn-primary-bg);
+  color: var(--color-btn-primary-fg);
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+}
+
+.opening-option__meters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-3);
+}
+
+/* The strategy's line is shown on the chosen card only (D27); the card is described by it either way. */
+.opening-option:not([aria-checked="true"]) .opening-option__line--chosen {
+  display: none;
+}
+
+.opening-options__why {
+  margin: var(--space-1) 0 0;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.opening-meter {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.opening-meter__label {
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.opening-meter__marks {
+  display: inline-flex;
+  gap: 0.1875rem;
+}
+
+.opening-meter__mark {
+  background: var(--color-separator);
+}
+
+.opening-meter__marks--bar .opening-meter__mark {
+  width: 0.625rem;
+  height: 0.375rem;
+  border-radius: 1px;
+}
+
+.opening-meter__marks--dots .opening-meter__mark {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+}
+
+.opening-meter__mark.is-filled {
+  background: var(--color-fg);
+}
+
+.opening-option[aria-disabled="true"] .opening-meter__mark.is-filled {
+  background: var(--color-fg-disabled);
+}
+
+/* Risk (D27): one question open at a time; an answered one folds into its answer and Change, a later one waits. */
+.opening-question {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.opening-question[data-state="done"] .opening__label,
+.opening-question[data-state="waiting"] .opening__label {
+  font-size: var(--fs-text-sm);
+  font-weight: var(--fw-regular);
+  color: var(--color-fg-secondary);
+}
+
+.opening-question .opening__label {
+  margin-top: var(--space-1);
+}
+
+.opening-question__done {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.opening-question__done[hidden] {
+  display: none;
+}
+
+.opening-question__answer {
+  margin: 0;
+  font-size: var(--fs-text-md);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+}
+
+.opening-question__change {
+  flex-shrink: 0;
+}
+
+/* A screen arrives like a payment flow step (D24): forward from the right, back from the left; the buttons stay. */
+.opening__screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.opening__screen--in-f {
+  animation: modalStepInForward 0.25s ease-out both;
+}
+
+.opening__screen--in-b {
+  animation: modalStepInBack 0.25s ease-in both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .opening__screen--in-f,
+  .opening__screen--in-b {
+    animation: none;
+  }
+}
+
+/* "What counts?" (D27): a native disclosure under the question it explains. */
+.opening-more {
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.opening-more__summary {
+  width: fit-content;
+  cursor: pointer;
+  color: var(--color-fg);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.opening-more__summary:focus-visible {
+  outline: 0.125rem solid var(--color-fg-interactive);
+  outline-offset: 2px;
+  border-radius: var(--radius-small);
+}
+
+.opening-more__text {
+  margin: var(--space-1) 0 0;
+}
+
+/* Documents (D16, D27): names with a file icon; the information sheets behind one row. */
+.opening-docs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.opening-docs[hidden] {
+  display: none;
+}
+
+.opening-docs > .opening__label:first-child {
+  margin-top: 0;
+}
+
+.opening-docs__list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A document name is not a control (there are no files), so it is a plain line; only the sheets row has a border. */
+.opening-docs__item,
+.opening-docs__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) 0;
+  font-size: var(--fs-text-md);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+}
+
+.opening-docs__item {
+  border-bottom: 1px solid var(--color-separator);
+}
+
+.opening-docs__list--compact {
+  display: block;
+  gap: 0;
+}
+
+/* Eleven names: two columns where the sheet is wide enough, so the list fits without scrolling (D27). */
+@media (min-width: 30rem) {
+  .opening-docs__list--compact {
+    columns: 2;
+    column-gap: var(--space-4);
+  }
+}
+
+.opening-docs__list--compact .opening-docs__item {
+  break-inside: avoid;
+}
+
+.opening-docs__list--compact .opening-docs__item {
+  padding: 0.25rem 0;
+  font-size: var(--fs-text-sm);
+}
+
+.opening-docs__row {
+  width: 100%;
+  margin-top: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-btn-secondary-border);
+  border-radius: var(--radius-regular);
+  background: var(--color-bg);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.opening-docs__row:hover {
+  background: var(--color-surface-state-hover);
+}
+
+.opening-docs__row:focus-visible {
+  outline: 0.125rem solid var(--color-fg-interactive);
+  outline-offset: 2px;
+}
+
+.opening-docs__row-text {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.opening-docs__count {
+  font-size: var(--fs-text-sm);
+  color: var(--color-fg-secondary);
+}
+
+.opening-docs__icon,
+.opening-docs__chevron {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  color: var(--color-fg-secondary);
+  fill: none;
+}
+
+.opening-docs__back {
+  align-self: flex-start;
+}
+
+/* The one checkbox (D16): native, in the accent. */
+.opening-check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  font-size: var(--fs-text-md);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+  cursor: pointer;
+}
+
+.opening-check__input {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0.125rem 0 0;
+  accent-color: var(--color-fg-interactive);
+}
+
+.opening-check__input:focus-visible {
+  outline: 0.125rem solid var(--color-fg-interactive);
+  outline-offset: 2px;
+}
+
+/* Summary (D17, D27): grouped sections, one Edit each. */
+.opening-summary__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-separator);
+}
+
+.opening-summary__section:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.opening-summary__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.opening-summary__label {
+  flex: 1;
+  margin: 0;
+  font-size: var(--fs-text-md);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+}
+
+.opening-summary__value {
+  font-size: var(--fs-text-md);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+}
+
+.opening-summary__strategy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.opening-summary__name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+}
+
+.opening-summary__answers {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 0 var(--space-2);
+  margin: 0;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+}
+
+.opening-summary__answers dt {
+  color: var(--color-fg-secondary);
+}
+
+.opening-summary__answers dd {
+  margin: 0;
+  color: var(--color-fg);
+}
+
+.opening-summary__answers--done {
+  font-size: var(--fs-text-md);
+}
+
+/* The amount (D9): a number field with CHF in front, the app's apostrophe formatting. */
+.opening-amount {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.opening-amount .opening__label {
+  margin: 0;
+}
+
+.opening-amount__box {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 3rem;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-input-stroke);
+  border-radius: var(--radius-regular);
+  background: var(--color-input-surface);
+}
+
+.opening-amount__box:focus-within {
+  border-color: var(--color-input-stroke-focus);
+  outline: 0.125rem solid var(--color-fg-interactive);
+  outline-offset: 2px;
+}
+
+.opening-amount__unit {
+  font-size: var(--fs-text-md);
+  color: var(--color-fg-secondary);
+}
+
+.opening-amount__input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--color-fg);
+  font: inherit;
+  font-size: var(--fs-text-lg);
+  outline: none;
 }
 
 /* Playground settings dialog: the card of the confirmation dialog (.basic-dialog-payment-exit__surface), a form inside */
