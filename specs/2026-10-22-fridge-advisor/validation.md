@@ -155,20 +155,20 @@ Update, 2026-10-23 (remaining checks and baseline; Chrome on macOS, port 5199, 2
 
 Branch `feature/fridge-follow-ups`. Same setup as above.
 
-- [ ] `npm run build` in `apps/web` succeeds with no new warnings
-- [ ] The browser console shows no errors on the fridge page and in the Overview sheet
-- [ ] Fresh start (demo data reset): step 5's Total assets reads CHF 34'900 in the number field and on the slider; the other four sliders read 0
-- [ ] After a CHF 500 payment from Household: Total assets reads 34'400. After a 500 internal transfer from Household to Savings: still 34'900
-- [ ] The note under Total assets reads "Money you can reach: accounts and savings, not your home or pillar 3a. Filled in from your accounts, change it if you have more." No em dashes
-- [ ] With `UZBankPayState` unavailable (simulated in the console before load, or the script blocked): Total assets starts at 0, the note shows only its first sentence, nothing breaks
-- [ ] A screen reader (or the accessibility tree) reads the note with the slider and with the number field (`aria-describedby`)
-- [ ] The assets shelf is filled from the first tour step that shows the main compartment (D31); the freezer on step 7 matches D9 with the prefilled value (salary 7'000, left 1'000, unplanned 21'000, bigger 0: 34'900 − 6'000 − 21'000 = CHF 7'900)
-- [ ] Changing Total assets (slider, arrow keys, typed value) still works as before, and typing a value below the prefill lowers it
-- [ ] Close with no change (on any step, including step 5): leaves without the exit prompt. Move any slider, then close: the prompt appears
-- [ ] Back and Next across all steps keep the value; reopening the flow reads the balances again (nothing remembered, D8)
-- [ ] Light and Dark, a Multi-color theme; desktop wide layout and 390px (step 5 with the note, nothing overflows)
-- [ ] Keyboard: Tab reaches the slider and the number field, the focus ring is visible
-- [ ] Reduced motion (`?reduced` and the system setting): nothing new animates
+- [x] `npm run build` in `apps/web` succeeds with no new warnings
+- [x] The browser console shows no errors on the fridge page and in the Overview sheet (read on the fridge page, its `?reduced` version and the no-accounts copy; the sheet runs were not read separately)
+- [x] Fresh start (demo data reset): step 5's Total assets reads CHF 34'900 in the number field and on the slider; the other four sliders read 0 (in the Overview sheet; step 5 shows salary, left and assets, so "the other four" were checked as salary and left at 0 and unplanned starting from 0 on step 6)
+- [ ] After a CHF 500 payment from Household: Total assets reads 34'400. After a 500 internal transfer from Household to Savings: still 34'900. Partly: 34'400 seen with the 500 payment left over from the baseline run (Household 9'400). The transfer case was not run
+- [x] The note under Total assets reads "Money you can reach: accounts and savings, not your home or pillar 3a. Filled in from your accounts, change it if you have more." No em dashes
+- [x] With `UZBankPayState` unavailable (simulated in the console before load, or the script blocked): Total assets starts at 0, the note shows only its first sentence, nothing breaks (a temporary copy of the page without `payment-state.js`, deleted afterwards; no console errors)
+- [x] A screen reader (or the accessibility tree) reads the note with the slider and with the number field (`aria-describedby`) (the attribute on both points at the note; no screen reader was run)
+- [x] The assets shelf is filled from the first tour step that shows the main compartment (D31); the freezer on step 7 matches D9 with the prefilled value (salary 7'000, left 1'000, unplanned 21'000, bigger 0: 34'900 − 6'000 − 21'000 = CHF 7'900; seen: step 2 in the sheet shows two food items on the assets shelf, step 7 reads CHF 7'900 and the freezer has food)
+- [x] Changing Total assets (slider, arrow keys, typed value) still works as before, and typing a value below the prefill lowers it (ArrowRight 34'900 to 35'000; typed 12'000; dragging with the mouse not tried)
+- [x] Close with no change (on any step, including step 5): leaves without the exit prompt. Move any slider, then close: the prompt appears (closed on step 1 with no change: no prompt; after the step 5 and 6 values, closing on step 7 showed "Leave this guide?")
+- [x] Back and Next across all steps keep the value; reopening the flow reads the balances again (nothing remembered, D8) (Back and Next on step 5 kept a typed 12'000; a reload started at 34'900 again)
+- [ ] Light and Dark, a Multi-color theme; desktop wide layout and 390px (step 5 with the note, nothing overflows). Partly: Light desktop wide, and Dark at 390px (Overview in a 390px frame, sheet opened inside it; no horizontal overflow, the note wraps). Multi-color not checked
+- [x] Keyboard: Tab reaches the slider and the number field, the focus ring is visible (number field: 2px outline in `--color-fg-interactive`; slider: ring on the thumb)
+- [ ] Reduced motion (`?reduced` and the system setting): nothing new animates. Partly: `?reduced` loads and works, the only running animation is the existing arrow nudge on an icon. The system setting was not tried
 - [ ] Baseline smoke test (section 8) re-run
 
-Checked on: not run yet. When it is, a dated line goes here saying when, where and how, and what was not checked.
+Checked on 2026-10-29 against `feature/fridge-follow-ups`, Chrome on macOS, vite on 5199, 2391px wide (wide layout) and a 390px frame, by script plus screenshots. Not checked: the internal-transfer case, a Multi-color theme, the system reduced-motion setting, a real screen reader, a mouse drag on the assets slider, and the baseline smoke test re-run (section 8).

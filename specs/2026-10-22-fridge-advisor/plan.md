@@ -95,8 +95,8 @@ Branch: `feature/fridge-compartment-tint`. What you see: no outline on any step;
 
 Branch: `feature/fridge-follow-ups`. Roadmap item 8c. What you see: on a fresh start the Total assets slider on step 5 already reads CHF 34'900, the assets shelf is filled from the tour on, and a note under the field says what counts and where the number came from.
 
-- [ ] `js/fridge-advisor-config.js`: the note text on the `assets` field (D30)
-- [ ] `js/fridge-advisor.js`: read Household + Savings from `UZBankPayState.getState().accountBalances` on load, rounded and clamped, straight into `values.assets` without marking the flow dirty, falling back to 0 (D28, D29); the note under the field with `aria-describedby` on the slider and the number field, the second sentence only when the prefill worked (D30)
-- [ ] Check in the browser: a fresh start (34'900), after a 500 payment (34'400), the shelf on steps 2 to 5 (D31), the result on step 7 using the prefilled value, close without changes leaves without a prompt, a change then close asks
-- [ ] Docs: `CHANGELOG.md` under `Unreleased`; `specs/roadmap.md` item 8c marked done; `specs/tech-spec.md` only if it says the flow reads no account data; this spec's `validation.md` section 10
-- [ ] `npm run build`, validation section 10, the baseline smoke test (section 8) re-run
+- [x] `js/fridge-advisor-config.js`: the note text on the `assets` field (D30)
+- [x] `js/fridge-advisor.js`: read Household + Savings from `UZBankPayState.getState().accountBalances` on load, rounded and clamped, straight into `values.assets` without marking the flow dirty, falling back to 0 (D28, D29); the note under the field with `aria-describedby` on the slider and the number field, the second sentence only when the prefill worked (D30)
+- [x] Check in the browser: a fresh start (34'900), after a 500 payment (34'400), the shelf on steps 2 to 5 (D31), the result on step 7 using the prefilled value, close without changes leaves without a prompt, a change then close asks
+- [ ] Docs: `CHANGELOG.md` under `Unreleased` (done); `specs/tech-spec.md` Decisions row "Fridge advisor" (done); this spec's `validation.md` section 10 (done); `specs/roadmap.md` item 8c marked done at close-out
+- [ ] `npm run build` (done), validation section 10 (done, with gaps), the baseline smoke test (section 8) re-run (not yet)

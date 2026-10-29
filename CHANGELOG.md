@@ -12,6 +12,7 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - **Playground settings dialog.** A settings button in the Payday run HUD pauses the run and opens a dialog: Quality, Camera distance, Effects and Fog (remembered in `uzBankWebPlaygroundSettings`), a Sound switch (replaces the HUD mute button) and Light/Dark, which the Design system page behind the sheet follows. Resume or Escape continues the run. The dialog is 640px wide on desktop and a bottom sheet under 1280px.
 
 ### Added
+- **Fridge advisor: total assets filled in, with a hint.** Step 5's Total assets now starts at the Household and Savings balances (CHF 34'900 on a fresh start, lower after a payment), and a note under it says it means money you can reach, not your home or pillar 3a. A filled-in value does not count as an entry, so closing without changes still leaves without asking. If no account data is there, the field starts at 0 as before.
 - **Vercel Web Analytics.** `js/analytics.js` loads Vercel's cookie-free script on the production host only (`banking-app-2-bay.vercel.app`), never on localhost, previews or GitHub Pages. `apps/web/vercel.json` adds the entry paths `/from-cv`, `/from-portfolio` and `/from-linkedin`, each serving the Overview, so every source is its own row under Pages. `?analytics=off` keeps the script from loading in a browser (`uzBankWebAnalyticsOff`), `?analytics=on` clears it.
 
 ### Changed

@@ -58,9 +58,21 @@ createFridgeScene(stage, CONFIG, { reduced })
   })
   .catch((err) => console.warn('[fridge-advisor] 3D failed to load', err));
 
-/* ── Values (D8: in memory only, all zero on every visit) ─────────── */
+/* ── Values (D8: in memory only, all zero on every visit, apart from the prefill) ── */
 const values = { salary: 0, left: 0, assets: 0, unplanned: 0, bigger: 0 };
 const TRACK = 1000; /* positions on the native range; the value comes from the position, never the other way round */
+
+/* Total assets starts at the liquid accounts, Household + Savings, as every other page shows them (D28).
+   Set directly, not through setValue, so it does not count as an entry (D29). */
+let prefilled = false;
+try {
+  const balances = window.UZBankPayState.getState().accountBalances;
+  const sum = Math.round((balances.household || 0) + (balances.savings || 0));
+  if (Number.isFinite(sum)) {
+    values.assets = Math.max(0, Math.min(FIELDS.assets.max, sum));
+    prefilled = true;
+  }
+} catch (e) { /* no account data: start at 0 and say nothing about the accounts */ }
 
 const fmt = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "'");
 const chf = (n) => 'CHF ' + fmt(n);
@@ -178,6 +190,16 @@ function buildField(key, onChange) {
     note = document.createElement('p');
     note.className = 'fridge__note';
     row.append(note);
+  }
+  /* A fixed note under the field (D30), read with the slider and the number field. */
+  if (def.note) {
+    const fixed = document.createElement('p');
+    fixed.className = 'fridge__note';
+    fixed.id = id + '-note';
+    fixed.textContent = def.note + (prefilled && def.prefilledNote ? ' ' + def.prefilledNote : '');
+    row.append(fixed);
+    range.setAttribute('aria-describedby', fixed.id);
+    num.setAttribute('aria-describedby', fixed.id);
   }
 
   function refresh() {
