@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 39353fec3d280e6ee633f8f0bd10a6aa0dd5b1d3 -->
+<!-- changelog: last-commit 97f6be3dab670aad693f344d1b11c58a9fd3d027 -->
 
 ### Added
 - **Investment opening: "Open asset management"** (roadmap 9a, the plain version). The fridge's "Show suitable products" now loads the opening in the same sheet, which narrows from 960 to 640 and keeps one height on desktop; the fridge's screen 8 is gone, so the fridge has 7 steps. Ten counted screens: an intro, knowledge (preselected from the User Type), purpose and horizon (a home allows at most 5 years), the amount (prefilled with the fridge's result, minimum CHF 5'000, a note above the fridge's suggestion), three risk questions (one open at a time), five strategy cards with a recommendation (riskier ones cannot be chosen), sustainability, tax status (anything but "Switzerland only, not a US person" leads to an exit with "Book an appointment"), the documents (two contracts and eleven information sheets, names only, with a required checkbox) and a summary whose three sections each have an Edit. Completion adds a pending "Asset management" row to Overview, after Retirement savings 3a and not counted in the total; nothing is funded yet (roadmap 18). No step scrolls inside the sheet, every screen works at 390px, by keyboard, and in the colour themes. Answers are kept for the tab: closing asks "Leave the opening?", and Investment then resumes where you left. The recommendation's scoring is a placeholder for the bank's rules, all in `js/investment-opening-config.js`.
@@ -15,6 +15,7 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - **Flow sheet focus after the exit prompt.** In the fridge and opening sheet, Keep going returns focus to the control that had it, and Leave returns it to Investment (it used to land on the page body).
 
 ### Decided
+- **Two roadmap items found during 9a.** 8d, the fridge as a film (the 3D stage fills a 960 x 640 sheet, the steps in a floating panel), scheduled before 9b; and 18, funding the asset management mandate (a transfer to it turns "Pending" into a balance).
 - **Investment opening planned.** Roadmap item 9 is split into 9a to 9g (a plain opening flow first, then a scripted assistant, the strategy vehicles, the risk experience), with a draft intervention map in `designs/conversation/investment-opening/intervention-map.md`. Item 8c (the fridge follow-ups) was planned with it.
 - **Spec-driven workflow.** From now on every change goes through a dated spec folder (`specs/<YYYY-MM-DD>-<name>/`) created with `/feature-spec`, on its own branch, with a validation pass and the baseline smoke test before it reaches `main`. Added `AGENTS.md`, `specs/mission.md`, `specs/tech-spec.md`, `specs/roadmap.md`, `specs/baseline/`, and the `/feature-spec` and `/changelog` skills. The app's code is unchanged. The state before this is tagged `v1-presentable`.
 
