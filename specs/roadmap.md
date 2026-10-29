@@ -142,3 +142,7 @@ Checks that were not run on merged branches. Each is a pass to do and record, no
 ## 17. Retire GitHub Pages (done)
 
 Spec: `specs/2026-10-26-retire-github-pages/` (branch `feature/retire-github-pages`). Vercel becomes the only host: the Pages workflow is deleted, the docs say Vercel, and the build runs on Vercel as a gate (build command `npm run build && rm -rf dist node_modules`, install command default, output `.` still serving `apps/web` as source). Klaudiusz changes the Vercel settings and unpublishes the Pages site after the merge.
+
+## 18. Fund the asset management mandate
+
+Found during 9a (D22, planned 2026-10-29). Completing the opening adds an "Asset management" row on Overview that stays "Pending", because no money moves: the internal transfer only moves money between Household and Savings and has no mandate as a target. This item adds the mandate as a transfer target, so a transfer of the amount (from completion's "Next: transfer CHF … to your custody account", or from the transfer flow) turns "Pending" into a balance that the Accounts & investment total counts. To settle in its spec: whether completion links to the prefilled transfer, what the row shows while the money is invested (the three working days), and whether a mandate can be funded more than once.

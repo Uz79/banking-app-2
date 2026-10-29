@@ -62,7 +62,7 @@ What you see: the summary with edit buttons that jump and come back; "Open asset
 - [x] Completion (D20); the draft cleared; no exit prompt
 - [x] `js/payment-state.js`: `mandates` in load and save, `commitMandate`, `getState()` returns them (D21)
 - [x] Overview: the row after Retirement savings 3a, not counted in the total; rendered from the state (D21)
-- [ ] `specs/roadmap.md`: a new item for funding the mandate (D22), as its own commit, with a pointer in this spec's out-of-scope list
+- [x] `specs/roadmap.md`: a new item for funding the mandate (D22), as its own commit, with a pointer in this spec's out-of-scope list
 - [ ] Check: edit each line, a recommendation change via edit, completion, the Overview row in Light and Dark, a reload, demo data reset
 
 ## 6. Phone, keyboard, motion and polish (D24)

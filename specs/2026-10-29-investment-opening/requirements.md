@@ -18,7 +18,7 @@ Roadmap item 9a (`specs/roadmap.md`). What follows the fridge's "Show suitable p
 
 - The assistant, its chips and the helper character (9b, 9f); no help affordance yet
 - Vehicles, the risk experience, personalisation (9c, 9d, 9e, 9g)
-- Funding the mandate: a transfer target for the new mandate in the transfer flow (D22; a roadmap item)
+- Funding the mandate: a transfer target for the new mandate in the transfer flow (D22; roadmap item 18)
 - Real documents (no PDFs), real eligibility rules, any backend
 - A way into the opening that skips the fridge, apart from resuming a draft (D19)
 - The fridge as a film: the full-sheet 3D stage with a floating panel (roadmap 8d, after 9a)
