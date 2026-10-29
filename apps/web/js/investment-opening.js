@@ -9,6 +9,7 @@ import {
   SCREENS, DRAFT_KEY, KNOWLEDGE, PURPOSE, HORIZON, AMOUNT, RISK, STRATEGIES, STRATEGY, SCORING,
   ESG, TAX, INELIGIBLE, DOCUMENTS, SUMMARY, COMPLETE,
 } from './investment-opening-config.js';
+import * as assistant from './opening-assistant.js';
 
 const framed = window.self !== window.top;
 const send = (message) => { if (framed) window.parent.postMessage(message, window.location.origin); };
@@ -109,6 +110,7 @@ function button(label, kind, onClick) {
 
 /* Done on completion: close the sheet, or go home when the page is on its own. */
 function leave() {
+  assistant.close(false);
   if (framed) send({ type: 'uzbank:fridge-close' });
   else window.location.href = 'overview.html';
 }
@@ -683,7 +685,11 @@ function render(moveFocus, animate, back) {
   body.append(...built.nodes);
   /* The screen slides in like the payment flow's steps; the buttons stay put (D24). */
   const content = el('div', 'opening__screen' + (animate ? ' opening__screen--in-' + (back ? 'b' : 'f') : ''));
-  content.append(heading, text, body);
+  /* Questions? sits on the right of the heading and opens the assistant for this screen (9b D1). */
+  const head = el('div', 'opening__head');
+  head.append(heading, assistant.questionsButton());
+  assistant.setScreen(screen.id);
+  content.append(head, text, body);
 
   const actions = el('div', 'opening__actions');
   const hint = el('p', 'opening__note opening__hint');
@@ -772,7 +778,14 @@ if (backBtn) backBtn.addEventListener('click', goBack);
 
 /* Escape belongs to the sheet; the iframe has the keyboard, so it passes the key on. */
 window.addEventListener('keydown', (event) => {
-  if (event.key !== 'Escape' || !framed) return;
+  if (event.key !== 'Escape') return;
+  /* An open assistant takes the first Escape (9b D4). */
+  if (assistant.isOpen()) {
+    event.preventDefault();
+    assistant.close();
+    return;
+  }
+  if (!framed) return;
   event.preventDefault();
   send({ type: 'uzbank:fridge-escape' });
 });

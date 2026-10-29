@@ -8,11 +8,11 @@ Each group ends with something to look at in the browser on the agent's server (
 
 What you see: a "Questions?" button by every heading of the opening; on desktop it widens the sheet to 960 with an empty panel on the right, on a phone it opens an empty bottom sheet.
 
-- [ ] `js/opening-assistant.js`: the panel (`aside` on desktop, `dialog` below 900px), open and close, the layout switch through `uzbank:sheet-layout`, focus in and back, Escape, the scrim tap
-- [ ] `js/investment-opening.js`: Questions? in `render()` with `aria-expanded`; the assistant told the current screen; the panel closed on completion's Done and on close
-- [ ] `investment-opening.html`: the panel's container
-- [ ] `css/styles.css`: an "Opening assistant" section: the two-column page, the column, the bottom sheet, the motion and its reduced-motion path
-- [ ] Check: desktop and 390px, open and close by mouse and keyboard, Next and Back with the panel open, the sheet's width, the hand-over from the fridge unchanged
+- [x] `js/opening-assistant.js`: the panel (`aside` on desktop, `dialog` below 900px), open and close, the layout switch through `uzbank:sheet-layout`, focus in and back, Escape, the scrim tap. The bottom sheet makes the rest of the page inert and keeps Tab inside it; a resize across the threshold reopens the panel in the other form
+- [x] `js/investment-opening.js`: Questions? in `render()` with `aria-expanded` (and `.uz-btn--toggled` while open); the assistant told the current screen; the panel closed on completion's Done (`leave()`); an open panel takes the first Escape, so the sheet's Escape still comes second. Closing the sheet removes the page, so the panel goes with it
+- [x] `investment-opening.html`: the panel's container (scrim, `aside` with title, close button and an empty body)
+- [x] `css/styles.css`: an "Opening assistant" section: the heading row, the column, the bottom sheet, the motion and its reduced-motion path. The column and the page's right padding are `clamp(0px, 100% - 600px, 360px)`, so while the sheet widens the step keeps its 600 and the panel opens like a curtain; on closing it stays until the sheet has narrowed (0.3 s)
+- [x] Check: desktop (960 x 640: step 600, panel 360, height unchanged open and closed; the narrowing sampled 702, 645, 640) and 390 x 844 (bottom sheet as a modal dialog, step inert, slides in and out, scrim tap and Escape close it); by mouse and keyboard (Tab from the heading to Questions?, Enter opens with focus on the title, Tab to the close button with a visible ring, focus back on Questions?); Next and Back keep it open and switch its screen; Escape closes only the panel; the sheet's X with the panel open asks first, Leave closes, and reopening starts closed at 640; the page on its own at 2391 wide (column 360, step centred) with `?reduced` (closes at once); the hand-over from the fridge (960 to 640, height 640, Questions? on the intro). No console errors; build passes. Not yet: Dark and the themes (the validation pass), completion and the exit screen by eye
 
 ## 2. Chips and answers (D6 to D10, D15)
 

@@ -2339,6 +2339,17 @@
           </div>
           <h1 class="opening__title">Open asset management</h1>
           <div class="opening__panel" data-opening-panel></div>
+          <!-- The UZ Bank assistant (9b): a column next to the step on a wide sheet, a bottom sheet on a phone. -->
+          <div class="assistant-scrim" hidden data-assistant-scrim></div>
+          <aside class="assistant" id="opening-assistant" aria-labelledby="assistant-title" hidden data-assistant>
+            <div class="assistant__head">
+              <h2 class="assistant__title" id="assistant-title" tabindex="-1">Questions about this step</h2>
+              <button class="modal__close assistant__close" type="button" aria-label="Close questions" data-assistant-close>
+                <svg class="modal__close-icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>
+              </button>
+            </div>
+            <div class="assistant__body" data-assistant-body></div>
+          </aside>
           <p class="opening__sr" aria-live="polite" data-opening-live></p>
         </div>
       </section>
