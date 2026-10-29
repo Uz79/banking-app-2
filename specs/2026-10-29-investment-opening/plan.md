@@ -21,18 +21,18 @@ What you see: on the fridge's step 7, "Show suitable products" loads the opening
 
 What you see: the intro with the four topics; knowledge preselected from the profile; the purpose limiting the horizon for a home; the amount prefilled from the fridge with the suggestion and the check.
 
-- [ ] Option groups (D6) as a small builder in `js/investment-opening.js`, styled in `.opening-option*`
-- [ ] Screens 1 to 4 with their copy and rules in the config
-- [ ] Check: each option group by mouse and keyboard, the knowledge preselect for the three User Types, "Buy a home" with each horizon, amounts under 5'000, at, above the suggestion, and with no fridge amount
+- [x] Option groups (D6) as a small builder in `js/investment-opening.js`, styled in `.opening-option*`
+- [x] Screens 1 to 4 with their copy and rules in the config
+- [x] Check: each option group by mouse and keyboard, the knowledge preselect for the three User Types, "Buy a home" with each horizon, amounts under 5'000, at, above the suggestion, and with no fridge amount
 
 ## 3. Risk and strategy (D10 to D12; stop here for review of the scoring)
 
 What you see: the three risk questions on one screen; the strategy cards with the recommended one tagged and preselected, riskier ones unavailable; changing an earlier answer moves the recommendation.
 
-- [ ] Screen 5 (three option groups) and the scoring in the config (D12)
-- [ ] Screen 6: the five cards (risk bar, return marks, tag), the unavailable state with its line, one column on a phone (D11)
-- [ ] The recompute when knowledge, horizon or risk change, with the fall-back note (D12)
-- [ ] Check: the lowest and highest answers, each band, both horizon caps and the knowledge cap, a change after choosing a strategy
+- [x] Screen 5 (three option groups) and the scoring in the config (D12)
+- [x] Screen 6: the five cards (risk bar, return marks, tag), the unavailable state with its line, one column on a phone (D11)
+- [x] The recompute when knowledge, horizon or risk change, with the fall-back note (D12)
+- [x] Check: the lowest and highest answers, each band, both horizon caps and the knowledge cap, a change after choosing a strategy
 
 ## 4. Sustainability, tax, the exit, documents (D13 to D16)
 
