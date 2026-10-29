@@ -61,12 +61,39 @@ Split:
 
 - **8a. The flow** (done): entry from Overview > Offers > "Investment", a 3D fridge in the theme colours with the persona character standing next to it, five beats, sliders as the input, the investable amount as the result. The follow-up that tints the active compartment instead of outlining it is also done (D26, `feature/fridge-compartment-tint`).
 - **8b. The avatar acting** (later): the character opens the doors, carries items and cheers.
+- **8c. Fridge follow-ups** (planned 2026-10-28, a follow-up in `specs/2026-10-22-fridge-advisor/`): a hint that total assets means liquid assets only (not the home, not pillar 3a); total assets prefilled from the account balances the app already knows (the customer can change it); and the investable amount handed on to the product opening (item 9a) instead of ending at screen 8. D8 says nothing is remembered, so the hand-over is decided in the spec. The 3 times salary reserve rule stays as it is (confirmed).
 
 Spec for 8a: `specs/2026-10-22-fridge-advisor/`.
 
-## 9. Investment product opening (later)
+## 9. Investment product opening
 
-What follows "Show suitable products" in item 8: product choice, risk profile, signing. Not started; item 8a ends at that button.
+What follows "Show suitable products" in item 8: the full opening of an investment product (asset management, five strategies), with a scripted assistant that helps where people get stuck. Planned on 2026-10-28.
+
+**Why:** in Klaudiusz's usability tests and interviews of the bank's existing opening flow (reference frames in `~/Documents/Projects/AI Portfolio Projects/Banking App/_resources/261028_product-opening/scenario`, German), people found it too long (about 22 screens, no progress indicator while the intro promises 10 minutes), felt uncomfortable giving their financial situation, feared they lacked the knowledge to answer (risk questions, US tax status, 13 contract documents) and wished for a person. The only way to an advisor was the ineligibility exit screen.
+
+**Order principle:** `main` is live, so a complete plain flow comes first (9a), then steps are replaced one at a time by their richer version. Every merge leaves a whole flow, and the sequence is the case study's before and after.
+
+**Agreed before the specs (not to be re-opened):**
+
+- **Three modes per step:** a plain form (horizon, purpose, ESG, tax status), a playful module (the fridge for the financial situation, the risk experience) and the assistant on the knowledge-heavy steps (knowledge, US status, strategy, documents, the amount check). The intervention map in `designs/conversation/investment-opening/intervention-map.md` assigns every step and is the input for every 9 spec.
+- **The form is the record, the assistant explains.** Answers are always the customer's own: the assistant explains, gives examples and points out consequences, never suggests an answer and never gives personal investment advice. Every answer it gives is authored and reviewable.
+- **Scripted, not live:** chips first (three or four suggested questions per step, each with a written answer); free text, if any, only matches keywords and falls back to the chips or to an advisor.
+- **Two characters:** the persona avatar stays the customer (it reacts, it does not advise). The helper is its own character in the same KayKit style and speaks for the bank. The avatar's User Type sets how the helper behaves: Newbie gets help earlier and longer answers, Power user gets help only when asked, short.
+- **User Type is the input:** the three Profile sliders (financial knowledge, banking products, digital affinity, `uzBankWebPersonaProfile`) say how much help a customer needs. The financial knowledge slider may prefill the knowledge question, which the customer still confirms in the flow.
+- **Strategy vehicles:** each strategy is a way of travelling, faster and riskier as it goes up, so risk reads as clearly as return (balanced presentation, as FinSA expects): Income = tent (hiking), Conservative = tricycle, Balanced = Vespa, Growth = parachute, Dynamic = jetpack. Models from Poly Pizza and Quaternius in `~/Documents/Projects/AI Portfolio Projects/Banking App/_resources/261028_product-opening/3d-models/poly-pizza_models-various` (attribution in `261028_attribution-notes` there). The Vespa is OBJ only and is converted to GLB.
+- **Copy:** English, as the rest of the app.
+
+Split:
+
+- **9a. The opening flow, plain version.** Starts at "Show suitable products" and replaces the fridge's screen 8 (8a D6). Steps: knowledge, purpose, horizon, the investable amount from the fridge (8c) with the amount check, the three standard risk questions, the five strategy cards with the recommendation, ESG preference, tax status (Switzerland only, then US), the contract documents, the summary with edit, completion. A progress indicator throughout. Prefilled from the profile and the fridge where possible. The ineligibility screen keeps its "Book an appointment". To settle in the interview: the flow's shape (one sheet continuing the fridge, or a second sheet), which old screens merge, how the summary edits, and whether the answers are remembered.
+- **9b. The assistant, first version.** The helper character and a chat panel opened from a help affordance on the 9a steps, with the scripted chips from the intervention map. Comes before the richer steps because the steps where help matters most (knowledge, US status, documents) are in 9a, and the assistant is the centre of the case study. To settle: panel or bottom sheet, how the helper appears on a phone, the helper's name and tone.
+- **9c. Vehicles in the Character kit.** The five vehicle models prepared (GLB, recoloured to the theme like the fridge and the food, sized to the persona) and shown with the persona on the Character kit page first, so the design system shows them before a flow uses them. Includes a credits section listing every CC-BY model (Airplane, Parachute, Tricycle, Motorcycle by Poly by Google; Jetpack by Roman Miller; Vespa by Jasmine Roberts; via Poly Pizza), which must be live before any CC-BY model reaches `main`. The persona sits on or hangs from each vehicle in a matching pose (the kit's sit and jump clips). Copy only the models used into `apps/web/assets/3d/`.
+- **9d. Strategy choice with the vehicles.** Replaces 9a's plain strategy cards: the persona travels with each strategy's vehicle, the recommended strategy is marked, risk and expected return stay as visible as in the cards.
+- **9e. The risk experience.** Replaces the three standard risk questions: the customer's own amount in the "Why invest?" chart (a good, an expected and a bad year in CHF) and what they would do in each. Feeds exactly the same scoring as the three questions, so the result stays auditable.
+- **9f. The assistant, second version.** Hesitation triggers (time on a step against its expected reading time, switching between options, info icons, going back, a field focused and left empty), escalating gently: first a quiet inline chip, at most once per step, remembered when dismissed, never a pop-up. The User Type sets the thresholds. The last step is a handoff to a person (appointment or callback, simulated). Signals stay in the browser.
+- **9g. Personalisation** (optional, may be cut): thematic focus, alternative investments, regional focus, as one optional step before the summary.
+
+Not part of item 9: the avatar acting in the fridge (8b).
 
 ## 10. All bookings: the Search button does nothing (done)
 
