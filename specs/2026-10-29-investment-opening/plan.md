@@ -63,14 +63,14 @@ What you see: the summary with edit buttons that jump and come back; "Open asset
 - [x] `js/payment-state.js`: `mandates` in load and save, `commitMandate`, `getState()` returns them (D21)
 - [x] Overview: the row after Retirement savings 3a, not counted in the total; rendered from the state (D21)
 - [x] `specs/roadmap.md`: a new item for funding the mandate (D22), as its own commit, with a pointer in this spec's out-of-scope list
-- [ ] Check: edit each line, a recommendation change via edit, completion, the Overview row in Light and Dark, a reload, demo data reset
+- [x] Check: edit each line, a recommendation change via edit, completion, the Overview row in Light and Dark, a reload, demo data reset
 
 ## 6. Phone, keyboard, motion and polish (D24)
 
-- [ ] 390px: full screen sheet, the cards in one column, nothing overflows
-- [ ] Keyboard through every screen; focus ring; arrow keys in the option groups
-- [ ] Reduced motion: the step change and the width change are instant
-- [ ] Light, Dark, a Monochrome and a Multi-color theme
+- [x] 390px: full screen sheet, the cards in one column, nothing overflows
+- [x] Keyboard through every screen; focus ring; arrow keys in the option groups
+- [ ] Reduced motion: the step change and the width change are instant (rules checked in the loaded stylesheet; not run with the system setting on)
+- [x] Light, Dark, a Monochrome and a Multi-color theme
 
 ## 7. Wrap-up
 
