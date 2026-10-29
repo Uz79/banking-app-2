@@ -99,4 +99,4 @@ Branch: `feature/fridge-follow-ups`. Roadmap item 8c. What you see: on a fresh s
 - [x] `js/fridge-advisor.js`: read Household + Savings from `UZBankPayState.getState().accountBalances` on load, rounded and clamped, straight into `values.assets` without marking the flow dirty, falling back to 0 (D28, D29); the note under the field with `aria-describedby` on the slider and the number field, the second sentence only when the prefill worked (D30)
 - [x] Check in the browser: a fresh start (34'900), after a 500 payment (34'400), the shelf on steps 2 to 5 (D31), the result on step 7 using the prefilled value, close without changes leaves without a prompt, a change then close asks
 - [ ] Docs: `CHANGELOG.md` under `Unreleased` (done); `specs/tech-spec.md` Decisions row "Fridge advisor" (done); this spec's `validation.md` section 10 (done); `specs/roadmap.md` item 8c marked done at close-out
-- [ ] `npm run build` (done), validation section 10 (done, with gaps), the baseline smoke test (section 8) re-run (not yet)
+- [x] `npm run build`, validation section 10 (gaps named there), the baseline smoke test (section 8) re-run
