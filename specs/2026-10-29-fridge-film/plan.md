@@ -43,6 +43,6 @@ Seen, not caused by this branch: on a phone the result ring's amount wraps ("CHF
 
 ## 5. Wrap-up
 
-- [ ] `npm run build` in `apps/web`
-- [ ] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
-- [ ] Docs: `specs/roadmap.md` item 8d marked done; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the floating panel component, the fridge's sheet in the "Wide flow sheets" and "Fixed-height flow sheets" rows and in Other systems); the fridge spec's D16 and D21 marked as replaced by this spec's D2 and D3
+- [x] `npm run build` in `apps/web`
+- [x] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
+- [x] Docs: `specs/roadmap.md` item 8d marked done; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the floating panel component, the fridge's sheet in the "Wide flow sheets" and "Fixed-height flow sheets" rows and in Other systems); the fridge spec's D16 and D21 marked as replaced by this spec's D2 and D3
