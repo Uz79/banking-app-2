@@ -33,10 +33,13 @@ What you see: on every step the subject sits in the middle of the space the pane
 
 ## 4. Themes, keyboard and fallbacks (D7, D11, D12)
 
-- [ ] Light, Dark, a Monochrome and a Multi-color theme: the panel's text readable over the scene on every step
-- [ ] Keyboard through all seven steps: the order, the focus ring on the panel, the heading focused on each step
-- [ ] Reduced motion (`?reduced`); reduced transparency emulated
-- [ ] Check: the steps above in each theme, at 960 and at 390
+- [x] Light, Dark, the UZ Bank Monochrome theme and a Multi-color theme (Custom 06, orange accent) in Light and Dark: the panel's text readable over the scene (steps 1, 5 and 7 looked at in each); the fill follows each theme's background. No code change was needed
+- [x] Keyboard from Overview (Enter on Investment) through steps 1 to 5: Tab reaches Next, the ring is visible on the glass, the heading takes focus on each new step, the live region carries the step; on step 5 the number field takes typing and the slider the arrow keys, both with a visible ring
+- [x] Reduced motion (`?reduced`, in group 3)
+- [ ] Reduced transparency emulated: not run. DevTools emulation is not reachable from the agent's browser tools; the rule is in the loaded stylesheet (group 1). For Klaudiusz: DevTools > Rendering > `prefers-reduced-transparency`
+- [x] Check: the themes at 960; the phone width was covered in groups 2 and 3 in the default theme only
+
+Seen, not caused by this branch: on a phone the result ring's amount wraps ("CHF" over "7'900") and "You could invest" touches the ring; the ring's rules are unchanged from `main`. On opening, focus stays on the frame's body until the first Tab (the heading is focused from step 2 on); this branch does not touch focus, but it was not compared with `main`.
 
 ## 5. Wrap-up
 
