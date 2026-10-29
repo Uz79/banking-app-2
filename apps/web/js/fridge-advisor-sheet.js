@@ -54,9 +54,10 @@
     if (frame) frame.title = text;
   }
 
-  /* Wide (960) for the fridge, the flows' 640 for the opening (9a D2). The width eases on the shell; see the CSS. */
+  /* Wide (960) for the fridge; the flows' 640 at one fixed height for the opening (9a D2, D26). Both ease; see the CSS. */
   function setWide(on) {
     shell.classList.toggle('modal-shell--wide', on);
+    shell.classList.toggle('modal-shell--fixed-height', !on);
   }
 
   /* A draft past the intro resumes the opening (9a D18, D19). Anything unreadable starts with the fridge. */

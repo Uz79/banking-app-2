@@ -34,6 +34,12 @@ What you see: the three risk questions on one screen; the strategy cards with th
 - [x] The recompute when knowledge, horizon or risk change, with the fall-back note (D12)
 - [x] Check: the lowest and highest answers, each band, both horizon caps and the knowledge cap, a change after choosing a strategy
 
+## 3b. Review change after group 3: one sheet height (D26)
+
+- [x] `css/styles.css`: `.modal-shell--fixed-height` (desktop only), the height easing with the width, instant with reduced motion and on a resumed open
+- [x] `js/fridge-advisor-sheet.js`: the modifier on with the narrow width, off for the fridge
+- [x] Check: the steps of groups 2 and 3 at the new height (short ones with Next at the bottom, the risk and strategy screens scrolling inside), the fridge unchanged, a resumed open, 390px full screen
+
 ## 4. Sustainability, tax, the exit, documents (D13 to D16)
 
 What you see: the ESG choice; the tax screen leading to the exit for "No" or "US person"; the exit's two buttons; the documents in two groups with the required checkbox.

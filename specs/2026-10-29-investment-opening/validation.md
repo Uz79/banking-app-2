@@ -14,6 +14,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [ ] Overview > Offers > Investment opens the fridge as before; step 7's "Show suitable products" loads the opening in the same sheet, with the title "Open asset management"
 - [ ] The fridge now has 7 steps ("Step 7 of 7"); screen 8 is gone
 - [ ] Desktop: the sheet narrows from 960 to 640 in about 0.3 s; with reduced motion at once; 390px: full screen, no width change
+- [ ] Desktop: the opening's sheet keeps one height, `clamp(480px, 60vh, 640px)`, on every step; Next stays at the bottom; the risk and strategy screens scroll inside the sheet; the fridge keeps its 90vh sheet; payment and trade sheets unchanged (D26)
 - [ ] The draft holds the fridge amount (CHF 7'900 for salary 7'000, left 1'000, unplanned 21'000, assets 34'900)
 - [ ] Close on any screen past the intro asks "Leave the opening?"; Leave closes; Investment then resumes at the same screen, narrow
 - [ ] "Start over" on the intro clears the draft and loads the fridge
