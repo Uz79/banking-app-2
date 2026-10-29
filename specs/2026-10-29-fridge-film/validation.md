@@ -24,7 +24,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [ ] No step scrolls inside the panel at a 640 sheet, including step 5 with the assets note and the result
 - [ ] "Show suitable products": the sheet narrows from 960 to 640 and the height does not move; "Start over" widens it again
 - [ ] Phone (390 x 844): the sheet is full screen, the scene fills it, the panel is docked at the bottom with rounded top corners and the safe-area inset; no step scrolls
-- [ ] The tablet range (a full-screen sheet between 640 and 1023 wide) by eye: the docked panel looks right
+- [ ] The tablet range (a full-screen sheet between 640 and 1023 wide): the panel floats on the right, as on desktop (D4)
 - [ ] Close, Escape, Back and the exit prompt work as before ("Leave this guide?" only after an entry)
 
 ## 4. The camera (D8, D9)

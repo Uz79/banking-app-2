@@ -16,11 +16,11 @@ What you see: a "Floating panel" section on the Components page, with the panel 
 
 What you see: the fridge in a 960 x 640 sheet, the scene filling the body, the steps in a frosted panel on the right; on a phone the panel docked at the bottom over the scene; the hand-over to the opening only narrowing the sheet.
 
-- [ ] `js/fridge-advisor-sheet.js`: `setWide` keeps the fixed height for the fridge (D1)
-- [ ] `css/styles.css`: the stage covers the body; the panel floats on the right, bottom-anchored, about 20rem (D3), or docked below 1024px (D4); the two-column grid and the stacked layout removed; `.fridge__actions` without its own background (D10)
-- [ ] `js/fridge-advisor.js` (or `fridge-advisor.html`): the panel gets `.float-panel` and, below 1024px, `.float-panel--docked`
-- [ ] Measure every step at a 640 sheet and at 390 x 844: no scrolling inside the panel; settle open questions 1 and 2 (the panel width, the docked fallback)
-- [ ] Check: each step on desktop and phone, the hand-over to the opening and "Start over", the tablet range by eye (open question 3)
+- [x] `js/fridge-advisor-sheet.js`: `setWide` keeps the fixed height for the fridge (D1)
+- [x] `css/styles.css`: the panel floats on the right, bottom-anchored, 20rem (D3), or docked on a phone (D4); the two-column grid and the stacked layout removed; `.fridge__actions` without its own background (D10). The stage fills the page below its own header (the fridge's nav when unframed), so the canvas spans the whole sheet body
+- [x] `fridge-advisor.html`: the panel has `.float-panel`; `js/fridge-advisor.js` adds `.float-panel--docked` below a 640px page
+- [x] Measure every step at a 640 sheet and at 390 x 844: no scrolling inside the panel; open questions 1 and 2 settled (spacing tightened at 20rem; the docked panel scrolls only on short phones)
+- [x] Check: each step on desktop and phone, the hand-over to the opening (960 to 640, height stays 640) and "Start over" (back to 960 x 640), Escape with no entry closes, the tablet range by eye at 820 (open question 3: floats from 640)
 
 ## 3. The camera and the free area (D8, D9)
 

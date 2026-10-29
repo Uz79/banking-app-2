@@ -23,11 +23,12 @@ const reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
 const forceReduced = new URLSearchParams(window.location.search).has('reduced');
 const reduced = () => forceReduced || reduceMQ.matches;
 
-/* The sheet is wide (two columns) from a 1024px viewport; the page asks the viewport that decides it. */
+/* The panel floats on the right from a 640px wide page (the 960 sheet, a tablet) and is docked at the
+   bottom of a phone (8d D3, D4). The page's own width is the sheet's, framed or not. */
 function syncLayout() {
-  let wide = false;
-  try { wide = (framed ? window.parent : window).matchMedia('(min-width: 1024px)').matches; } catch (e) { /* stacked */ }
+  const wide = window.matchMedia('(min-width: 640px)').matches;
   document.documentElement.classList.toggle('fridge--wide', wide);
+  if (panel) panel.classList.toggle('float-panel--docked', !wide);
 }
 syncLayout();
 window.addEventListener('resize', syncLayout);

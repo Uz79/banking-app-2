@@ -11430,9 +11430,11 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
   white-space: nowrap;
 }
 
+/* The stage fills the body and the steps float on it in a .float-panel (8d D2): on the right of a
+   wide sheet, docked at the bottom of a full-screen one. */
 .fridge__stage {
   position: relative;
-  flex: 0 0 45%;
+  flex: 1 1 auto;
   min-height: 0;
 }
 
@@ -11445,14 +11447,16 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
 }
 
 .fridge__panel {
-  flex: 1 1 0%;
-  min-height: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 100%;
   overflow-y: auto;
-  padding: var(--space-4);
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  color: var(--color-fg);
+  gap: var(--space-1);
+  --float-panel-padding: var(--space-3);
 }
 
 .fridge__step {
@@ -11481,20 +11485,16 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
   color: var(--color-fg-secondary);
 }
 
+/* The panel is the background; the docked panel adds the safe-area inset below. */
 .fridge__actions {
-  position: sticky;
-  bottom: calc(-1 * var(--space-4));
   margin-top: auto;
-  /* The button stays in reach when the panel scrolls (a phone with three sliders); the panel's own bottom padding is pulled in. */
-  padding: var(--space-3) 0 max(var(--space-4), env(safe-area-inset-bottom));
-  background-color: var(--color-bg);
+  padding-top: var(--space-2);
 }
 
 .fridge__fields {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  margin-top: var(--space-2);
+  gap: var(--space-2);
 }
 
 .fridge__field {
@@ -11526,7 +11526,7 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
 
 .fridge__num {
   width: 6.5rem;
-  height: 2.25rem;
+  height: 2rem;
   padding: 0 var(--space-2);
   border: 1px solid var(--color-btn-secondary-border);
   border-radius: var(--radius-regular);
@@ -11571,26 +11571,14 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
   margin-bottom: var(--space-2);
 }
 
-/* Wide sheet (js sets html.fridge--wide when the sheet is 960dp): the stage on the left at full height, the steps on the right. */
-html.fridge--wide .body[data-screen="fridge-advisor"] .view--fridge .view__main {
-  display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-  grid-template-rows: auto minmax(0, 1fr);
-}
-
-html.fridge--wide .fridge__nav {
-  grid-column: 1 / -1;
-}
-
-html.fridge--wide .fridge__stage {
-  grid-column: 1;
-  grid-row: 2;
-}
-
+/* Wide page (js sets html.fridge--wide from 640px: the 960 sheet, a tablet): the panel floats on the right,
+   anchored at the bottom so Next keeps its place on every step (8d D3). */
 html.fridge--wide .fridge__panel {
-  grid-column: 2;
-  grid-row: 2;
-  padding: var(--space-5, var(--space-4)) var(--space-5, var(--space-4)) var(--space-5, var(--space-4)) var(--space-3);
+  left: auto;
+  right: var(--space-3);
+  bottom: var(--space-3);
+  width: 20rem;
+  max-height: calc(100% - 2 * var(--space-3));
 }
 
 /* Result (screen 7) */
