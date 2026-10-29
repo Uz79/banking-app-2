@@ -150,3 +150,25 @@ Update, 2026-10-23 (remaining checks and baseline; Chrome on macOS, port 5199, 2
 - Baseline, Light (UZ Bank), this branch: default theme restore and Light surviving a reload; the status message appears and a tap dismisses it; Pay end to end (Household 9'900 to 9'400, booking "Lena Fischer" on Account details); internal transfer (8'900 and 25'500); All bookings tabs and the month chip; Account details to All bookings and back; Custody > Apple > Buy opens and Discard dismisses it; Profile User Type (slider to low removed the hat and changed the figure; "Newbie" stays); Legibility Compact, Typeface, Font and Paddings; demo data reset (Household back to 9'900); Design system hub, Motion, Components and Character kit with its profile buttons, back to the hub; Tab through Overview shows a focus ring.
 - Not checked: 390px for screens 5 to 7 and for the baseline's starred items; the system reduced-motion setting (only `?reduced`); the All bookings Search button (no handler, roadmap item 10) and the Account details Household balance (roadmap item 11), both pre-existing; the Payday run page; a screen reader.
 
+
+## 10. Liquid assets hint and prefill (group 9, D27 to D32)
+
+Branch `feature/fridge-follow-ups`. Same setup as above.
+
+- [ ] `npm run build` in `apps/web` succeeds with no new warnings
+- [ ] The browser console shows no errors on the fridge page and in the Overview sheet
+- [ ] Fresh start (demo data reset): step 5's Total assets reads CHF 34'900 in the number field and on the slider; the other four sliders read 0
+- [ ] After a CHF 500 payment from Household: Total assets reads 34'400. After a 500 internal transfer from Household to Savings: still 34'900
+- [ ] The note under Total assets reads "Money you can reach: accounts and savings, not your home or pillar 3a. Filled in from your accounts, change it if you have more." No em dashes
+- [ ] With `UZBankPayState` unavailable (simulated in the console before load, or the script blocked): Total assets starts at 0, the note shows only its first sentence, nothing breaks
+- [ ] A screen reader (or the accessibility tree) reads the note with the slider and with the number field (`aria-describedby`)
+- [ ] The assets shelf is filled from the first tour step that shows the main compartment (D31); the freezer on step 7 matches D9 with the prefilled value (salary 7'000, left 1'000, unplanned 21'000, bigger 0: 34'900 − 6'000 − 21'000 = CHF 7'900)
+- [ ] Changing Total assets (slider, arrow keys, typed value) still works as before, and typing a value below the prefill lowers it
+- [ ] Close with no change (on any step, including step 5): leaves without the exit prompt. Move any slider, then close: the prompt appears
+- [ ] Back and Next across all steps keep the value; reopening the flow reads the balances again (nothing remembered, D8)
+- [ ] Light and Dark, a Multi-color theme; desktop wide layout and 390px (step 5 with the note, nothing overflows)
+- [ ] Keyboard: Tab reaches the slider and the number field, the focus ring is visible
+- [ ] Reduced motion (`?reduced` and the system setting): nothing new animates
+- [ ] Baseline smoke test (section 8) re-run
+
+Checked on: not run yet. When it is, a dated line goes here saying when, where and how, and what was not checked.
