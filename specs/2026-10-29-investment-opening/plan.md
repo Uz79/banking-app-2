@@ -74,6 +74,6 @@ What you see: the summary with edit buttons that jump and come back; "Open asset
 
 ## 7. Wrap-up
 
-- [ ] `npm run build` in `apps/web`
-- [ ] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
-- [ ] Docs: `specs/roadmap.md` item 9a marked done; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the page in the pages table, the draft key, a Decisions row for the scoring and the mandate in the payment state); the fridge spec's D6 marked as replaced by this spec's D1
+- [x] `npm run build` in `apps/web`
+- [x] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line (reduced motion with the system setting not run)
+- [x] Docs: `specs/roadmap.md` item 9a marked done; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the page in the pages table, the draft key, a Decisions row for the scoring and the mandate in the payment state); the fridge spec's D6 marked as replaced by this spec's D1
