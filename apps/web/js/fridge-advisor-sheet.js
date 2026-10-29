@@ -57,7 +57,8 @@
   /* Wide (960) for the fridge; the flows' 640 at one fixed height for the opening (9a D2, D26). Both ease; see the CSS. */
   function setWide(on) {
     shell.classList.toggle('modal-shell--wide', on);
-    shell.classList.toggle('modal-shell--fixed-height', !on);
+    /* The fridge and the opening share one sheet height (8d D1); only the width changes at the hand-over. */
+    shell.classList.add('modal-shell--fixed-height');
   }
 
   /* A draft past the intro resumes the opening (9a D18, D19). Anything unreadable starts with the fridge. */

@@ -9635,6 +9635,78 @@ html[data-theme="dark"] .form-field--error .form-field__text-wrap:focus-within {
   border-color: var(--color-btn-primary-pressed);
 }
 
+/* ==========================================================================
+   Components · Floating panel
+   A frosted panel that floats over a scene (the fridge's 3D stage), after the
+   cartography app's HUD panels. The fill and blur sit on ::before behind the
+   content; a 1px rim (highlight on top, shade at the bottom) and, in Light, a
+   soft drop shadow. Colours only from the tokens, so every theme follows.
+   Place it yourself (position: absolute + inset); .float-panel--docked docks it
+   at the bottom edge, full width, with the safe-area inset.
+   Solid with reduced transparency or more contrast; denser without blur.
+   ========================================================================== */
+
+.float-panel {
+  --float-panel-fill: color-mix(in srgb, var(--color-bg) 70%, transparent);
+  --float-panel-blur: 8px;
+  --float-panel-highlight: color-mix(in srgb, var(--color-bg) 75%, transparent);
+  --float-panel-shade: color-mix(in srgb, var(--color-fg) 14%, transparent);
+  --float-panel-shadow: 0 4px 12px color-mix(in srgb, var(--color-modal-elevated-shadow) 45%, transparent);
+  --float-panel-padding: var(--space-4);
+  position: relative;
+  isolation: isolate;
+  box-sizing: border-box;
+  padding: var(--float-panel-padding);
+  border: 1px solid var(--float-panel-shade);
+  border-radius: var(--radius-regular);
+  box-shadow:
+    inset 0 1px 0 var(--float-panel-highlight),
+    inset 0 -1px 0 var(--float-panel-shade),
+    var(--float-panel-shadow);
+  color: var(--color-fg);
+}
+
+html[data-theme="dark"] .float-panel {
+  --float-panel-highlight: color-mix(in srgb, var(--color-fg) 22%, transparent);
+  --float-panel-shade: color-mix(in srgb, var(--color-modal-elevated-shadow) 60%, transparent);
+  --float-panel-shadow: 0 0 0 transparent;
+}
+
+.float-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--float-panel-fill);
+  -webkit-backdrop-filter: blur(var(--float-panel-blur));
+  backdrop-filter: blur(var(--float-panel-blur));
+  pointer-events: none;
+}
+
+.float-panel--docked {
+  border-width: 1px 0 0;
+  border-radius: var(--radius-regular) var(--radius-regular) 0 0;
+  padding-bottom: calc(var(--float-panel-padding) + env(safe-area-inset-bottom, 0px));
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .float-panel {
+    --float-panel-fill: color-mix(in srgb, var(--color-bg) 92%, transparent);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .float-panel {
+    --float-panel-fill: var(--color-bg);
+  }
+
+  .float-panel::before {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
 /* Design system pages in the app shell: Motion uses the wide dashboard column
    (two-column specimens), Components the 60rem default. */
 .body[data-screen="motion-specimens"] .main-content__inner {
@@ -11358,9 +11430,11 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
   white-space: nowrap;
 }
 
+/* The stage fills the body and the steps float on it in a .float-panel (8d D2): on the right of a
+   wide sheet, docked at the bottom of a full-screen one. */
 .fridge__stage {
   position: relative;
-  flex: 0 0 45%;
+  flex: 1 1 auto;
   min-height: 0;
 }
 
@@ -11373,14 +11447,16 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
 }
 
 .fridge__panel {
-  flex: 1 1 0%;
-  min-height: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 100%;
   overflow-y: auto;
-  padding: var(--space-4);
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  color: var(--color-fg);
+  gap: var(--space-1);
+  --float-panel-padding: var(--space-3);
 }
 
 .fridge__step {
@@ -11409,20 +11485,16 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
   color: var(--color-fg-secondary);
 }
 
+/* The panel is the background; the docked panel adds the safe-area inset below. */
 .fridge__actions {
-  position: sticky;
-  bottom: calc(-1 * var(--space-4));
   margin-top: auto;
-  /* The button stays in reach when the panel scrolls (a phone with three sliders); the panel's own bottom padding is pulled in. */
-  padding: var(--space-3) 0 max(var(--space-4), env(safe-area-inset-bottom));
-  background-color: var(--color-bg);
+  padding-top: var(--space-2);
 }
 
 .fridge__fields {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  margin-top: var(--space-2);
+  gap: var(--space-2);
 }
 
 .fridge__field {
@@ -11454,7 +11526,7 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
 
 .fridge__num {
   width: 6.5rem;
-  height: 2.25rem;
+  height: 2rem;
   padding: 0 var(--space-2);
   border: 1px solid var(--color-btn-secondary-border);
   border-radius: var(--radius-regular);
@@ -11499,26 +11571,14 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
   margin-bottom: var(--space-2);
 }
 
-/* Wide sheet (js sets html.fridge--wide when the sheet is 960dp): the stage on the left at full height, the steps on the right. */
-html.fridge--wide .body[data-screen="fridge-advisor"] .view--fridge .view__main {
-  display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-  grid-template-rows: auto minmax(0, 1fr);
-}
-
-html.fridge--wide .fridge__nav {
-  grid-column: 1 / -1;
-}
-
-html.fridge--wide .fridge__stage {
-  grid-column: 1;
-  grid-row: 2;
-}
-
+/* Wide page (js sets html.fridge--wide from 640px: the 960 sheet, a tablet): the panel floats on the right,
+   anchored at the bottom so Next keeps its place on every step (8d D3). */
 html.fridge--wide .fridge__panel {
-  grid-column: 2;
-  grid-row: 2;
-  padding: var(--space-5, var(--space-4)) var(--space-5, var(--space-4)) var(--space-5, var(--space-4)) var(--space-3);
+  left: auto;
+  right: var(--space-3);
+  bottom: var(--space-3);
+  width: 20rem;
+  max-height: calc(100% - 2 * var(--space-3));
 }
 
 /* Result (screen 7) */

@@ -316,12 +316,29 @@ export async function createFridgeScene(host, cfg, { reduced }) {
   const look = new THREE.Vector3();
   const cam = { pos: new THREE.Vector3(), look: new THREE.Vector3() };
   let pose = cfg.camera.pose.intro;
-  /* The pose, backed away along the line of sight until its `width` fits the stage. */
+  /* The free area (8d D8): the part of the stage the panel leaves free, in stage pixels. The canvas covers the whole
+     stage, but the camera frames each pose in this area and centres it there (setViewOffset). `view` is the area the
+     projection uses now; it glides to `free` with the camera, so a panel that changes height between steps reframes
+     on the step's glide. `fov` rides along, as a tall area takes the narrow lens. */
+  const stageSize = { w: 1, h: 1 };
+  let freeSet = false;
+  const lensFov = (w, h) => (w / h < 0.9 ? cfg.camera.fovNarrow : cfg.camera.fov);
+  const free = { x: 0, y: 0, w: 1, h: 1, fov: cfg.camera.fov };
+  const view = { ...free };
+  const viewFrom = { ...free };
+  function applyView() {
+    camera.aspect = view.w / view.h;
+    camera.fov = view.fov;
+    camera.setViewOffset(view.w, view.h, -view.x, -view.y, stageSize.w, stageSize.h);
+    camera.updateProjectionMatrix();
+    dirty = true;
+  }
+  /* The pose, backed away along the line of sight until its `width` fits the free area. */
   function target(p, out) {
-    const tanHalf = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
+    const tanHalf = Math.tan(THREE.MathUtils.degToRad(free.fov) / 2);
     out.look.set(...p.look);
     out.pos.set(...p.pos).sub(out.look);
-    const fit = Math.max(p.width / (2 * tanHalf * camera.aspect), p.height ? p.height / (2 * tanHalf) : 0);
+    const fit = Math.max(p.width / (2 * tanHalf * (free.w / free.h)), p.height ? p.height / (2 * tanHalf) : 0);
     out.pos.setLength(p.fill ? fit : Math.max(out.pos.length(), fit)).add(out.look);
     return out;
   }
@@ -365,12 +382,33 @@ export async function createFridgeScene(host, cfg, { reduced }) {
     pose = cfg.camera.pose[name];
     cancel(cameraTween);
     from.pos.copy(cam.pos); from.look.copy(cam.look);
+    Object.assign(viewFrom, view);
     target(pose, to);
+    /* `to` and `free` are read on every frame, so setFree during the glide moves where it ends. */
     cameraTween = tween(cfg.motion.glide, (k) => {
       cam.pos.lerpVectors(from.pos, to.pos, k);
       cam.look.lerpVectors(from.look, to.look, k);
+      Object.keys(view).forEach((key) => { view[key] = viewFrom[key] + (free[key] - viewFrom[key]) * k; });
+      applyView();
       applyCamera();
-    });
+    }, () => { cameraTween = null; });
+  }
+
+  /* Snap the view and the camera to the free area and the current pose (a resize, or no glide running). */
+  function snap() {
+    Object.assign(view, free);
+    applyView();
+    target(pose, cam);
+    applyCamera();
+  }
+
+  /* The page tells the scene where the panel leaves room (stage pixels). During a glide the glide takes it along. */
+  function setFree(r) {
+    freeSet = true;
+    const w = Math.max(1, r.w), h = Math.max(1, r.h);
+    Object.assign(free, { x: r.x, y: r.y, w, h, fov: lensFov(w, h) });
+    if (cameraTween) target(pose, to);
+    else snap();
   }
 
   const doorTween = { fridge: null, freezer: null };
@@ -441,15 +479,13 @@ export async function createFridgeScene(host, cfg, { reduced }) {
   function resize() {
     const w = host.clientWidth || 1, h = host.clientHeight || 1;
     renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    camera.fov = w / h < 0.9 ? cfg.camera.fovNarrow : cfg.camera.fov;
-    camera.updateProjectionMatrix();
-    if (!tweens.length) { target(pose, cam); applyCamera(); }
+    stageSize.w = w; stageSize.h = h;
+    /* Until the page reports the panel, the whole stage is free. */
+    if (!freeSet) Object.assign(free, { x: 0, y: 0, w, h, fov: lensFov(w, h) });
+    if (cameraTween) { applyView(); target(pose, to); } else snap();
   }
   new ResizeObserver(resize).observe(host);
   resize();
-  target(pose, cam);
-  applyCamera();
 
   const clock = new THREE.Clock();
   function frame() {
@@ -471,5 +507,5 @@ export async function createFridgeScene(host, cfg, { reduced }) {
     renderer.forceContextLoss();
   });
 
-  return { setDoor, goTo, setFill, capacity, scene, camera, fridge, figure, doors, redraw: () => { dirty = true; } };
+  return { setDoor, goTo, setFill, setFree, capacity, scene, camera, fridge, figure, doors, redraw: () => { dirty = true; } };
 }
