@@ -34,8 +34,8 @@ Only a comment changed in app code, so only the starred baseline items are run, 
 
 ## 4. After the merge and push, by Klaudiusz
 
-- [ ] No GitHub Actions run starts for the push (the Actions tab shows nothing new)
-- [ ] The Vercel production deployment for the merge commit is Ready, and `banking-app-2-bay.vercel.app` serves the app
-- [ ] After Klaudiusz unpublishes Pages (GitHub Settings, Pages): the `github.io` address no longer serves the app
+- [x] No GitHub Actions run starts for the push (the Actions tab shows nothing new) (reported by Klaudiusz on 2026-10-29, not seen by this agent)
+- [x] The Vercel production deployment for the merge commit is Ready, and `banking-app-2-bay.vercel.app` serves the app (merge commit `ea07822`; reported by Klaudiusz on 2026-10-29, not seen by this agent)
+- [x] After Klaudiusz unpublishes Pages (GitHub Settings, Pages): the `github.io` address no longer serves the app (reported by Klaudiusz on 2026-10-29, not seen by this agent)
 
-Checked on 2026-10-28 against `feature/retire-github-pages`, Chrome, vite on 5199, desktop (about 2391px wide), by script plus screenshots: sections 1 and 2 only. Not checked: the phone width and dark repeats of the baseline items, the rest of the baseline (this is the reduced run, see section 2), sections 3 and 4 (the Vercel settings, the preview, the merge and the Pages unpublish), which are Klaudiusz's and still open. Section 3 on 2026-10-28: reported by Klaudiusz from a separate Claude in Chrome check, not seen by this agent, on the branch preview after the group 2 settings; the top of the build log and the optional failing-build check are not covered. Section 4 is still open.
+Checked on 2026-10-28 against `feature/retire-github-pages`, Chrome, vite on 5199, desktop (about 2391px wide), by script plus screenshots: sections 1 and 2 only. Not checked: the phone width and dark repeats of the baseline items, the rest of the baseline (this is the reduced run, see section 2), sections 3 and 4 (the Vercel settings, the preview, the merge and the Pages unpublish), which are Klaudiusz's and still open. Section 3 on 2026-10-28: reported by Klaudiusz from a separate Claude in Chrome check, not seen by this agent, on the branch preview after the group 2 settings; the top of the build log and the optional failing-build check are not covered. Section 4 on 2026-10-29: reported by Klaudiusz on 2026-10-29, not seen by this agent, after the merge and the Pages unpublish.
