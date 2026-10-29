@@ -47,10 +47,25 @@ function publish(next) {
 
 /* ── The scene ─────────────────────────────────────────────────────── */
 let scene = null;
+
+/* The camera frames each step in the part of the stage the panel leaves free: left of the floating panel,
+   above the docked one (8d D8). */
+function syncFree() {
+  if (!scene) return;
+  const s = stage.getBoundingClientRect();
+  const p = panel.getBoundingClientRect();
+  scene.setFree(panel.classList.contains('float-panel--docked')
+    ? { x: 0, y: 0, w: s.width, h: p.top - s.top }
+    : { x: 0, y: 0, w: p.left - s.left, h: s.height });
+}
 createFridgeScene(stage, CONFIG, { reduced })
   .then((s) => {
     scene = s;
     window.__fridge = scene; /* dev: look at the scene from the console */
+    syncFree();
+    const observer = new ResizeObserver(syncFree);
+    observer.observe(panel);
+    observer.observe(stage);
     updateFood();
     /* Dev: `?open=1` shows both doors open, to look inside the kit fridge. */
     if (new URLSearchParams(window.location.search).has('open')) {

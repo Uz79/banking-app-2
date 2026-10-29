@@ -26,10 +26,10 @@ What you see: the fridge in a 960 x 640 sheet, the scene filling the body, the s
 
 What you see: on every step the subject sits in the middle of the space the panel leaves free, on desktop and on a phone, with the glide as before.
 
-- [ ] `js/fridge-advisor-scene.js`: the free area (a setter for the panel's rectangle), `setViewOffset` to its centre, the fit measured in it; a reframe rides on the step's glide, a resize snaps, reduced motion snaps (D8)
-- [ ] `js/fridge-advisor.js`: a `ResizeObserver` on the panel tells the scene its size and side
-- [ ] `js/fridge-advisor-config.js`: the poses retuned for desktop and phone; the intro shows the fridge and the persona (D9)
-- [ ] Check: every step at 960 x 640 and at 390 x 844, the doors and food in view, nothing hidden under the panel; a window resize; `?reduced`
+- [x] `js/fridge-advisor-scene.js`: the free area (`setFree`), `setViewOffset` to its centre, the fit measured in it; the view (and the lens) glides to a new free area with the camera, a resize snaps, reduced motion snaps (D8)
+- [x] `js/fridge-advisor.js`: a `ResizeObserver` on the panel and the stage tells the scene the free area
+- [x] `js/fridge-advisor-config.js`: the poses retuned: intro `width` 4.1 to 4.6, reserve 1.0 to 1.2, freezer 1.2 to 1.5 (the free area is wider than the old column, so the height fit had brought them too close); main unchanged (D9)
+- [x] Check: every step at 960 x 640 and at 390 x 844, the doors and food in view, nothing under the panel; the phone's step 4 to 5 reframe eases with the glide (sampled); `?reduced` on the page on its own snaps at once; no console errors
 
 ## 4. Themes, keyboard and fallbacks (D7, D11, D12)
 

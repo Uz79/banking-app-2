@@ -21,14 +21,14 @@ export const CONFIG = {
        fridge fills the stage whatever its shape. Without it `pos` is also the nearest the camera may come. The tour and the
        slider screens all frame the whole fridge, with the open door and its shadow inside (about 85% of the stage height). */
     pose: {
-      intro: { pos: [0.3, 1.2, 5.2], look: [0.3, 1.05, 0], width: 4.1 },
+      intro: { pos: [0.3, 1.2, 5.2], look: [0.3, 1.05, 0], width: 4.6 },
       /* Each pose looks at the middle of its subject (the compartment, the drawers, the freezer), so the subject sits in the
          centre of the stage; `pos` only gives the direction to look from. */
       main: { pos: [-0.75, 2.25, 6], look: [-0.75, 0.88, 0], width: 2.0, height: 2.9, fill: true },
       /* The drawers, pulled well out, seen from above and close, with a little of the shelf above. */
-      reserve: { pos: [-0.75, 1.5, 2.43], look: [-0.75, 0.29, 0.03], width: 1.0, height: 0.9, fill: true },
+      reserve: { pos: [-0.75, 1.5, 2.43], look: [-0.75, 0.29, 0.03], width: 1.2, height: 0.9, fill: true },
       /* The freezer at the top, seen from above, close enough that the open door is partly cropped and the contents read. */
-      freezer: { pos: [-0.85, 3.35, 2.9], look: [-0.85, 2.0, 0], width: 1.2, height: 1.1, fill: true },
+      freezer: { pos: [-0.85, 3.35, 2.9], look: [-0.85, 2.0, 0], width: 1.5, height: 1.1, fill: true },
     },
   },
 
