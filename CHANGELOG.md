@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 97f6be3dab670aad693f344d1b11c58a9fd3d027 -->
+<!-- changelog: last-commit 906d08d54c3e65333f3e4c304b5ecd8f5620e70b -->
 
 ### Added
 - **The fridge as a film** (roadmap 8d). The fridge's 3D scene now fills its whole sheet, and the steps sit in a frosted panel floating on the right; on a phone the panel is docked at the bottom over the scene. The sheet keeps its 960 width on desktop but takes the opening's fixed height (960 x 640), so "Show suitable products" now only narrows the sheet. The camera frames each step in the space the panel leaves free, and on a phone it follows the panel's height with the step's glide. The panel is 20rem wide with slightly tighter spacing, so every step fits without scrolling. Light, Dark and the colour themes follow by themselves.
