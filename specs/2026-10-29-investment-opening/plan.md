@@ -40,18 +40,25 @@ What you see: the three risk questions on one screen; the strategy cards with th
 - [x] `js/fridge-advisor-sheet.js`: the modifier on with the narrow width, off for the fridge
 - [x] Check: the steps of groups 2 and 3 at the new height (short ones with Next at the bottom, the risk and strategy screens scrolling inside), the fridge unchanged, a resumed open, 390px full screen
 
+## 3c. Review change: no scrolling inside the sheet (D27)
+
+- [x] Compact option rows; purpose and horizon in two columns
+- [x] Risk: one question open at a time, answered ones folded with "Change"
+- [x] Strategy: one row per card, the line on the chosen card, "Above your risk profile" once; a stored draft is reconciled on load
+- [x] Check: every built step and state measured at 640 (no overflow), and at 390px
+
 ## 4. Sustainability, tax, the exit, documents (D13 to D16)
 
 What you see: the ESG choice; the tax screen leading to the exit for "No" or "US person"; the exit's two buttons; the documents in two groups with the required checkbox.
 
-- [ ] Screens 7 to 9 and the Ineligible exit (D15), with "Book an appointment" simulated
+- [ ] Screens 7 to 9 and the Ineligible exit (D15), with "Book an appointment" simulated; US criteria behind "What counts?", the eleven information sheets as one row that opens their list (D27); each screen measured at 640
 - [ ] Check: each tax combination, "Change my answers" back, the checkbox gating Next
 
 ## 5. Summary, completion and the new product (D17, D20 to D22)
 
 What you see: the summary with edit buttons that jump and come back; "Open asset management" leads to completion; Overview shows the new row; demo data reset removes it.
 
-- [ ] Screen 10 with "Back to summary" on edited screens and the recommendation-changed note (D17)
+- [ ] Screen 10 as grouped sections with one Edit each, "Back to summary" on edited screens, the recommendation-changed note (D17, D27); measured at 640
 - [ ] Completion (D20); the draft cleared; no exit prompt
 - [ ] `js/payment-state.js`: `mandates` in load and save, `commitMandate`, `getState()` returns them (D21)
 - [ ] Overview: the row after Retirement savings 3a, not counted in the total; rendered from the state (D21)

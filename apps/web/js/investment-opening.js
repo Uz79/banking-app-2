@@ -140,7 +140,8 @@ function label(text) {
 
 /* Single choice as option cards: a radio group of full-width buttons. Arrow keys move and choose (skipping
    unavailable options), Tab enters at the chosen one. `content(option, button)` fills a card; the default is the
-   label and an optional line. `disabled(option)` makes one unavailable: it stays readable but cannot be chosen. */
+   label and an optional line. `disabled(option)` makes one unavailable: it stays readable but cannot be chosen.
+   `set(id, how)` says how it was chosen: 'click' (pointer, Space, Enter) or 'key' (arrows, which only move). */
 function optionGroup({ labelEl, options, get, set, disabled = () => false, content }) {
   const group = el('div', 'opening-options');
   group.setAttribute('role', 'radiogroup');
@@ -157,7 +158,7 @@ function optionGroup({ labelEl, options, get, set, disabled = () => false, conte
     }
     b.addEventListener('click', () => {
       if (b.getAttribute('aria-disabled') === 'true') return;
-      set(option.id);
+      set(option.id, 'click');
     });
     group.append(b);
     return b;
@@ -175,7 +176,7 @@ function optionGroup({ labelEl, options, get, set, disabled = () => false, conte
     if (to === null) return;
     event.preventDefault();
     list[to].focus();
-    set(list[to].dataset.option);
+    set(list[to].dataset.option, 'key');
   });
   function refresh() {
     const value = get();
@@ -189,7 +190,9 @@ function optionGroup({ labelEl, options, get, set, disabled = () => false, conte
     const stop = list.find((b) => b.dataset.option === value) || list[0];
     buttons.forEach((b) => { b.tabIndex = b === stop ? 0 : -1; });
   }
-  return { group, refresh };
+  /* Focus the group's tab stop (the chosen option, or the first available one). */
+  const focus = () => { const stop = buttons.find((b) => b.tabIndex === 0); if (stop) stop.focus(); };
+  return { group, refresh, focus };
 }
 
 /* ── The recommendation (D12) ───────────────────────────────────────── */
@@ -278,6 +281,9 @@ const BUILD = {
       set: (id) => { answers.horizon = id; changed(); },
       disabled: (o) => HORIZON.options.indexOf(o) > maxHorizon(),
     });
+    /* Short labels: two columns, so the screen fits the sheet without scrolling (D27). */
+    purpose.group.classList.add('opening-options--grid');
+    horizon.group.classList.add('opening-options--grid');
     const note = el('p', 'opening__note');
     note.id = 'opening-horizon-note';
     horizon.group.setAttribute('aria-describedby', note.id);
@@ -336,23 +342,56 @@ const BUILD = {
     };
   },
 
+  /* Three questions on one screen, one open at a time (D27): an answered question folds into a line with its answer
+     and Change, and the next open one follows. Arrow keys only move within the open question; choosing with a click,
+     Space or Enter folds it and moves on. */
   risk() {
+    const firstOpen = () => (RISK.questions.find((q) => !answers[q.id]) || {}).id || null;
+    let open = firstOpen();
     const nodes = [];
-    const groups = RISK.questions.map((q) => {
-      const lab = label(q.label);
+    const parts = RISK.questions.map((q, i) => {
+      const box = el('div', 'opening-question');
+      const lab = label((i + 1) + '. ' + q.label);
       const g = optionGroup({
         labelEl: lab,
         options: q.options,
         get: () => answers[q.id],
-        set: (id) => { answers[q.id] = id; changed(); },
+        set: (id, how) => {
+          answers[q.id] = id;
+          if (how === 'click') {
+            open = firstOpen();
+            changed();
+            const next = parts.find((p) => p.q.id === open);
+            if (next) next.g.focus();
+            else nextButton().focus();
+          } else changed();
+        },
       });
-      nodes.push(lab, g.group);
-      return g;
+      const done = el('div', 'opening-question__done');
+      const doneText = el('p', 'opening-question__answer');
+      const change = el('button', 'uz-btn uz-btn--secondary uz-btn--sm opening-question__change', 'Change');
+      change.type = 'button';
+      change.setAttribute('aria-label', 'Change: ' + q.label);
+      change.addEventListener('click', () => { open = q.id; current.update(); g.focus(); });
+      done.append(doneText, change);
+      box.append(lab, g.group, done);
+      nodes.push(box);
+      return { q, g, box, lab, done, doneText };
     });
     return {
       nodes,
       missing: () => (RISK.questions.every((q) => answers[q.id]) ? '' : RISK.missing),
-      refresh() { groups.forEach((g) => g.refresh()); },
+      refresh() {
+        parts.forEach(({ q, g, box, done, doneText }) => {
+          g.refresh();
+          const option = q.options.find((o) => o.id === answers[q.id]);
+          const state = q.id === open ? 'open' : option ? 'done' : 'waiting';
+          box.dataset.state = state;
+          g.group.hidden = state !== 'open';
+          done.hidden = state !== 'done';
+          doneText.textContent = option ? option.label : '';
+        });
+      },
     };
   },
 
@@ -374,6 +413,13 @@ const BUILD = {
     });
     group.classList.add('opening-options--cards');
     group.setAttribute('aria-labelledby', 'opening-heading');
+    /* The unavailable cards are the riskiest, so they come last: one line above them says why (D11, D27). */
+    const firstAbove = STRATEGIES.find(above);
+    if (firstAbove) {
+      const why = el('p', 'opening-options__why', STRATEGY.unavailable);
+      why.id = 'opening-strategy-above';
+      group.querySelector('[data-option="' + firstAbove.id + '"]').before(why);
+    }
     nodes.push(group);
     return { nodes, missing: () => (answers.strategy ? '' : STRATEGY.missing), refresh };
   },
@@ -390,21 +436,27 @@ function meter(name, n, kind) {
   return row;
 }
 
-/* A strategy card (D11): name and tag, the line, risk and return, and why it cannot be chosen. */
+/* A strategy card (D11): one row with the name, the tag and risk and return, then the line. The line shows on the
+   chosen card only, so five cards fit the sheet (D27); every card is still described by it, and an unavailable one
+   also by the "Above your risk profile" line over the unavailable cards (see the strategy screen). */
 function strategyCard(s, b, recommended, above) {
   b.classList.add('opening-option--card');
   const head = el('span', 'opening-option__head');
-  head.append(el('span', 'opening-option__label', s.name));
-  if (recommended) head.append(el('span', 'opening-option__tag', STRATEGY.recommended));
-  b.append(head, el('span', 'opening-option__line', s.line));
+  const name = el('span', 'opening-option__name');
+  name.append(el('span', 'opening-option__label', s.name));
+  if (recommended) name.append(el('span', 'opening-option__tag', STRATEGY.recommended));
   const meters = el('span', 'opening-option__meters');
   meters.append(meter(STRATEGY.riskLabel, s.risk, 'bar'), meter(STRATEGY.returnLabel, s.ret, 'dots'));
-  b.append(meters);
-  if (above) b.append(el('span', 'opening-option__why', STRATEGY.unavailable));
+  head.append(name, meters);
+  const line = el('span', 'opening-option__line opening-option__line--chosen', s.line);
+  line.id = 'opening-strategy-' + s.id;
+  b.setAttribute('aria-describedby', line.id + (above ? ' opening-strategy-above' : ''));
+  b.append(head, line);
 }
 
 /* The screen on show: its gate and refresh, called after every change. */
 let current = null;
+const nextButton = () => panel.querySelector('.opening__actions .uz-btn--primary');
 
 function changed() {
   reconcile();
@@ -490,6 +542,8 @@ window.addEventListener('keydown', (event) => {
   send({ type: 'uzbank:fridge-escape' });
 });
 
+/* A draft is checked against the rules once more, so a stored strategy is never above the profile (D12). */
+reconcile();
 /* Framed, the page replaced the fridge in the sheet: the heading takes focus so a screen reader starts here. */
 render(framed, false);
 send({ type: 'uzbank:fridge-ready' });

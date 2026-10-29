@@ -14,7 +14,8 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [ ] Overview > Offers > Investment opens the fridge as before; step 7's "Show suitable products" loads the opening in the same sheet, with the title "Open asset management"
 - [ ] The fridge now has 7 steps ("Step 7 of 7"); screen 8 is gone
 - [ ] Desktop: the sheet narrows from 960 to 640 in about 0.3 s; with reduced motion at once; 390px: full screen, no width change
-- [ ] Desktop: the opening's sheet keeps one height, `clamp(480px, 60vh, 640px)`, on every step; Next stays at the bottom; the risk and strategy screens scroll inside the sheet; the fridge keeps its 90vh sheet; payment and trade sheets unchanged (D26)
+- [ ] Desktop: the opening's sheet keeps one height, `clamp(480px, 60vh, 640px)`, on every step; Next stays at the bottom; the fridge keeps its 90vh sheet; payment and trade sheets unchanged (D26)
+- [ ] Desktop at a 640 sheet and phone at 390px: no step scrolls, in every state (hints and notes showing, a risk question reopened, the fall-back note) (D27)
 - [ ] The draft holds the fridge amount (CHF 7'900 for salary 7'000, left 1'000, unplanned 21'000, assets 34'900)
 - [ ] Close on any screen past the intro asks "Leave the opening?"; Leave closes; Investment then resumes at the same screen, narrow
 - [ ] "Start over" on the intro clears the draft and loads the fridge
@@ -44,7 +45,9 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [ ] Sustainability: three options, required
 - [ ] Tax: Yes/No both required; "No" to Switzerland only or "Yes" to US person leads to the exit; "Change my answers" returns to the tax screen with the answers kept
 - [ ] "Book an appointment" shows "We will call you to find a time." and Done closes the sheet; the draft is kept
-- [ ] Documents: contracts first, then the information sheets; names are not links; the checkbox gates Next
+- [ ] Documents: the two contracts listed, the eleven information sheets one row that opens their list; names are not links; the checkbox gates Next (D27)
+- [ ] Tax: "What counts?" opens and closes the US criteria, by mouse and keyboard (D27)
+- [ ] Risk: a click, Space or Enter folds a question and moves on; arrow keys do not; Change reopens one (D27)
 
 ## 6. Summary, completion, the new product (D17, D20 to D22)
 
