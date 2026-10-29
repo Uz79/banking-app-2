@@ -8,9 +8,9 @@ Each group ends with something to look at in the browser on the agent's server (
 
 What you see: a "Floating panel" section on the Components page, with the panel floating and docked over a striped background, frosted in Light and Dark.
 
-- [ ] `css/styles.css`: the `.float-panel` section (the `::before` glass layer, the rim, the Light shadow, the custom properties, `.float-panel--docked`), the reduced-transparency and high-contrast fallback, the `@supports not (backdrop-filter)` fallback; colours only from the tokens (D6)
-- [ ] `components.html`: the "Floating panel" section with the live example and the caption (D13)
-- [ ] Check: Light and Dark, a Multi-color theme, the striped background visibly blurred, the rim and shadow, the docked form, the fallback with `prefers-reduced-transparency` emulated in DevTools
+- [x] `css/styles.css`: the `.float-panel` section (the `::before` glass layer, the rim, the Light shadow, the custom properties, `.float-panel--docked`), the reduced-transparency and high-contrast fallback, the `@supports not (backdrop-filter)` fallback; colours only from the tokens (D6)
+- [x] `components.html`: the "Floating panel" section with the live example and the caption (D13)
+- [x] Check: Light and Dark, the striped background visibly blurred, the rim and shadow (none in Dark), the docked form; both fallback rules present in the loaded stylesheet. Not yet: a Multi-color theme and the fallback seen with `prefers-reduced-transparency` emulated (DevTools emulation is not reachable from the agent's browser tools); both move to group 4
 
 ## 2. The sheet and the layout (D1 to D4, D10)
 

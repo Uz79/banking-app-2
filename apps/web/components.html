@@ -51,6 +51,14 @@
     .ds-row { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; margin-bottom: var(--space-3); }
     .ds-caption { font-size: var(--fs-text-sm); color: var(--color-fg-secondary); margin: 0 0 var(--space-2); }
     .ds-note { font-size: var(--fs-text-xs); color: var(--color-fg-secondary); margin-top: var(--space-2); max-width: 40rem; }
+    .ds-float-demo { position: relative; height: 15rem; border-radius: var(--radius-regular); overflow: hidden; margin-bottom: var(--space-3); }
+    .ds-float-demo--phone { max-width: 20rem; height: 17rem; }
+    .ds-float-demo__scene { position: absolute; inset: 0; background: repeating-linear-gradient(-45deg, var(--color-fg-interactive) 0 0.75rem, var(--color-bg) 0.75rem 1.5rem), var(--color-bg); opacity: 0.85; }
+    .ds-float-demo__float { position: absolute; top: var(--space-4); right: var(--space-4); width: min(20rem, calc(100% - 2 * var(--space-4))); }
+    .ds-float-demo__docked { position: absolute; left: 0; right: 0; bottom: 0; }
+    .ds-float-demo__caption { margin: 0 0 var(--space-1); font-size: var(--fs-text-xs); color: var(--color-fg-secondary); }
+    .ds-float-demo__title { margin: 0 0 var(--space-1); font-size: var(--fs-text-md); font-weight: var(--fw-medium); }
+    .ds-float-demo__text { margin: 0; font-size: var(--fs-text-sm); color: var(--color-fg-secondary); }
   </style>
 </head>
 <body class="body" data-screen="components" data-page="components">
@@ -2463,6 +2471,27 @@
       <button type="button" class="btn-primary">Confirm</button>
     </div>
     <p class="ds-note">Payment flow modals use <code>uz-btn uz-btn--primary uz-btn--md uz-btn--block</code> (Figma Regular). Sizes: <code>uz-btn--sm</code> / <code>--md</code> / <code>--lg</code>.</p>
+  </section>
+
+  <section class="ds-section" aria-labelledby="ds-float-panel-heading">
+    <h2 id="ds-float-panel-heading">Floating panel</h2>
+    <p class="ds-caption">A frosted panel over a scene. <code>.float-panel</code> floats where you place it; <code>.float-panel--docked</code> sits on the bottom edge, full width. Used by the fridge advisor.</p>
+    <div class="ds-float-demo">
+      <div class="ds-float-demo__scene" aria-hidden="true"></div>
+      <div class="float-panel ds-float-demo__float">
+        <p class="ds-float-demo__caption">Step 2 of 7</p>
+        <p class="ds-float-demo__title">Floating</p>
+        <p class="ds-float-demo__text">The scene shows blurred through the glass.</p>
+      </div>
+    </div>
+    <div class="ds-float-demo ds-float-demo--phone">
+      <div class="ds-float-demo__scene" aria-hidden="true"></div>
+      <div class="float-panel float-panel--docked ds-float-demo__docked">
+        <p class="ds-float-demo__title">Docked</p>
+        <p class="ds-float-demo__text">On a phone the panel rests on the bottom edge.</p>
+      </div>
+    </div>
+    <p class="ds-note">Custom properties: <code>--float-panel-fill</code> (the background at 70%), <code>--float-panel-blur</code> (8px), <code>--float-panel-highlight</code>, <code>--float-panel-shade</code>, <code>--float-panel-shadow</code> (Light only), <code>--float-panel-padding</code>. With reduced transparency or more contrast the panel is solid; without blur support the fill rises to 92%.</p>
   </section>
           </div>
         </div>
