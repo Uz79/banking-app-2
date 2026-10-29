@@ -6,7 +6,8 @@
  * fridge (D2, D3). Opened on its own, the page shows its own header.
  */
 import {
-  SCREENS, DRAFT_KEY, PLACEHOLDER, KNOWLEDGE, PURPOSE, HORIZON, AMOUNT, RISK, STRATEGIES, STRATEGY, SCORING,
+  SCREENS, DRAFT_KEY, KNOWLEDGE, PURPOSE, HORIZON, AMOUNT, RISK, STRATEGIES, STRATEGY, SCORING,
+  ESG, TAX, INELIGIBLE, DOCUMENTS, SUMMARY, COMPLETE,
 } from './investment-opening-config.js';
 
 const framed = window.self !== window.top;
@@ -423,7 +424,172 @@ const BUILD = {
     nodes.push(group);
     return { nodes, missing: () => (answers.strategy ? '' : STRATEGY.missing), refresh };
   },
+
+  esg() {
+    const lab = label(ESG.label);
+    const { group, refresh } = optionGroup({
+      labelEl: lab,
+      options: ESG.options,
+      get: () => answers.esg,
+      set: (id) => { answers.esg = id; changed(); },
+    });
+    return { nodes: [lab, group], missing: () => (answers.esg ? '' : ESG.missing), refresh };
+  },
+
+  /* Two questions; the US criteria wait behind "What counts?" (D14, D27). */
+  tax() {
+    const nodes = [];
+    const groups = TAX.questions.map((q) => {
+      const lab = label(q.label);
+      const g = optionGroup({
+        labelEl: lab,
+        options: q.options,
+        get: () => answers[q.id],
+        set: (id) => { answers[q.id] = id; changed(); },
+      });
+      g.group.classList.add('opening-options--grid');
+      nodes.push(lab);
+      if (q.more) {
+        const more = el('details', 'opening-more');
+        more.append(el('summary', 'opening-more__summary', q.more.label), el('p', 'opening-more__text', q.more.text));
+        nodes.push(more);
+      }
+      nodes.push(g.group);
+      return g;
+    });
+    return {
+      nodes,
+      missing: () => (TAX.questions.every((q) => answers[q.id]) ? '' : TAX.missing),
+      refresh() { groups.forEach((g) => g.refresh()); },
+    };
+  },
+
+  /* The exit (D15): an appointment (simulated) or back to the tax answers. The draft is kept. */
+  ineligible() {
+    if (booked) {
+      return {
+        nodes: [el('p', 'opening__note opening__note--check', INELIGIBLE.booked), el('p', 'opening__note', INELIGIBLE.kept)],
+        actions: [button(INELIGIBLE.done, 'primary', leave)],
+        dirty: false,
+      };
+    }
+    return {
+      nodes: [el('p', 'opening__note', INELIGIBLE.kept)],
+      actions: [
+        button(INELIGIBLE.book, 'primary', () => { booked = true; render(true, false); }),
+        button(INELIGIBLE.change, 'secondary', () => go(indexOf('tax'))),
+      ],
+    };
+  },
+
+  /* The contracts listed; the information sheets behind one row that opens their list in place (D16, D27). */
+  documents() {
+    const main = el('div', 'opening-docs');
+    main.append(label(DOCUMENTS.contractsLabel), docList(DOCUMENTS.contracts));
+    const row = el('button', 'opening-docs__row');
+    row.type = 'button';
+    row.innerHTML = '<svg class="opening-docs__icon" aria-hidden="true" focusable="false"><use href="#i-file-text"/></svg>';
+    const rowText = el('span', 'opening-docs__row-text');
+    rowText.append(el('span', 'opening-docs__name', DOCUMENTS.sheetsLabel),
+      el('span', 'opening-docs__count', fill(DOCUMENTS.sheetsCount, { n: DOCUMENTS.sheets.length })));
+    row.append(rowText);
+    row.insertAdjacentHTML('beforeend', '<svg class="opening-docs__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>');
+    const check = el('label', 'opening-check');
+    const box = el('input', 'opening-check__input');
+    box.type = 'checkbox';
+    box.checked = !!answers.documents;
+    box.addEventListener('change', () => { answers.documents = box.checked; changed(); });
+    check.append(box, el('span', 'opening-check__text', DOCUMENTS.accept));
+    main.append(row, el('p', 'opening__note', DOCUMENTS.note), check);
+
+    const sheets = el('div', 'opening-docs');
+    sheets.hidden = true;
+    const back = button(DOCUMENTS.sheetsBack, 'secondary', () => show(false));
+    back.className = 'uz-btn uz-btn--secondary uz-btn--sm opening-docs__back';
+    const sheetsLabel = label(DOCUMENTS.sheetsLabel);
+    sheets.append(back, sheetsLabel, docList(DOCUMENTS.sheets, true));
+    function show(open) {
+      main.hidden = open;
+      sheets.hidden = !open;
+      (open ? back : row).focus();
+    }
+    row.addEventListener('click', () => show(true));
+    return { nodes: [main, sheets], missing: () => (answers.documents ? '' : DOCUMENTS.missing) };
+  },
+
+  /* Grouped sections, one Edit each (D17, D27). */
+  summary() {
+    const nodes = [];
+    if (recChangedTo) nodes.push(el('p', 'opening__note opening__note--check', fill(SUMMARY.changed, { name: recChangedTo })));
+    const rec = recommendation();
+    const s = STRATEGIES[rankOf(answers.strategy)] || STRATEGIES[rankOf(rec)];
+    SUMMARY.sections.forEach((section) => {
+      const box = el('section', 'opening-summary__section opening-summary__section--' + section.id);
+      const head = el('div', 'opening-summary__head');
+      const title = el('h3', 'opening-summary__label', section.label);
+      title.id = 'opening-summary-' + section.id;
+      const edit = button(SUMMARY.edit, 'secondary', () => startEdit(section));
+      edit.className = 'uz-btn uz-btn--secondary uz-btn--sm';
+      edit.setAttribute('aria-describedby', title.id);
+      head.append(title);
+      if (section.id === 'amount') head.append(el('span', 'opening-summary__value', chf(answers.amount || 0)));
+      head.append(edit);
+      box.append(head);
+      if (section.id === 'strategy' && s) {
+        const card = el('div', 'opening-summary__strategy');
+        const name = el('p', 'opening-summary__name');
+        name.append(el('span', 'opening-option__label', s.name));
+        if (s.id === rec) name.append(el('span', 'opening-option__tag', STRATEGY.recommended));
+        const meters = el('div', 'opening-option__meters');
+        meters.append(meter(STRATEGY.riskLabel, s.risk, 'bar'), meter(STRATEGY.returnLabel, s.ret, 'dots'));
+        card.append(name, el('p', 'opening__note', s.line), meters);
+        box.append(card);
+      }
+      if (section.id === 'answers') box.append(answerList(rec));
+      nodes.push(box);
+    });
+    return { nodes };
+  },
+
+  /* Completion (D20): the strategy, the amount and the next step in words; the mandate is already stored. */
+  complete() {
+    const s = STRATEGIES[rankOf(answers.strategy)];
+    const card = el('dl', 'opening-summary__answers opening-summary__answers--done');
+    [['Strategy', s ? s.name : ''], ['Amount', chf(answers.amount || 0)]].forEach(([k, v]) => {
+      card.append(el('dt', null, k), el('dd', null, v));
+    });
+    return { nodes: [card, el('p', 'opening__text', fill(COMPLETE.next, { amount: chf(answers.amount || 0) }))] };
+  },
 };
+
+/* A list of document names (no links: there are no files, D16). */
+function docList(names, compact) {
+  const list = el('ul', 'opening-docs__list' + (compact ? ' opening-docs__list--compact' : ''));
+  names.forEach((name) => {
+    const li = el('li', 'opening-docs__item');
+    li.innerHTML = '<svg class="opening-docs__icon" aria-hidden="true" focusable="false"><use href="#i-file-text"/></svg>';
+    li.append(el('span', 'opening-docs__name', name));
+    list.append(li);
+  });
+  return list;
+}
+
+/* The answers as label and value, for the summary. */
+function answerList(rec) {
+  const find = (list, id) => (list.find((o) => o.id === id) || {}).label || '';
+  const taxOk = TAX.questions.every((q) => answers[q.id] === q.eligible);
+  const rows = [
+    [SUMMARY.rows.knowledge, find(KNOWLEDGE.options, answers.knowledge)],
+    [SUMMARY.rows.purpose, find(PURPOSE.options, answers.purpose)],
+    [SUMMARY.rows.horizon, find(HORIZON.options, answers.horizon)],
+    [SUMMARY.rows.risk, rec ? STRATEGIES[rankOf(rec)].name : ''],
+    [ESG.summary, find(ESG.options, answers.esg)],
+    [TAX.summary, taxOk ? TAX.eligibleSummary : ''],
+  ];
+  const list = el('dl', 'opening-summary__answers');
+  rows.forEach(([k, v]) => list.append(el('dt', null, k), el('dd', null, v)));
+  return list;
+}
 
 /* Five steps, `n` of them filled, with the value for assistive tech. */
 function meter(name, n, kind) {
@@ -457,6 +623,45 @@ function strategyCard(s, b, recommended, above) {
 /* The screen on show: its gate and refresh, called after every change. */
 let current = null;
 const nextButton = () => panel.querySelector('.opening__actions .uz-btn--primary');
+const indexOf = (id) => SCREENS.findIndex((x) => x.id === id);
+
+/* Editing from the summary (D17, D27): the screens of one section, and the recommendation before the edit. */
+let edit = null;
+let recChangedTo = null;
+let booked = false;
+
+function startEdit(section) {
+  edit = { screens: section.screens, before: recommendation() };
+  go(indexOf(section.screens[0]));
+}
+
+function backToSummary() {
+  const now = recommendation();
+  recChangedTo = edit && now && now !== edit.before ? STRATEGIES[rankOf(now)].name : null;
+  edit = null;
+  go(indexOf('summary'), true);
+}
+
+const eligible = () => TAX.questions.every((q) => answers[q.id] === q.eligible);
+
+/* Next: the tax answers can lead to the exit (D15); the summary opens the mandate (D21); an edit returns. */
+function forward() {
+  const id = SCREENS[index].id;
+  if (id === 'complete') { done(); return; }
+  if (id === 'summary') { openMandate(); return; }
+  if (id === 'tax' && !eligible()) { edit = null; booked = false; go(indexOf('ineligible')); return; }
+  if (edit && edit.screens.includes(id)) { backToSummary(); return; }
+  go(index + 1);
+}
+
+/* Completing writes the mandate into the payment state, where Overview shows it as pending (D21). */
+function openMandate() {
+  const s = STRATEGIES[rankOf(answers.strategy)];
+  if (window.UZBankPayState && typeof window.UZBankPayState.commitMandate === 'function') {
+    window.UZBankPayState.commitMandate({ strategy: s.id, strategyName: s.name, amount: answers.amount });
+  }
+  go(indexOf('complete'));
+}
 
 function changed() {
   reconcile();
@@ -465,48 +670,69 @@ function changed() {
   writeDraft();
 }
 
-function render(moveFocus, animate) {
+function render(moveFocus, animate, back) {
   const screen = SCREENS[index];
   panel.innerHTML = '';
   const heading = el('h2', 'opening__heading', screen.title);
   heading.id = 'opening-heading';
   heading.tabIndex = -1;
-  const built = BUILD[screen.id] ? BUILD[screen.id]() : { nodes: [] };
-  const text = el('p', 'opening__text', screen.text || (BUILD[screen.id] ? '' : PLACEHOLDER));
+  const built = BUILD[screen.id]();
+  const text = el('p', 'opening__text', screen.text || '');
   text.hidden = !text.textContent;
   const body = el('div', 'opening__body');
   body.append(...built.nodes);
+  /* The screen slides in like the payment flow's steps; the buttons stay put (D24). */
+  const content = el('div', 'opening__screen' + (animate ? ' opening__screen--in-' + (back ? 'b' : 'f') : ''));
+  content.append(heading, text, body);
 
   const actions = el('div', 'opening__actions');
   const hint = el('p', 'opening__note opening__hint');
   hint.id = 'opening-hint';
-  const complete = screen.id === 'complete';
-  const next = button(screen.next || 'Next', 'primary', () => (complete ? done() : go(index + 1)));
-  next.setAttribute('aria-describedby', hint.id);
-  actions.append(hint, next);
-  if (screen.id === 'intro') actions.append(button('Start over', 'secondary', startOver));
+  const buttons = [];
+  const gated = []; /* the buttons that wait for the screen's answers */
+  if (built.actions) buttons.push(...built.actions);
+  else {
+    const editing = edit && edit.screens.includes(screen.id);
+    const next = button(editing ? SUMMARY.backToSummary : screen.next || 'Next', 'primary', forward);
+    next.setAttribute('aria-describedby', hint.id);
+    buttons.push(next);
+    gated.push(next);
+    /* While editing, the section's next screen is one step away; the last one only returns. */
+    const after = editing ? edit.screens[edit.screens.indexOf(screen.id) + 1] : null;
+    if (after) {
+      const more = button(SUMMARY.nextInSection, 'secondary', () => go(indexOf(after)));
+      buttons.push(more);
+      gated.push(more);
+    }
+    if (screen.id === 'intro') buttons.push(button('Start over', 'secondary', startOver));
+  }
+  actions.append(hint, ...buttons);
 
   /* Next waits for the screen's answers, and a line says what is missing (D6). */
   current = {
     update() {
       if (built.refresh) built.refresh();
       const missing = built.missing ? built.missing() : '';
-      next.disabled = !!missing;
+      gated.forEach((b) => { b.disabled = !!missing; });
       hint.textContent = missing;
       hint.hidden = !missing;
     },
   };
   current.update();
 
-  panel.append(heading, text, body, actions);
+  panel.append(content, actions);
   panel.scrollTop = 0;
   showStep(animate);
   if (moveFocus) heading.focus({ preventScroll: true });
 
   const n = COUNTED.indexOf(screen);
   announce((n >= 0 ? 'Step ' + (n + 1) + ' of ' + TOTAL + ', ' : '') + screen.title);
-  /* Nothing to lose on completion; everywhere else the exit asks first, and says the answers are kept (D3). */
-  publish({ canBack: index > 0 && !complete, dirty: !complete && (index > 0 || Object.keys(answers).length > 0) });
+  /* Nothing to lose on completion or after booking; everywhere else the exit asks first, and says the answers are kept (D3). */
+  const complete = screen.id === 'complete';
+  publish({
+    canBack: index > 0 && !complete,
+    dirty: built.dirty !== false && !complete && (index > 0 || Object.keys(answers).length > 0),
+  });
   if (complete) clearDraft();
   else writeDraft();
 }
@@ -516,17 +742,26 @@ function done() {
   leave();
 }
 
-function go(to) {
+function go(to, back) {
   if (to < 0 || to >= SCREENS.length) return;
+  const dir = back === undefined ? to < index : back;
+  if (SCREENS[to].id !== 'summary') recChangedTo = null;
   index = to;
-  render(true, true);
+  render(true, true, dir);
 }
 
-/* Back walks the counted screens; from the ineligible exit it returns to the tax screen that led there (D15). */
-const TAX = SCREENS.findIndex((s) => s.id === 'tax');
+/* Back walks the counted screens. From the exit it returns to the tax screen that led there (D15); while editing,
+   it walks the section back and then returns to the summary. */
 function goBack() {
-  if (SCREENS[index].id === 'ineligible') go(TAX);
-  else if (index > 0) go(index - 1);
+  const id = SCREENS[index].id;
+  if (id === 'ineligible') { go(indexOf('tax'), true); return; }
+  if (edit && edit.screens.includes(id)) {
+    const at = edit.screens.indexOf(id);
+    if (at > 0) go(indexOf(edit.screens[at - 1]), true);
+    else backToSummary();
+    return;
+  }
+  if (index > 0) go(index - 1, true);
 }
 
 window.addEventListener('message', (event) => {

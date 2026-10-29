@@ -19,7 +19,9 @@
  *   getState()                  → snapshot { household, bookings[], etc. }
  *   commitPayment({ recipient, amount, currency, dateISO, status?, executeOn? }) → records the booking, debits balance
  *                               (status 'pending' or 'recurring' records it without moving money; default 'executed')
- *   reset()                     → wipe storage, restore initial state
+ *   commitMandate({ strategy, strategyName, amount, dateISO? }) → records an asset management mandate opened in
+ *                               investment-opening.html; pending, so no balance or total counts it (9a D21)
+ *   reset()                     → wipe storage, restore initial state (and the opening's session draft)
  *   formatMoney(n)              → "10'000.00" Swiss style
  *   STORAGE_KEY                 → string constant (for boot-script reuse)
  */
@@ -177,8 +179,17 @@
       schemaVersion: SCHEMA_VERSION,
       household: INITIAL_HOUSEHOLD,
       bookings: [],
-      positions: defaultPositions()
+      positions: defaultPositions(),
+      mandates: []
     };
+  }
+
+  /* Mandates opened in the investment opening (9a D21); a missing or broken list is empty. */
+  function normalizeMandates(raw) {
+    if (!Array.isArray(raw)) return [];
+    return raw.filter(function (m) {
+      return m && typeof m.amount === 'number' && typeof m.strategy === 'string';
+    });
   }
 
   function normalizePositions(raw) {
@@ -220,7 +231,8 @@
           schemaVersion: SCHEMA_VERSION,
           household: INITIAL_HOUSEHOLD,
           bookings: b.slice(-cap),
-          positions: normalizePositions(parsed.positions)
+          positions: normalizePositions(parsed.positions),
+          mandates: normalizeMandates(parsed.mandates)
         };
       }
       if (parsed.schemaVersion === 1) {
@@ -228,7 +240,8 @@
           schemaVersion: SCHEMA_VERSION,
           household: INITIAL_HOUSEHOLD,
           bookings: b.slice(-cap),
-          positions: defaultPositions()
+          positions: defaultPositions(),
+          mandates: []
         };
       }
       return defaultState();
@@ -242,7 +255,8 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
         schemaVersion: SCHEMA_VERSION,
         bookings: state.bookings,
-        positions: state.positions
+        positions: state.positions,
+        mandates: state.mandates
       }));
     } catch (e) {}
   }
@@ -333,6 +347,7 @@
       overviewAccountsTotal:        Math.round((householdRunning + savingsRunning + DEPOSIT + RETIREMENT) * 100) / 100,
       accountDetailsAccountsTotal:  Math.round((householdRunning + savingsRunning) * 100) / 100,
       positions: clonePositions(state.positions),
+      mandates: (state.mandates || []).map(function (m) { return Object.assign({}, m); }),
       bookings: state.bookings.map(function (b) {
         var row = {
           id: b.id,
@@ -551,8 +566,37 @@
     dispatchChange();
   }
 
+  /**
+   * Record an asset management mandate (9a D21). No money moves: it shows on Overview as pending and is not
+   * counted in any total until a transfer funds it (roadmap).
+   */
+  function commitMandate(mandate) {
+    if (!mandate || typeof mandate.amount !== 'number' || mandate.amount <= 0 || !mandate.strategy) return;
+    if (!state.mandates) state.mandates = [];
+    state.mandates.push({
+      id: 'mandate_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+      strategy: mandate.strategy,
+      strategyName: mandate.strategyName || mandate.strategy,
+      amount: mandate.amount,
+      dateISO: mandate.dateISO || new Date().toISOString()
+    });
+    dispatchChange();
+  }
+
+  /* Another page of the same origin changed the state (the opening runs in the Overview sheet's iframe, with its
+     own copy of this script): take it over and tell this page's renderer, without writing it back. */
+  window.addEventListener('storage', function (e) {
+    if (e.key !== STORAGE_KEY) return;
+    state = loadState();
+    try {
+      document.dispatchEvent(new CustomEvent('uzbank:state-changed', { detail: getState() }));
+    } catch (err) { /* ignore */ }
+  });
+
   function reset() {
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    /* The investment opening's draft goes with the demo data (9a D18). */
+    try { sessionStorage.removeItem('uzBankWebOpeningDraft'); } catch (e) {}
     state = defaultState();
     dispatchChange();
   }
@@ -569,6 +613,7 @@
     commitPayment:       commitPayment,
     commitInternalTransfer: commitInternalTransfer,
     commitTradeOrder:    commitTradeOrder,
+    commitMandate:       commitMandate,
     updatePayment:       updatePayment,
     reset:               reset,
     formatMoney:         formatMoney

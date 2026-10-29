@@ -19,16 +19,16 @@ export const SCREENS = [
   { id: 'amount', title: 'How much do you want to invest?' },
   { id: 'risk', title: 'How do you feel about risk?' },
   { id: 'strategy', title: 'Choose your strategy', text: 'Based on your answers, we recommend one strategy. You can also choose a more careful one.' },
-  { id: 'esg', title: 'Sustainability' },
+  { id: 'esg', title: 'Sustainability', text: 'Sustainable investing also looks at the environment, society and how companies are run (ESG).' },
   { id: 'tax', title: 'Tax status' },
-  { id: 'documents', title: 'Documents' },
+  { id: 'documents', title: 'Documents', text: 'Take your time to read them before you continue.' },
   { id: 'summary', title: 'Your asset management', next: 'Open asset management' },
   { id: 'complete', title: 'Your asset management is open', counted: false, next: 'Done' },
-  { id: 'ineligible', title: 'We cannot open this online', counted: false },
+  {
+    id: 'ineligible', title: 'We cannot open this online', counted: false,
+    text: 'Asset management can be opened online only if you are tax resident only in Switzerland and not a US person. An advisor can open it with you.',
+  },
 ];
-
-/* Until each screen has its questions, it shows this line. */
-export const PLACEHOLDER = 'The questions for this screen come next.';
 
 /* ── Knowledge (D7) ── `profileAt`: the lowest Profile financial knowledge value (0 to 100) that preselects it. */
 export const KNOWLEDGE = {
@@ -139,4 +139,87 @@ export const SCORING = {
     { answer: 'horizon', is: 'h3to5', max: 'balanced' },
     { answer: 'knowledge', is: 'none', max: 'balanced' },
   ],
+};
+
+/* ── Sustainability (D13) ── a preference, no effect on the strategy in 9a. */
+export const ESG = {
+  label: 'How important is sustainability to you?',
+  summary: 'Sustainability',
+  options: [
+    { id: 'not', label: 'Not important' },
+    { id: 'somewhat', label: 'Somewhat important' },
+    { id: 'important', label: 'Important' },
+  ],
+  missing: 'Choose how important sustainability is to you.',
+};
+
+/* ── Tax status (D14, D27) ── `eligible`: the answer that allows opening online; any other leads to the exit (D15). */
+export const TAX = {
+  questions: [
+    {
+      id: 'taxCH', label: 'Are you tax resident only in Switzerland?', eligible: 'yes',
+      options: [{ id: 'yes', label: 'Yes, only in Switzerland' }, { id: 'no', label: 'No, also abroad' }],
+    },
+    {
+      id: 'usPerson', label: 'Are you a US person?', eligible: 'no',
+      options: [{ id: 'yes', label: 'Yes' }, { id: 'no', label: 'No' }],
+      more: { label: 'What counts?', text: 'A US citizen, a green card holder, or tax resident in the US.' },
+    },
+  ],
+  summary: 'Tax status',
+  eligibleSummary: 'Switzerland only, not a US person',
+  missing: 'Answer both questions.',
+};
+
+/* ── The exit (D15) ── */
+export const INELIGIBLE = {
+  book: 'Book an appointment',
+  change: 'Change my answers',
+  booked: 'We will call you to find a time.',
+  kept: 'Your answers are kept until you close this tab.',
+  done: 'Done',
+};
+
+/* ── Documents (D16, D27) ── the contracts listed, the information sheets behind one row. Names only, no files. */
+export const DOCUMENTS = {
+  contractsLabel: 'Contracts',
+  contracts: ['Asset management mandate', 'Custody account contract'],
+  sheetsLabel: 'Information sheets',
+  sheetsCount: '{n} documents',
+  sheetsBack: 'Back to documents',
+  sheets: [
+    'Asset management record',
+    'Personal investment proposal',
+    'FinSA knowledge and experience',
+    'Tax status declaration',
+    'Custody account regulations',
+    'FinSA information sheet',
+    'Conflicts of interest',
+    'Shareholder rights (SRD II)',
+    'Sustainability information sheet',
+    'Special risks in securities trading',
+    'Price list',
+  ],
+  note: 'In a real opening you would download these.',
+  accept: 'I have read the documents and accept the contracts.',
+  missing: 'Confirm that you have read the documents.',
+};
+
+/* ── Summary (D17, D27) ── grouped sections, one Edit each. `screens` are the screens an Edit walks through. */
+export const SUMMARY = {
+  sections: [
+    { id: 'strategy', label: 'Strategy', screens: ['strategy'] },
+    { id: 'amount', label: 'Amount', screens: ['amount'] },
+    { id: 'answers', label: 'Your answers', screens: ['knowledge', 'purpose', 'risk', 'esg', 'tax'] },
+  ],
+  rows: { knowledge: 'Knowledge', purpose: 'Purpose', horizon: 'Horizon', risk: 'Risk profile' },
+  edit: 'Edit',
+  backToSummary: 'Back to summary',
+  nextInSection: 'Next question',
+  changed: 'Your changes moved the recommendation to {name}.',
+};
+
+/* ── Completion (D20) ── */
+export const COMPLETE = {
+  next: 'Next: transfer {amount} to your custody account. We invest it within about three working days.',
 };

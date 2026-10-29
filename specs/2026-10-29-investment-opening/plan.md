@@ -51,17 +51,17 @@ What you see: the three risk questions on one screen; the strategy cards with th
 
 What you see: the ESG choice; the tax screen leading to the exit for "No" or "US person"; the exit's two buttons; the documents in two groups with the required checkbox.
 
-- [ ] Screens 7 to 9 and the Ineligible exit (D15), with "Book an appointment" simulated; US criteria behind "What counts?", the eleven information sheets as one row that opens their list (D27); each screen measured at 640
-- [ ] Check: each tax combination, "Change my answers" back, the checkbox gating Next
+- [x] Screens 7 to 9 and the Ineligible exit (D15), with "Book an appointment" simulated; US criteria behind "What counts?", the eleven information sheets as one row that opens their list (D27); each screen measured at 640
+- [x] Check: each tax combination, "Change my answers" back, the checkbox gating Next
 
 ## 5. Summary, completion and the new product (D17, D20 to D22)
 
 What you see: the summary with edit buttons that jump and come back; "Open asset management" leads to completion; Overview shows the new row; demo data reset removes it.
 
-- [ ] Screen 10 as grouped sections with one Edit each, "Back to summary" on edited screens, the recommendation-changed note (D17, D27); measured at 640
-- [ ] Completion (D20); the draft cleared; no exit prompt
-- [ ] `js/payment-state.js`: `mandates` in load and save, `commitMandate`, `getState()` returns them (D21)
-- [ ] Overview: the row after Retirement savings 3a, not counted in the total; rendered from the state (D21)
+- [x] Screen 10 as grouped sections with one Edit each, "Back to summary" on edited screens, the recommendation-changed note (D17, D27); measured at 640
+- [x] Completion (D20); the draft cleared; no exit prompt
+- [x] `js/payment-state.js`: `mandates` in load and save, `commitMandate`, `getState()` returns them (D21)
+- [x] Overview: the row after Retirement savings 3a, not counted in the total; rendered from the state (D21)
 - [ ] `specs/roadmap.md`: a new item for funding the mandate (D22), as its own commit, with a pointer in this spec's out-of-scope list
 - [ ] Check: edit each line, a recommendation change via edit, completion, the Overview row in Light and Dark, a reload, demo data reset
 

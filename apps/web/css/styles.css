@@ -1555,6 +1555,21 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
   color: var(--color-fg);
 }
 
+/* Overview: asset management mandates (9a D21), rows in the same list as the accounts. Pending: no money has moved. */
+.product-mandates {
+  display: contents;
+}
+
+.product-mandates .product-item {
+  cursor: default;
+}
+
+.product-item__amount--pending {
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
 /* ── List item ────────────────────────────────────────── */
 
 .list-item {
@@ -11982,6 +11997,254 @@ html.fridge--wide .fridge__panel {
 
 .opening-question__change {
   flex-shrink: 0;
+}
+
+/* A screen arrives like a payment flow step (D24): forward from the right, back from the left; the buttons stay. */
+.opening__screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.opening__screen--in-f {
+  animation: modalStepInForward 0.25s ease-out both;
+}
+
+.opening__screen--in-b {
+  animation: modalStepInBack 0.25s ease-in both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .opening__screen--in-f,
+  .opening__screen--in-b {
+    animation: none;
+  }
+}
+
+/* "What counts?" (D27): a native disclosure under the question it explains. */
+.opening-more {
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.opening-more__summary {
+  width: fit-content;
+  cursor: pointer;
+  color: var(--color-fg);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.opening-more__summary:focus-visible {
+  outline: 0.125rem solid var(--color-fg-interactive);
+  outline-offset: 2px;
+  border-radius: var(--radius-small);
+}
+
+.opening-more__text {
+  margin: var(--space-1) 0 0;
+}
+
+/* Documents (D16, D27): names with a file icon; the information sheets behind one row. */
+.opening-docs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.opening-docs[hidden] {
+  display: none;
+}
+
+.opening-docs > .opening__label:first-child {
+  margin-top: 0;
+}
+
+.opening-docs__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.opening-docs__item,
+.opening-docs__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-separator);
+  border-radius: var(--radius-regular);
+  font-size: var(--fs-text-md);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+}
+
+.opening-docs__list--compact {
+  display: block;
+  gap: 0;
+}
+
+/* Eleven names: two columns where the sheet is wide enough, so the list fits without scrolling (D27). */
+@media (min-width: 30rem) {
+  .opening-docs__list--compact {
+    columns: 2;
+    column-gap: var(--space-4);
+  }
+}
+
+.opening-docs__list--compact .opening-docs__item {
+  break-inside: avoid;
+}
+
+.opening-docs__list--compact .opening-docs__item {
+  padding: 0.25rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--color-separator);
+  border-radius: 0;
+  font-size: var(--fs-text-sm);
+}
+
+.opening-docs__row {
+  width: 100%;
+  margin-top: var(--space-1);
+  border-color: var(--color-btn-secondary-border);
+  background: var(--color-bg);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.opening-docs__row:hover {
+  background: var(--color-surface-state-hover);
+}
+
+.opening-docs__row:focus-visible {
+  outline: 0.125rem solid var(--color-fg-interactive);
+  outline-offset: 2px;
+}
+
+.opening-docs__row-text {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.opening-docs__count {
+  font-size: var(--fs-text-sm);
+  color: var(--color-fg-secondary);
+}
+
+.opening-docs__icon,
+.opening-docs__chevron {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  color: var(--color-fg-secondary);
+  fill: none;
+}
+
+.opening-docs__back {
+  align-self: flex-start;
+}
+
+/* The one checkbox (D16): native, in the accent. */
+.opening-check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  font-size: var(--fs-text-md);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+  cursor: pointer;
+}
+
+.opening-check__input {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0.125rem 0 0;
+  accent-color: var(--color-fg-interactive);
+}
+
+.opening-check__input:focus-visible {
+  outline: 0.125rem solid var(--color-fg-interactive);
+  outline-offset: 2px;
+}
+
+/* Summary (D17, D27): grouped sections, one Edit each. */
+.opening-summary__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-separator);
+}
+
+.opening-summary__section:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.opening-summary__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.opening-summary__label {
+  flex: 1;
+  margin: 0;
+  font-size: var(--fs-text-md);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+}
+
+.opening-summary__value {
+  font-size: var(--fs-text-md);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+}
+
+.opening-summary__strategy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.opening-summary__name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+}
+
+.opening-summary__answers {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 0 var(--space-2);
+  margin: 0;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+}
+
+.opening-summary__answers dt {
+  color: var(--color-fg-secondary);
+}
+
+.opening-summary__answers dd {
+  margin: 0;
+  color: var(--color-fg);
+}
+
+.opening-summary__answers--done {
+  font-size: var(--fs-text-md);
 }
 
 /* The amount (D9): a number field with CHF in front, the app's apostrophe formatting. */
