@@ -62,6 +62,12 @@ Persisted in `localStorage` (see `js/storage-migrate.js` for legacy key migratio
 | `uzBankWebPlaygroundBest` | Design system > Payday run: the best run, `{ "balance": number, "date": "YYYY-MM-DD" }` |
 | `uzBankWebAnalyticsOff` | `1` when `?analytics=off` was used on this device: the Vercel analytics script is not loaded (`?analytics=on` removes it) |
 
+Persisted in `sessionStorage` (this tab only):
+
+| Key | Purpose |
+|-----|---------|
+| `uzBankWebOpeningDraft` | Investment opening draft: JSON `{ step, answers, fridgeAmount, from }`, written by the fridge's "Show suitable products" and on every change in the opening; cleared on completion and by the demo data reset. Unreadable means a fresh start |
+
 ## Source layout
 
 - `spa-source.html` — wide SPA-style reference (not the primary runtime)

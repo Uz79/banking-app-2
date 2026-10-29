@@ -41,6 +41,7 @@ export default {
         characterKit: resolve(dir, 'character-kit.html'),        // admin only
         playground: resolve(dir, 'playground.html'),             // admin only, full screen
         fridgeAdvisor: resolve(dir, 'fridge-advisor.html'),      // opens as a sheet from Overview > Offers
+        investmentOpening: resolve(dir, 'investment-opening.html'), // follows the fridge advisor in the same sheet
       },
     },
   },

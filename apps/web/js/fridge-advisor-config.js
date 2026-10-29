@@ -102,8 +102,8 @@ export const FIELDS = {
 
 /**
  * The screens, in order (D4). `stage` is the camera pose, `doors` which doors stand open, `outline` the compartment
- * tinted with the accent. Copy is English, short and plain, with no em dashes (D17). Steps 7 and 8 arrive with the
- * result. `fields` are the sliders shown on a screen.
+ * tinted with the accent. Copy is English, short and plain, with no em dashes (D17). Step 7 is the result; its button
+ * hands over to the investment opening (9a D1, which removed the closing screen). `fields` are the sliders shown on a screen.
  */
 export const STEPS = [
   {
@@ -139,9 +139,5 @@ export const STEPS = [
   {
     id: 'result', stage: 'freezer', doors: ['freezer'], outline: 'freezer', cool: true, kind: 'result',
     title: 'Your freezer', next: 'Show suitable products',
-  },
-  {
-    id: 'closing', stage: 'freezer', doors: ['freezer'], outline: null, kind: 'closing',
-    title: 'You could invest', next: 'Done',
   },
 ];

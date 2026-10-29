@@ -8,14 +8,14 @@ Review stops (interview): after group 1 (the shell) and after group 3 (risk and 
 
 What you see: on the fridge's step 7, "Show suitable products" loads the opening in the same sheet, the sheet narrows to 640 and its title changes; placeholder screens 1 to 10 with the step indicator, Back, Next and close; closing asks "Leave the opening?"; reopening Investment resumes at the same screen.
 
-- [ ] `investment-opening.html` (from the fridge page's skeleton: boot script, header for the unframed case, the panel, the live region) and the five registrations (D4)
-- [ ] `js/investment-opening-config.js`: the screen list with titles (D5, D23)
-- [ ] `js/investment-opening.js`: screens, Back and Next, the step indicator, the state messages, the draft read and write (D18), the heading focus and the live region
-- [ ] `js/fridge-advisor-config.js` and `js/fridge-advisor.js`: step 7's button writes the fridge amount to the draft and loads the opening; screen 8 removed, `TOTAL` 7 (D1)
-- [ ] `js/fridge-advisor-sheet.js`: the `uzbank:sheet-layout` and `uzbank:sheet-title` messages, the width transition (instant with reduced motion), the exit prompt text per page, resume from a draft (D2, D3, D19)
-- [ ] `css/styles.css`: the page's layout rules, `.opening*` base styles, the sheet width transition
-- [ ] `apps/web/README.md`: `uzBankWebOpeningDraft` (sessionStorage)
-- [ ] Check: the hand-over (the amount in the draft), the narrowing on desktop and nothing on a phone, Back on every screen, close and the prompt, resume, "Start over", the page opened on its own
+- [x] `investment-opening.html` (from the fridge page's skeleton: boot script, header for the unframed case, the panel, the live region) and the five registrations (D4)
+- [x] `js/investment-opening-config.js`: the screen list with titles (D5, D23)
+- [x] `js/investment-opening.js`: screens, Back and Next, the step indicator, the state messages, the draft read and write (D18), the heading focus and the live region
+- [x] `js/fridge-advisor-config.js` and `js/fridge-advisor.js`: step 7's button writes the fridge amount to the draft and loads the opening; screen 8 removed, `TOTAL` 7 (D1)
+- [x] `js/fridge-advisor-sheet.js`: the `uzbank:sheet-layout` and `uzbank:sheet-title` messages, the width transition (instant with reduced motion), the exit prompt text per page, resume from a draft (D2, D3, D19)
+- [x] `css/styles.css`: the page's layout rules, `.opening*` base styles, the sheet width transition
+- [x] `apps/web/README.md`: `uzBankWebOpeningDraft` (sessionStorage)
+- [x] Check: the hand-over (the amount in the draft), the narrowing on desktop and nothing on a phone, Back on every screen, close and the prompt, resume, "Start over", the page opened on its own
 
 ## 2. Intro, knowledge, purpose and horizon, amount (D5 to D9)
 

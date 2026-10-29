@@ -9,6 +9,9 @@ import { createFridgeScene } from './fridge-advisor-scene.js';
 
 const framed = window.self !== window.top;
 const send = (message) => { if (framed) window.parent.postMessage(message, window.location.origin); };
+/* The sheet is wide for the fridge; the opening narrows it, so coming back from there ("Start over") widens it again (9a D2). */
+send({ type: 'uzbank:sheet-layout', wide: true });
+send({ type: 'uzbank:sheet-title', title: 'How much should I invest?' });
 
 const backBtn = document.querySelector('[data-fridge-back]');
 const stage = document.querySelector('[data-fridge-stage]');
@@ -113,7 +116,7 @@ function investable() {
   const month = Math.max(0, values.salary - values.left);
   return Math.max(0, values.assets - month - values.unplanned - values.bigger);
 }
-const onResult = () => STEPS[index].kind === 'result' || STEPS[index].kind === 'closing';
+const onResult = () => STEPS[index].kind === 'result';
 
 function updateFood() {
   if (!scene) return;
@@ -131,7 +134,7 @@ function updateFood() {
 
 /* ── Steps ─────────────────────────────────────────────────────────── */
 let index = 0;
-const TOTAL = 8; /* the screens in D4; the later ones arrive with the sliders and the result */
+const TOTAL = 7; /* the screens in D4, without the closing screen (9a D1) */
 
 function announce(text) {
   if (!live) return;
@@ -254,7 +257,6 @@ function buildField(key, onChange) {
 }
 
 const NOTE = 'A rough guide, not financial advice.';
-const CLOSING = 'Choosing a product comes next.';
 
 /* Screen 7: a ring (the investable share of total assets), the amount, the yearly amount and the note (D6, D17). */
 function buildResult() {
@@ -285,27 +287,14 @@ function buildResult() {
   return box;
 }
 
-/* Screen 8: the amount again and what comes next (D6). */
-function buildClosing() {
-  const box = document.createElement('div');
-  box.className = 'fridge__result';
-  const amount = document.createElement('p');
-  amount.className = 'fridge__big';
-  amount.textContent = chf(investable());
-  const line = document.createElement('p');
-  line.className = 'fridge__text';
-  line.textContent = CLOSING;
-  const note = document.createElement('p');
-  note.className = 'fridge__note';
-  note.textContent = NOTE;
-  box.append(amount, line, note);
-  return box;
-}
-
-/* Done: close the sheet. Nothing is stored, so there is nothing to confirm. */
-function done() {
-  if (framed) send({ type: 'uzbank:fridge-close' });
-  else window.location.href = 'overview.html';
+/* "Show suitable products" (9a D1, D18): the result goes into the opening's session draft, and the opening replaces
+   this page, in the sheet or on its own. The sliders themselves are still not remembered (D8). */
+function showProducts() {
+  try {
+    window.sessionStorage.setItem('uzBankWebOpeningDraft',
+      JSON.stringify({ step: 0, answers: {}, fridgeAmount: Math.round(investable()), from: 'fridge' }));
+  } catch (e) { /* storage blocked: the opening starts without the amount */ }
+  window.location.href = 'investment-opening.html';
 }
 
 function render(moveFocus) {
@@ -341,7 +330,7 @@ function render(moveFocus) {
   next.setAttribute('data-fridge-next', '');
   next.className = 'uz-btn uz-btn--primary uz-btn--md uz-btn--block';
   next.textContent = step.next || 'Next';
-  next.addEventListener('click', () => (last ? done() : go(index + 1)));
+  next.addEventListener('click', () => (last ? showProducts() : go(index + 1)));
   /* Step 5 needs a salary: everything else is measured against it (D4). */
   function gate() {
     const blocked = step.id === 'main-sliders' && values.salary <= 0;
@@ -350,15 +339,13 @@ function render(moveFocus) {
     hint.hidden = !blocked;
   }
   actions.append(hint, next);
-  const body = step.kind === 'result' ? buildResult() : step.kind === 'closing' ? buildClosing() : null;
+  const body = step.kind === 'result' ? buildResult() : null;
   panel.append(caption, heading, text, ...(body ? [body] : []), form, actions);
   refreshAll();
   if (moveFocus) heading.focus({ preventScroll: true });
-  const amount = chf(investable());
-  announce(caption.textContent + '. ' + (step.kind === 'result' ? 'You could invest ' + amount + '. ' + NOTE
-    : step.kind === 'closing' ? step.title + ' ' + amount + '. ' + CLOSING
+  announce(caption.textContent + '. ' + (step.kind === 'result' ? 'You could invest ' + chf(investable()) + '. ' + NOTE
     : step.title + '. ' + step.text));
-  publish({ canBack: index > 0, dirty: step.kind === 'closing' ? false : state.dirty }); /* Done leaves without asking */
+  publish({ canBack: index > 0 });
   if (scene) { scene.goTo(step); updateFood(); }
 }
 

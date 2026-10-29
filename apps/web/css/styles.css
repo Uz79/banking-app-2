@@ -11495,7 +11495,7 @@ html.fridge--wide .fridge__panel {
   padding: var(--space-5, var(--space-4)) var(--space-5, var(--space-4)) var(--space-5, var(--space-4)) var(--space-3);
 }
 
-/* Result (screen 7) and closing (screen 8) */
+/* Result (screen 7) */
 .fridge__result {
   display: flex;
   flex-direction: column;
@@ -11558,10 +11558,6 @@ html.fridge--wide .fridge__panel {
   color: var(--color-fg);
 }
 
-.fridge__big {
-  font-size: var(--fs-h2);
-}
-
 .fridge__year {
   margin: 0;
   font-size: var(--fs-text-md);
@@ -11583,6 +11579,125 @@ html.fridge--wide .fridge__panel {
   .fridge__ring-amount {
     font-size: var(--fs-h5);
   }
+}
+
+/* ── Investment opening ("Open asset management"): follows the fridge in the same sheet ─────────── */
+
+/* The sheet goes from the fridge's 960 to the flows' 640 when the opening loads, and back for "Start over" (9a D2).
+   Below 1024px the wide rule does not apply, so nothing moves. Closing keeps its own transform-only transition. */
+.modal-overlay--fridge .modal-shell {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), max-width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-overlay--fridge .modal-shell {
+    transition: none;
+  }
+}
+
+/* The page: no app chrome, like the fridge. Framed, the sheet's header is used; on its own, the page shows the same header. */
+.body[data-screen="investment-opening"] .sidebar,
+.body[data-screen="investment-opening"] .tab-bar {
+  display: none;
+}
+
+.body[data-screen="investment-opening"] .app {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+.body[data-screen="investment-opening"] .main-content {
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--color-bg);
+}
+
+.body[data-screen="investment-opening"] .main-content__inner,
+.body[data-screen="investment-opening"] .view--opening,
+.body[data-screen="investment-opening"] .view--opening .view__main {
+  max-width: none;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.body[data-screen="investment-opening"] .view--opening .view__main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.opening--framed .opening__nav {
+  display: none;
+}
+
+/* The page name for assistive tech only; the visible title is in the header. */
+.opening__title,
+.opening__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Framed, the indicator sits right under the sheet's header, as in the payment flow. */
+.opening--framed .opening__steps {
+  padding-top: 0;
+}
+
+.opening__steps {
+  padding-top: var(--space-1);
+}
+
+/* One column, the flows' width when the page is opened on its own on a wide screen. */
+.opening__panel {
+  flex: 1 1 0%;
+  min-height: 0;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  overflow-y: auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  color: var(--color-fg);
+}
+
+.opening__heading {
+  margin: 0;
+  font-size: var(--fs-text-lg);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-text);
+}
+
+/* Focus moves here on each screen so a screen reader starts at the new screen; it is not a control, so no ring. */
+.opening__heading:focus {
+  outline: none;
+}
+
+.opening__text {
+  margin: 0;
+  font-size: var(--fs-text-md);
+  line-height: 1.5;
+  color: var(--color-fg-secondary);
+}
+
+.opening__actions {
+  position: sticky;
+  bottom: calc(-1 * var(--space-4));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: auto;
+  /* The buttons stay in reach when the screen scrolls; the panel's own bottom padding is pulled in. */
+  padding: var(--space-3) 0 max(var(--space-4), env(safe-area-inset-bottom));
+  background-color: var(--color-bg);
 }
 
 /* Playground settings dialog: the card of the confirmation dialog (.basic-dialog-payment-exit__surface), a form inside */
