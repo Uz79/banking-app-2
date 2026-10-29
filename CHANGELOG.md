@@ -3,15 +3,17 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 12c08321fc39691140884e80119dc36611bb301b -->
+<!-- changelog: last-commit 39353fec3d280e6ee633f8f0bd10a6aa0dd5b1d3 -->
 
 ### Decided
+- **Investment opening planned.** Roadmap item 9 is split into 9a to 9g (a plain opening flow first, then a scripted assistant, the strategy vehicles, the risk experience), with a draft intervention map in `designs/conversation/investment-opening/intervention-map.md`. Item 8c (the fridge follow-ups) was planned with it.
 - **Spec-driven workflow.** From now on every change goes through a dated spec folder (`specs/<YYYY-MM-DD>-<name>/`) created with `/feature-spec`, on its own branch, with a validation pass and the baseline smoke test before it reaches `main`. Added `AGENTS.md`, `specs/mission.md`, `specs/tech-spec.md`, `specs/roadmap.md`, `specs/baseline/`, and the `/feature-spec` and `/changelog` skills. The app's code is unchanged. The state before this is tagged `v1-presentable`.
 
 ### Added
 - **Playground settings dialog.** A settings button in the Payday run HUD pauses the run and opens a dialog: Quality, Camera distance, Effects and Fog (remembered in `uzBankWebPlaygroundSettings`), a Sound switch (replaces the HUD mute button) and Light/Dark, which the Design system page behind the sheet follows. Resume or Escape continues the run. The dialog is 640px wide on desktop and a bottom sheet under 1280px.
 
 ### Added
+- **Fridge advisor: total assets filled in, with a hint.** Step 5's Total assets now starts at the Household and Savings balances (CHF 34'900 on a fresh start, lower after a payment), and a note under it says it means money you can reach, not your home or pillar 3a. A filled-in value does not count as an entry, so closing without changes still leaves without asking. If no account data is there, the field starts at 0 as before.
 - **Vercel Web Analytics.** `js/analytics.js` loads Vercel's cookie-free script on the production host only (`banking-app-2-bay.vercel.app`), never on localhost, previews or GitHub Pages. `apps/web/vercel.json` adds the entry paths `/from-cv`, `/from-portfolio` and `/from-linkedin`, each serving the Overview, so every source is its own row under Pages. `?analytics=off` keeps the script from loading in a browser (`uzBankWebAnalyticsOff`), `?analytics=on` clears it.
 
 ### Changed

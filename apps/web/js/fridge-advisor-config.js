@@ -86,11 +86,16 @@ export const CONFIG = {
 /**
  * The sliders (D10). `max` is a number, or `{ of: 'salary', times: 6 }` for a range that follows another value.
  * `curve` bends the track: value = max x t^curve (the assets track is easier to set at the low end).
+ * `note` is shown under the field; `prefilledNote` is added when the value was filled in from the accounts (D28, D30).
  */
 export const FIELDS = {
   salary: { label: 'Monthly salary', max: 20000, step: 100 },
   left: { label: 'Left at month end', max: { of: 'salary', times: 1 }, step: 100 },
-  assets: { label: 'Total assets', max: 500000, step: 1000, curve: 2 },
+  assets: {
+    label: 'Total assets', max: 500000, step: 1000, curve: 2,
+    note: 'Money you can reach: accounts and savings, not your home or pillar 3a.',
+    prefilledNote: 'Filled in from your accounts, change it if you have more.',
+  },
   unplanned: { label: 'Reserve for the unplanned', max: { of: 'salary', times: 6 }, step: 1000, mark: 3 },
   bigger: { label: 'Reserve for bigger purchases', max: 100000, step: 1000 },
 };
