@@ -3,9 +3,10 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 12c08321fc39691140884e80119dc36611bb301b -->
+<!-- changelog: last-commit 39353fec3d280e6ee633f8f0bd10a6aa0dd5b1d3 -->
 
 ### Decided
+- **Investment opening planned.** Roadmap item 9 is split into 9a to 9g (a plain opening flow first, then a scripted assistant, the strategy vehicles, the risk experience), with a draft intervention map in `designs/conversation/investment-opening/intervention-map.md`. Item 8c (the fridge follow-ups) was planned with it.
 - **Spec-driven workflow.** From now on every change goes through a dated spec folder (`specs/<YYYY-MM-DD>-<name>/`) created with `/feature-spec`, on its own branch, with a validation pass and the baseline smoke test before it reaches `main`. Added `AGENTS.md`, `specs/mission.md`, `specs/tech-spec.md`, `specs/roadmap.md`, `specs/baseline/`, and the `/feature-spec` and `/changelog` skills. The app's code is unchanged. The state before this is tagged `v1-presentable`.
 
 ### Added

@@ -53,7 +53,7 @@ Spec: `specs/2026-10-25-playground-settings-dialog/` (branch `feature/playground
 
 Original open questions: which visual parameters (for example render quality or pixel ratio, camera distance), whether Sound moves into the dialog from the HUD, and whether Multi-color themes are picked here or stay in Profile. Measure the paused theme switch on a throttled CPU first: a mid-run switch on a desktop cost about one extra frame, a phone is untested. Spec: `specs/2026-10-25-playground-settings-dialog/` (branch `feature/playground-settings-dialog`). Decided in its interview: the four visual parameters are render quality, camera distance, effects and fog distance; Sound moves into the dialog from the HUD; Theme is Light and Dark only; the visual parameters are remembered in `uzBankWebPlaygroundSettings`.
 
-## 8. "How much should I invest?": the fridge advisor (8a done)
+## 8. "How much should I invest?": the fridge advisor (8a and 8c done)
 
 The first step of opening an investment product, as in a bank's advisory meeting. A fridge metaphor: the main compartment is money for daily needs, the reserve drawers are reserves for the unplanned and for bigger purchases, and the freezer is what can be invested. Based on a flow Klaudiusz designed with a bank; the reference frames are in `~/Documents/Projects/AI Portfolio Projects/Banking App/_resources/261022_fridge-food/scenario`.
 
@@ -61,7 +61,7 @@ Split:
 
 - **8a. The flow** (done): entry from Overview > Offers > "Investment", a 3D fridge in the theme colours with the persona character standing next to it, five beats, sliders as the input, the investable amount as the result. The follow-up that tints the active compartment instead of outlining it is also done (D26, `feature/fridge-compartment-tint`).
 - **8b. The avatar acting** (later): the character opens the doors, carries items and cheers.
-- **8c. Fridge follow-ups** (planned 2026-10-28, a follow-up in `specs/2026-10-22-fridge-advisor/`): a hint that total assets means liquid assets only (not the home, not pillar 3a); total assets prefilled from the account balances the app already knows (the customer can change it). The 3 times salary reserve rule stays as it is (confirmed). Spec: group 9 and D27 to D32 in `specs/2026-10-22-fridge-advisor/` (branch `feature/fridge-follow-ups`); prefill = Household + Savings. The hand-over of the investable amount to 9a moved to the 9a spec (D27): 9a does not exist yet, and how the amount travels depends on 9a's shape.
+- **8c. Fridge follow-ups** (done; planned 2026-10-28, a follow-up in `specs/2026-10-22-fridge-advisor/`): a hint that total assets means liquid assets only (not the home, not pillar 3a); total assets prefilled from the account balances the app already knows (the customer can change it). The 3 times salary reserve rule stays as it is (confirmed). Spec: group 9 and D27 to D32 in `specs/2026-10-22-fridge-advisor/` (branch `feature/fridge-follow-ups`); prefill = Household + Savings. The hand-over of the investable amount to 9a moved to the 9a spec (D27): 9a does not exist yet, and how the amount travels depends on 9a's shape.
 
 Spec for 8a: `specs/2026-10-22-fridge-advisor/`.
 
