@@ -21,6 +21,7 @@ Roadmap item 9a (`specs/roadmap.md`). What follows the fridge's "Show suitable p
 - Funding the mandate: a transfer target for the new mandate in the transfer flow (D22; a roadmap item)
 - Real documents (no PDFs), real eligibility rules, any backend
 - A way into the opening that skips the fridge, apart from resuming a draft (D19)
+- The fridge as a film: the full-sheet 3D stage with a floating panel (roadmap 8d, after 9a)
 
 ## Decisions
 
