@@ -124,6 +124,11 @@ function startOver() {
 /* ── Answer controls (D6) ────────────────────────────────────────────── */
 const fmt = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "'");
 const chf = (n) => 'CHF ' + fmt(n);
+/* The assistant's risk answer uses the customer's own amount (9b D7); an example amount until there is one. */
+assistant.setValues(() => {
+  const amount = answers.amount || 10000;
+  return { amount: chf(amount), after20: chf(amount * 0.8) };
+});
 const fill = (text, values) => text.replace(/\{(\w+)\}/g, (m, k) => (k in values ? values[k] : m));
 let uid = 0;
 

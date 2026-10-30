@@ -18,10 +18,10 @@ What you see: a "Questions?" button by every heading of the opening; on desktop 
 
 What you see: each screen's chips; a tap adds the question and its answer, in the length the User Type sets; "Talk to an advisor" answers with the callback line.
 
-- [ ] `js/opening-assistant-config.js`: every screen's chips and answers (`short`, `more`, follow-ups), drafted from the intervention map and aligned with 9a (D7)
-- [ ] `js/opening-assistant.js`: the conversation (`role="log"`), chips removed once asked, follow-ups, More for All-rounder, the conversation kept per screen in memory
+- [x] `js/opening-assistant-config.js`: every screen's chips and answers (`short`, `more`, follow-ups), drafted from the intervention map and aligned with 9a (D7). Three or four chips per screen; follow-ups on strategy (bonds and shares) and tax (the substantial presence test); the risk answer uses the customer's amount (`setValues` from the page). The flagged items carry a comment in the file
+- [x] `js/opening-assistant.js`: the conversation (`role="log"`, a new log per screen so a switch is not read out), chips removed once asked (focus stays on the chip in that place), follow-ups, More for All-rounder (focus moves to the added text), the conversation kept per screen in memory. No stored Profile counts as All-rounder: `UZBankPersona.read()` falls back to Newbie's values, so the key itself is checked
 - [ ] Copy review with Klaudiusz: every answer, the flagged items in D7 (open question 3)
-- [ ] Check: every screen's chips at 960 and 390, the three User Types, Talk to an advisor, a long answer in the panel
+- [x] Check: every screen's chips at 960 (set through the module) and the documents screen at 390 (the bottom sheet stops at 70% and scrolls inside, the step does not); the three User Types (Power user short only, All-rounder short and More, Newbie both; no stored Profile as All-rounder); Talk to an advisor answers with the callback line and disappears; coming back to a screen shows its lines; no em dashes or exclamation marks in the config; no console errors; build passes. Not yet: the line fade (group 4)
 
 ## 3. The helper (D11, D12)
 

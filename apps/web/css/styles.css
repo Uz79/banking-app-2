@@ -12416,6 +12416,94 @@ html.fridge--wide .fridge__panel {
   padding: 0 var(--space-4) var(--space-4);
 }
 
+/* The conversation (D15): the customer's lines on the right on the secondary background, the assistant's on the
+   left on the panel; the chips under it, wrapping; "Talk to an advisor" as a quiet text button. */
+.assistant__prompt {
+  margin: 0 0 var(--space-3);
+  font-size: var(--fs-text-md);
+  line-height: 1.5;
+  color: var(--color-fg-secondary);
+}
+
+.assistant__log {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.assistant__log:not(:empty) {
+  margin-bottom: var(--space-4);
+}
+
+.assistant-line {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  max-width: 100%;
+}
+
+.assistant-line__text {
+  margin: 0;
+  font-size: var(--fs-text-md);
+  line-height: 1.5;
+  color: var(--color-fg);
+}
+
+.assistant-line--customer {
+  align-self: flex-end;
+  max-width: 85%;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-regular);
+  background-color: var(--color-bg-secondary);
+}
+
+.assistant-line--customer + .assistant-line--bank {
+  margin-bottom: var(--space-2);
+}
+
+.assistant__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.assistant__chips[hidden] {
+  display: none;
+}
+
+/* Chips carry whole questions, so they wrap instead of cutting the text. */
+.assistant__chip {
+  padding-top: var(--space-1);
+  padding-bottom: var(--space-1);
+  text-align: left;
+}
+
+.assistant__advisor {
+  display: block;
+  margin-top: var(--space-3);
+  padding: var(--space-1) 0;
+  border: 0;
+  background: none;
+  color: var(--color-fg);
+  font: inherit;
+  font-size: var(--fs-text-sm);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.assistant__advisor:focus-visible,
+.assistant-line__extra:focus-visible {
+  outline: 0.125rem solid var(--color-fg-interactive);
+  outline-offset: 0.125rem;
+  border-radius: var(--radius-small);
+}
+
+.assistant-line__extra:focus:not(:focus-visible) {
+  outline: none;
+}
+
 /* Desktop (D3): the sheet widens to 960 and the panel is a 360 column on the right. The column and the page's
    right padding follow the width the sheet has while it widens (padding percentages are of the width), so the step
    keeps its 600 and the panel opens like a curtain. On its own on a wide screen the column stays 360. */

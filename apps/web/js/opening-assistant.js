@@ -5,6 +5,8 @@
  * dimmed step (D3, D4). It stays open across screens and stores nothing (D5).
  */
 
+import { ASSISTANT, CHIPS } from './opening-assistant-config.js';
+
 const framed = window.self !== window.top;
 const send = (message) => { if (framed) window.parent.postMessage(message, window.location.origin); };
 
@@ -135,6 +137,146 @@ window.addEventListener('resize', () => {
   }, 150);
 });
 
+/* ── The conversation (D6 to D10) ───────────────────────────────────── */
+
+/* Per screen, in memory only (D5): the lines so far and the questions asked. */
+const talks = new Map();
+let values = () => ({});
+let log = null;
+let chipsRow = null;
+
+function talk() {
+  if (!talks.has(screenId)) talks.set(screenId, { lines: [], asked: new Set() });
+  return talks.get(screenId);
+}
+
+/* Answer length by User Type (D9): Newbie everything, All-rounder short with More, Power user short. Nothing chosen
+   yet in Profile counts as All-rounder. */
+function level() {
+  const persona = window.UZBankPersona;
+  if (!persona) return 'standard';
+  try {
+    if (window.localStorage.getItem(persona.key) == null) return 'standard';
+  } catch (e) { return 'standard'; }
+  return persona.read().profile;
+}
+
+const fill = (text) => {
+  const v = values();
+  return text.replace(/\{(\w+)\}/g, (m, k) => (k in v ? v[k] : m));
+};
+
+/* The chips still to ask: the screen's own, then the follow-ups of what was asked, minus what was asked. */
+function openChips() {
+  const set = CHIPS[screenId] || { chips: [] };
+  const t = talk();
+  const all = [...set.chips];
+  set.chips.forEach((c) => { if (t.asked.has(c.q) && c.then) all.push(...c.then); });
+  const list = all.filter((c) => !t.asked.has(c.q));
+  const advisor = !t.asked.has(ASSISTANT.advisor.q) ? ASSISTANT.advisor : null;
+  return { list, advisor, advisorAsChip: !!set.advisor };
+}
+
+function lineNode(line, animate) {
+  const item = document.createElement('div');
+  item.className = 'assistant-line assistant-line--' + (line.from === 'you' ? 'customer' : 'bank')
+    + (animate ? ' assistant-line--new' : '');
+  const p = document.createElement('p');
+  p.className = 'assistant-line__text';
+  p.textContent = line.text;
+  item.append(p);
+  if (line.from === 'bank' && line.more) {
+    const lvl = level();
+    if (lvl === 'novice' || line.expanded) item.append(moreText(line.more));
+    else if (lvl === 'standard') {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'uz-btn uz-btn--tonal uz-btn--sm assistant-line__more';
+      b.textContent = ASSISTANT.more;
+      b.addEventListener('click', () => {
+        line.expanded = true;
+        const extra = moreText(line.more);
+        extra.tabIndex = -1;
+        b.replaceWith(extra);
+        extra.focus({ preventScroll: true });
+        extra.scrollIntoView({ block: 'nearest' });
+      });
+      item.append(b);
+    }
+  }
+  return item;
+}
+
+function moreText(text) {
+  const p = document.createElement('p');
+  p.className = 'assistant-line__text assistant-line__extra';
+  p.textContent = text;
+  return p;
+}
+
+function chipButton(chip, className) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = className;
+  b.textContent = chip.q;
+  b.addEventListener('click', () => ask(chip));
+  return b;
+}
+
+/* The chips row and the quiet advisor button; `focusAt` keeps the keyboard in place after a chip is used. */
+function renderChips(focusAt) {
+  const { list, advisor, advisorAsChip } = openChips();
+  const buttons = list.map((c) => chipButton(c, 'uz-btn uz-btn--secondary uz-btn--sm assistant__chip'));
+  if (advisor && advisorAsChip) buttons.push(chipButton(advisor, 'uz-btn uz-btn--secondary uz-btn--sm assistant__chip'));
+  chipsRow.replaceChildren(...buttons);
+  chipsRow.hidden = !buttons.length;
+  const quiet = aside.querySelector('.assistant__advisor');
+  if (quiet) quiet.remove();
+  let quietBtn = null;
+  if (advisor && !advisorAsChip) {
+    quietBtn = chipButton(advisor, 'assistant__advisor');
+    chipsRow.after(quietBtn);
+  }
+  if (focusAt === undefined) return;
+  const target = buttons[Math.min(focusAt, buttons.length - 1)] || quietBtn || title;
+  target.focus({ preventScroll: true });
+}
+
+function ask(chip) {
+  const t = talk();
+  const focusAt = [...chipsRow.children].findIndex((b) => b.textContent === chip.q);
+  t.asked.add(chip.q);
+  const q = { from: 'you', text: chip.q };
+  const a = { from: 'bank', text: fill(chip.short), more: chip.more ? fill(chip.more) : '' };
+  t.lines.push(q, a);
+  aside.querySelector('.assistant__prompt').hidden = true;
+  const answer = lineNode(a, !reduced());
+  log.append(lineNode(q, !reduced()), answer);
+  renderChips(focusAt < 0 ? 0 : focusAt);
+  answer.scrollIntoView({ block: 'nearest', behavior: reduced() ? 'auto' : 'smooth' });
+}
+
+/* The whole panel for the current screen: a new log each time, so switching screens is not read out as new lines. */
+function renderTalk() {
+  const t = talk();
+  const prompt = document.createElement('p');
+  prompt.className = 'assistant__prompt';
+  prompt.textContent = ASSISTANT.prompt;
+  prompt.hidden = t.lines.length > 0;
+  log = document.createElement('div');
+  log.className = 'assistant__log';
+  log.setAttribute('role', 'log');
+  log.setAttribute('aria-label', ASSISTANT.name);
+  log.append(...t.lines.map((line) => lineNode(line, false)));
+  chipsRow = document.createElement('div');
+  chipsRow.className = 'assistant__chips';
+  chipsRow.setAttribute('role', 'group');
+  chipsRow.setAttribute('aria-label', ASSISTANT.chipsLabel);
+  body.replaceChildren(prompt, log, chipsRow);
+  renderChips();
+  body.scrollTop = body.scrollHeight;
+}
+
 /* ── What the page uses ─────────────────────────────────────────────── */
 
 /* The Questions? button for a screen's heading; the page puts it in place on every render. */
@@ -152,9 +294,14 @@ export function questionsButton() {
 
 /* The page moved to another screen: the panel stays open and follows it (D5). */
 export function setScreen(id) {
+  if (id === screenId) return;
   screenId = id;
   body.dataset.screen = screenId;
+  renderTalk();
 }
+
+/* The customer's own numbers for answers that use them ({amount}, {after20}). */
+export function setValues(fn) { values = fn; }
 
 export function isOpen() { return open; }
 export function close(returnFocus) { hide(returnFocus); }
