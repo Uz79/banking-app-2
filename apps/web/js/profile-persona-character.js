@@ -32,14 +32,17 @@ const ASSETS = {
   ranger: new URL('../assets/3d/kaykit/ranger.glb', import.meta.url).href,
   animGeneral: new URL('../assets/3d/kaykit/rig-medium-general.glb', import.meta.url).href,
   animMove: new URL('../assets/3d/kaykit/rig-medium-movement.glb', import.meta.url).href,
+  /* The opening assistant's helper (9b): the Mage's head and outfit, and its one clip, loaded only by the helper. */
+  helper: new URL('../assets/3d/kaykit/helper.glb', import.meta.url).href,
+  animHelper: new URL('../assets/3d/kaykit/rig-medium-helper.glb', import.meta.url).href,
 };
 const CHARACTERS = ['knight', 'mage', 'rogue', 'barbarian', 'ranger'];
 
 /* Slot option → [source character, mesh parts]. null = slot empty. */
 const OUTFIT_PARTS = ['Body', 'ArmLeft', 'ArmRight', 'LegLeft', 'LegRight'];
 const SLOTS = {
-  outfit: { barbarian: ['barbarian', OUTFIT_PARTS], ranger: ['ranger', OUTFIT_PARTS], knight: ['knight', OUTFIT_PARTS] },
-  head: { rogue: ['rogue', ['Head']] }, /* one face for every profile */
+  outfit: { barbarian: ['barbarian', OUTFIT_PARTS], ranger: ['ranger', OUTFIT_PARTS], knight: ['knight', OUTFIT_PARTS], mage: ['helper', OUTFIT_PARTS] },
+  head: { rogue: ['rogue', ['Head']], mage: ['helper', ['Head']] }, /* one face for every profile; the mage is the helper's */
   headwear: { none: null, helmet: ['knight', ['Helmet']], hat: ['mage', ['Hat']] },
   back: { none: null, quiver: ['ranger', ['Quiver']], cape: ['knight', ['Cape']] },
 };
@@ -49,6 +52,7 @@ const SLOTS = {
 const CLOTH = {
   knight: [[0, 2], [0, 3], [2, 4], [2, 5]],
   mage: [[0, 2], [0, 3], [1, 2], [1, 3], [7, 2], [7, 3]],
+  helper: [[0, 2], [0, 3], [1, 2], [1, 3], [7, 2], [7, 3]], /* the Mage's texture */
   ranger: [[0, 2], [0, 3], [1, 4], [1, 5]],
   rogue: [],
   barbarian: [],
@@ -190,23 +194,28 @@ const EASE = { enter: bezier(0.22, 1, 0.36, 1), exit: bezier(0.4, 0, 1, 1) };
 /* The persona character on its own: the rig with mixable parts, the theme recolour and the
    animation loop, with no scene, camera or lights. Add `actor` to any three.js scene and call
    `update(dt)` every frame. Used by the stage below (Profile, ambient, Character kit) and by
-   the Playground. `reduced` says whether motion should be skipped. */
-export async function createFigure({ reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches } = {}) {
+   the Playground. `reduced` says whether motion should be skipped. `characters` and `clipFiles` (keys of
+   ASSETS) choose what loads: the persona's five by default, the helper's own for the opening assistant (the first
+   character's skeleton is the rig). */
+export async function createFigure({
+  reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  characters = CHARACTERS,
+  clipFiles = ['animGeneral', 'animMove'],
+} = {}) {
   const actor = new THREE.Group();
 
   /* Load everything in parallel. */
   const loader = new GLTFLoader();
-  const [chars, general, move] = await Promise.all([
-    Promise.all(CHARACTERS.map((k) => loader.loadAsync(ASSETS[k]))),
-    loader.loadAsync(ASSETS.animGeneral),
-    loader.loadAsync(ASSETS.animMove),
+  const [chars, clipSets] = await Promise.all([
+    Promise.all(characters.map((k) => loader.loadAsync(ASSETS[k]))),
+    Promise.all(clipFiles.map((k) => loader.loadAsync(ASSETS[k]))),
   ]);
 
   const parts = {};
   const palettes = {};
   const partPalettes = {}; /* 'char:Part' → own texture for PART_ACCENT */
   chars.forEach((gltf, i) => {
-    const k = CHARACTERS[i];
+    const k = characters[i];
     parts[k] = {};
     const meshes = [];
     gltf.scene.traverse((o) => { if (o.isSkinnedMesh) meshes.push(o); });
@@ -233,7 +242,7 @@ export async function createFigure({ reduced = () => window.matchMedia('(prefers
     });
   });
 
-  /* The knight's skeleton is the shared rig; its own meshes are only part sources. */
+  /* The first character's skeleton (the knight's) is the shared rig; its own meshes are only part sources. */
   const rig = chars[0].scene;
   const rigBones = {};
   const sources = [];
@@ -243,13 +252,13 @@ export async function createFigure({ reduced = () => window.matchMedia('(prefers
   actor.add(rig);
 
   const clips = {};
-  [...general.animations, ...move.animations].forEach((c) => { clips[c.name] = c; });
+  clipSets.forEach((g) => g.animations.forEach((c) => { clips[c.name] = c; }));
   const mixer = new THREE.AnimationMixer(rig);
 
   /* Monochrome on the theme hue, then one accent on the cloth swatches. */
   function recolour(theme) {
     const lut = monochromeLut(theme);
-    for (const k of CHARACTERS) {
+    for (const k of characters) {
       const p = palettes[k];
       const img = new ImageData(new Uint8ClampedArray(p.orig.data), p.size, p.size);
       const d = img.data;
@@ -297,6 +306,7 @@ export async function createFigure({ reduced = () => window.matchMedia('(prefers
     const spec = SLOTS[slot][option];
     if (!spec) return;
     const [charKey, names] = spec;
+    if (!parts[charKey]) return; /* a part from a file this figure did not load */
     for (const name of names) {
       const src = parts[charKey][name];
       if (!src) continue;

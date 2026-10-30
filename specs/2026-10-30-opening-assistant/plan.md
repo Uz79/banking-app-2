@@ -20,17 +20,18 @@ What you see: each screen's chips; a tap adds the question and its answer, in th
 
 - [x] `js/opening-assistant-config.js`: every screen's chips and answers (`short`, `more`, follow-ups), drafted from the intervention map and aligned with 9a (D7). Three or four chips per screen; follow-ups on strategy (bonds and shares) and tax (the substantial presence test); the risk answer uses the customer's amount (`setValues` from the page). The flagged items carry a comment in the file
 - [x] `js/opening-assistant.js`: the conversation (`role="log"`, a new log per screen so a switch is not read out), chips removed once asked (focus stays on the chip in that place), follow-ups, More for All-rounder (focus moves to the added text), the conversation kept per screen in memory. No stored Profile counts as All-rounder: `UZBankPersona.read()` falls back to Newbie's values, so the key itself is checked
-- [ ] Copy review with Klaudiusz: every answer, the flagged items in D7 (open question 3)
+- [x] Copy review with Klaudiusz: every answer, the flagged items in D7 (open question 3). Approved as drafted on 2026-10-30, including the completion answer next to the completion screen's own line
 - [x] Check: every screen's chips at 960 (set through the module) and the documents screen at 390 (the bottom sheet stops at 70% and scrolls inside, the step does not); the three User Types (Power user short only, All-rounder short and More, Newbie both; no stored Profile as All-rounder); Talk to an advisor answers with the callback line and disappears; coming back to a screen shows its lines; no em dashes or exclamation marks in the config; no console errors; build passes. Not yet: the line fade (group 4)
 
 ## 3. The helper (D11, D12)
 
 What you see: the UZ Bank assistant as a small 3D figure at the top of the panel, in the theme's colours; a portrait in the phone's bottom sheet.
 
-- [ ] `js/profile-persona-character.js`: `SLOTS` gains `head: mage` and `outfit: mage`
-- [ ] `js/opening-assistant.js`: the lazy import of the character module, the figure's stage, the placeholder, the fallback when loading fails
-- [ ] Settle open question 1 (room for a long answer)
-- [ ] Check: Light, Dark, a Multi-color theme; the first open and later opens; the network throttled; `?reduced`
+- [x] The parts were not in the repo (D18): `scripts/build_kaykit_helper.py` makes `assets/3d/kaykit/helper.glb` and `rig-medium-helper.glb` from the full pack
+- [x] `js/profile-persona-character.js`: `SLOTS` gains `head: mage` and `outfit: mage` (from the `helper` source); `createFigure` takes `characters` and `clipFiles`, defaulting to what it loaded before; a part from a file not loaded is skipped
+- [x] `js/opening-assistant.js`: the lazy import of the character module on the first open, the figure's stage (its own small renderer, the persona stage's lights and theme recolour, drawn only while the panel is open), the placeholder, the fallback when loading fails. `investment-opening.html`: the figure and the "UZ Bank assistant" label in the panel's head
+- [x] Settle open question 1 (room for a long answer): no. Under the 120 figure a Newbie's first answer (tax, "Who counts as a US person?") scrolls by 48 px at a 640 sheet, so the figure drops to 64 (head and shoulders) once a question is asked and stays so until the sheet closes; that answer then fits exactly. More answers scroll inside the panel, as D3 allows
+- [x] Check: Light, Dark and Custom 06 (Multi-color) at 960, the figure recoloured each time; the 390 portrait (56, round, head and shoulders); the placeholder before the first load and the figure at once on later opens; the fallback with `helper.glb` moved away (no figure, the panel works); the Character kit specimen still loads; no console errors; build passes and ships both files. Not run: the network throttled (no throttling in the agent's browser tools; the placeholder was seen during the normal load). `?reduced` covered by the code path only (`figure.update` skips the clip; the canvas cannot be compared frame to frame from the tools); seen by eye in group 4 with the wave
 
 ## 4. Motion and polish (D11, D14)
 

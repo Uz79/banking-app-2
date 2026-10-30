@@ -12390,11 +12390,54 @@ html.fridge--wide .fridge__panel {
   padding: var(--space-2) var(--space-8) var(--space-2) var(--space-4);
 }
 
+.assistant__heading {
+  min-width: 0;
+}
+
 .assistant__title {
   margin: 0;
   font-size: var(--fs-text-md);
   font-weight: var(--fw-medium);
   line-height: var(--lh-text);
+}
+
+.assistant__name {
+  margin: 0;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+/* The helper's stage (D11): a quiet round placeholder until the figure has loaded, then the canvas. */
+.assistant__figure {
+  position: relative;
+  flex: none;
+}
+
+.assistant__figure[hidden] {
+  display: none;
+}
+
+.assistant__figure::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background-color: var(--color-bg-secondary);
+  transform: translateX(-50%);
+}
+
+.assistant__figure--ready::before {
+  display: none;
+}
+
+.assistant__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 /* Focus lands here on open so a screen reader starts at the panel; it is not a control, so no ring. */
@@ -12526,6 +12569,40 @@ html.fridge--wide .fridge__panel {
   min-width: 360px;
 }
 
+/* In the column the figure stands above the title, about 120 high, and the close button sits in its top corner. */
+.assistant--wide .assistant__head {
+  flex-direction: column;
+  align-items: stretch;
+  padding-top: var(--space-2);
+}
+
+.assistant--wide .assistant__figure {
+  height: 7.5rem;
+  margin: 0 calc(-1 * var(--space-8)) var(--space-2) 0;
+  transition: height 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Once a question is asked the figure makes room for the answers (open question 1). */
+.assistant--wide .assistant--talking .assistant__figure {
+  height: 4rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assistant--wide .assistant__figure {
+    transition: none;
+  }
+}
+
+.assistant--wide .assistant__close {
+  top: var(--space-2);
+  transform: none;
+}
+
+.assistant--wide .assistant--no-figure .assistant__close {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 /* Phone and tablet (D4): a bottom sheet up to 70% high over the dimmed step. */
 .assistant-scrim {
   position: absolute;
@@ -12549,6 +12626,24 @@ html.fridge--wide .fridge__panel {
 
 .assistant--sheet.assistant--closing .assistant {
   transform: translateY(100%);
+}
+
+/* In the bottom sheet the helper is a 56 portrait left of the title. */
+.assistant--sheet .assistant__head {
+  gap: var(--space-3);
+  padding-left: var(--space-3);
+}
+
+.assistant--sheet .assistant__figure {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: var(--color-bg-secondary);
+}
+
+.assistant--sheet .assistant__figure::before {
+  display: none;
 }
 
 .assistant--sheet.assistant--closing .assistant-scrim {
