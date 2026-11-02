@@ -21,6 +21,7 @@ Roadmap item 8e (`specs/roadmap.md`). In the fridge advisor (`specs/2026-10-22-f
 - Any change to the steps, copy, sliders, formula, food, doors, the cooling moment or the hand-over to the opening (fridge D4, D9 to D12, D15; 9a D1)
 - The tour's freezer step (step 4) keeps its close-up; only the result gets the wider frame
 - The panel, the sheet and its sizes (8d D1 to D4; 9b D24)
+- The result ring's text spilling over the ring at 390, found here: roadmap item 19
 
 ## Decisions
 
