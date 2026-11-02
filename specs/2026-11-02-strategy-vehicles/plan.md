@@ -32,6 +32,6 @@ What you see: "What do the vehicles mean?" among the strategy step's questions.
 
 ## 4. Wrap-up
 
-- [ ] `npm run build` in `apps/web`
-- [ ] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
-- [ ] Docs: `specs/roadmap.md` item 9d marked done; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the opening's strategy screen uses the vehicles; the credits now customer-facing); `apps/web/README.md` if files change
+- [x] `npm run build` in `apps/web`
+- [x] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line (VoiceOver, the system reduced-motion setting and the tab hidden left open, named there)
+- [x] Docs: `specs/roadmap.md` item 9d marked done; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the opening's strategy screen uses the vehicles; the credits now customer-facing; the sheet's new height); `apps/web/README.md` not needed (no new files or keys)
