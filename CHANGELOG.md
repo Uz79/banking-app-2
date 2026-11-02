@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 4c1e34105eb7f9220daa1d372e572c8eece979bf -->
+<!-- changelog: last-commit b020bf62b298289387effa0df898c60b75c7dc6b -->
 
 ### Added
 - **Vehicles in the Character kit** (roadmap 9c). Each investment strategy gets a way of travelling, faster and riskier as it goes up: Income a tent, Conservative a tricycle, Balanced a Vespa, Growth a parachute, Dynamic a jetpack. A new "Vehicles" section on the Character kit page shows one 3D stage with the persona and the picked strategy's vehicle, five strategy buttons, the entry and a table of all five. The vehicles take the theme's monochrome and the persona keeps the one accent; the persona stands by the tent, sits on the tricycle and the Vespa, and hangs from the parachute or wears the jetpack, seen from the side. Switching squashes and springs the whole group; the jetpack hovers and the parachute sways. The persona follows the profile picked in the live specimen above. Reduced motion holds everything still and switches at once.
@@ -26,6 +26,7 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - **Flow sheet focus after the exit prompt.** In the fridge and opening sheet, Keep going returns focus to the control that had it, and Leave returns it to Investment (it used to land on the page body).
 
 ### Decided
+- **A roadmap item found during 9c.** 20, the Character kit helper's stage can stop drawing while on screen (its visibility observer reads a stale entry).
 - **Two roadmap items found during 9a.** 8d, the fridge as a film (the 3D stage fills a 960 x 640 sheet, the steps in a floating panel), scheduled before 9b; and 18, funding the asset management mandate (a transfer to it turns "Pending" into a balance).
 - **Investment opening planned.** Roadmap item 9 is split into 9a to 9g (a plain opening flow first, then a scripted assistant, the strategy vehicles, the risk experience), with a draft intervention map in `designs/conversation/investment-opening/intervention-map.md`. Item 8c (the fridge follow-ups) was planned with it.
 - **Spec-driven workflow.** From now on every change goes through a dated spec folder (`specs/<YYYY-MM-DD>-<name>/`) created with `/feature-spec`, on its own branch, with a validation pass and the baseline smoke test before it reaches `main`. Added `AGENTS.md`, `specs/mission.md`, `specs/tech-spec.md`, `specs/roadmap.md`, `specs/baseline/`, and the `/feature-spec` and `/changelog` skills. The app's code is unchanged. The state before this is tagged `v1-presentable`.
