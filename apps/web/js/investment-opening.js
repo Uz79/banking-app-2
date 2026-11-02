@@ -32,10 +32,7 @@ function readDraft() {
 }
 function writeDraft() {
   try {
-    const d = { step: index, answers, fridgeAmount, from };
-    /* 9b D22: "Continue on my own" holds for the rest of the flow. */
-    if (help) d.help = help;
-    window.sessionStorage.setItem(DRAFT_KEY, JSON.stringify(d));
+    window.sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ step: index, answers, fridgeAmount, from }));
   } catch (e) { /* storage blocked: the flow still works, it just does not resume */ }
 }
 function clearDraft() {
@@ -50,13 +47,8 @@ const from = draft && typeof draft.from === 'string' ? draft.from : 'direct';
 let index = draft && draft.step >= 0 && draft.step < SCREENS.length && SCREENS[draft.step].id !== 'complete' ? draft.step : 0;
 
 /* ── The sheet (D2, D3) ─────────────────────────────────────────────── */
-/* 9b D20: with the assistant open from the start the sheet stays 960, so the width never changes. */
-let help = draft && draft.help === 'closed' ? 'closed' : null;
-const helpAtStart = assistant.start({
-  dismissed: help === 'closed',
-  choice: (value) => { help = value; writeDraft(); },
-});
-send({ type: 'uzbank:sheet-layout', wide: helpAtStart });
+/* The sheet stays 960 for the opening too: the assistant's column is beside the step (9b D24). */
+send({ type: 'uzbank:sheet-layout', wide: true });
 send({ type: 'uzbank:sheet-title', title: TITLE });
 
 let state = { canBack: false, dirty: false };
@@ -124,7 +116,7 @@ function leave() {
   else window.location.href = 'overview.html';
 }
 
-/* Start over (D19): forget the draft and go back to the fridge, which makes the sheet wide again. */
+/* Start over (D19): forget the draft and go back to the fridge. */
 function startOver() {
   clearDraft();
   window.location.href = 'fridge-advisor.html';
@@ -699,11 +691,9 @@ function render(moveFocus, animate, back) {
   body.append(...built.nodes);
   /* The screen slides in like the payment flow's steps; the buttons stay put (D24). */
   const content = el('div', 'opening__screen' + (animate ? ' opening__screen--in-' + (back ? 'b' : 'f') : ''));
-  /* Questions? sits on the right of the heading and opens the assistant for this screen (9b D1). */
-  const head = el('div', 'opening__head');
-  head.append(heading, assistant.questionsButton());
+  /* The assistant starts over with every screen (9b D26, D29). */
   assistant.setScreen(screen.id);
-  content.append(head, text, body);
+  content.append(heading, text, body);
 
   const actions = el('div', 'opening__actions');
   const hint = el('p', 'opening__note opening__hint');
@@ -726,7 +716,11 @@ function render(moveFocus, animate, back) {
     }
     if (screen.id === 'intro') buttons.push(button('Start over', 'secondary', startOver));
   }
-  actions.append(hint, ...buttons);
+  /* On a phone, Help? sits left of the main button in one row (9b D28); the layout hides it on desktop. */
+  const row = el('div', 'opening__action-row');
+  if (buttons.length) row.append(assistant.helpButton(), buttons.shift());
+  else row.append(assistant.helpButton());
+  actions.append(hint, row, ...buttons);
 
   /* Next waits for the screen's answers, and a line says what is missing (D6). */
   current = {
@@ -793,10 +787,10 @@ if (backBtn) backBtn.addEventListener('click', goBack);
 /* Escape belongs to the sheet; the iframe has the keyboard, so it passes the key on. */
 window.addEventListener('keydown', (event) => {
   if (event.key !== 'Escape') return;
-  /* An open assistant takes the first Escape (9b D4). */
+  /* The phone's open assistant takes the first Escape (9b D29). */
   if (assistant.isOpen()) {
     event.preventDefault();
-    assistant.dismiss();
+    assistant.close();
     return;
   }
   if (!framed) return;
@@ -808,5 +802,4 @@ window.addEventListener('keydown', (event) => {
 reconcile();
 /* Framed, the page replaced the fridge in the sheet: the heading takes focus so a screen reader starts here. */
 render(framed, false);
-if (helpAtStart) assistant.openWithInvitation();
 send({ type: 'uzbank:fridge-ready' });

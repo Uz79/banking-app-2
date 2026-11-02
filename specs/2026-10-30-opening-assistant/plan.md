@@ -62,9 +62,18 @@ Review change after group 5: the mage parts were too close to the persona's powe
 
 ## 8. Open from the start (D20 to D23)
 
-Review change after the wrap-up (desktop only; the phone is unchanged).
+Review change after the wrap-up (desktop only; the phone is unchanged). Superseded by group 9.
 
 - [x] `js/opening-assistant.js`: `start()` decides before the first render (wide, not Power user, not closed earlier in the flow), `openWithInvitation()` opens without moving focus; the invitation state (`assistant--inviting`, the large figure framed whole, "Yes, help me"); `dismiss()` for every close by the customer, reported to the page; Questions? opens straight to the conversation. `js/opening-assistant-config.js`: `invite`, `yes`
 - [x] `js/investment-opening.js`: tells the sheet `wide` from the start when the assistant opens; keeps `help: "closed"` in the draft; Escape dismisses. `js/fridge-advisor-sheet.js`: a resumed opening opens at 960 by the same rule
 - [x] `investment-opening.html`: the column's foot with "Continue on my own". `css/styles.css`: the X hidden in the column, the foot, the invitation (figure up to 20rem, centred line and button)
 - [x] Check: Newbie (resume and the fridge hand-over: 960 throughout, invitation, focus on the step heading), All-rounder in Dark (invitation), no stored User Type (invitation), Power user (640, closed; Questions? opens to the questions with the foot button and no X); yes → 120 with focus on the title, a question → 64, Next keeps the conversation; Continue on my own → 640, focus on Questions?, `help: "closed"` in the draft; leave and resume → 640, closed; Questions? reopens to the conversation and clears it; Escape counts as closing; keyboard from the step to "Yes, help me" and "Continue on my own"; the phone at 390 (closed at start, the bottom sheet with its X, no foot); Light and Dark; build passes, no console errors. `?reduced` drives only the JS paths: the figure's height transition is off through the CSS reduced-motion rule (the system setting), not with `?reduced`
+
+## 9. Help per step, 960 throughout, Help? on the phone (D24 to D30)
+
+Second review change, superseding group 8.
+
+- [x] Undo group 8's draft field and start rule: `js/investment-opening.js`, `js/fridge-advisor-sheet.js` and `apps/web/README.md` back to before it, then `wide: true` for the whole flow (D24)
+- [x] `js/opening-assistant.js` rewritten: the layout from a 1024px window (the parent's when framed); desktop column always there, the invitation on every step, "Yes, help me", "I can do it myself" back to the invitation (D25 to D27); the phone's Help? button (one for the visit, moved into each step's bottom bar) and the full-screen dialog (D28, D29). `js/opening-assistant-helper.js`: a `still` option for the head. `js/opening-assistant-config.js`: `self`, `help`, `helpLabel`
+- [x] `investment-opening.html`: no scrim, no X, the foot's tonal button. `js/investment-opening.js`: Questions? removed, the action row with Help? and the main button. `css/styles.css`: the assistant section rewritten (column, invitation, full screen, the row, the head)
+- [x] Check: Light and Dark; every screen (the ten steps, completion, the exit screen) on desktop and at 390; focus on each switch (yes → the panel's title, "I can do it myself" → "Yes, help me"; Help? → the title, "I can do it myself" and Escape → Help?); names (Help? "Questions about this step", the panel labelled by its title, a dialog on the phone); 960 from the fridge to the opening and on resume; 44px and a 12px gap; build; no console errors

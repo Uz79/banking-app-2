@@ -54,7 +54,8 @@
     if (frame) frame.title = text;
   }
 
-  /* Wide (960) for the fridge; the flows' 640 at one fixed height for the opening (9a D2, D26). Both ease; see the CSS. */
+  /* 960 for the whole flow, the fridge and the opening with its assistant column (9b D24); the CSS widens it from a
+     1024px window only. One fixed height (9a D26). */
   function setWide(on) {
     shell.classList.toggle('modal-shell--wide', on);
     /* The fridge and the opening share one sheet height (8d D1); only the width changes at the hand-over. */
@@ -69,18 +70,6 @@
     } catch (err) { return false; }
   }
 
-  /* A resumed opening starts with the assistant open for Newbie and All-rounder, unless they closed it (9b D20, D22),
-     so the sheet opens at 960 and its width never changes. The same rule as js/opening-assistant.js start(). */
-  function openingStartsWide() {
-    try {
-      var d = JSON.parse(window.sessionStorage.getItem('uzBankWebOpeningDraft'));
-      if (d && d.help === 'closed') return false;
-      var persona = window.UZBankPersona;
-      var stored = persona && window.localStorage.getItem(persona.key) != null;
-      return !(stored && persona.read().profile === 'power');
-    } catch (err) { return false; }
-  }
-
   /* Which page the frame holds now, for the exit prompt. */
   function framePage() {
     try { return frame.contentWindow.location.pathname.split('/').pop(); } catch (err) { return ''; }
@@ -91,7 +80,7 @@
     pageState = { canBack: false, dirty: false };
     showBack(false);
     var page = resumable() ? OPENING : FRIDGE;
-    setWide(page === FRIDGE || openingStartsWide());
+    setWide(true);
     frame = document.createElement('iframe');
     frame.className = 'fridge-frame';
     setTitle(page.title);

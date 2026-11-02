@@ -51,11 +51,13 @@ function recolour(p, theme) {
  * Mounts the helper into `box` (sized by CSS) and returns `{ wake, wave }`.
  * `active()` says whether to keep drawing (the loop stops when it is false; `wake()` starts it again).
  * `frame(height)` returns the [low, high] heights in metres to fit into the box.
+ * `still` draws one frame of the idle pose, again on a theme change or resize, and never loops (the phone's Help?).
  */
 export async function mountHelper(box, {
   reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
   active = () => true,
   frame = HEAD_TO_WAIST,
+  still = false,
 } = {}) {
   const loader = new GLTFLoader();
   const [model, ...clipSets] = await Promise.all([MODEL, ...CLIPS].map((u) => loader.loadAsync(u)));
@@ -108,6 +110,7 @@ export async function mountHelper(box, {
     key.intensity = theme.light.key;
     rim.intensity = theme.light.rim;
     recolour(palette, theme);
+    if (still) renderer.render(scene, camera);
   }
   new MutationObserver(() => requestAnimationFrame(applyTheme))
     .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'style', 'class'] });
@@ -125,6 +128,7 @@ export async function mountHelper(box, {
     camera.position.copy(target).addScaledVector(aim, dist);
     camera.lookAt(target);
     camera.updateProjectionMatrix();
+    if (still) renderer.render(scene, camera);
   }
   new ResizeObserver(resize).observe(box);
 
@@ -150,6 +154,10 @@ export async function mountHelper(box, {
   });
 
   box.append(canvas);
+  if (still) {
+    resize();
+    return { wake() {}, wave() {} };
+  }
   const helper = {
     wake() {
       if (running) return;

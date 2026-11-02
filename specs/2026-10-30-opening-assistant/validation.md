@@ -9,13 +9,13 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [x] `npm run build` in `apps/web` succeeds with no new warnings
 - [x] The browser console shows no errors on Overview, the fridge, the opening (panel open and closed), the Components page and the Character kit page
 
-## 2. Questions? and the panel (D1, D3 to D5, D13)
+## 2. Questions? and the panel (D1, D3 to D5, D13; as first built, replaced by section 5b)
 
 - [x] Every screen of the opening, including completion and the exit screen, has Questions? on the right of its heading
 - [x] Desktop: Questions? widens the sheet from 640 to 960 (animated); the step stays as it was on the left, the panel is on the right; closing narrows it back to 640; the height never changes
 - [x] Phone (390px): Questions? opens a bottom sheet over the dimmed step, at most 70% high; its close button, Escape and a tap on the dimmed step close it
 - [x] With the panel open, Next and Back keep it open and show the new screen's chips; coming back to a screen shows the questions already asked there
-- [x] Closing the sheet (X, Escape, Leave in the exit prompt) and completion's Done close the panel; reopening Investment starts with it closed (since D20 for a Power user; Newbie and All-rounder get the invitation unless they closed it)
+- [x] Closing the sheet (X, Escape, Leave in the exit prompt) and completion's Done close the panel; since D24 the desktop column is always there and every screen starts with the invitation (section 5b)
 - [x] The fridge, the hand-over to the opening and "Start over" are unchanged
 - [x] No new storage key; the draft is unchanged by anything the assistant does
 
@@ -43,14 +43,17 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [x] Each new answer is announced once (the log's text read from the page; not with a screen reader)
 - [x] Reduced motion (`?reduced`, and the system setting if Klaudiusz switches it): no width animation, no slide, no fade, a still figure. `?reduced` only; the system setting was not switched
 
-## 5b. Open from the start (D20 to D23)
+## 5b. Help per step (D24 to D30; replaces the checks of D20 to D23)
 
-- [x] Desktop, Newbie and All-rounder (and no stored User Type): the panel is open on the first screen with the invitation, and the sheet is 960 throughout (the fridge hand-over and a resumed opening); focus stays on the step's heading
-- [x] "Yes, help me": the helper shrinks to 120, focus on the panel's title, the chips and answers as before
-- [x] "Continue on my own" (and Questions?, Escape): closes the panel, the sheet narrows to 640, focus on Questions?; the next screens and a resumed opening start closed; Questions? reopens it straight to the questions
-- [x] Power user: panel closed, Questions?, 640; opened, it has "Continue on my own" and no X
-- [x] Phone (390): unchanged, closed at the start, the bottom sheet keeps its X
-- [x] Light and Dark; keyboard through the invitation and the foot button
+- [x] Desktop: the sheet is 960 on the fridge, through the hand-over and on a resumed opening; the column is there on every screen and never collapses
+- [x] Desktop: every screen (the ten steps, completion and the exit screen) starts with the invitation: the Lorekeeper large, "Questions about this step?", "Yes, help me"; no foot; focus stays on the step's heading
+- [x] "Yes, help me": the helper shrinks to 120 (64 after a question), focus on the panel's title, the chips, answers and "Talk to an advisor"; "I can do it myself" at the bottom
+- [x] "I can do it myself": back to the invitation, focus on "Yes, help me"; Next and Back start the next screen in the invitation; a yes on a screen visited before shows its earlier lines
+- [x] No "Questions?" anywhere; the draft has no help field
+- [x] Phone (390): Help? (tonal, the head rising a little above it) and the main button side by side in the bottom bar, both 44px, a 12px gap, Next taking the rest; other buttons below the row; no other help button or strip
+- [x] Phone: Help? opens the conversation full screen under the sheet's header (a modal dialog, focus on its title, the step inert); "I can do it myself" and Escape close it with focus back on Help?; the next screen starts closed
+- [x] Names: Help? is announced as "Questions about this step" (read from the page; not with a screen reader), the panel is labelled by its title
+- [x] Light and Dark; keyboard by real key presses through the invitation, the conversation and back
 
 ## 6. Documentation (D16)
 
@@ -98,4 +101,4 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 - [x] Tab through Overview: focus is always visible
 - [ ] With reduced motion on (System Settings → Accessibility → Display), page transitions and the character are still, and nothing is stuck mid-animation
 
-Checked on 2026-11-02 against `feature/opening-assistant` (after `183e32a`, the Lorekeeper; section 5b re-checked after the review change D20 to D23, with the opening's other checks repeated where it touches them: the panel at 960, Questions?, Escape, the phone), on the agent's server (port 5199) in Chrome: desktop at a 2391 x 1179 viewport (the sheet at 640 and 960; not resized to 1440), phone width as a 390 x 844 frame of the app; Light and Dark; the UZ Bank (Monochrome) and Custom 06 (Multi-color) themes; keyboard by real key presses; reduced motion with `?reduced`; a full walk of the fridge, the hand-over and all twelve opening screens, including the exit screen and completion by eye. Build passes with no warnings; no console errors on the pages visited. Not checked: the system reduced-motion setting (Klaudiusz's to switch); the direction of the back page transitions by eye; network throttling; reduced transparency; a real screen reader (the log's text and role were read from the page). Each Legibility control was not tried on its own (the presets move Font and Paddings). Known issues from before this branch, unchanged: the Pay schedule shows Hans Meyer whatever the recipient; the trade exit prompt says "Continue payment"; the Profile character overlaps the sliders at 390.
+Checked on 2026-11-02 against `feature/opening-assistant` (after `183e32a`, the Lorekeeper; section 5b re-checked on 2026-11-02 after the second review change D24 to D30, which replaced D20 to D23: every screen of the opening on desktop at 960 and at 390, completion and the exit screen included, the hand-over and a resumed opening, Escape, focus on every switch by real key presses on desktop and from the page on the phone; the Help? head and the column's figure by eye in Light and Dark. Not re-checked for D24 to D30: a Multi-color theme, the system reduced-motion setting, the panel without the figure, and a window resized across 1024px), on the agent's server (port 5199) in Chrome: desktop at a 2391 x 1179 viewport (the sheet at 640 and 960; not resized to 1440), phone width as a 390 x 844 frame of the app; Light and Dark; the UZ Bank (Monochrome) and Custom 06 (Multi-color) themes; keyboard by real key presses; reduced motion with `?reduced`; a full walk of the fridge, the hand-over and all twelve opening screens, including the exit screen and completion by eye. Build passes with no warnings; no console errors on the pages visited. Not checked: the system reduced-motion setting (Klaudiusz's to switch); the direction of the back page transitions by eye; network throttling; reduced transparency; a real screen reader (the log's text and role were read from the page). Each Legibility control was not tried on its own (the presets move Font and Paddings). Known issues from before this branch, unchanged: the Pay schedule shows Hans Meyer whatever the recipient; the trade exit prompt says "Continue payment"; the Profile character overlaps the sliders at 390.

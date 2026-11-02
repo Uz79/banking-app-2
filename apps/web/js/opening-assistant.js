@@ -1,130 +1,100 @@
 /**
  * Investment opening: the UZ Bank assistant (roadmap 9b).
- * "Questions?" by each screen's heading opens a panel with that screen's written questions and answers. On a wide
- * page (the sheet widens to 960) the panel is a column on the right; on a phone it is a bottom sheet over the
- * dimmed step (D3, D4). It stays open across screens (D5). On a wide page Newbie and All-rounder find it open from
- * the first step with an invitation (D20, D21); "Continue on my own" closes it for the rest of the flow (D22).
+ * Desktop (the sheet is 960 from 1024px): a column next to the step that never closes. Every step starts with the
+ * invitation, the helper large with "Yes, help me"; a yes shows that step's questions and answers, and "I can do it
+ * myself" goes back to the invitation (D24 to D27). Phone: "Help?" next to the step's main button opens the
+ * conversation full screen; "I can do it myself" closes it (D28, D29). Help starts over on every step. Nothing is
+ * stored (D5).
  */
 
 import { ASSISTANT, CHIPS } from './opening-assistant-config.js';
 
 const framed = window.self !== window.top;
-const send = (message) => { if (framed) window.parent.postMessage(message, window.location.origin); };
 
 const root = document.documentElement;
 const main = document.querySelector('.view--opening .view__main');
-const scrim = document.querySelector('[data-assistant-scrim]');
 const aside = document.querySelector('[data-assistant]');
 const title = aside.querySelector('.assistant__title');
 const nameLine = aside.querySelector('.assistant__name');
-const closeBtn = aside.querySelector('[data-assistant-close]');
 const body = aside.querySelector('[data-assistant-body]');
-const onMyOwn = aside.querySelector('[data-assistant-own]');
+const foot = aside.querySelector('[data-assistant-foot]');
+const selfBtn = aside.querySelector('[data-assistant-self]');
 
-/* The column needs a 960 sheet: framed, the parent's viewport decides it (the sheet only widens from 1024px);
-   on its own, the page's width. */
-const WIDE_PARENT = '(min-width: 1024px)';
-const WIDE_PAGE = '(min-width: 900px)';
+/* Desktop is a 1024px viewport: framed, the parent's (where the sheet is 960); on its own, the page's. */
+const WIDE = '(min-width: 1024px)';
 function wideLayout() {
   try {
-    if (framed && window.parent.matchMedia(WIDE_PARENT).matches) return true;
+    if (framed) return window.parent.matchMedia(WIDE).matches;
   } catch (e) { /* the parent is not reachable: use the page */ }
-  return window.matchMedia(WIDE_PAGE).matches;
+  return window.matchMedia(WIDE).matches;
 }
 
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
   || new URLSearchParams(window.location.search).has('reduced');
 
-/* The sheet's width transition (styles.css, .modal-overlay--fridge .modal-shell) and the bottom sheet's slide. */
-const MOVE_MS = 300;
-
-let open = false;
 let wide = false;
-let toggle = null; /* the current screen's Questions? button */
+let open = false; /* the phone's full-screen conversation */
+let inviting = true; /* desktop: the invitation, until "Yes, help me" (D25) */
 let screenId = null;
-let closing = 0;
-let inviting = false; /* D21: the invitation, until "Yes, help me" */
-let onChoice = () => {}; /* D22: the page keeps the customer's choice in the draft */
 
-function syncToggle() {
-  if (!toggle) return;
-  toggle.setAttribute('aria-expanded', String(open));
-  toggle.classList.toggle('uz-btn--toggled', open);
-}
+/* ── The two layouts ────────────────────────────────────────────────── */
 
-/* The bottom sheet is modal: everything else in the page is inert while it is up. */
+/* The full-screen conversation is modal: everything else in the page is inert while it is up. */
 function setInert(on) {
-  [...main.children].forEach((el) => { if (el !== aside && el !== scrim) el.inert = on; });
+  [...main.children].forEach((el) => { if (el !== aside) el.inert = on; });
 }
 
-function finish() {
-  closing = 0;
-  aside.hidden = true;
-  scrim.hidden = true;
-  aside.inert = false;
-  root.classList.remove('assistant--wide', 'assistant--sheet', 'assistant--closing');
-}
-
-function show({ focus = true } = {}) {
-  if (open) return;
-  if (closing) { window.clearTimeout(closing); finish(); }
-  open = true;
+function applyLayout() {
   wide = wideLayout();
   root.classList.toggle('assistant--wide', wide);
-  root.classList.toggle('assistant--sheet', !wide);
-  aside.hidden = false;
+  root.classList.toggle('assistant--full', !wide);
   if (wide) {
+    if (open) { open = false; setInert(false); }
+    aside.hidden = false;
     aside.removeAttribute('role');
     aside.removeAttribute('aria-modal');
-    send({ type: 'uzbank:sheet-layout', wide: true });
+    inviting = true;
+    renderPanel();
+    startHelper();
   } else {
+    aside.hidden = !open;
     aside.setAttribute('role', 'dialog');
     aside.setAttribute('aria-modal', 'true');
-    scrim.hidden = false;
-    setInert(true);
-    /* Start below the page, then slide up (D4). */
-    if (!reduced()) {
-      root.classList.add('assistant--closing');
-      aside.offsetHeight; /* commit the start before the transition */
-    }
+    inviting = false;
+    renderPanel();
+    startHead();
   }
-  root.classList.remove('assistant--closing');
-  root.classList.add('assistant--open');
-  syncToggle();
-  if (focus) title.focus({ preventScroll: true });
-  if (helper) helper.wake();
-  else startHelper();
 }
 
-function hide(returnFocus = true) {
+/* Phone: "Help?" opens the step's conversation full screen (D29). */
+function showFull() {
+  if (wide || open) return;
+  open = true;
+  aside.hidden = false;
+  setInert(true);
+  renderPanel();
+  title.focus({ preventScroll: true });
+  startHelper();
+  if (helper) helper.wake();
+}
+
+function hideFull(returnFocus = true) {
   if (!open) return;
   open = false;
-  root.classList.remove('assistant--open');
-  syncToggle();
+  aside.hidden = true;
   setInert(false);
-  aside.inert = true;
-  if (wide) send({ type: 'uzbank:sheet-layout', wide: false });
-  /* The column stays while the sheet narrows behind it; the bottom sheet slides down. */
-  if (reduced()) finish();
-  else {
-    root.classList.add('assistant--closing');
-    closing = window.setTimeout(finish, MOVE_MS);
-  }
-  if (returnFocus && toggle && toggle.isConnected) toggle.focus({ preventScroll: true });
+  if (returnFocus && helpBtn.isConnected) helpBtn.focus({ preventScroll: true });
 }
 
-/* Closing it is the customer's choice for the rest of the flow (D22); reopening with Questions? undoes it. */
-function dismiss(returnFocus = true) {
-  if (!open) return;
-  hide(returnFocus);
-  onChoice('closed');
-}
+/* "I can do it myself": back to the invitation on desktop, closed on the phone (D27, D29). */
+selfBtn.addEventListener('click', () => {
+  if (!wide) { hideFull(); return; }
+  inviting = true;
+  renderPanel();
+  aside.querySelector('.assistant__yes').focus({ preventScroll: true });
+});
 
-closeBtn.addEventListener('click', () => dismiss());
-scrim.addEventListener('click', () => dismiss());
-onMyOwn.addEventListener('click', () => dismiss());
-
-/* The bottom sheet keeps the keyboard inside it (D13). */
+/* The phone's conversation keeps the keyboard inside it (D13). */
 aside.addEventListener('keydown', (event) => {
   if (event.key !== 'Tab' || wide) return;
   const items = [...aside.querySelectorAll('button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])')]
@@ -141,46 +111,69 @@ aside.addEventListener('keydown', (event) => {
   }
 });
 
-/* A layout change while open (a window resized across the threshold) reopens in the right form. */
+/* A window resized across 1024px switches the layout. */
 let layoutTimer = 0;
 window.addEventListener('resize', () => {
   window.clearTimeout(layoutTimer);
-  layoutTimer = window.setTimeout(() => {
-    if (!open || wideLayout() === wide) return;
-    hide(false);
-    show();
-  }, 150);
+  layoutTimer = window.setTimeout(() => { if (wideLayout() !== wide) applyLayout(); }, 150);
 });
 
-/* ── The helper (D11, D12) ──────────────────────────────────────────── */
+/* ── The helper (D11, D19) ──────────────────────────────────────────── */
 const figureBox = aside.querySelector('[data-assistant-figure]');
 let helper = null;
 let helperStarted = false;
 
-/* three.js and the models load on the first open only, so the opening stays as fast as it was. If loading fails,
-   the panel works without the figure. */
+/* three.js and the model load when the panel is first on screen: at once on desktop, on the first "Help?" on a
+   phone. If loading fails, the panel works without the figure. */
 function startHelper() {
   if (helperStarted) return;
   helperStarted = true;
   import('./opening-assistant-helper.js')
     .then(({ mountHelper }) => mountHelper(figureBox, {
       reduced,
-      active: () => open,
-      /* The phone's round portrait shows head and shoulders; the invitation the whole figure; the column head to
-         waist, and head to chest once it has made room for the answers, so the arm of the gesture stays in view. */
-      frame: (h) => (root.classList.contains('assistant--sheet') ? [1.0, 2.3]
-        : h > 200 ? [-0.05, 2.3] : h < 90 ? [0.8, 2.3] : [0.5, 2.3]),
+      active: () => !aside.hidden && !document.hidden,
+      /* The invitation shows the whole figure; the conversation head to waist, and head to chest once it has made
+         room for the answers, so the arm of the gesture stays in view. */
+      frame: (h) => (h > 200 ? [-0.05, 2.3] : h < 90 ? [0.8, 2.3] : [0.5, 2.3]),
     }))
     .then((h) => {
       helper = h;
       figureBox.classList.add('assistant__figure--ready');
-      if (open) helper.wake();
+      helper.wake();
     })
     .catch((err) => {
       console.warn('[opening-assistant] the helper did not load', err);
       figureBox.hidden = true;
       aside.classList.add('assistant--no-figure');
     });
+}
+document.addEventListener('visibilitychange', () => { if (helper && !document.hidden) helper.wake(); });
+
+/* ── "Help?" on the phone (D28) ─────────────────────────────────────── */
+
+/* One button for the whole visit, moved into each step's bottom bar, so the head is drawn once. */
+const helpBtn = document.createElement('button');
+helpBtn.type = 'button';
+helpBtn.className = 'uz-btn uz-btn--tonal uz-btn--md opening-help';
+helpBtn.setAttribute('aria-label', ASSISTANT.helpLabel);
+helpBtn.setAttribute('aria-haspopup', 'dialog');
+helpBtn.setAttribute('aria-controls', aside.id);
+const helpHead = document.createElement('span');
+helpHead.className = 'opening-help__head';
+helpHead.setAttribute('aria-hidden', 'true');
+const helpText = document.createElement('span');
+helpText.textContent = ASSISTANT.help;
+helpBtn.append(helpHead, helpText);
+helpBtn.addEventListener('click', showFull);
+
+let headStarted = false;
+function startHead() {
+  if (headStarted) return;
+  headStarted = true;
+  import('./opening-assistant-helper.js')
+    .then(({ mountHelper }) => mountHelper(helpHead, { still: true, frame: () => [1.0, 2.25] }))
+    .then(() => helpHead.classList.add('opening-help__head--ready'))
+    .catch(() => { helpHead.hidden = true; });
 }
 
 /* ── The conversation (D6 to D10) ───────────────────────────────────── */
@@ -296,8 +289,7 @@ function ask(chip) {
   const a = { from: 'bank', text: fill(chip.short), more: chip.more ? fill(chip.more) : '' };
   t.lines.push(q, a);
   aside.querySelector('.assistant__prompt').hidden = true;
-  /* Open question 1: under the full figure a Newbie's first answer already scrolls at a 640 sheet, so the figure
-     makes room once the conversation starts, and stays small until the sheet closes. */
+  /* Open question 1: the figure makes room for the answers once the conversation starts. */
   aside.classList.add('assistant--talking');
   const answer = lineNode(a, !reduced());
   log.append(lineNode(q, !reduced()), answer);
@@ -306,31 +298,33 @@ function ask(chip) {
   answer.scrollIntoView({ block: 'nearest', behavior: reduced() ? 'auto' : 'smooth' });
 }
 
-/* The invitation (D21): the helper large, the question and "Yes, help me"; the conversation follows on a yes. */
+/* The invitation (D25): the helper large, the question and "Yes, help me". */
 function renderInvite() {
   const yes = document.createElement('button');
   yes.type = 'button';
   yes.className = 'uz-btn uz-btn--primary uz-btn--md assistant__yes';
   yes.textContent = ASSISTANT.yes;
   yes.addEventListener('click', () => {
-    setInviting(false);
-    renderTalk();
+    inviting = false;
+    renderPanel();
     title.focus({ preventScroll: true });
   });
   body.replaceChildren(yes);
 }
 
-function setInviting(on) {
-  inviting = on;
-  aside.classList.toggle('assistant--inviting', on);
-  title.textContent = on ? ASSISTANT.invite : ASSISTANT.title;
-  nameLine.hidden = on;
-}
-
-/* The whole panel for the current screen: a new log each time, so switching screens is not read out as new lines. */
-function renderTalk() {
-  if (inviting) { renderInvite(); return; }
+/* The whole panel for the current screen and state: a new log each time, so switching is not read out as new lines. */
+function renderPanel() {
+  aside.classList.toggle('assistant--inviting', inviting);
+  title.textContent = inviting ? ASSISTANT.invite : ASSISTANT.title;
+  nameLine.hidden = inviting;
+  foot.hidden = inviting;
+  if (inviting) {
+    aside.classList.remove('assistant--talking');
+    renderInvite();
+    return;
+  }
   const t = talk();
+  aside.classList.toggle('assistant--talking', t.lines.length > 0);
   const prompt = document.createElement('p');
   prompt.className = 'assistant__prompt';
   prompt.textContent = ASSISTANT.prompt;
@@ -351,52 +345,24 @@ function renderTalk() {
 
 /* ── What the page uses ─────────────────────────────────────────────── */
 
-/* The Questions? button for a screen's heading; the page puts it in place on every render. */
-export function questionsButton() {
-  const b = document.createElement('button');
-  b.type = 'button';
-  b.className = 'uz-btn uz-btn--tonal uz-btn--sm opening__questions';
-  b.textContent = 'Questions?';
-  b.setAttribute('aria-controls', aside.id);
-  b.addEventListener('click', () => {
-    if (open) { dismiss(); return; }
-    /* Asked for: straight to the questions. */
-    if (inviting) { setInviting(false); renderTalk(); }
-    show();
-    onChoice(null);
-  });
-  toggle = b;
-  syncToggle();
-  return b;
-}
+/* The phone's "Help?" for the step's bottom bar (hidden on desktop by the layout). */
+export function helpButton() { return helpBtn; }
 
-/* The page moved to another screen: the panel stays open and follows it (D5). */
+/* The page moved to another screen: help starts over with it (D26, D29). */
 export function setScreen(id) {
   if (id === screenId) return;
   screenId = id;
   body.dataset.screen = screenId;
-  renderTalk();
+  hideFull(false);
+  inviting = wide;
+  renderPanel();
 }
 
 /* The customer's own numbers for answers that use them ({amount}, {after20}). */
 export function setValues(fn) { values = fn; }
 
-/* D20: on a wide page Newbie and All-rounder (and no stored User Type) start with the panel open, unless they closed
-   it earlier in this flow. Called before the first render; the page tells the sheet to be wide from the start. */
-export function start({ dismissed = false, choice = () => {} } = {}) {
-  onChoice = choice;
-  return wideLayout() && level() !== 'power' && !dismissed;
-}
-
-/* After the first render: open with the invitation, without taking the focus from the step's heading. */
-export function openWithInvitation() {
-  setInviting(true);
-  renderTalk();
-  show({ focus: false });
-}
-
+/* The phone's conversation is open (it takes the first Escape). */
 export function isOpen() { return open; }
-/* The page leaves (completion's Done): not a choice. */
-export function close(returnFocus) { hide(returnFocus); }
-/* Escape: the customer closes it (D22). */
-export { dismiss };
+export function close(returnFocus) { hideFull(returnFocus); }
+
+applyLayout();

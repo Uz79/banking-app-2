@@ -16,9 +16,13 @@ export const ASSISTANT = {
   title: 'Questions about this step',
   name: 'UZ Bank assistant',
   prompt: 'Choose a question about this step.',
-  /* The invitation (D21) and the panel's own close on desktop (D22): the customer's words, not the assistant's. */
+  /* The invitation on desktop (D25), the way back to it (D27) and the phone's Help? (D28): the customer's words,
+     not the assistant's (D8). */
   invite: 'Questions about this step?',
   yes: 'Yes, help me',
+  self: 'I can do it myself',
+  help: 'Help?',
+  helpLabel: 'Questions about this step',
   chipsLabel: 'Questions',
   more: 'More',
   advisor: {
