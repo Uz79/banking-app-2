@@ -1,6 +1,6 @@
 # The assistant, first version (9b): plan
 
-Branch: `feature/opening-assistant`. Decisions are cited as D1 to D19 from `requirements.md`.
+Branch: `feature/opening-assistant`. Decisions are cited as D1 to D23 from `requirements.md`.
 
 Each group ends with something to look at in the browser on the agent's server (`cd apps/web && npx vite --port 5199 --strictPort --no-open`).
 
@@ -59,3 +59,12 @@ Review change after group 5: the mage parts were too close to the persona's powe
 - [x] `npm run build` in `apps/web`
 - [x] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
 - [x] Docs: `specs/roadmap.md` item 9b marked done; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the assistant in Other systems, the helper in the 3D character kit section, a Decisions row for the assistant's rules, the helper and his assets in the 3D character kit section); the intervention map's "Open" list updated (the helper's name, tone and look settled)
+
+## 8. Open from the start (D20 to D23)
+
+Review change after the wrap-up (desktop only; the phone is unchanged).
+
+- [x] `js/opening-assistant.js`: `start()` decides before the first render (wide, not Power user, not closed earlier in the flow), `openWithInvitation()` opens without moving focus; the invitation state (`assistant--inviting`, the large figure framed whole, "Yes, help me"); `dismiss()` for every close by the customer, reported to the page; Questions? opens straight to the conversation. `js/opening-assistant-config.js`: `invite`, `yes`
+- [x] `js/investment-opening.js`: tells the sheet `wide` from the start when the assistant opens; keeps `help: "closed"` in the draft; Escape dismisses. `js/fridge-advisor-sheet.js`: a resumed opening opens at 960 by the same rule
+- [x] `investment-opening.html`: the column's foot with "Continue on my own". `css/styles.css`: the X hidden in the column, the foot, the invitation (figure up to 20rem, centred line and button)
+- [x] Check: Newbie (resume and the fridge hand-over: 960 throughout, invitation, focus on the step heading), All-rounder in Dark (invitation), no stored User Type (invitation), Power user (640, closed; Questions? opens to the questions with the foot button and no X); yes → 120 with focus on the title, a question → 64, Next keeps the conversation; Continue on my own → 640, focus on Questions?, `help: "closed"` in the draft; leave and resume → 640, closed; Questions? reopens to the conversation and clears it; Escape counts as closing; keyboard from the step to "Yes, help me" and "Continue on my own"; the phone at 390 (closed at start, the bottom sheet with its X, no foot); Light and Dark; build passes, no console errors. `?reduced` drives only the JS paths: the figure's height transition is off through the CSS reduced-motion rule (the system setting), not with `?reduced`

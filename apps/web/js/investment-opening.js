@@ -32,7 +32,10 @@ function readDraft() {
 }
 function writeDraft() {
   try {
-    window.sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ step: index, answers, fridgeAmount, from }));
+    const d = { step: index, answers, fridgeAmount, from };
+    /* 9b D22: "Continue on my own" holds for the rest of the flow. */
+    if (help) d.help = help;
+    window.sessionStorage.setItem(DRAFT_KEY, JSON.stringify(d));
   } catch (e) { /* storage blocked: the flow still works, it just does not resume */ }
 }
 function clearDraft() {
@@ -47,7 +50,13 @@ const from = draft && typeof draft.from === 'string' ? draft.from : 'direct';
 let index = draft && draft.step >= 0 && draft.step < SCREENS.length && SCREENS[draft.step].id !== 'complete' ? draft.step : 0;
 
 /* ── The sheet (D2, D3) ─────────────────────────────────────────────── */
-send({ type: 'uzbank:sheet-layout', wide: false });
+/* 9b D20: with the assistant open from the start the sheet stays 960, so the width never changes. */
+let help = draft && draft.help === 'closed' ? 'closed' : null;
+const helpAtStart = assistant.start({
+  dismissed: help === 'closed',
+  choice: (value) => { help = value; writeDraft(); },
+});
+send({ type: 'uzbank:sheet-layout', wide: helpAtStart });
 send({ type: 'uzbank:sheet-title', title: TITLE });
 
 let state = { canBack: false, dirty: false };
@@ -787,7 +796,7 @@ window.addEventListener('keydown', (event) => {
   /* An open assistant takes the first Escape (9b D4). */
   if (assistant.isOpen()) {
     event.preventDefault();
-    assistant.close();
+    assistant.dismiss();
     return;
   }
   if (!framed) return;
@@ -799,4 +808,5 @@ window.addEventListener('keydown', (event) => {
 reconcile();
 /* Framed, the page replaced the fridge in the sheet: the heading takes focus so a screen reader starts here. */
 render(framed, false);
+if (helpAtStart) assistant.openWithInvitation();
 send({ type: 'uzbank:fridge-ready' });

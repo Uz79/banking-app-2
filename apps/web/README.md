@@ -66,7 +66,7 @@ Persisted in `sessionStorage` (this tab only):
 
 | Key | Purpose |
 |-----|---------|
-| `uzBankWebOpeningDraft` | Investment opening draft: JSON `{ step, answers, fridgeAmount, from }`, written by the fridge's "Show suitable products" and on every change in the opening; cleared on completion and by the demo data reset. Unreadable means a fresh start |
+| `uzBankWebOpeningDraft` | Investment opening draft: JSON `{ step, answers, fridgeAmount, from, help? }` (`help: "closed"` once the customer closed the assistant, 9b D22), written by the fridge's "Show suitable products" and on every change in the opening; cleared on completion and by the demo data reset. Unreadable means a fresh start |
 
 ## Source layout
 

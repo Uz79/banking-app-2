@@ -12625,6 +12625,71 @@ html.fridge--wide .fridge__panel {
   transform: translateY(-50%);
 }
 
+/* D22: in the column "Continue on my own" at the bottom closes the panel, so the sheet's X is the only X; the phone's
+   bottom sheet keeps its own. */
+.assistant--wide .assistant__close {
+  display: none;
+}
+
+.assistant__foot {
+  display: none;
+}
+
+.assistant--wide .assistant__foot {
+  display: block;
+  min-width: 360px;
+  padding: var(--space-2) var(--space-4) var(--space-3);
+  border-top: 1px solid var(--color-separator);
+}
+
+.assistant__own {
+  padding: var(--space-1) 0;
+  border: 0;
+  background: none;
+  color: var(--color-fg);
+  font: inherit;
+  font-size: var(--fs-text-sm);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.assistant__own:focus-visible {
+  outline: 0.125rem solid var(--color-fg-interactive);
+  outline-offset: 0.125rem;
+  border-radius: var(--radius-small);
+}
+
+/* D21: the invitation. The helper stands large (the whole figure, about the persona's size in the Profile preview,
+   as much as the panel allows), the question and "Yes, help me" centred under him. On a yes he shrinks to the
+   column's 120 with the figure's own height transition. */
+.assistant--wide .assistant--inviting .assistant__figure {
+  height: min(20rem, calc(100vh - 14rem));
+}
+
+.assistant--inviting .assistant__head {
+  padding-right: var(--space-4);
+}
+
+.assistant--wide .assistant--inviting .assistant__figure {
+  margin-right: 0;
+}
+
+.assistant--inviting .assistant__heading {
+  text-align: center;
+}
+
+.assistant--inviting .assistant__title {
+  font-size: var(--fs-text-lg);
+}
+
+.assistant--inviting .assistant__body {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: var(--space-3);
+}
+
 /* Phone and tablet (D4): a bottom sheet up to 70% high over the dimmed step. */
 .assistant-scrim {
   position: absolute;

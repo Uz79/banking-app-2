@@ -2,7 +2,8 @@
  * Investment opening: the UZ Bank assistant (roadmap 9b).
  * "Questions?" by each screen's heading opens a panel with that screen's written questions and answers. On a wide
  * page (the sheet widens to 960) the panel is a column on the right; on a phone it is a bottom sheet over the
- * dimmed step (D3, D4). It stays open across screens and stores nothing (D5).
+ * dimmed step (D3, D4). It stays open across screens (D5). On a wide page Newbie and All-rounder find it open from
+ * the first step with an invitation (D20, D21); "Continue on my own" closes it for the rest of the flow (D22).
  */
 
 import { ASSISTANT, CHIPS } from './opening-assistant-config.js';
@@ -15,8 +16,10 @@ const main = document.querySelector('.view--opening .view__main');
 const scrim = document.querySelector('[data-assistant-scrim]');
 const aside = document.querySelector('[data-assistant]');
 const title = aside.querySelector('.assistant__title');
+const nameLine = aside.querySelector('.assistant__name');
 const closeBtn = aside.querySelector('[data-assistant-close]');
 const body = aside.querySelector('[data-assistant-body]');
+const onMyOwn = aside.querySelector('[data-assistant-own]');
 
 /* The column needs a 960 sheet: framed, the parent's viewport decides it (the sheet only widens from 1024px);
    on its own, the page's width. */
@@ -40,6 +43,8 @@ let wide = false;
 let toggle = null; /* the current screen's Questions? button */
 let screenId = null;
 let closing = 0;
+let inviting = false; /* D21: the invitation, until "Yes, help me" */
+let onChoice = () => {}; /* D22: the page keeps the customer's choice in the draft */
 
 function syncToggle() {
   if (!toggle) return;
@@ -60,7 +65,7 @@ function finish() {
   root.classList.remove('assistant--wide', 'assistant--sheet', 'assistant--closing');
 }
 
-function show() {
+function show({ focus = true } = {}) {
   if (open) return;
   if (closing) { window.clearTimeout(closing); finish(); }
   open = true;
@@ -86,7 +91,7 @@ function show() {
   root.classList.remove('assistant--closing');
   root.classList.add('assistant--open');
   syncToggle();
-  title.focus({ preventScroll: true });
+  if (focus) title.focus({ preventScroll: true });
   if (helper) helper.wake();
   else startHelper();
 }
@@ -108,8 +113,16 @@ function hide(returnFocus = true) {
   if (returnFocus && toggle && toggle.isConnected) toggle.focus({ preventScroll: true });
 }
 
-closeBtn.addEventListener('click', () => hide());
-scrim.addEventListener('click', () => hide());
+/* Closing it is the customer's choice for the rest of the flow (D22); reopening with Questions? undoes it. */
+function dismiss(returnFocus = true) {
+  if (!open) return;
+  hide(returnFocus);
+  onChoice('closed');
+}
+
+closeBtn.addEventListener('click', () => dismiss());
+scrim.addEventListener('click', () => dismiss());
+onMyOwn.addEventListener('click', () => dismiss());
 
 /* The bottom sheet keeps the keyboard inside it (D13). */
 aside.addEventListener('keydown', (event) => {
@@ -153,9 +166,10 @@ function startHelper() {
     .then(({ mountHelper }) => mountHelper(figureBox, {
       reduced,
       active: () => open,
-      /* The phone's round portrait shows head and shoulders; the column head to waist, and head to chest once it
-         has made room for the answers, so the arm of the gesture stays in view. */
-      frame: (h) => (root.classList.contains('assistant--sheet') ? [1.0, 2.3] : h < 90 ? [0.8, 2.3] : [0.5, 2.3]),
+      /* The phone's round portrait shows head and shoulders; the invitation the whole figure; the column head to
+         waist, and head to chest once it has made room for the answers, so the arm of the gesture stays in view. */
+      frame: (h) => (root.classList.contains('assistant--sheet') ? [1.0, 2.3]
+        : h > 200 ? [-0.05, 2.3] : h < 90 ? [0.8, 2.3] : [0.5, 2.3]),
     }))
     .then((h) => {
       helper = h;
@@ -292,8 +306,30 @@ function ask(chip) {
   answer.scrollIntoView({ block: 'nearest', behavior: reduced() ? 'auto' : 'smooth' });
 }
 
+/* The invitation (D21): the helper large, the question and "Yes, help me"; the conversation follows on a yes. */
+function renderInvite() {
+  const yes = document.createElement('button');
+  yes.type = 'button';
+  yes.className = 'uz-btn uz-btn--primary uz-btn--md assistant__yes';
+  yes.textContent = ASSISTANT.yes;
+  yes.addEventListener('click', () => {
+    setInviting(false);
+    renderTalk();
+    title.focus({ preventScroll: true });
+  });
+  body.replaceChildren(yes);
+}
+
+function setInviting(on) {
+  inviting = on;
+  aside.classList.toggle('assistant--inviting', on);
+  title.textContent = on ? ASSISTANT.invite : ASSISTANT.title;
+  nameLine.hidden = on;
+}
+
 /* The whole panel for the current screen: a new log each time, so switching screens is not read out as new lines. */
 function renderTalk() {
+  if (inviting) { renderInvite(); return; }
   const t = talk();
   const prompt = document.createElement('p');
   prompt.className = 'assistant__prompt';
@@ -322,7 +358,13 @@ export function questionsButton() {
   b.className = 'uz-btn uz-btn--tonal uz-btn--sm opening__questions';
   b.textContent = 'Questions?';
   b.setAttribute('aria-controls', aside.id);
-  b.addEventListener('click', () => (open ? hide() : show()));
+  b.addEventListener('click', () => {
+    if (open) { dismiss(); return; }
+    /* Asked for: straight to the questions. */
+    if (inviting) { setInviting(false); renderTalk(); }
+    show();
+    onChoice(null);
+  });
   toggle = b;
   syncToggle();
   return b;
@@ -339,5 +381,22 @@ export function setScreen(id) {
 /* The customer's own numbers for answers that use them ({amount}, {after20}). */
 export function setValues(fn) { values = fn; }
 
+/* D20: on a wide page Newbie and All-rounder (and no stored User Type) start with the panel open, unless they closed
+   it earlier in this flow. Called before the first render; the page tells the sheet to be wide from the start. */
+export function start({ dismissed = false, choice = () => {} } = {}) {
+  onChoice = choice;
+  return wideLayout() && level() !== 'power' && !dismissed;
+}
+
+/* After the first render: open with the invitation, without taking the focus from the step's heading. */
+export function openWithInvitation() {
+  setInviting(true);
+  renderTalk();
+  show({ focus: false });
+}
+
 export function isOpen() { return open; }
+/* The page leaves (completion's Done): not a choice. */
 export function close(returnFocus) { hide(returnFocus); }
+/* Escape: the customer closes it (D22). */
+export { dismiss };
