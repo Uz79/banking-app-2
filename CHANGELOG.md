@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 5dc1314ffac1e3308c7b593634bd0c1109078e62 -->
+<!-- changelog: last-commit 4c1e34105eb7f9220daa1d372e572c8eece979bf -->
 
 ### Added
 - **The opening assistant** (roadmap 9b, the first version). Every screen of the investment opening, including completion and the exit screen, has help. On desktop the sheet is 960 for the whole flow and the UZ Bank assistant is a column next to the step that never closes; each step starts with an invitation (the helper large, "Questions about this step?" and "Yes, help me"), a yes shows that step's questions, and "I can do it myself" at the bottom goes back to the invitation. On a phone the bottom bar holds a "Help?" button with the helper's head next to the step's main button; it opens the questions full screen, and "I can do it myself" closes them. Help starts over on every step. Each screen has three or four written questions; a tap adds the question and its answer to the conversation, some with follow-ups. Newbies see the full answer, All-rounders a short one with More, Power users the short one. "Talk to an advisor" answers with a callback line and nothing else happens. Each screen's questions are kept while the sheet is open. Keyboard, screen reader announcements (a polite log) and reduced motion are covered.
