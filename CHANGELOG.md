@@ -19,6 +19,7 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-10-29-investment-opening/`.
 
 ### Changed
+- **The fridge's persona walks out and back** (roadmap 8e). Leaving step 1, the persona turns and walks out of the frame to the right, and the camera moves to the fridge once it has gone; steps 2 to 6 show the fridge alone. On step 7 it walks back in during the cooling moment and stands next to the open freezer, in a wider frame than the tour's freezer close-up. Back reverses each walk, and a quick Next or Back turns it around from wherever it is. With reduced motion it simply shows on steps 1 and 7. Spec: `specs/2026-11-02-fridge-persona-walk/`.
 - **Flow sheet focus after the exit prompt.** In the fridge and opening sheet, Keep going returns focus to the control that had it, and Leave returns it to Investment (it used to land on the page body).
 
 ### Decided

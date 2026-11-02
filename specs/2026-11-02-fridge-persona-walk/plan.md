@@ -24,6 +24,6 @@ What you see: on step 7 the persona walks in from the right during the cooling m
 
 ## 3. Wrap-up
 
-- [ ] `npm run build` in `apps/web`
-- [ ] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
-- [ ] Docs: `specs/roadmap.md` item 8e marked done; `CHANGELOG.md` under `Unreleased`; fridge D22 amended in `specs/2026-10-22-fridge-advisor/requirements.md` (a pointer to this spec, D11); `specs/tech-spec.md` (the fridge line mentions the walk; fix the stale "the sheet narrows to 640" for the opening, which is 960 since 9b D24)
+- [x] `npm run build` in `apps/web`
+- [x] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
+- [x] Docs: `specs/roadmap.md` item 8e marked done; `CHANGELOG.md` under `Unreleased`; fridge D22 amended in `specs/2026-10-22-fridge-advisor/requirements.md` (a pointer to this spec, D11); `specs/tech-spec.md` (the fridge line mentions the walk; fix the stale "the sheet narrows to 640" for the opening, which is 960 since 9b D24)
