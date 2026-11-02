@@ -371,6 +371,24 @@ export async function createFigure({
     loopAction = next;
     if (reduced()) mixer.update(0.4);
   }
+  /* One clip played once over the loop, then back to the loop (the opening assistant's helper, 9b). Skipped with
+     reduced motion. */
+  function playOnce(name) {
+    if (!clips[name] || !loopAction || reduced()) return;
+    const once = mixer.clipAction(clips[name]);
+    if (once.isRunning()) return;
+    once.reset().setLoop(THREE.LoopOnce, 1);
+    once.clampWhenFinished = true;
+    once.setEffectiveWeight(1).play();
+    once.crossFadeFrom(loopAction, 0.2, false);
+    const back = (e) => {
+      if (e.action !== once) return;
+      mixer.removeEventListener('finished', back);
+      loopAction.reset().setEffectiveWeight(1).play();
+      loopAction.crossFadeFrom(once, 0.3, false);
+    };
+    mixer.addEventListener('finished', back);
+  }
   /* Tweens (the swap squash) first, then the clip; the clip stays still with reduced motion. */
   function update(dt) {
     for (let i = tweens.length - 1; i >= 0; i--) {
@@ -390,7 +408,7 @@ export async function createFigure({
     return d ? (loopAction.time % d) / d : 0;
   }
 
-  return { actor, mixer, setRecipe, setLoop, loopPhase, recolour, update };
+  return { actor, mixer, setRecipe, setLoop, playOnce, loopPhase, recolour, update };
 }
 
 /* ── Stage ────────────────────────────────────────────────────────────── */

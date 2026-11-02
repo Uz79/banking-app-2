@@ -12505,6 +12505,28 @@ html.fridge--wide .fridge__panel {
   margin-bottom: var(--space-2);
 }
 
+/* A new line fades and rises into place (D14); the answer follows its question by a beat. */
+.assistant-line--new {
+  animation: assistant-line-in 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.assistant-line--new.assistant-line--bank {
+  animation-delay: 0.08s;
+}
+
+@keyframes assistant-line-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.25rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assistant-line--new {
+    animation: none;
+  }
+}
+
 .assistant__chips {
   display: flex;
   flex-wrap: wrap;

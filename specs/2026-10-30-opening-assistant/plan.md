@@ -35,8 +35,9 @@ What you see: the UZ Bank assistant as a small 3D figure at the top of the panel
 
 ## 4. Motion and polish (D11, D14)
 
-- [ ] The line fade, the bottom sheet's slide, the helper's wave (open question 2), each with its reduced-motion path
-- [ ] Check: every motion with and without `?reduced`
+- [x] The line fade (0.2 s fade and rise, the answer 0.08 s after its question), the bottom sheet's slide (group 1), the helper's gesture (open question 2), each with its reduced-motion path. `createFigure` gains `playOnce(name)`: the clip once over the loop, then a cross-fade back, skipped with reduced motion
+- [x] Open question 2: the free KayKit pack has no wave. `Interact` (1.3 s: a reach with the right arm, a head turn and a small lean) is the clip; in the shrunk column it reads as a short nod and lean toward the conversation, quiet but visible. To keep the arm in view the shrunk column figure is framed head to chest; the phone's round portrait stays head and shoulders, where only the head turn shows
+- [x] Check: the fade's computed animation and delay on a new question and answer; the gesture sampled by eye four times over 1.5 s at 960; with `?reduced` the lines have no animation and the figure stays still when an answer arrives (three looks over a second). The slide and its `?reduced` path were checked in group 1. No console errors; build passes
 
 ## 5. Documentation (D16)
 

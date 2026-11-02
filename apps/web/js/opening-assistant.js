@@ -205,16 +205,16 @@ async function mountHelper({ THREE, createFigure, readTheme }) {
     .observe(root, { attributes: true, attributeFilter: ['data-theme', 'style', 'class'] });
   applyTheme();
 
-  /* Framing (the figure is about 2.15 high without a hat): head to waist in the column's stage, head and shoulders
-     in the bottom sheet's portrait. */
+  /* Framing (the figure is about 2.15 high without a hat). */
   const aim = new THREE.Vector3(0.35, 0.12, 1).normalize();
   function resize() {
     const w = figureBox.clientWidth, h = figureBox.clientHeight;
     if (!w || !h) return;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
-    const portrait = h < 90;
-    const [lo, hi] = portrait ? [1.1, 2.2] : [0.6, 2.2];
+    /* The phone's round portrait shows head and shoulders; the column head to waist, and head to chest once it
+       has made room for the answers, so the arm of the gesture stays in view. */
+    const [lo, hi] = root.classList.contains('assistant--sheet') ? [1.1, 2.2] : h < 90 ? [0.85, 2.2] : [0.6, 2.2];
     const dist = ((hi - lo) / 2) / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * 1.08;
     const target = new THREE.Vector3(0, (lo + hi) / 2, 0);
     camera.position.copy(target).addScaledVector(aim, dist);
@@ -233,6 +233,8 @@ async function mountHelper({ THREE, createFigure, readTheme }) {
     renderer.render(scene, camera);
   }
   helper = {
+    /* An answer arrived: the helper gestures once (open question 2: Interact, the one clip in its file). */
+    wave() { figure.playOnce('Interact'); },
     wake() {
       if (running) return;
       running = true;
@@ -366,6 +368,7 @@ function ask(chip) {
   const answer = lineNode(a, !reduced());
   log.append(lineNode(q, !reduced()), answer);
   renderChips(focusAt < 0 ? 0 : focusAt);
+  if (helper) helper.wave();
   answer.scrollIntoView({ block: 'nearest', behavior: reduced() ? 'auto' : 'smooth' });
 }
 
