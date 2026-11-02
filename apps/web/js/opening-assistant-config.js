@@ -162,6 +162,12 @@ export const CHIPS = {
         short: 'No. You can choose a more careful one. A riskier one than recommended cannot be chosen online.',
         more: 'If you want to talk about a riskier strategy, an advisor can go through it with you.',
       },
+      {
+        /* 9d D10: the picture explained, without advice. */
+        q: 'What do the vehicles mean?',
+        short: 'Each strategy travels differently. The riskier it is, the faster it goes, and the bigger the bumps on the way.',
+        more: 'A tent is slow and steady, a jetpack fast with big swings. The vehicles only picture risk and return; they do not change the recommendation.',
+      },
     ],
   },
 

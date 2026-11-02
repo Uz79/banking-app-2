@@ -27,8 +27,8 @@ What you see: hovering or arrowing to Growth or Dynamic previews them dimmed; a 
 
 What you see: "What do the vehicles mean?" among the strategy step's questions.
 
-- [ ] `js/opening-assistant-config.js`: the question with `short` and `more`
-- [ ] Check: as Newbie, All-rounder and Power user
+- [x] `js/opening-assistant-config.js`: the question with `short` and `more`
+- [x] Check: as Newbie, All-rounder and Power user
 
 ## 4. Wrap-up
 
