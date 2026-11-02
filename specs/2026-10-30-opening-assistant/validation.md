@@ -46,7 +46,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 ## 6. Documentation (D16)
 
 - [ ] Components > "Questions and answers": the conversation, chips, both line styles and More, in Light and Dark
-- [ ] Character kit > "The helper": the figure and its recipe next to the persona
+- [ ] Character kit > "The helper": the Lorekeeper and his model note, next to the persona (D19)
 
 ## 7. Baseline smoke test
 

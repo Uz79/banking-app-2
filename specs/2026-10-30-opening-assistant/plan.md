@@ -1,6 +1,6 @@
 # The assistant, first version (9b): plan
 
-Branch: `feature/opening-assistant`. Decisions are cited as D1 to D17 from `requirements.md`.
+Branch: `feature/opening-assistant`. Decisions are cited as D1 to D19 from `requirements.md`.
 
 Each group ends with something to look at in the browser on the agent's server (`cd apps/web && npx vite --port 5199 --strictPort --no-open`).
 
@@ -45,7 +45,16 @@ What you see: the UZ Bank assistant as a small 3D figure at the top of the panel
 - [x] `character-kit.html`: "The helper" entry, after Profiles: the live figure next to its recipe, a "Play the answer gesture" button, and a note on its sizes, the gesture, reduced motion and its files. To show the same figure, the stage moved out of `js/opening-assistant.js` into `js/opening-assistant-helper.js` (`mountHelper(box, { reduced, active, frame })`), which the opening imports on the first open and the Character kit page as a module
 - [x] Check: both pages in Light and Dark; the gesture on the Character kit; the persona specimen still loads; the opening's figure after the move (first open, close and reopen, the shrink on asking); no console errors; build passes
 
-## 6. Wrap-up
+## 6. The Lorekeeper (D19)
+
+Review change after group 5: the mage parts were too close to the persona's power-user wizard hat.
+
+- [x] `assets/3d/kaykit-lorekeeper/lorekeeper.glb` and `LICENSE.txt`, copied from KayKit Mystery Monthly Series 6 (the texture is inside the file; tome and staff left out). `assets/3d/kaykit/helper.glb` removed; `scripts/build_kaykit_helper.py` builds only the clip
+- [x] `js/opening-assistant-helper.js`: loads the model and the two clip files itself, recolours his one texture (monochrome, the robe cells (3, 2) and (3, 3) as the accent), plays `Idle_A` and `Interact` once on an answer. `js/profile-persona-character.js` back to main, plus the `oklchToRGB` export. Frames given room above his larger head (`js/opening-assistant.js`)
+- [x] `character-kit.html`: "The helper" describes a model, not a recipe
+- [x] Check: Character kit, the helper and the persona specimen in Light and Dark (clearly different figures, both recoloured); `Interact` plays on him (the reach and head turn); the opening at 960 in Dark (120 figure, then 64 after a question) and Light, the 390 portrait in Light; no console errors
+
+## 7. Wrap-up
 
 - [ ] `npm run build` in `apps/web`
 - [ ] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line

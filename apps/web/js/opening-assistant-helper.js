@@ -1,15 +1,51 @@
 /**
- * The UZ Bank assistant's helper (roadmap 9b D11, D12, D18): the 3D figure on its own small stage.
+ * The UZ Bank assistant's helper (roadmap 9b D19): the 3D figure on its own small stage.
  * Used by the opening assistant (loaded on the panel's first open) and by the Character kit page.
- * Its own recipe, which no User Type produces: the Mage's head and outfit from `assets/3d/kaykit/helper.glb`,
- * nothing on the head or back. Lights and colour follow the theme like the persona's stage.
+ * One complete model, not a persona recipe: KayKit's Lorekeeper (Mystery Monthly Series 6, CC0) from
+ * `assets/3d/kaykit-lorekeeper/lorekeeper.glb`, without his tome and staff. He is on the same Rig_Medium as the
+ * persona, so its clips play on him. Lights and colour follow the theme like the persona's stage.
  */
-import { THREE, createFigure, readTheme } from './profile-persona-character.js';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js/+esm';
+import { THREE, readTheme, preparePalette, monochromeLut, oklchToRGB } from './profile-persona-character.js';
 
-export const HELPER = { outfit: 'mage', head: 'mage', headwear: 'none', back: 'none' };
+const MODEL = new URL('../assets/3d/kaykit-lorekeeper/lorekeeper.glb', import.meta.url).href;
+const CLIPS = [
+  new URL('../assets/3d/kaykit/rig-medium-general.glb', import.meta.url).href, /* Idle_A, the persona's */
+  new URL('../assets/3d/kaykit/rig-medium-helper.glb', import.meta.url).href, /* Interact */
+];
 
-/* The figure is about 2.15 high without a hat; head to waist unless the caller frames it otherwise. */
-const HEAD_TO_WAIST = () => [0.6, 2.2];
+/* His robe, (column, row) in the texture's 8×8 grid: the one accent, like the persona's cloth. */
+const ROBE = [[3, 2], [3, 3]];
+
+/* The figure is about 2.15 high, nearly half of it head; head to waist unless the caller frames it otherwise. */
+const HEAD_TO_WAIST = () => [0.5, 2.3];
+
+/* Monochrome on the theme hue, then the robe in the accent: the persona's recolour on one texture. */
+function recolour(p, theme) {
+  const lut = monochromeLut(theme);
+  const img = new ImageData(new Uint8ClampedArray(p.orig.data), p.size, p.size);
+  const d = img.data;
+  for (let i = 0; i < p.L.length; i++) {
+    const j = Math.max(0, Math.min(255, Math.round(p.L[i] * 255))) * 3;
+    d[i * 4] = lut[j]; d[i * 4 + 1] = lut[j + 1]; d[i * 4 + 2] = lut[j + 2];
+  }
+  const cell = p.size / 8, w = p.size;
+  let sum = 0, n = 0;
+  for (const [cx, cy] of ROBE)
+    for (let y = cy * cell; y < (cy + 1) * cell; y += 4)
+      for (let x = cx * cell; x < (cx + 1) * cell; x += 4) { sum += p.L[y * w + x]; n++; }
+  const shift = theme.anchorL - sum / n;
+  for (const [cx, cy] of ROBE)
+    for (let y = cy * cell; y < (cy + 1) * cell; y++)
+      for (let x = cx * cell; x < (cx + 1) * cell; x++) {
+        const i = y * w + x;
+        const L = Math.min(0.97, Math.max(0.12, p.L[i] + shift));
+        const [r, g, b] = oklchToRGB(L, 0.22 * (1 - L), theme.accentHue);
+        d[i * 4] = r; d[i * 4 + 1] = g; d[i * 4 + 2] = b;
+      }
+  p.ctx.putImageData(img, 0, 0);
+  p.tex.needsUpdate = true;
+}
 
 /**
  * Mounts the helper into `box` (sized by CSS) and returns `{ wake, wave }`.
@@ -21,6 +57,9 @@ export async function mountHelper(box, {
   active = () => true,
   frame = HEAD_TO_WAIST,
 } = {}) {
+  const loader = new GLTFLoader();
+  const [model, ...clipSets] = await Promise.all([MODEL, ...CLIPS].map((u) => loader.loadAsync(u)));
+
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setClearColor(0x000000, 0);
@@ -39,14 +78,23 @@ export async function mountHelper(box, {
   rim.position.set(-3, 3, -4);
   scene.add(hemi, key, rim);
 
-  const figure = await createFigure({ reduced, characters: ['helper'], clipFiles: ['animGeneral', 'animHelper'] });
+  /* One texture for every part; the glasses keep their own see-through material. */
+  let palette = null;
+  model.scene.traverse((o) => {
+    if (!o.isSkinnedMesh || !o.material.map) return;
+    if (!palette) palette = preparePalette(o.material);
+    else o.material.map = palette.tex;
+  });
   const turn = new THREE.Group();
   turn.rotation.y = -0.25; /* turned a little toward the conversation on its left */
-  turn.add(figure.actor);
+  turn.add(model.scene);
   scene.add(turn);
-  figure.setRecipe(HELPER, false);
-  figure.setLoop('Idle_A');
-  figure.mixer.update(0.4);
+
+  const clips = {};
+  clipSets.forEach((g) => g.animations.forEach((c) => { clips[c.name] = c; }));
+  const mixer = new THREE.AnimationMixer(model.scene);
+  const idle = mixer.clipAction(clips.Idle_A).play();
+  mixer.update(0.4);
 
   /* The persona stage's light and colour, read from the theme. */
   let themeKey = '';
@@ -59,7 +107,7 @@ export async function mountHelper(box, {
     hemi.intensity = theme.light.fill;
     key.intensity = theme.light.key;
     rim.intensity = theme.light.rim;
-    figure.recolour(theme);
+    recolour(palette, theme);
   }
   new MutationObserver(() => requestAnimationFrame(applyTheme))
     .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'style', 'class'] });
@@ -80,14 +128,26 @@ export async function mountHelper(box, {
   }
   new ResizeObserver(resize).observe(box);
 
+  /* The clip stays still with reduced motion. */
   const clock = new THREE.Clock();
   let running = false;
   function tick() {
     if (!active()) { running = false; return; }
     requestAnimationFrame(tick);
-    figure.update(Math.min(clock.getDelta(), 0.05));
+    const dt = Math.min(clock.getDelta(), 0.05);
+    if (!reduced()) mixer.update(dt);
     renderer.render(scene, camera);
   }
+
+  /* An answer arrived: Interact once over the idle, then a cross-fade back (open question 2). */
+  const once = mixer.clipAction(clips.Interact);
+  once.setLoop(THREE.LoopOnce, 1);
+  once.clampWhenFinished = true;
+  mixer.addEventListener('finished', (e) => {
+    if (e.action !== once) return;
+    idle.reset().setEffectiveWeight(1).play();
+    idle.crossFadeFrom(once, 0.3, false);
+  });
 
   box.append(canvas);
   const helper = {
@@ -98,8 +158,11 @@ export async function mountHelper(box, {
       resize();
       requestAnimationFrame(tick);
     },
-    /* An answer arrived: the helper gestures once (open question 2: Interact, the one clip in its file). */
-    wave() { figure.playOnce('Interact'); },
+    wave() {
+      if (reduced() || once.isRunning()) return;
+      once.reset().setEffectiveWeight(1).play();
+      once.crossFadeFrom(idle, 0.2, false);
+    },
   };
   helper.wake();
   return helper;

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Builds the opening assistant's helper files (roadmap 9b D11) from the full KayKit Adventurers 2.0 pack (CC0),
-which lives outside the repo. The persona's own files in assets/3d/kaykit/ are not touched.
+Builds the opening assistant's helper clip (roadmap 9b D19) from the full KayKit Adventurers 2.0 pack (CC0),
+which lives outside the repo. The persona's own files in assets/3d/kaykit/ are not touched. The helper's model,
+the Lorekeeper, is copied whole into assets/3d/kaykit-lorekeeper/ and needs no build.
 
-  helper.glb             the Mage's head and outfit (no hat, no cape) on Rig_Medium
   rig-medium-helper.glb  the clip the helper plays when an answer arrives, no meshes
 
 Usage (from apps/web):
@@ -20,7 +20,6 @@ DEFAULT_PACK = os.path.expanduser(
     '~/Documents/Projects/AI Portfolio Projects/Design System/_resources/_3d-characters/KayKit_Adventurers_2.0_FREE')
 OUT = os.path.join(os.path.dirname(__file__), '..', 'assets', '3d', 'kaykit')
 
-HELPER_PARTS = {'Mage_Head', 'Mage_Body', 'Mage_ArmLeft', 'Mage_ArmRight', 'Mage_LegLeft', 'Mage_LegRight'}
 HELPER_CLIPS = {'Interact'}
 
 
@@ -171,7 +170,6 @@ def build(src, dst, keep_nodes, keep_clips):
 
 def main():
     pack = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_PACK
-    build(os.path.join(pack, 'Characters', 'gltf', 'Mage.glb'), os.path.join(OUT, 'helper.glb'), HELPER_PARTS, set())
     build(os.path.join(pack, 'Animations', 'gltf', 'Rig_Medium', 'Rig_Medium_General.glb'),
           os.path.join(OUT, 'rig-medium-helper.glb'), set(), HELPER_CLIPS)
 

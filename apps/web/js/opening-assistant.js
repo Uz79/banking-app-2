@@ -155,7 +155,7 @@ function startHelper() {
       active: () => open,
       /* The phone's round portrait shows head and shoulders; the column head to waist, and head to chest once it
          has made room for the answers, so the arm of the gesture stays in view. */
-      frame: (h) => (root.classList.contains('assistant--sheet') ? [1.1, 2.2] : h < 90 ? [0.85, 2.2] : [0.6, 2.2]),
+      frame: (h) => (root.classList.contains('assistant--sheet') ? [1.0, 2.3] : h < 90 ? [0.8, 2.3] : [0.5, 2.3]),
     }))
     .then((h) => {
       helper = h;
