@@ -22,6 +22,7 @@ Roadmap item 9c (`specs/roadmap.md`). The five investment strategies of the open
 - Travel motion: turning wheels, a scrolling ground, drifting, flames (9d if wanted)
 - Any change to the persona's recipe, parts, recolour or the live specimen's controls
 - A public credits page: the Character kit page is admin only, which is enough while only that page shows the models; 9d must give the credits a place a customer can reach (D12)
+- The helper specimen's IntersectionObserver reading a stale entry: roadmap 20
 
 ## Decisions
 
