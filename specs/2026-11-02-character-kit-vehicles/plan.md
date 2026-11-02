@@ -33,6 +33,6 @@ What you see: the jetpack hovers, the parachute sways; with reduced motion all i
 
 ## 4. Wrap-up
 
-- [ ] `npm run build` in `apps/web`
-- [ ] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
-- [ ] Docs: `specs/roadmap.md` item 9c marked done, and 9d noted to give the credits a customer-reachable place (D12); `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the 3D character kit: the vehicles, the module, the ride clip; drop the stale "copied to `dist` by a small plugin" in the fridge line); `apps/web/README.md` (the `assets/3d/vehicles/` line; drop the stale "the build copies it to `dist`" in the fridge line)
+- [x] `npm run build` in `apps/web`
+- [x] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
+- [x] Docs: `specs/roadmap.md` item 9c marked done, and 9d noted to give the credits a customer-reachable place (D12); `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the 3D character kit: the vehicles, the module, the ride clip; drop the stale "copied to `dist` by a small plugin" in the fridge line); `apps/web/README.md` (the `assets/3d/vehicles/` line; drop the stale "the build copies it to `dist`" in the fridge line)
