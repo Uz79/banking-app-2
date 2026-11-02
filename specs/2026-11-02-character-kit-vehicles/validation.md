@@ -23,19 +23,21 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [ ] Tent: standing beside it in the idle
 - [ ] Tricycle and Vespa: seated, hands near the handlebars, no leg through the body
 - [ ] Parachute: hanging under the canopy in the jump pose; jetpack: on the back, in the jump pose
-- [ ] With each profile (Beat, Lena, Max, set in Profile > User Type and reloaded): headwear and capes do not cut badly through the vehicles
+- [ ] With each profile (Beat, Lena, Max, picked in the live specimen above): headwear and capes do not cut badly through the vehicles
 - [ ] Switching plays the squash and spring on the whole group; fast picks end on the last one, never on a mix of two
 
 ## 4. Motion and access (D7)
 
 - [ ] The jetpack hovers and the parachute sways; the tent, tricycle and Vespa stand still
 - [ ] Reduced motion (`?reduced`, and the system setting if Klaudiusz switches it): no hover, no sway, the persona still in its pose (seated on the tricycle and the Vespa), switches instant
-- [ ] Keyboard: Tab reaches the picker, the focus ring is visible, a pick works with Enter or Space
+- [ ] Keyboard: Tab reaches each strategy button, the focus ring is visible, a pick works with Enter or Space
+- [ ] A pick made while the 3D is still loading is shown once it is ready
 - [ ] The stage stops drawing when scrolled off screen (no frames in the Performance panel while it is out of view)
 - [ ] Desktop and phone width (390): the picker wraps without overflow, the stage fits above it
 
 ## 5. Credits (D11, D12)
 
+- [ ] The credit links take the interactive colour (not the browser's blue) and show the focus ring
 - [ ] A "Credits" section after "Assets" lists Tricycle and Parachute (Poly by Google), Jetpack (Roman Miller) and Vespa (Jasmine Roberts), each CC-BY via Poly Pizza with a working link, and the tent (Quaternius, CC0)
 - [ ] "Assets" mentions `assets/3d/vehicles/`
 - [ ] No em dashes in the new copy

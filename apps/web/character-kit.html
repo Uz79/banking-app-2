@@ -70,6 +70,8 @@
     /* Vehicles (9c) */
     .ck-vehicles-stage { position: absolute; inset: 0; }
     .ck-vehicles-stage canvas { display: block; width: 100%; height: 100%; }
+    .ck-credits a { color: var(--color-fg-interactive); text-decoration: underline; text-underline-offset: 0.15em; border-radius: 2px; }
+    .ck-credits a:focus-visible { outline: 2px solid var(--color-fg-interactive); outline-offset: 2px; }
     .ck-recipe { margin: 0; padding: var(--space-3); border-radius: var(--radius-small); background: var(--color-bg-secondary); font-size: var(--fs-text-xs); line-height: var(--lh-caption); color: var(--color-fg); white-space: pre; overflow-x: auto; }
 
     /* Tables */
@@ -2634,7 +2636,24 @@
 
   <section class="ds-section" aria-labelledby="ck-assets-heading">
     <h2 id="ck-assets-heading">Assets</h2>
-    <p class="ds-caption"><code>assets/3d/kaykit/</code>: knight, mage, rogue, barbarian, ranger (.glb, parts on Rig_Medium) plus <code>rig-medium-general.glb</code> and <code>rig-medium-movement.glb</code> (animation clips). KayKit Adventurers 2.0 by Kay Lousberg, CC0. Runtime: three.js 0.170 from jsDelivr. The Playground reuses this module: <code>createFigure()</code> gives the character without a scene (rig, parts, recolour, animation), plus <code>readTheme</code> and <code>monochromeLut</code> for colouring a world the same way. The Playground's own models are in <code>assets/3d/playground/</code>.</p>
+    <p class="ds-caption"><code>assets/3d/kaykit/</code>: knight, mage, rogue, barbarian, ranger (.glb, parts on Rig_Medium) plus <code>rig-medium-general.glb</code> and <code>rig-medium-movement.glb</code> (animation clips). KayKit Adventurers 2.0 by Kay Lousberg, CC0. Runtime: three.js 0.170 from jsDelivr. The Playground reuses this module: <code>createFigure()</code> gives the character without a scene (rig, parts, recolour, animation), plus <code>readTheme</code> and <code>monochromeLut</code> for colouring a world the same way. The Playground's own models are in <code>assets/3d/playground/</code>. The strategy vehicles are in <code>assets/3d/vehicles/</code>, with their credits in its <code>CREDITS.md</code> and below.</p>
+  </section>
+
+  <section class="ds-section ck-credits" aria-labelledby="ck-credits-heading">
+    <h2 id="ck-credits-heading">Credits</h2>
+    <p class="ds-caption">The vehicles come from Poly Pizza. Four are under Creative Commons Attribution 3.0 (<a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>), so they are credited here, where they are shown. Each one is scaled and recoloured to the theme; the Vespa was converted from OBJ to GLB.</p>
+    <div class="ck-table-wrap">
+      <table class="ck-table">
+        <thead><tr><th>Model</th><th>Author</th><th>Licence</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://poly.pizza/m/9UE6AhwMhbc">Tricycle</a></td><td>Poly by Google</td><td>CC BY 3.0, via Poly Pizza</td></tr>
+          <tr><td><a href="https://poly.pizza/m/blGLclvvdEM">Vespa</a></td><td>Jasmine Roberts</td><td>CC BY 3.0, via Poly Pizza</td></tr>
+          <tr><td><a href="https://poly.pizza/m/3Z7vJ96JIEB">Parachute</a></td><td>Poly by Google</td><td>CC BY 3.0, via Poly Pizza</td></tr>
+          <tr><td><a href="https://poly.pizza/m/8VafbXInymc">Jetpack</a></td><td>Roman Miller</td><td>CC BY 3.0, via Poly Pizza</td></tr>
+          <tr><td><a href="https://poly.pizza/m/5Q7qIrfDxA">Tent</a></td><td>Quaternius</td><td>CC0, credited as a courtesy</td></tr>
+        </tbody>
+      </table>
+    </div>
   </section>
 
   <section class="ds-section" aria-labelledby="ck-play-heading">
@@ -2745,6 +2764,18 @@
 
   render();
 })();
+
+/* The vehicles' strategy picker (9c): pressed state here, the stage follows on `ck:strategy` once it has loaded. */
+(function () {
+  var picker = document.querySelector('[data-vehicles-picker]');
+  if (!picker) return;
+  picker.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-strategy]');
+    if (!b) return;
+    picker.querySelectorAll('[data-strategy]').forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+    picker.dispatchEvent(new CustomEvent('ck:strategy'));
+  });
+})();
 </script>
 <script type="module" src="js/profile-persona-character.js"></script>
 <script type="module">
@@ -2767,7 +2798,8 @@ if (box) {
   });
 }
 
-/* The vehicles (9c): one stage, the strategy picker, drawn while it is on screen. */
+/* The vehicles (9c): one stage, the strategy picker, drawn while it is on screen. The picker's buttons are handled by
+   the classic script above, so picks work while the 3D is still loading; here the pressed one is shown. */
 import { mountVehicles } from './js/character-vehicles.js';
 import { VEHICLES, POSES } from './js/character-vehicles-config.js';
 const vBox = document.querySelector('[data-vehicles-specimen]');
@@ -2775,24 +2807,24 @@ const vPicker = document.querySelector('[data-vehicles-picker]');
 const vEntry = document.querySelector('[data-vehicles-entry]');
 if (vBox) {
   let vVisible = false;
-  const pick = (k) => {
-    vPicker.querySelectorAll('[data-strategy]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.strategy === k ? 'true' : 'false'));
+  const pressed = () => vPicker.querySelector('[aria-pressed="true"]').dataset.strategy;
+  const describe = (k) => {
     const v = VEHICLES[k];
     vEntry.textContent = `{ strategy: '${k}',\n  vehicle: '${v.vehicle}',\n  pose: '${v.pose}', clip: '${POSES[v.pose].clip}',\n  idle: '${v.idle}' }`;
   };
-  pick('income');
-  mountVehicles(vBox, { active: () => vVisible && !document.hidden }).then((stage) => {
+  describe(pressed());
+  vPicker.addEventListener('ck:strategy', () => describe(pressed()));
+  /* `?reduced` checks the reduced-motion path without the system setting, as on the fridge. */
+  const reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const forceReduced = new URLSearchParams(location.search).has('reduced');
+  mountVehicles(vBox, { reduced: () => forceReduced || reduceMQ.matches, active: () => vVisible && !document.hidden }).then((stage) => {
+    stage.show(pressed());
+    vPicker.addEventListener('ck:strategy', () => stage.show(pressed()));
     new IntersectionObserver((entries) => {
       vVisible = entries[0].isIntersecting;
       if (vVisible) stage.wake();
     }).observe(vBox);
     document.addEventListener('visibilitychange', () => { if (vVisible && !document.hidden) stage.wake(); });
-    vPicker.addEventListener('click', (e) => {
-      const b = e.target.closest('[data-strategy]');
-      if (!b) return;
-      pick(b.dataset.strategy);
-      stage.show(b.dataset.strategy);
-    });
   }).catch((err) => {
     console.warn('[character-kit] the vehicles did not load', err);
     vBox.closest('.ck-specimen').hidden = true;

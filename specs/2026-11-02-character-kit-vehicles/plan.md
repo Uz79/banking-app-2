@@ -19,7 +19,7 @@ What you see: a "Vehicles" section with a stage and the strategy picker; each pi
 What you see: the persona with each vehicle in its pose; switching squashes and springs back.
 
 - [x] `scripts/build_kaykit_helper.py`: also write `assets/3d/kaykit/rig-medium-ride.glb` (`Jump_Idle`); run it
-- [x] `js/character-vehicles.js`: the persona via `createFigure()` with the saved recipe; poses: stand (`Idle_A`), sit (bone overrides after the mixer, D5), fly (`Jump_Idle`, D6); the swap on a pick (D9)
+- [x] `js/character-vehicles.js`: the persona via `createFigure()` following the live specimen's picks (D4 amended); poses: stand (`Idle_A`), sit (bone overrides after the mixer, D5), fly (`Jump_Idle`, D6); the swap on a pick (D9)
 - [x] Tune the sit, the parachute harness and the jetpack's place on the back by eye; settle open questions 2 and 3
 - [x] Check: each strategy with Beat and Max (Max's hat and cape against the vehicles); fast picks, Lena, Dark and 390 in the validation pass
 
@@ -27,9 +27,9 @@ What you see: the persona with each vehicle in its pose; switching squashes and 
 
 What you see: the jetpack hovers, the parachute sways; with reduced motion all is still; a Credits section lists the models.
 
-- [ ] `js/character-vehicles.js`: the bob and the sway from the config; reduced motion holds a still frame (with the sit applied) and switches at once
-- [ ] Confirm each model's licence and link (open question 1); the "Credits" section after "Assets", and the `assets/3d/vehicles/` line in "Assets"
-- [ ] Check: `?reduced`, keyboard through the picker (focus visible, Tab and arrow keys as the specimen's segmented controls), the stage stops drawing off screen
+- [x] `js/character-vehicles.js`: the bob and the sway from the config; reduced motion holds a still frame (with the sit applied) and switches at once
+- [x] Confirm each model's licence and link (open question 1); the "Credits" section after "Assets", and the `assets/3d/vehicles/` line in "Assets"
+- [x] Check: `?reduced` (`character-kit.html?reduced` works like the fridge's), picks made while the 3D loads (kept, shown once ready), keyboard through the picker (in the validation pass), the stage stops drawing off screen
 
 ## 4. Wrap-up
 
