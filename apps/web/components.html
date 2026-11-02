@@ -51,6 +51,7 @@
     .ds-row { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; margin-bottom: var(--space-3); }
     .ds-caption { font-size: var(--fs-text-sm); color: var(--color-fg-secondary); margin: 0 0 var(--space-2); }
     .ds-note { font-size: var(--fs-text-xs); color: var(--color-fg-secondary); margin-top: var(--space-2); max-width: 40rem; }
+    .ds-qa-demo { max-width: 22.5rem; padding: var(--space-4); border: 1px solid var(--color-separator); border-radius: var(--radius-regular); background: var(--color-bg); margin-bottom: var(--space-3); }
     .ds-float-demo { position: relative; height: 15rem; border-radius: var(--radius-regular); overflow: hidden; margin-bottom: var(--space-3); }
     .ds-float-demo--phone { max-width: 20rem; height: 17rem; }
     .ds-float-demo__scene { position: absolute; inset: 0; background: repeating-linear-gradient(-45deg, var(--color-fg-interactive) 0 0.75rem, var(--color-bg) 0.75rem 1.5rem), var(--color-bg); opacity: 0.85; }
@@ -2492,6 +2493,30 @@
       </div>
     </div>
     <p class="ds-note">Custom properties: <code>--float-panel-fill</code> (the background at 70%), <code>--float-panel-blur</code> (8px), <code>--float-panel-highlight</code>, <code>--float-panel-shade</code>, <code>--float-panel-shadow</code> (Light only), <code>--float-panel-padding</code>. With reduced transparency or more contrast the panel is solid; without blur support the fill rises to 92%.</p>
+  </section>
+
+  <section class="ds-section" aria-labelledby="ds-qa-heading">
+    <h2 id="ds-qa-heading">Questions and answers</h2>
+    <p class="ds-caption">The UZ Bank assistant's conversation, used by the investment opening. Written questions as chips; a tap adds the customer's line (right, <code>--color-bg-secondary</code>) and the assistant's answer (left, on the panel). Newbie sees the whole answer, All-rounder the short answer with More, Power user the short answer only. "Talk to an advisor" is a quiet text button, or the last chip where people need a person most.</p>
+    <div class="ds-qa-demo">
+      <div class="assistant__log" aria-hidden="true">
+        <div class="assistant-line assistant-line--customer"><p class="assistant-line__text">Why do you ask this?</p></div>
+        <div class="assistant-line assistant-line--bank">
+          <p class="assistant-line__text">The law asks us to check that a product fits what you know about investing. It is not a test, and there is no wrong answer.</p>
+          <p class="assistant-line__text assistant-line__extra">Your answer can make the strategy we recommend more careful, so it protects you.</p>
+        </div>
+        <div class="assistant-line assistant-line--customer"><p class="assistant-line__text">What counts as basic knowledge?</p></div>
+        <div class="assistant-line assistant-line--bank">
+          <p class="assistant-line__text">For example, you know that share prices go up and down, and that a fund holds many investments.</p>
+          <button type="button" class="uz-btn uz-btn--tonal uz-btn--sm assistant-line__more" tabindex="-1">More</button>
+        </div>
+      </div>
+      <div class="assistant__chips" aria-hidden="true">
+        <button type="button" class="uz-btn uz-btn--secondary uz-btn--sm assistant__chip" tabindex="-1">What happens if I choose "None"?</button>
+      </div>
+      <button type="button" class="assistant__advisor" tabindex="-1" aria-hidden="true">Talk to an advisor</button>
+    </div>
+    <p class="ds-note">Classes: <code>.assistant__log</code> (<code>role="log"</code>), <code>.assistant-line--customer</code> and <code>--bank</code>, <code>.assistant-line__more</code>, <code>.assistant__chips</code> with <code>.assistant__chip</code> (secondary, small, wrapping), <code>.assistant__advisor</code>. New lines fade and rise in 0.2 s, at once with reduced motion. Copy lives in <code>js/opening-assistant-config.js</code>; the rules are in the 9b spec.</p>
   </section>
           </div>
         </div>

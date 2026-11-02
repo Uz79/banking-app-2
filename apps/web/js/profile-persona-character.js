@@ -84,7 +84,7 @@ function toOklch(rgb) {
   const [L, a, b] = toOklab(rgb[0], rgb[1], rgb[2]);
   return { L, C: Math.hypot(a, b), h: ((Math.atan2(b, a) * 180) / Math.PI + 360) % 360 };
 }
-function oklchToRGB(L, C, h) {
+export function oklchToRGB(L, C, h) {
   const a = C * Math.cos((h * Math.PI) / 180), b = C * Math.sin((h * Math.PI) / 180);
   const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3;
   const m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3;

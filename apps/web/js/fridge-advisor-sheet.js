@@ -54,7 +54,8 @@
     if (frame) frame.title = text;
   }
 
-  /* Wide (960) for the fridge; the flows' 640 at one fixed height for the opening (9a D2, D26). Both ease; see the CSS. */
+  /* 960 for the whole flow, the fridge and the opening with its assistant column (9b D24); the CSS widens it from a
+     1024px window only. One fixed height (9a D26). */
   function setWide(on) {
     shell.classList.toggle('modal-shell--wide', on);
     /* The fridge and the opening share one sheet height (8d D1); only the width changes at the hand-over. */
@@ -79,7 +80,7 @@
     pageState = { canBack: false, dirty: false };
     showBack(false);
     var page = resumable() ? OPENING : FRIDGE;
-    setWide(page === FRIDGE);
+    setWide(true);
     frame = document.createElement('iframe');
     frame.className = 'fridge-frame';
     setTitle(page.title);

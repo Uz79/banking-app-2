@@ -2339,6 +2339,22 @@
           </div>
           <h1 class="opening__title">Open asset management</h1>
           <div class="opening__panel" data-opening-panel></div>
+          <!-- The UZ Bank assistant (9b): a column beside the step on desktop, full screen from Help? on a phone (D24, D29). -->
+          <aside class="assistant" id="opening-assistant" aria-labelledby="assistant-title" hidden data-assistant>
+            <div class="assistant__head">
+              <!-- The helper (D11, D19): a 3D figure, large in the invitation; a quiet placeholder until it loads. -->
+              <div class="assistant__figure" aria-hidden="true" data-assistant-figure></div>
+              <div class="assistant__heading">
+                <h2 class="assistant__title" id="assistant-title" tabindex="-1">Questions about this step</h2>
+                <p class="assistant__name">UZ Bank assistant</p>
+              </div>
+            </div>
+            <div class="assistant__body" data-assistant-body></div>
+            <!-- D27: back to the invitation on desktop, closes the full screen on a phone; not shown in the invitation. -->
+            <div class="assistant__foot" data-assistant-foot>
+              <button class="uz-btn uz-btn--tonal uz-btn--md uz-btn--block" type="button" data-assistant-self>I can do it myself</button>
+            </div>
+          </aside>
           <p class="opening__sr" aria-live="polite" data-opening-live></p>
         </div>
       </section>
