@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 906d08d54c3e65333f3e4c304b5ecd8f5620e70b -->
+<!-- changelog: last-commit a3622fef1404a634621ce1a0f85786d231cbba45 -->
 
 ### Added
 - **The opening assistant** (roadmap 9b, the first version). Every screen of the investment opening, including completion and the exit screen, has a "Questions?" button by its heading. On desktop it widens the sheet to 960 and opens the UZ Bank assistant as a column next to the step; on a phone it is a bottom sheet over the dimmed step. Each screen has three or four written questions; a tap adds the question and its answer to the conversation, some with follow-ups. Newbies see the full answer, All-rounders a short one with More, Power users the short one. "Talk to an advisor" answers with a callback line and nothing else happens. The panel stays open across screens and keeps each screen's questions while the sheet is open; nothing is stored. Keyboard, screen reader announcements (a polite log) and reduced motion are covered.
