@@ -41,9 +41,9 @@ What you see: the UZ Bank assistant as a small 3D figure at the top of the panel
 
 ## 5. Documentation (D16)
 
-- [ ] `components.html`: "Questions and answers" section
-- [ ] `character-kit.html`: "The helper" entry
-- [ ] Check: both pages in Light and Dark
+- [x] `components.html`: "Questions and answers" section (a static conversation: both line styles, an expanded answer, More, a chip and the advisor text button, in a 360 panel; the classes listed)
+- [x] `character-kit.html`: "The helper" entry, after Profiles: the live figure next to its recipe, a "Play the answer gesture" button, and a note on its sizes, the gesture, reduced motion and its files. To show the same figure, the stage moved out of `js/opening-assistant.js` into `js/opening-assistant-helper.js` (`mountHelper(box, { reduced, active, frame })`), which the opening imports on the first open and the Character kit page as a module
+- [x] Check: both pages in Light and Dark; the gesture on the Character kit; the persona specimen still loads; the opening's figure after the move (first open, close and reopen, the shrink on asking); no console errors; build passes
 
 ## 6. Wrap-up
 

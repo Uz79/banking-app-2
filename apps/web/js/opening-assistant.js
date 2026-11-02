@@ -140,8 +140,6 @@ window.addEventListener('resize', () => {
 });
 
 /* ── The helper (D11, D12) ──────────────────────────────────────────── */
-/* Its own recipe, which no User Type produces: the Mage's head and outfit, nothing on the head or back. */
-const HELPER = { outfit: 'mage', head: 'mage', headwear: 'none', back: 'none' };
 const figureBox = aside.querySelector('[data-assistant-figure]');
 let helper = null;
 let helperStarted = false;
@@ -151,102 +149,24 @@ let helperStarted = false;
 function startHelper() {
   if (helperStarted) return;
   helperStarted = true;
-  import('./profile-persona-character.js')
-    .then((kit) => mountHelper(kit))
+  import('./opening-assistant-helper.js')
+    .then(({ mountHelper }) => mountHelper(figureBox, {
+      reduced,
+      active: () => open,
+      /* The phone's round portrait shows head and shoulders; the column head to waist, and head to chest once it
+         has made room for the answers, so the arm of the gesture stays in view. */
+      frame: (h) => (root.classList.contains('assistant--sheet') ? [1.1, 2.2] : h < 90 ? [0.85, 2.2] : [0.6, 2.2]),
+    }))
+    .then((h) => {
+      helper = h;
+      figureBox.classList.add('assistant__figure--ready');
+      if (open) helper.wake();
+    })
     .catch((err) => {
       console.warn('[opening-assistant] the helper did not load', err);
       figureBox.hidden = true;
       aside.classList.add('assistant--no-figure');
     });
-}
-
-async function mountHelper({ THREE, createFigure, readTheme }) {
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setClearColor(0x000000, 0);
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.NoToneMapping;
-  const canvas = renderer.domElement;
-  canvas.className = 'assistant__canvas';
-  canvas.setAttribute('aria-hidden', 'true');
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(26, 1, 0.1, 100);
-  const hemi = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
-  const key = new THREE.DirectionalLight(0xffffff, 2);
-  key.position.set(3, 5.5, 4);
-  const rim = new THREE.DirectionalLight(0xffffff, 0);
-  rim.position.set(-3, 3, -4);
-  scene.add(hemi, key, rim);
-
-  const figure = await createFigure({ reduced, characters: ['helper'], clipFiles: ['animGeneral', 'animHelper'] });
-  const turn = new THREE.Group();
-  turn.rotation.y = -0.25; /* turned a little toward the conversation on its left */
-  turn.add(figure.actor);
-  scene.add(turn);
-  figure.setRecipe(HELPER, false);
-  figure.setLoop('Idle_A');
-  figure.mixer.update(0.4);
-
-  /* The persona stage's light and colour, read from the theme. */
-  let themeKey = '';
-  function applyTheme() {
-    const theme = readTheme();
-    if (theme.key === themeKey) return;
-    themeKey = theme.key;
-    hemi.color.set(theme.sky);
-    hemi.groundColor.set(theme.dark ? '#1E2026' : '#DCDEE3');
-    hemi.intensity = theme.light.fill;
-    key.intensity = theme.light.key;
-    rim.intensity = theme.light.rim;
-    figure.recolour(theme);
-  }
-  new MutationObserver(() => requestAnimationFrame(applyTheme))
-    .observe(root, { attributes: true, attributeFilter: ['data-theme', 'style', 'class'] });
-  applyTheme();
-
-  /* Framing (the figure is about 2.15 high without a hat). */
-  const aim = new THREE.Vector3(0.35, 0.12, 1).normalize();
-  function resize() {
-    const w = figureBox.clientWidth, h = figureBox.clientHeight;
-    if (!w || !h) return;
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    /* The phone's round portrait shows head and shoulders; the column head to waist, and head to chest once it
-       has made room for the answers, so the arm of the gesture stays in view. */
-    const [lo, hi] = root.classList.contains('assistant--sheet') ? [1.1, 2.2] : h < 90 ? [0.85, 2.2] : [0.6, 2.2];
-    const dist = ((hi - lo) / 2) / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * 1.08;
-    const target = new THREE.Vector3(0, (lo + hi) / 2, 0);
-    camera.position.copy(target).addScaledVector(aim, dist);
-    camera.lookAt(target);
-    camera.updateProjectionMatrix();
-  }
-  new ResizeObserver(resize).observe(figureBox);
-
-  /* Drawn only while the panel is open. */
-  const clock = new THREE.Clock();
-  let running = false;
-  function frame() {
-    if (!open) { running = false; return; }
-    requestAnimationFrame(frame);
-    figure.update(Math.min(clock.getDelta(), 0.05));
-    renderer.render(scene, camera);
-  }
-  helper = {
-    /* An answer arrived: the helper gestures once (open question 2: Interact, the one clip in its file). */
-    wave() { figure.playOnce('Interact'); },
-    wake() {
-      if (running) return;
-      running = true;
-      clock.getDelta();
-      resize();
-      requestAnimationFrame(frame);
-    },
-  };
-
-  figureBox.append(canvas);
-  figureBox.classList.add('assistant__figure--ready');
-  if (open) helper.wake();
 }
 
 /* ── The conversation (D6 to D10) ───────────────────────────────────── */

@@ -61,6 +61,11 @@
     .ck-control__label { font-size: var(--fs-text-xs); line-height: var(--lh-caption); color: var(--color-fg-label); }
     .ck-control .segmented { display: flex; width: 100%; }
     .ck-control .segmented__option { flex: 1 1 0; }
+    .ck-helper { display: grid; grid-template-columns: minmax(0, 16rem) minmax(0, 1fr); gap: var(--space-5); align-items: start; }
+    .ck-helper-card { position: relative; height: 16rem; border-radius: var(--radius-regular); background: var(--color-bg); box-shadow: var(--shadow-content-indication-after); overflow: hidden; }
+    .ck-helper-stage { position: absolute; inset: 0; }
+    .ck-helper-info { display: flex; flex-direction: column; gap: var(--space-3); align-items: flex-start; }
+    @media (max-width: 40rem) { .ck-helper { grid-template-columns: 1fr; } }
     .ck-presets { display: flex; flex-wrap: wrap; gap: var(--space-2); }
     .ck-recipe { margin: 0; padding: var(--space-3); border-radius: var(--radius-small); background: var(--color-bg-secondary); font-size: var(--fs-text-xs); line-height: var(--lh-caption); color: var(--color-fg); white-space: pre; overflow-x: auto; }
 
@@ -2504,6 +2509,23 @@
     </div>
   </section>
 
+  <section class="ds-section" aria-labelledby="ck-helper-heading">
+    <h2 id="ck-helper-heading">The helper</h2>
+    <p class="ds-caption">The UZ Bank assistant in the investment opening. It speaks for the bank, so it never looks like the persona: its own fixed recipe, which no User Type produces, with the Mage's head and outfit and nothing on the head or back. Same rig, same theme recolour.</p>
+    <div class="ck-helper">
+      <div class="ck-helper-card">
+        <div class="ck-helper-stage" data-helper-specimen aria-hidden="true"></div>
+      </div>
+      <div class="ck-helper-info">
+        <pre class="ck-recipe" aria-label="Helper recipe">{ head: 'mage', outfit: 'mage',
+  headwear: 'none', back: 'none',
+  loop: 'Idle_A' }</pre>
+        <button type="button" class="uz-btn uz-btn--secondary uz-btn--sm" data-helper-gesture>Play the answer gesture</button>
+        <p class="ds-note">In the opening it stands about 120 high at the top of the questions panel, shrinks to 64 once a question is asked, and is a 56 portrait in the phone's bottom sheet. When an answer arrives it plays <code>Interact</code> once (1.3 s), then returns to idle; with reduced motion it stands still. Its parts and clip come from their own files (<code>helper.glb</code>, <code>rig-medium-helper.glb</code>, built by <code>scripts/build_kaykit_helper.py</code>), loaded only on the panel's first open. Code: <code>js/opening-assistant-helper.js</code>.</p>
+      </div>
+    </div>
+  </section>
+
   <section class="ds-section" aria-labelledby="ck-colour-heading">
     <h2 id="ck-colour-heading">Colour</h2>
     <p class="ds-caption">The figure follows the app, not the asset. All colour is computed in OKLCH from the live tokens and updates whenever the theme or a custom colour theme changes.</p>
@@ -2686,5 +2708,25 @@
 })();
 </script>
 <script type="module" src="js/profile-persona-character.js"></script>
+<script type="module">
+/* The helper (9b): the same stage as in the opening, drawn while it is on screen. */
+import { mountHelper } from './js/opening-assistant-helper.js';
+const box = document.querySelector('[data-helper-specimen]');
+const gesture = document.querySelector('[data-helper-gesture]');
+if (box) {
+  let visible = false;
+  mountHelper(box, { active: () => visible && !document.hidden }).then((helper) => {
+    new IntersectionObserver((entries) => {
+      visible = entries[0].isIntersecting;
+      if (visible) helper.wake();
+    }).observe(box);
+    gesture.addEventListener('click', () => helper.wave());
+  }).catch((err) => {
+    console.warn('[character-kit] the helper did not load', err);
+    box.closest('.ck-helper-card').hidden = true;
+    gesture.hidden = true;
+  });
+}
+</script>
 </body>
 </html>
