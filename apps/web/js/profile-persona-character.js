@@ -69,7 +69,7 @@ const DUR = { enter: 0.42, exit: 0.28 };
 /* ── Colour maths (OKLab / OKLCH) ─────────────────────────────────────── */
 const lin = (c) => (c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
 const gam = (c) => (c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055);
-function toOklab(r, g, b) {
+export function toOklab(r, g, b) {
   r = lin(r / 255); g = lin(g / 255); b = lin(b / 255);
   const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
   const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
@@ -184,7 +184,7 @@ function bezier(x1, y1, x2, y2) {
     return sy(Math.min(1, Math.max(0, t)));
   };
 }
-const EASE = { enter: bezier(0.22, 1, 0.36, 1), exit: bezier(0.4, 0, 1, 1) };
+export const EASE = { enter: bezier(0.22, 1, 0.36, 1), exit: bezier(0.4, 0, 1, 1) };
 
 /* ── Figure ───────────────────────────────────────────────────────────── */
 /* The persona character on its own: the rig with mixable parts, the theme recolour and the
@@ -373,6 +373,9 @@ export async function createFigure({ reduced = () => window.matchMedia('(prefers
     if (!reduced()) mixer.update(dt);
   }
 
+  /* More clips on the same rig (the vehicles' Jump_Idle, 9c D6). */
+  function addClips(list) { list.forEach((c) => { clips[c.name] = c; }); }
+
   /* Where the current loop is in its cycle, 0 to 1 (the Playground times footsteps by it). */
   function loopPhase() {
     if (!loopAction) return 0;
@@ -380,7 +383,7 @@ export async function createFigure({ reduced = () => window.matchMedia('(prefers
     return d ? (loopAction.time % d) / d : 0;
   }
 
-  return { actor, mixer, setRecipe, setLoop, loopPhase, recolour, update };
+  return { actor, mixer, setRecipe, setLoop, addClips, loopPhase, recolour, update };
 }
 
 /* ── Stage ────────────────────────────────────────────────────────────── */
