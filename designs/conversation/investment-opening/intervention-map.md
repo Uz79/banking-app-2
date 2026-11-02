@@ -103,7 +103,7 @@ Each step shows three or four chips; tapping one shows its answer and may offer 
 
 ## Open
 
-- The helper's name, tone and look (9b).
+- ~~The helper's name, tone and look (9b).~~ Settled in 9b: no name ("UZ Bank assistant"), it says "we" for the bank in short plain sentences and never recommends; the look is KayKit's Lorekeeper, recoloured to the theme (9b D8, D19).
 - Which old screens merge in 9a (for example purpose and horizon on one screen).
 - Whether answers survive closing the flow (9a); it decides the documents chip.
 - The plain-language summaries of the documents (10).

@@ -56,6 +56,6 @@ Review change after group 5: the mage parts were too close to the persona's powe
 
 ## 7. Wrap-up
 
-- [ ] `npm run build` in `apps/web`
-- [ ] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
-- [ ] Docs: `specs/roadmap.md` item 9b marked done; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the assistant in Other systems, the helper in the 3D character kit section, a Decisions row for the assistant's rules); the intervention map's "Open" list updated (the helper's name, tone and look settled)
+- [x] `npm run build` in `apps/web`
+- [x] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
+- [x] Docs: `specs/roadmap.md` item 9b marked done; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the assistant in Other systems, the helper in the 3D character kit section, a Decisions row for the assistant's rules, the helper and his assets in the 3D character kit section); the intervention map's "Open" list updated (the helper's name, tone and look settled)
