@@ -85,6 +85,8 @@ Persisted in `sessionStorage` (this tab only):
 - `js/profile-persona.js` — three sliders set the profile (novice / standard / power): title, story, UI preview and the Legibility preset (Large / Regular / Compact). Each slider also owns part of the character: financial knowledge → headwear (the head is always the Rogue's), banking products → outfit + back, digital affinity → animation loop.
 - `js/profile-persona-character.js` — three.js scene (runtime from jsDelivr). KayKit parts mixed on one shared rig, recoloured to the theme (monochrome + one accent), transparent stage with an overlay-tint shadow and a spotlight on dark backgrounds.
 - `assets/3d/kaykit/` — KayKit Adventurers 2.0 by Kay Lousberg (CC0), pruned to the parts used.
+- `js/character-vehicles.js` + `js/character-vehicles-config.js` — the strategy vehicles with the persona on the Character kit page (one stage, a strategy picker); every tuning number in the config
+- `assets/3d/vehicles/` — the five strategy vehicles from Poly Pizza (four CC BY 3.0, the tent CC0); authors, licences and links in its `CREDITS.md`
 - `assets/images/persona/` — UI previews rendered from Figma (`banking-app_main-view-profile_setting-persona_ui-previews`), recoloured to the live theme at runtime.
 
 ## Playground (Design system > Payday run)
@@ -104,5 +106,5 @@ Persisted in `sessionStorage` (this tab only):
 - `js/fridge-advisor-config.js` — every number that decides how it looks (camera poses, doors, food packing, slider ranges, the step copy)
 - `js/fridge-advisor-scene.js` — the scene: the kit fridge, shelves and drawers as boxes, food packed in rows, the persona, the theme
 - `js/fridge-advisor-sheet.js` — Overview opens the page as a wide flow sheet (iframe, `.modal-shell--wide`, slides up and down like Pay)
-- `assets/3d/fridge/` — Kenney Furniture Kit (the fridge) and Food Kit (15 models and the colour map), CC0; the build copies it to `dist`
+- `assets/3d/fridge/` — Kenney Furniture Kit (the fridge) and Food Kit (15 models and the colour map), CC0
 - No `localStorage` keys: the values live in memory only. Dev URL parameters: `?reduced` (force the still version), `?open=1` (both doors open)

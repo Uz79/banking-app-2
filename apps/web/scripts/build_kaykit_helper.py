@@ -5,6 +5,7 @@ which lives outside the repo. The persona's own files in assets/3d/kaykit/ are n
 the Lorekeeper, is copied whole into assets/3d/kaykit-lorekeeper/ and needs no build.
 
   rig-medium-helper.glb  the clip the helper plays when an answer arrives, no meshes
+  rig-medium-ride.glb    the persona's mid-air hold for the parachute and the jetpack (9c D6), no meshes
 
 Usage (from apps/web):
   python3 scripts/build_kaykit_helper.py "<path to KayKit_Adventurers_2.0_FREE>"
@@ -21,6 +22,7 @@ DEFAULT_PACK = os.path.expanduser(
 OUT = os.path.join(os.path.dirname(__file__), '..', 'assets', '3d', 'kaykit')
 
 HELPER_CLIPS = {'Interact'}
+RIDE_CLIPS = {'Jump_Idle'}
 
 
 def read_glb(path):
@@ -172,6 +174,8 @@ def main():
     pack = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_PACK
     build(os.path.join(pack, 'Animations', 'gltf', 'Rig_Medium', 'Rig_Medium_General.glb'),
           os.path.join(OUT, 'rig-medium-helper.glb'), set(), HELPER_CLIPS)
+    build(os.path.join(pack, 'Animations', 'gltf', 'Rig_Medium', 'Rig_Medium_MovementBasic.glb'),
+          os.path.join(OUT, 'rig-medium-ride.glb'), set(), RIDE_CLIPS)
 
 
 if __name__ == '__main__':
