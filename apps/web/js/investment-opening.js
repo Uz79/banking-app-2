@@ -6,7 +6,7 @@
  * fridge (D2, D3). Opened on its own, the page shows its own header.
  */
 import {
-  SCREENS, DRAFT_KEY, KNOWLEDGE, PURPOSE, HORIZON, AMOUNT, RISK, STRATEGIES, STRATEGY, SCORING,
+  SCREENS, DRAFT_KEY, KNOWLEDGE, PURPOSE, HORIZON, AMOUNT, RISK, STRATEGIES, STRATEGY, SCORING, VEHICLE_STAGE,
   ESG, TAX, INELIGIBLE, DOCUMENTS, SUMMARY, COMPLETE,
 } from './investment-opening-config.js';
 import * as assistant from './opening-assistant.js';
@@ -150,8 +150,9 @@ function label(text) {
 /* Single choice as option cards: a radio group of full-width buttons. Arrow keys move and choose (skipping
    unavailable options), Tab enters at the chosen one. `content(option, button)` fills a card; the default is the
    label and an optional line. `disabled(option)` makes one unavailable: it stays readable but cannot be chosen.
-   `set(id, how)` says how it was chosen: 'click' (pointer, Space, Enter) or 'key' (arrows, which only move). */
-function optionGroup({ labelEl, options, get, set, disabled = () => false, content }) {
+   `set(id, how)` says how it was chosen: 'click' (pointer, Space, Enter) or 'key' (arrows, which only move).
+   `reach`: the arrows also stop on unavailable options, without choosing them (the strategies' preview, 9d D7). */
+function optionGroup({ labelEl, options, get, set, disabled = () => false, content, reach = false }) {
   const group = el('div', 'opening-options');
   group.setAttribute('role', 'radiogroup');
   if (labelEl) group.setAttribute('aria-labelledby', labelEl.id);
@@ -174,7 +175,7 @@ function optionGroup({ labelEl, options, get, set, disabled = () => false, conte
   });
   const enabled = () => buttons.filter((b) => b.getAttribute('aria-disabled') !== 'true');
   group.addEventListener('keydown', (event) => {
-    const list = enabled();
+    const list = reach ? buttons : enabled();
     const at = list.indexOf(document.activeElement);
     if (at < 0) return;
     let to = null;
@@ -185,7 +186,7 @@ function optionGroup({ labelEl, options, get, set, disabled = () => false, conte
     if (to === null) return;
     event.preventDefault();
     list[to].focus();
-    set(list[to].dataset.option, 'key');
+    if (list[to].getAttribute('aria-disabled') !== 'true') set(list[to].dataset.option, 'key');
   });
   function refresh() {
     const value = get();
@@ -227,6 +228,111 @@ function reconcile() {
     answers.strategyFellBack = true;
   }
 }
+
+/* ── The vehicles (9d) ──────────────────────────────────────────────────
+   One stage card, built once and moved into the strategy screen on every render, so its canvas and models stay.
+   The module and the models load on the risk screen (or on arrival, D3); without 3D the card goes and the cards
+   stay as in 9a (D4). The stage shows the chosen strategy, or a riskier one previewed, dimmed (D6). */
+const vehicles = { card: null, box: null, caption: null, stage: null, failed: false, loading: false, on: false, preview: null };
+const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function vehicleCard() {
+  if (vehicles.card) return vehicles.card;
+  const card = el('div', 'opening-vehicles');
+  const box = el('div', 'opening-vehicles__stage');
+  box.setAttribute('aria-hidden', 'true');
+  const credits = el('div', 'opening-vehicles__credits');
+  credits.id = 'opening-vehicle-credits';
+  credits.hidden = true;
+  credits.append(el('p', 'opening-vehicles__credits-title', VEHICLE_STAGE.creditsTitle));
+  const list = el('ul', 'opening-vehicles__credits-list');
+  VEHICLE_STAGE.credits.forEach((c) => {
+    const li = el('li');
+    const link = (text, href) => {
+      const a = el('a', 'opening-vehicles__link', text);
+      a.href = href;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      return a;
+    };
+    li.append(link(c.name, c.url), ' by ' + c.by + ', ', link(c.licence, c.licenceUrl));
+    list.append(li);
+  });
+  credits.append(list);
+  const foot = el('div', 'opening-vehicles__foot');
+  const caption = el('p', 'opening-vehicles__caption');
+  caption.setAttribute('aria-live', 'polite');
+  const toggle = el('button', 'opening-vehicles__link opening-vehicles__toggle', VEHICLE_STAGE.creditsLink);
+  toggle.type = 'button';
+  toggle.setAttribute('aria-expanded', 'false');
+  toggle.setAttribute('aria-controls', credits.id);
+  /* The credits take the stage's place, so the step keeps its height (D9). */
+  toggle.addEventListener('click', () => {
+    const open = credits.hidden;
+    credits.hidden = !open;
+    box.hidden = open;
+    toggle.textContent = open ? VEHICLE_STAGE.backLink : VEHICLE_STAGE.creditsLink;
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+  foot.append(caption, toggle);
+  card.append(box, credits, foot);
+  Object.assign(vehicles, { card, box, caption });
+  return card;
+}
+
+function loadVehicles() {
+  if (vehicles.loading || vehicles.failed) return;
+  vehicles.loading = true;
+  const box = vehicleCard().querySelector('.opening-vehicles__stage');
+  import('./character-vehicles.js')
+    .then(({ mountVehicles }) => mountVehicles(box, {
+      reduced: reducedMotion,
+      active: () => vehicles.on && !document.hidden,
+      strategy: shownVehicle() || 'balanced',
+      /* The customer's own persona (D5); the pose, not the profile's loop, decides the clip. */
+      recipe: () => {
+        const { loop, ...parts } = window.UZBankPersona.read().recipe;
+        return parts;
+      },
+    }))
+    .then((stage) => {
+      vehicles.stage = stage;
+      vehicles.card.classList.add('is-ready');
+      syncVehicles();
+    })
+    .catch((err) => {
+      vehicles.failed = true;
+      if (vehicles.card) vehicles.card.remove();
+      console.warn('[opening] the vehicles did not load', err);
+    });
+}
+
+const shownVehicle = () => vehicles.preview || answers.strategy;
+
+function syncVehicles() {
+  if (!vehicles.card) return;
+  const id = shownVehicle();
+  const above = !!vehicles.preview;
+  vehicles.card.classList.toggle('is-preview', above);
+  const text = id ? VEHICLE_STAGE.captions[id] : '';
+  const caption = above ? VEHICLE_STAGE.above + ' ' + text : text;
+  if (vehicles.caption.textContent !== caption) vehicles.caption.textContent = caption;
+  if (vehicles.stage && id) vehicles.stage.show(id);
+}
+
+function previewVehicle(id) {
+  if (vehicles.preview === id) return;
+  vehicles.preview = id;
+  syncVehicles();
+}
+
+/* Drawing only while the strategy screen is on show and the page is visible (D11). */
+function vehiclesOn(on) {
+  vehicles.on = on;
+  if (!on) vehicles.preview = null;
+  if (on && vehicles.stage) vehicles.stage.wake();
+}
+document.addEventListener('visibilitychange', () => { if (vehicles.on && !document.hidden && vehicles.stage) vehicles.stage.wake(); });
 
 /* The knowledge the Profile's financial knowledge slider suggests (D7), or null when it was never set. */
 function profileKnowledge() {
@@ -419,9 +525,22 @@ const BUILD = {
       set: (id) => { answers.strategy = id; changed(); },
       disabled: above,
       content: (s, b) => strategyCard(s, b, s.id === rec, above(s)),
+      reach: true,
     });
     group.classList.add('opening-options--cards');
     group.setAttribute('aria-labelledby', 'opening-heading');
+    /* The vehicles above the cards (D1); a riskier card previews its vehicle on hover or focus (D6, D7). */
+    if (!vehicles.failed) {
+      nodes.push(vehicleCard());
+      const unavailable = (target) => {
+        const b = target && target.closest && target.closest('.opening-option');
+        return b && b.getAttribute('aria-disabled') === 'true' ? b.dataset.option : null;
+      };
+      group.addEventListener('pointerover', (e) => previewVehicle(unavailable(e.target)));
+      group.addEventListener('pointerleave', () => previewVehicle(group.contains(document.activeElement) ? unavailable(document.activeElement) : null));
+      group.addEventListener('focusin', (e) => previewVehicle(unavailable(e.target)));
+      group.addEventListener('focusout', (e) => { if (!group.contains(e.relatedTarget)) previewVehicle(null); });
+    }
     /* The unavailable cards are the riskiest, so they come last: one line above them says why (D11, D27). */
     const firstAbove = STRATEGIES.find(above);
     if (firstAbove) {
@@ -429,8 +548,18 @@ const BUILD = {
       why.id = 'opening-strategy-above';
       group.querySelector('[data-option="' + firstAbove.id + '"]').before(why);
     }
-    nodes.push(group);
-    return { nodes, missing: () => (answers.strategy ? '' : STRATEGY.missing), refresh };
+    if (vehicles.failed) nodes.push(group);
+    else {
+      /* Beside the stage on desktop the cards keep one line: Risk and Expected return become column headings, and
+         each card keeps its labels for screen readers (D15). On a phone the headings stay hidden. */
+      const list = el('div', 'opening-strategy-list');
+      const cols = el('div', 'opening-strategy-cols');
+      cols.setAttribute('aria-hidden', 'true');
+      cols.append(el('span', null, STRATEGY.riskLabel), el('span', null, STRATEGY.returnLabel));
+      list.append(cols, group);
+      nodes.push(list);
+    }
+    return { nodes, missing: () => (answers.strategy ? '' : STRATEGY.missing), refresh() { refresh(); syncVehicles(); } };
   },
 
   esg() {
@@ -681,6 +810,9 @@ function changed() {
 function render(moveFocus, animate, back) {
   const screen = SCREENS[index];
   panel.innerHTML = '';
+  /* The vehicles load one screen ahead and draw on the strategy screen only (9d D3, D11). */
+  if (screen.id === 'risk' || screen.id === 'strategy') loadVehicles();
+  vehiclesOn(screen.id === 'strategy');
   const heading = el('h2', 'opening__heading', screen.title);
   heading.id = 'opening-heading';
   heading.tabIndex = -1;

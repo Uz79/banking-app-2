@@ -1,6 +1,6 @@
 # Strategy choice with the vehicles (9d): plan
 
-Branch: `feature/strategy-vehicles`. Decisions are cited as D1 to D13 from `requirements.md`.
+Branch: `feature/strategy-vehicles`. Decisions are cited as D1 to D15 from `requirements.md`. Groups 1 and 2 were built and committed together: the stage's place and size depended on the cards' layout (D14, D15).
 
 Each group ends with something to look at in the browser on the agent's server (`cd apps/web && npx vite --port 5199 --strictPort --no-open`), in the opening (Overview > Offers > Investment > Show suitable products, or `investment-opening.html` with a draft at the strategy screen).
 
@@ -8,20 +8,20 @@ Each group ends with something to look at in the browser on the agent's server (
 
 What you see: the customer's persona with the chosen strategy's vehicle above the cards; picking a card swaps it.
 
-- [ ] `js/character-vehicles.js`: set the recipe from outside (the saved profile), keep the Character kit's behaviour; per-stage framing overrides in `js/character-vehicles-config.js` only if needed (D2)
-- [ ] `js/investment-opening.js`: load the module on the risk screen (or on arrival), mount the stage once, place it on the strategy screen, `show()` on a pick, draw only while the screen is on show; the fallback without 3D (D3, D4, D11)
-- [ ] `investment-opening.html`: the stage card's styles (height on desktop and phone, the empty state, the fade-in with its reduced-motion path)
-- [ ] Check: desktop sheet and 390 in Light; the step fits without scrolling; arriving from the risk screen, from a resumed draft and from a summary edit; no console errors
+- [x] `js/character-vehicles.js`: set the recipe from outside (the saved profile), keep the Character kit's behaviour; per-stage framing overrides in `js/character-vehicles-config.js` only if needed (D2). Not needed: the module already takes the recipe, and every view frames in both stages
+- [x] `js/investment-opening.js`: load the module on the risk screen (or on arrival), mount the stage once, place it on the strategy screen, `show()` on a pick, draw only while the screen is on show; the fallback without 3D (D3, D4, D11)
+- [x] `css/styles.css`: the stage card's styles (the empty state, the fade-in with its reduced-motion path); the stage beside the cards on desktop and above them on a phone, filling the height the cards leave (D15); the taller sheet (D14)
+- [x] Check: desktop sheet (677 and 800 high) and 390 in Light; the step fits without scrolling; arriving from the risk screen, from a resumed draft and from a summary edit; no console errors; every fridge and opening screen without scrolling in the taller sheet, the fridge's poses at 677 and 800
 
 ## 2. Preview, caption, credits (D6, D7, D8, D9)
 
 What you see: hovering or arrowing to Growth or Dynamic previews them dimmed; a caption names the vehicle; "Model credits" swaps the stage for the credits.
 
-- [ ] `js/character-vehicles.js`: `preview()` / `unpreview()` and the dimmed state (D6)
-- [ ] `js/investment-opening.js`: hover and focus on the unavailable cards; the option group's arrow keys reach them on the strategy group without making them selectable (D7); the caption with `aria-live`; the credits swap and its link
-- [ ] `js/investment-opening-config.js`: the five captions, "Above your risk profile" on the caption, the credits copy and the link names (no em dashes)
-- [ ] `investment-opening.html`: caption, link and credits styles (`--color-fg-interactive`, focus ring)
-- [ ] Check: mouse and keyboard previews return to the chosen strategy; Space or Enter on an unavailable card does nothing; the other option groups (knowledge, purpose, horizon) behave as before; the credits fit the stage's height
+- [x] The preview and the dimmed state (D6): in the opening (`show()` and the canvas's opacity), no module change
+- [x] `js/investment-opening.js`: hover and focus on the unavailable cards; the option group's arrow keys reach them on the strategy group without making them selectable (D7); the caption with `aria-live`; the credits swap and its link
+- [x] `js/investment-opening-config.js`: the five captions, "Above your risk profile" on the caption, the credits copy and the link names (no em dashes)
+- [x] `css/styles.css`: caption, link and credits styles (`--color-fg-interactive`, focus ring); the column headings over the one-line cards (D15), only while the stage is there
+- [x] Check: mouse and keyboard previews return to the chosen strategy; Space or Enter on an unavailable card does nothing; the other option groups (knowledge, purpose, horizon) behave as before; the credits fit the stage's height
 
 ## 3. The assistant's question (D10)
 

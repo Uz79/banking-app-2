@@ -123,6 +123,30 @@ export const STRATEGY = {
   missing: 'Choose a strategy.',
 };
 
+/* ── The vehicles (9d) ── the persona travels with the strategy's vehicle above the cards. The caption is the stage's
+   text (the canvas is hidden from screen readers, D8); `above` leads it while a riskier strategy is previewed (D6). */
+export const VEHICLE_STAGE = {
+  captions: {
+    income: 'Income goes hiking: slow and steady.',
+    conservative: 'Conservative rides a tricycle: steady, a little quicker.',
+    balanced: 'Balanced rides a Vespa: quicker, with some bumps.',
+    growth: 'Growth jumps with a parachute: fast, with big swings.',
+    dynamic: 'Dynamic flies a jetpack: the fastest, with the biggest swings.',
+  },
+  above: 'Above your risk profile.',
+  /* The credits (D9): the CC BY models with their authors and pages; the tent as a courtesy line. */
+  creditsLink: 'Model credits',
+  backLink: 'Back to the vehicles',
+  creditsTitle: '3D models from Poly Pizza',
+  credits: [
+    { name: 'Tricycle', by: 'Poly by Google', url: 'https://poly.pizza/m/9UE6AhwMhbc', licence: 'CC BY 3.0', licenceUrl: 'https://creativecommons.org/licenses/by/3.0/' },
+    { name: 'Vespa', by: 'Jasmine Roberts', url: 'https://poly.pizza/m/blGLclvvdEM', licence: 'CC BY 3.0', licenceUrl: 'https://creativecommons.org/licenses/by/3.0/' },
+    { name: 'Parachute', by: 'Poly by Google', url: 'https://poly.pizza/m/3Z7vJ96JIEB', licence: 'CC BY 3.0', licenceUrl: 'https://creativecommons.org/licenses/by/3.0/' },
+    { name: 'Jetpack', by: 'Roman Miller', url: 'https://poly.pizza/m/8VafbXInymc', licence: 'CC BY 3.0', licenceUrl: 'https://creativecommons.org/licenses/by/3.0/' },
+    { name: 'Tent', by: 'Quaternius', url: 'https://poly.pizza/m/5Q7qIrfDxA', licence: 'CC0', licenceUrl: 'https://creativecommons.org/publicdomain/zero/1.0/' },
+  ],
+};
+
 /* ── The recommendation (D12, flagged: a placeholder for the bank's rules) ──
    The three risk scores are added up (0 to 9); `bands` maps the sum to a strategy (the first band whose `upTo` it does
    not exceed). Then the caps: a strategy no riskier than `max` for a short horizon or no knowledge. */

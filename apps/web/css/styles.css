@@ -2597,11 +2597,12 @@ a.show-all-btn {
 }
 
 /* Fixed-height flow sheet (modifier on .modal-shell): from 1024px the sheet keeps one height whatever the step holds,
-   so a short step does not leave the sheet jumping in size and a long one scrolls inside it (9a D26). Never taller
-   than the viewport allows. Below 1024px the sheet is full screen, as every flow sheet. */
+   so a short step does not leave the sheet jumping in size and a long one scrolls inside it (9a D26). As tall as the
+   window allows with a --space-7 margin above and below, 800 at most (9d D14). Never taller than the viewport allows.
+   Below 1024px the sheet is full screen, as every flow sheet. */
 @media (min-width: 1024px) {
   .modal-shell.modal-shell--fixed-height > .modal {
-    --modal-fixed-height: clamp(480px, 60vh, 640px);
+    --modal-fixed-height: clamp(480px, 100dvh - 2 * var(--space-7), 800px);
     height: min(var(--modal-fixed-height), calc(100dvh - 2 * var(--space-4)));
     max-height: min(var(--modal-fixed-height), calc(100dvh - 2 * var(--space-4)));
   }
@@ -11977,6 +11978,185 @@ html.fridge--wide .fridge__panel {
   font-size: var(--fs-text-sm);
   line-height: var(--lh-text);
   color: var(--color-fg-secondary);
+}
+
+/* The vehicles (9d): a stage card above the strategy cards, a caption and the credits link under it. The credits take
+   the stage's place, so the step keeps its height (D9). */
+.opening-vehicles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* The stage takes the height the cards leave, up to 15rem, so the step never scrolls (D1, D14): the strategy
+   screen's column grows to the sheet's height and everything but the stage keeps its size. */
+.opening__screen:has(.opening-vehicles),
+.opening__screen:has(.opening-vehicles) .opening__body {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.opening__screen:has(.opening-vehicles) .opening__body > :not(.opening-vehicles) {
+  flex-shrink: 0;
+}
+
+.opening-vehicles__stage,
+.opening-vehicles__credits {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 15rem;
+  border-radius: var(--radius-regular);
+  background: var(--color-bg-secondary);
+  overflow: hidden;
+}
+
+/* Desktop (the assistant's wide layout, the 960 sheet): the stage stands beside the cards, as tall as they are, so
+   the step fits any sheet height (D15). The fall-back note keeps the full width above both. */
+.assistant--wide .opening__screen:has(.opening-vehicles) .opening__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 23.5rem;
+  align-items: stretch;
+  align-content: start;
+  gap: var(--space-3);
+}
+
+.assistant--wide .opening__screen:has(.opening-vehicles) .opening__body > .opening__note {
+  grid-column: 1 / -1;
+}
+
+.assistant--wide .opening-vehicles__stage,
+.assistant--wide .opening-vehicles__credits {
+  max-height: none;
+}
+
+.assistant--wide .opening-vehicles__foot {
+  flex-direction: column;
+  gap: 0;
+}
+
+/* The column headings over the cards (D15): Risk and Expected return once, as wide as each meter, so each card keeps
+   one line. A card whose name and tag leave too little room wraps its meters to a second line, still under the
+   headings. Only while the stage is there: without 3D the cards are 9a's (D4). */
+.opening-strategy-cols {
+  display: none;
+}
+
+.opening__body:has(.opening-vehicles) .opening-strategy-cols {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: 0 var(--space-2) var(--space-1);
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.opening__body:has(.opening-vehicles) .opening-strategy-cols > span,
+.opening__body:has(.opening-vehicles) .opening-meter {
+  width: 4rem;
+}
+
+.opening__body:has(.opening-vehicles) .opening-option__meters {
+  flex-wrap: nowrap;
+  margin-left: auto;
+}
+
+/* The labels stay for screen readers; the headings show them once. */
+.opening__body:has(.opening-vehicles) .opening-meter__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.opening-vehicles__stage[hidden],
+.opening-vehicles__credits[hidden] {
+  display: none;
+}
+
+/* Fades in once the models are ready; dimmed while a riskier strategy is previewed (D3, D6). */
+.opening-vehicles__stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.24s ease-out;
+}
+
+.opening-vehicles.is-ready .opening-vehicles__stage canvas {
+  opacity: 1;
+}
+
+.opening-vehicles.is-ready.is-preview .opening-vehicles__stage canvas {
+  opacity: 0.45;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .opening-vehicles__stage canvas {
+    transition: none;
+  }
+}
+
+.opening-vehicles__credits {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.opening-vehicles__credits-title {
+  margin: 0 0 var(--space-1);
+  color: var(--color-fg);
+  font-weight: var(--fw-medium);
+}
+
+.opening-vehicles__credits-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.opening-vehicles__foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.opening-vehicles__caption {
+  margin: 0;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+/* The credits' links and their toggle: the interactive ink with its focus ring, as on the Character kit (9c D14). */
+.opening-vehicles__link {
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-small);
+  background: none;
+  color: var(--color-fg-interactive);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  cursor: pointer;
+}
+
+.opening-vehicles__toggle {
+  flex-shrink: 0;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+}
+
+.opening-vehicles__link:focus-visible {
+  outline: 0.125rem solid var(--color-fg-interactive);
+  outline-offset: 2px;
 }
 
 .opening-meter {
