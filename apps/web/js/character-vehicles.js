@@ -70,12 +70,14 @@ function placeVehicle(scene, cfg) {
 
 /**
  * Mounts the stage into `box` (sized by CSS) and returns `{ show(strategy), wake() }`.
- * `active()` says whether to keep drawing; `wake()` starts the loop again.
+ * `active()` says whether to keep drawing; `wake()` starts the loop again. `recipe()` gives the persona's recipe once the models
+ * have loaded; later changes come as `uzbank:persona-change`.
  */
 export async function mountVehicles(box, {
   reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
   active = () => true,
   strategy: first = 'income',
+  recipe = () => ({ head: 'rogue', headwear: 'none', outfit: 'barbarian', back: 'none' }),
 } = {}) {
   const loader = new GLTFLoader();
   const keys = Object.keys(VEHICLES);
@@ -189,7 +191,7 @@ export async function mountVehicles(box, {
   }
 
   /* Recipe from the page's pickers (the live specimen); the pose, not the specimen's loop, decides the clip. */
-  figure.setRecipe({ head: 'rogue', headwear: 'none', outfit: 'barbarian', back: 'none' }, false);
+  figure.setRecipe(recipe(), false);
   document.addEventListener('uzbank:persona-change', (e) => {
     const r = e.detail && e.detail.recipe;
     if (!r) return;

@@ -2817,11 +2817,14 @@ if (vBox) {
   /* `?reduced` checks the reduced-motion path without the system setting, as on the fridge. */
   const reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
   const forceReduced = new URLSearchParams(location.search).has('reduced');
-  mountVehicles(vBox, { reduced: () => forceReduced || reduceMQ.matches, active: () => vVisible && !document.hidden }).then((stage) => {
+  /* The persona as the live specimen has it once the models have loaded (its recipe is printed in the specimen's panel). */
+  const recipe = () => JSON.parse(document.querySelector('[data-ck-recipe]').textContent);
+  mountVehicles(vBox, { reduced: () => forceReduced || reduceMQ.matches, active: () => vVisible && !document.hidden, recipe }).then((stage) => {
     stage.show(pressed());
     vPicker.addEventListener('ck:strategy', () => stage.show(pressed()));
+    /* The latest entry: a batch can hold the first report (off screen) and the scroll that brought it in. */
     new IntersectionObserver((entries) => {
-      vVisible = entries[0].isIntersecting;
+      vVisible = entries[entries.length - 1].isIntersecting;
       if (vVisible) stage.wake();
     }).observe(vBox);
     document.addEventListener('visibilitychange', () => { if (vVisible && !document.hidden) stage.wake(); });
