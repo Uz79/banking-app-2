@@ -440,21 +440,103 @@ export async function createFridgeScene(host, cfg, { reduced }) {
     });
   }
 
-  /* Go to a stage: the camera glides, doors swing, the tint moves. */
-  /* The persona stands next to the closed fridge on the intro; on the tour and the sliders the fridge fills the stage and it steps out. */
-  let figureTween = null;
-  function showFigure(on) {
-    cancel(figureTween);
-    if (on) { figure.actor.visible = true; dirty = true; return; }
-    figureTween = tween(cfg.motion.glide, () => {}, () => { figure.actor.visible = false; dirty = true; });
-    if (!figureTween) figure.actor.visible = false;
+  /* ── The persona's walk (8e) ──────────────────────────────────────── */
+  /* It stands beside the closed fridge on the intro and next to the open freezer on the result. In between it walks out
+     to the right and is hidden, so the fridge has the stage to itself (D1 to D4). A newer step simply gives it a new goal,
+     from wherever it is (D9). With reduced motion it is placed or hidden at once (D8). */
+  const walk = cfg.figure.walk;
+  const spots = { intro: cfg.figure, result: cfg.figure.result };
+  let goal = null; /* { x, z, yaw, hide } while it walks or turns */
+  let walking = false;
+  const turnTo = (from, to, max) => {
+    const d = Math.atan2(Math.sin(to - from), Math.cos(to - from));
+    return Math.abs(d) <= max ? to : from + Math.sign(d) * max;
+  };
+  function place(spot) {
+    figure.actor.position.set(spot.x, 0, spot.z);
+    figure.actor.rotation.y = spot.yaw;
+    dirty = true;
+  }
+  function setWalking(on) {
+    if (on === walking) return;
+    walking = on;
+    figure.setLoop(on ? walk.clip : cfg.figure.idle, on ? { timeScale: walk.timeScale } : undefined);
+  }
+  let figurePlaced = false;
+  let afterExit = null; /* what the stage does once the persona is out of the frame (D3) */
+  /* Returns true when it starts walking out, so the camera waits for it. */
+  function sendFigure(stage) {
+    const spot = spots[stage];
+    const actor = figure.actor;
+    /* The first stage (the page opening, or "Start over") shows it where it belongs, without a walk. */
+    if (reduced() || !figurePlaced) {
+      figurePlaced = true;
+      goal = null;
+      setWalking(false);
+      actor.visible = !!spot;
+      if (spot) place(spot);
+      dirty = true;
+      return false;
+    }
+    if (spot) {
+      /* Hidden: it comes in from outside the frame on the right, facing left. */
+      if (!actor.visible) {
+        place({ x: walk.outX, z: spot.z, yaw: -Math.PI / 2 });
+        actor.visible = true;
+      }
+      goal = { x: spot.x, z: spot.z, yaw: spot.yaw, hide: false };
+      return false;
+    }
+    if (!actor.visible) return false;
+    goal = { x: walk.outX, z: actor.position.z, yaw: Math.PI / 2, hide: true };
+    return true;
+  }
+  function stepFigure(dt) {
+    if (!goal) return;
+    const actor = figure.actor;
+    const dx = goal.x - actor.position.x, dz = goal.z - actor.position.z;
+    const dist = Math.hypot(dx, dz);
+    if (dist > 0.001) {
+      setWalking(true);
+      actor.rotation.y = turnTo(actor.rotation.y, Math.atan2(dx, dz), walk.turn * dt);
+      const move = Math.min(dist, walk.speed * dt);
+      actor.position.x += (dx / dist) * move;
+      actor.position.z += (dz / dist) * move;
+      dirty = true;
+      return;
+    }
+    if (goal.hide) {
+      actor.visible = false;
+      goal = null;
+      setWalking(false);
+      dirty = true;
+      const next = afterExit;
+      afterExit = null;
+      if (next) next();
+      return;
+    }
+    /* Arrived: back to the idle and the turn toward the viewer. */
+    setWalking(false);
+    actor.rotation.y = turnTo(actor.rotation.y, goal.yaw, walk.turn * dt);
+    if (actor.rotation.y === goal.yaw) goal = null;
+    dirty = true;
   }
 
+  /* Go to a stage: the camera glides, doors swing, the tint moves, the persona walks. */
   /* `seq` lets a newer stage cancel what an older one still had queued (the cooling sequence). */
   let seq = 0;
   function goTo(step) {
     const mine = ++seq;
-    showFigure(step.stage === 'intro');
+    /* Walking out, the persona leaves the frame first and then the camera moves, so it never crosses a close-up (D3). */
+    afterExit = null;
+    if (sendFigure(step.stage)) {
+      afterExit = () => { if (mine === seq) stageTo(step, mine); };
+      return;
+    }
+    stageTo(step, mine);
+  }
+
+  function stageTo(step, mine) {
     glideTo(step.stage);
     /* Arriving at the result with the fridge open: the door shuts, a short cooling moment, then the freezer opens (D4, D15). */
     if (step.cool && angle.fridge > 0 && !reduced()) {
@@ -492,6 +574,7 @@ export async function createFridgeScene(host, cfg, { reduced }) {
     requestAnimationFrame(frame);
     const dt = Math.min(clock.getDelta(), 0.05);
     if (document.hidden) return;
+    stepFigure(dt);
     figure.update(dt);
     runTweens(dt);
     if (dirty || !reduced()) {

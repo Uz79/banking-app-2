@@ -10,7 +10,14 @@ export const CONFIG = {
   fridge: { scale: 2.4, x: -0.75 },
 
   /* The persona: beside the fridge on the viewer's right, turned a little toward it. */
-  figure: { x: 1.2, z: 0.35, yaw: -0.4, idle: 'Idle_A' },
+  figure: {
+    x: 1.2, z: 0.35, yaw: -0.4, idle: 'Idle_A',
+    /* Step 7 (8e D4, D5): just right of the fridge, next to the open freezer, turned a little toward it. */
+    result: { x: 0.5, z: 0.05, yaw: -0.35 },
+    /* The walk out and back (8e D1, D2): `outX` is outside every frame on the right; `speed` in world units a second,
+       `turn` in radians a second, `timeScale` so the feet keep pace with `speed`. */
+    walk: { clip: 'Walking_A', outX: 5.4, speed: 3.6, turn: 8, timeScale: 2.1 },
+  },
 
   /* The camera looks at `look` from `pos` (world units, after the fridge scale). `width` is the width that must stay in view:
      on a narrow stage the camera backs away along its line of sight until it fits. */
@@ -29,6 +36,8 @@ export const CONFIG = {
       reserve: { pos: [-0.75, 1.5, 2.43], look: [-0.75, 0.29, 0.03], width: 1.2, height: 0.9, fill: true },
       /* The freezer at the top, seen from above, close enough that the open door is partly cropped and the contents read. */
       freezer: { pos: [-0.85, 3.35, 2.9], look: [-0.85, 2.0, 0], width: 1.5, height: 1.1, fill: true },
+      /* The result (8e D5): further back than the freezer, so the open freezer and the persona stand side by side, its feet cropped. */
+      result: { pos: [-0.3, 2.6, 5], look: [-0.3, 1.45, 0], width: 3.0, height: 2.3, fill: true },
     },
   },
 
@@ -137,7 +146,7 @@ export const STEPS = [
     text: 'Set aside money for the unplanned and for bigger purchases. The drawers fill as you go.',
   },
   {
-    id: 'result', stage: 'freezer', doors: ['freezer'], outline: 'freezer', cool: true, kind: 'result',
+    id: 'result', stage: 'result', doors: ['freezer'], outline: 'freezer', cool: true, kind: 'result',
     title: 'Your freezer', next: 'Show suitable products',
   },
 ];
