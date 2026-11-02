@@ -134,10 +134,11 @@ export const VEHICLE_STAGE = {
     dynamic: 'Dynamic flies a jetpack: the fastest, with the biggest swings.',
   },
   above: 'Above your risk profile.',
-  /* The credits (D9): the CC BY models with their authors and pages; the tent as a courtesy line. */
+  /* The credits (D9): the CC BY models with their authors and pages, the tent as a courtesy line. Written as one short
+     paragraph grouped by licence and author, so it fits the stage's place on a phone. */
   creditsLink: 'Model credits',
   backLink: 'Back to the vehicles',
-  creditsTitle: '3D models from Poly Pizza',
+  creditsSource: 'All from Poly Pizza.',
   credits: [
     { name: 'Tricycle', by: 'Poly by Google', url: 'https://poly.pizza/m/9UE6AhwMhbc', licence: 'CC BY 3.0', licenceUrl: 'https://creativecommons.org/licenses/by/3.0/' },
     { name: 'Vespa', by: 'Jasmine Roberts', url: 'https://poly.pizza/m/blGLclvvdEM', licence: 'CC BY 3.0', licenceUrl: 'https://creativecommons.org/licenses/by/3.0/' },

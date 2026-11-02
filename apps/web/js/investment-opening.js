@@ -244,21 +244,32 @@ function vehicleCard() {
   const credits = el('div', 'opening-vehicles__credits');
   credits.id = 'opening-vehicle-credits';
   credits.hidden = true;
-  credits.append(el('p', 'opening-vehicles__credits-title', VEHICLE_STAGE.creditsTitle));
-  const list = el('ul', 'opening-vehicles__credits-list');
-  VEHICLE_STAGE.credits.forEach((c) => {
-    const li = el('li');
-    const link = (text, href) => {
-      const a = el('a', 'opening-vehicles__link', text);
-      a.href = href;
-      a.target = '_blank';
-      a.rel = 'noopener';
-      return a;
-    };
-    li.append(link(c.name, c.url), ' by ' + c.by + ', ', link(c.licence, c.licenceUrl));
-    list.append(li);
+  /* "Tricycle and Parachute by Poly by Google, Vespa by Jasmine Roberts, CC BY 3.0. Tent by Quaternius, CC0." */
+  const link = (text, href) => {
+    const a = el('a', 'opening-vehicles__link', text);
+    a.href = href;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    return a;
+  };
+  const text = el('p', 'opening-vehicles__credits-text');
+  const licences = [...new Set(VEHICLE_STAGE.credits.map((c) => c.licence))];
+  licences.forEach((licence, i) => {
+    const ofLicence = VEHICLE_STAGE.credits.filter((c) => c.licence === licence);
+    const authors = [...new Set(ofLicence.map((c) => c.by))];
+    if (i) text.append(' ');
+    authors.forEach((by, j) => {
+      if (j) text.append(', ');
+      ofLicence.filter((c) => c.by === by).forEach((c, k, all) => {
+        if (k) text.append(k === all.length - 1 ? ' and ' : ', ');
+        text.append(link(c.name, c.url));
+      });
+      text.append(' by ' + by);
+    });
+    text.append(', ', link(licence, ofLicence[0].licenceUrl), '.');
   });
-  credits.append(list);
+  text.append(' ' + VEHICLE_STAGE.creditsSource);
+  credits.append(text);
   const foot = el('div', 'opening-vehicles__foot');
   const caption = el('p', 'opening-vehicles__caption');
   caption.setAttribute('aria-live', 'polite');

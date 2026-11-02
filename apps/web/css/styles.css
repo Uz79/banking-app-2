@@ -12103,22 +12103,14 @@ html.fridge--wide .fridge__panel {
 }
 
 .opening-vehicles__credits {
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-2);
   font-size: var(--fs-text-sm);
   line-height: var(--lh-text);
   color: var(--color-fg-secondary);
 }
 
-.opening-vehicles__credits-title {
-  margin: 0 0 var(--space-1);
-  color: var(--color-fg);
-  font-weight: var(--fw-medium);
-}
-
-.opening-vehicles__credits-list {
+.opening-vehicles__credits-text {
   margin: 0;
-  padding: 0;
-  list-style: none;
 }
 
 .opening-vehicles__foot {
