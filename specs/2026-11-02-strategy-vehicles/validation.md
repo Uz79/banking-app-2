@@ -49,6 +49,21 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 - [x] The Character kit's Vehicles section works as after 9c: picker, profiles from the specimen, reduced motion, credits
 
+## 7a. The strategy carousel (D16 to D19)
+
+Supersedes the layout checks of section 2 (the stage beside or above the cards) and the hover preview of section 3.
+
+- [ ] Desktop (677 and 800 sheets) and 390: one card centred, the neighbours peeking in, the markers and "Model credits" below; the step does not scroll, also with the fall-back note
+- [ ] Each card: the persona and its vehicle large, the name with Recommended or Above your risk profile, one line of description, risk segments and return dots with labels, "Choose this strategy" or the reason
+- [ ] Starts on the recommended card; with a stored choice (resumed draft, summary edit) on the chosen one
+- [ ] Arrow buttons, markers, swipe (trackpad) and the arrow keys move between cards; the arrows stop at the ends; a click on a peeking card moves to it
+- [ ] Next is disabled with "Choose a strategy." until a card is chosen, then reads "Continue with <name>"; Growth and Dynamic cannot be chosen
+- [ ] Screen reader names: each card "Balanced, 3 of 5, recommended" and announced on change; only the current card is in the Tab order; the figure is named by its caption
+- [ ] Reduced motion (forced): no slide, the card swaps at once; no fade
+- [ ] The live stage moves with the current card, the others show stills; the stills follow Light, Dark and Custom 06
+- [ ] Without 3D: the cards without figures, the rest works
+- [ ] "Model credits" shows the credits in the carousel's place and returns
+
 ## 8. Baseline smoke test
 
 Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, then repeat the starred (★) items in Dark and at phone width (390px).
