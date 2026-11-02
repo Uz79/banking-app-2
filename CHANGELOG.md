@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit b020bf62b298289387effa0df898c60b75c7dc6b -->
+<!-- changelog: last-commit 9948426bb6dd9769d1dad9493646b337bcc74881 -->
 
 ### Added
 - **The vehicles in the opening's strategy step** (roadmap 9d). The customer's own persona travels with the chosen strategy's vehicle on a small 3D stage: beside the cards on desktop, above them on a phone. Picking a card swaps the vehicle. Hovering or arrowing to a strategy above the risk profile previews its vehicle, dimmed, with "Above your risk profile" in the caption; it still cannot be chosen. A caption under the stage names the vehicle for screen readers. The vehicles load on the risk step, draw only while the strategy step is on show, and the step falls back to the plain cards if 3D is not available. The cards, the recommendation and the stored answers are unchanged.
