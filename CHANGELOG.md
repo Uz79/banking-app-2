@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 38adb8a8a4a57ece25b660b9f43461f535958917 -->
+<!-- changelog: last-commit 8612b11f66631870cc9aa0f496ecac0326f3a166 -->
 
 ### Added
 - **The assistant notices when a customer seems stuck** (roadmap 9f). Time on a step against its reading time, changing an answer again and again, coming back to a step, opening the same explanation twice or leaving the amount empty make the assistant offer that step's own question, once, quietly: on desktop the invitation shows the question with "Show me" and "No, thanks", on a phone a bubble rises above Help?. Newbie gets it on every step, All-rounder only on knowledge, amount, risk, tax and documents and later, Power user never. The third nudge, and any on documents or the summary, also offers a person. Nudges are remembered with the progress for the session. `?nudge=fast` shortens the waits for testing.
