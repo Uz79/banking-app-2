@@ -181,3 +181,7 @@ Added 2026-11-03. The list on All bookings runs day group after day group with n
 ## 25. Focus rings app-wide
 
 Added 2026-11-03, point 7 of the phone polish brief (points 1 to 6 were built in 21). No browser-default outlines anywhere: every interactive element shows the app's ring in `--color-fg-interactive`, only for keyboard focus (`:focus-visible`), never after a click or tap. First known case: the selected month chip on All bookings shows a blue browser ring after a click. Spec: `specs/2026-11-03-focus-rings/` (branch `feature/focus-rings`). Settled in its interview: one global base rule at zero specificity, so the component rings keep winning; text fields keep their focused stroke on a click; outlines in other tokens move to `--color-fg-interactive`, the fields' inset stroke stays; a scripted audit of every page and flow.
+
+## 26. Fridge result: the amount spills over its ring on desktop with Large type
+
+Found during 25 (2026-11-03). With Legibility set to Large, the fridge's result on the desktop panel puts the amount across the ring's edge, as item 19 did on a phone before 21 fixed it there. To settle in its spec: whether the ring grows with the type scale, or the amount's size is capped inside it.
