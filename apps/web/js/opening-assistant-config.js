@@ -4,7 +4,7 @@
  *
  * A chip: `q` (the customer's question, also the chip's label), `short` (one or two sentences, every User Type) and
  * `more` (the rest, for Newbie, or behind More for All-rounder; Power user never sees it). `then` lists follow-up
- * chips that appear once it is asked. `{amount}` and `{after20}` are filled from the customer's amount.
+ * chips that appear once it is asked. `{amount}` is filled from the customer's amount.
  *
  * Rules (the map's rules 1 to 3): explain, never say which option to pick, no personal advice, no promise of
  * something the app does not do. Second person, "we" for the bank, no exclamation marks, no em dashes.
@@ -115,9 +115,9 @@ export const CHIPS = {
   risk: {
     chips: [
       {
-        q: 'What does a loss of 20% mean in francs?',
-        short: 'With {amount}, a loss of 20% means {after20} for a while.',
-        more: 'Markets have recovered from past falls, but how long it took differed, and the past does not promise the future.',
+        q: 'How are these lines worked out?',
+        short: 'They are an example for a balanced mix over your horizon. It is not a forecast, and the past does not promise the future.',
+        more: '19 in 20 outcomes end between the good and the unfavourable line. Markets have recovered from past falls, but how long it took differed.',
       },
       {
         q: 'Is there a right answer?',
@@ -125,7 +125,7 @@ export const CHIPS = {
         more: 'Answer as you would feel, not as you think you should.',
       },
       {
-        q: 'What does the lottery question show?',
+        q: 'Why a sure amount or a chance?',
         short: 'Whether you prefer a sure amount or a chance of more. Neither is better.',
         more: 'It is one of three questions. Together they set your risk profile.',
       },

@@ -3,9 +3,12 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 2e44ec633a984506fdfa24825e0dd2717e2fd1f0 -->
+<!-- changelog: last-commit 38adb8a8a4a57ece25b660b9f43461f535958917 -->
 
 ### Added
+- **The risk experience** (roadmap 9e). The risk step shows what the customer's own amount could do over their horizon: three lines, good, expected and unfavourable, for a balanced mix as an example, with each line's end value in CHF (and the change in percent on desktop). "How is this worked out?" explains the range in place of the chart. The three questions are asked in the customer's francs ("At CHF 40'000 (a loss of 20%)", "Take CHF 12'500 for sure") and each one highlights its part of the chart while it is open. An answered question folds into one line with Change. The answers and their scores are the same as before, so the recommendation does not change. The chart's numbers are placeholders in `js/investment-opening-config.js` (`RISK_CHART`). With reduced motion the lines appear at once.
+- **New assistant questions on the risk step:** "How are these lines worked out?" and "Why a sure amount or a chance?" (in place of the loss-in-francs and the lottery questions).
+- Spec: `specs/2026-11-03-risk-experience/`.
 - **The fridge and the opening keep their progress for the session** (roadmap 21). Closing asks "Leave for now?" on every step of both, the first ones included ("Your progress is kept for this session, so you can continue where you left off.", Keep going or Leave), and Investment then reopens on the same step: the fridge with its slider values and its scene already in that step's pose, or the opening on its screen. Completing the opening or Start over forgets everything; the completion screen and the booked appointment close without asking. The opening's session draft (`uzBankWebOpeningDraft`) now also holds the page and the fridge's step and values.
 - **The open assistant floats on desktop.** After "Yes, help me" the conversation sits in a rounded container with a light tint (a shade darker in Light, lighter in Dark) and a thin stroke, and "I can do it myself" lines up with the step's Next. The lines beside the assistant and above "I can do it myself" are gone.
 - **The assistant as its own layer on a phone.** Help? opens the questions over the whole sheet with their own header, "Questions about this step" and an X; that X, "I can do it myself" and Escape close only the questions, and focus goes back to Help?. The sheet's Back and X are hidden meanwhile. It slides up, at once with reduced motion.
