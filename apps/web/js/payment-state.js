@@ -3,11 +3,14 @@
  *
  * Single source of truth for everything the payment flow + dashboard
  * shares: 8 recipients, the running list of bookings (max 100, oldest dropped),
- * and the live Household account balance.
+ * and the live Household account balance. A dropped booking keeps its money:
+ * what it moved is carried per account, so no balance changes when a booking
+ * only leaves the list (roadmap 14).
  *
  * Persistence:
  *   localStorage key  uzBankWebPaymentState
- *   shape             { schemaVersion: 1, bookings: [...], household: <number> }
+ *   shape             { schemaVersion: 2, bookings: [...], positions: {...}, mandates: [...],
+ *                       carried: { household, savings, householdOut } }
  *
  * State changes dispatch a `uzbank:state-changed` CustomEvent on document
  * so the renderer (js/data-render.js) and any other listener can react
@@ -180,8 +183,24 @@
       household: INITIAL_HOUSEHOLD,
       bookings: [],
       positions: defaultPositions(),
-      mandates: []
+      mandates: [],
+      carried: noCarry()
     };
+  }
+
+  /* What the bookings dropped by the limit had moved, in CHF (roadmap 14 D1): the signed amount per account, and the
+     Household outflow for the Today header. */
+  function noCarry() {
+    return { household: 0, savings: 0, householdOut: 0 };
+  }
+
+  function normalizeCarried(raw) {
+    var c = noCarry();
+    if (!raw || typeof raw !== 'object') return c;
+    Object.keys(c).forEach(function (k) {
+      if (typeof raw[k] === 'number' && isFinite(raw[k])) c[k] = raw[k];
+    });
+    return c;
   }
 
   /* Mandates opened in the investment opening (9a D21); a missing or broken list is empty. */
@@ -225,26 +244,29 @@
       var parsed = JSON.parse(raw);
       if (!parsed) return defaultState();
       var b = Array.isArray(parsed.bookings) ? parsed.bookings : [];
-      var cap = MAX_BOOKINGS;
+      var loaded = null;
       if (parsed.schemaVersion === SCHEMA_VERSION) {
-        return {
+        loaded = {
           schemaVersion: SCHEMA_VERSION,
           household: INITIAL_HOUSEHOLD,
-          bookings: b.slice(-cap),
+          bookings: b,
           positions: normalizePositions(parsed.positions),
-          mandates: normalizeMandates(parsed.mandates)
+          mandates: normalizeMandates(parsed.mandates),
+          carried: normalizeCarried(parsed.carried)
         };
-      }
-      if (parsed.schemaVersion === 1) {
-        return {
+      } else if (parsed.schemaVersion === 1) {
+        loaded = {
           schemaVersion: SCHEMA_VERSION,
           household: INITIAL_HOUSEHOLD,
-          bookings: b.slice(-cap),
+          bookings: b,
           positions: defaultPositions(),
-          mandates: []
+          mandates: [],
+          carried: noCarry()
         };
       }
-      return defaultState();
+      if (!loaded) return defaultState();
+      trimBookings(loaded);
+      return loaded;
     } catch (e) {
       return defaultState();
     }
@@ -256,7 +278,8 @@
         schemaVersion: SCHEMA_VERSION,
         bookings: state.bookings,
         positions: state.positions,
-        mandates: state.mandates
+        mandates: state.mandates,
+        carried: state.carried
       }));
     } catch (e) {}
   }
@@ -297,6 +320,7 @@
   function accountRunningBalance(accountKey) {
     var key = accountKey || 'household';
     var base = key === 'savings' ? SAVINGS : INITIAL_HOUSEHOLD;
+    base += (state.carried && state.carried[key]) || 0;
     if (key === 'household') {
       base -= STATIC_TODAY_OUTFLOW;
     }
@@ -327,7 +351,8 @@
       if (b.direction === 'in') return sum;
       return sum + (typeof b.amount === 'number' ? b.amount : 0);
     }, 0);
-    var todayBalance = state.household - STATIC_TODAY_OUTFLOW - dynamicTodayOutflow;
+    var carriedOut = (state.carried && state.carried.householdOut) || 0;
+    var todayBalance = state.household - STATIC_TODAY_OUTFLOW - carriedOut - dynamicTodayOutflow;
     var householdRunning = accountRunningBalance('household');
     var savingsRunning = accountRunningBalance('savings');
 
@@ -346,6 +371,8 @@
       // the rows under it after a payment or a transfer.
       overviewAccountsTotal:        Math.round((householdRunning + savingsRunning + DEPOSIT + RETIREMENT) * 100) / 100,
       accountDetailsAccountsTotal:  Math.round((householdRunning + savingsRunning) * 100) / 100,
+      // What bookings dropped by the limit had moved per account (roadmap 14), for pages that sum the listed bookings.
+      carried: Object.assign({}, state.carried || noCarry()),
       positions: clonePositions(state.positions),
       mandates: (state.mandates || []).map(function (m) { return Object.assign({}, m); }),
       bookings: state.bookings.map(function (b) {
@@ -400,6 +427,22 @@
 
   /* ── Commit / reset ──────────────────────────────────────────────── */
 
+  /* Drop the oldest bookings past the limit, carrying what each executed one moved (roadmap 14 D1, D4). Both legs of
+     a transfer carry to their own accounts. */
+  function trimBookings(s) {
+    if (s.bookings.length <= MAX_BOOKINGS) return;
+    if (!s.carried) s.carried = noCarry();
+    s.bookings.splice(0, s.bookings.length - MAX_BOOKINGS).forEach(function (b) {
+      if (!b || !isExecuted(b)) return;
+      var key = b.accountKey || 'household';
+      if (key !== 'household' && key !== 'savings') return;
+      var amt = typeof b.amount === 'number' ? b.amount : 0;
+      var out = b.direction !== 'in';
+      s.carried[key] = Math.round((s.carried[key] + (out ? -amt : amt)) * 100) / 100;
+      if (key === 'household' && out) s.carried.householdOut = Math.round((s.carried.householdOut + amt) * 100) / 100;
+    });
+  }
+
   // Copies the schedule a flow collected (status, execute-on date) onto a booking.
   function applySchedule(booking, source) {
     var status = source && source.status;
@@ -425,9 +468,7 @@
     applySchedule(booking, payment);
 
     state.bookings.push(booking);
-    if (state.bookings.length > MAX_BOOKINGS) {
-      state.bookings.splice(0, state.bookings.length - MAX_BOOKINGS); // drop oldest
-    }
+    trimBookings(state);
     // NOTE: We deliberately do NOT decrement state.household here.
     // The Household amount shown in the account list represents the
     // "registered" end-of-yesterday balance and stays fixed for the
@@ -479,10 +520,7 @@
     });
     applySchedule(state.bookings[state.bookings.length - 1], transfer);
 
-    var cap = MAX_BOOKINGS;
-    if (state.bookings.length > cap) {
-      state.bookings.splice(0, state.bookings.length - cap);
-    }
+    trimBookings(state);
     dispatchChange();
   }
 
@@ -542,10 +580,7 @@
       quantity: order.quantity
     });
 
-    var cap = MAX_BOOKINGS;
-    if (state.bookings.length > cap) {
-      state.bookings.splice(0, state.bookings.length - cap);
-    }
+    trimBookings(state);
 
     if (!state.positions) state.positions = defaultPositions();
     var existing = state.positions[order.symbol] || {
