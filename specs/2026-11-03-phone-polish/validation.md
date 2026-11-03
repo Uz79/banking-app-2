@@ -39,6 +39,14 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [x] Light, Dark and Custom 06: the header reads as the sheet's
 - [x] Desktop: the assistant's column unchanged (the bar hidden, the title in the column)
 
+## 4a. The assistant's container on desktop (D16 to D18)
+
+- [x] No line between the step and the assistant, none above "I can do it myself"; the summary's section lines stay
+- [x] After "Yes, help me": the conversation in a rounded container with a space-1 padding, the secondary background and a separator stroke; the customer's lines and "I can do it myself" on the page background; Light (a shade darker) and Dark (a shade lighter)
+- [x] "I can do it myself" level with Next (both 573 to 613 in a 677 sheet)
+- [x] The invitation stays on the sheet's background, no container
+- [ ] The phone's layer: no line above "I can do it myself", nothing else changed. Checked in the CSS (every new rule is under `.assistant--wide`), not looked at in the browser
+
 ## 5. Closing, keeping and resuming (D9 to D13)
 
 - [x] X and Escape ask "Leave for now?" / "Your progress is kept for this session, so you can continue where you left off." with "Keep going" and "Leave": checked on fridge steps 1, 5 and 7 and on the opening's intro, strategy, summary and purpose; the rule is one line for every screen

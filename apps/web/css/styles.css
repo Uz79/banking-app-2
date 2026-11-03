@@ -12968,10 +12968,9 @@ html:not(.fridge--wide) .fridge__ring-amount {
   outline: none;
 }
 
-/* "I can do it myself" (D27) at the bottom, in the conversation only. */
+/* "I can do it myself" (D27) at the bottom, in the conversation only; no line above it (phone polish D16). */
 .assistant__foot {
   padding: var(--space-2) var(--space-4) max(var(--space-3), env(safe-area-inset-bottom));
-  border-top: 1px solid var(--color-separator);
 }
 
 .assistant__foot[hidden] {
@@ -12992,7 +12991,43 @@ html:not(.fridge--wide) .fridge__ring-amount {
   bottom: 0;
   width: clamp(0px, calc(100% - 600px), 360px);
   overflow: hidden;
-  border-left: 1px solid var(--color-separator);
+}
+
+/* Phone polish D16 to D18: no line beside the column. Once "Yes, help me" opens the conversation, the column is a
+   floating container: inset from the sheet's edges, rounded, a space-1 padding, the secondary background (a shade
+   darker in Light, lighter in Dark) and a separator stroke. Its bottom is set so "I can do it myself" ends where the
+   step's Next ends (the step's actions keep --space-4 below Next). */
+.assistant--wide .assistant:not(.assistant--inviting) {
+  top: var(--space-3);
+  right: var(--space-3);
+  bottom: calc(var(--space-4) - var(--space-1) - 1px);
+  width: calc(clamp(0px, calc(100% - 600px), 360px) - var(--space-3));
+  padding: var(--space-1);
+  border: 1px solid var(--color-separator);
+  border-radius: var(--radius-regular);
+  background-color: var(--color-bg-secondary);
+}
+
+.assistant--wide .assistant:not(.assistant--inviting) > * {
+  min-width: 0;
+}
+
+.assistant--wide .assistant:not(.assistant--inviting) .assistant__head,
+.assistant--wide .assistant:not(.assistant--inviting) .assistant__body,
+.assistant--wide .assistant:not(.assistant--inviting) .assistant__foot {
+  padding-left: var(--space-3);
+  padding-right: var(--space-3);
+}
+
+.assistant--wide .assistant:not(.assistant--inviting) .assistant__foot {
+  padding-bottom: 0;
+}
+
+/* On the container's secondary background the customer's lines and "I can do it myself" (a tonal button, the same
+   secondary fill) take the page background, so they still stand out. */
+.assistant--wide .assistant:not(.assistant--inviting) .assistant-line--customer,
+.assistant--wide .assistant:not(.assistant--inviting) .assistant__foot .uz-btn--tonal:not(:hover) {
+  background-color: var(--color-bg);
 }
 
 .assistant--wide .assistant__head,

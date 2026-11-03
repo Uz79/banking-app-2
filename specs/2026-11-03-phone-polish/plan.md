@@ -44,7 +44,14 @@ What you see: X asks "Leave for now?" on every step; Investment reopens on the s
 - [x] `css/styles.css`: the quiet focus class, if the fallback is needed
 - [x] Check: close and reopen on fridge steps 1, 4 and 7 and on opening intro, strategy and summary; completion then Investment starts fresh with the prefill; Start over; demo reset; an old-shape draft; keyboard and pointer closes for the focus ring; desktop and 390
 
-## 5. Wrap-up
+## 5. Review: the assistant's container on desktop (D16, D17, D18)
+
+What you see: no line beside the assistant or above "I can do it myself"; once opened, the conversation floats in a rounded, tinted container whose "I can do it myself" sits level with Next.
+
+- [x] `css/styles.css`: the column's and the foot's lines removed; the container for the open conversation (inset, radius, padding, secondary background, stroke), the customer's lines and the foot button on the page background, the bottom aligned with Next
+- [x] Check: desktop in Light and Dark, the invitation and the conversation; Next and "I can do it myself" measured level
+
+## 6. Wrap-up
 
 - [x] `npm run build` in `apps/web`
 - [x] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line; the VoiceOver items left for Klaudiusz (D14)
