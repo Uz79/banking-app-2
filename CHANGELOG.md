@@ -50,7 +50,7 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - **Flow sheet focus after the exit prompt.** In the fridge and opening sheet, Keep going returns focus to the control that had it, and Leave returns it to Investment (it used to land on the page body).
 
 ### Decided
-- **9g, Personalisation, is cut** (roadmap): one more optional screen in a flow people found too long. Editing a pending payment turning it executed went onto the roadmap as item 23.
+- **9g, Personalisation, is for later** (roadmap): not as a step, since people found the flow too long, but as an opt-in from the summary. Editing a pending payment turning it executed went onto the roadmap as item 23.
 - **No disabled call-to-action buttons**, anywhere in the app: recorded in `specs/tech-spec.md`. The one left outside the two flows, Profile's "Reset demo data" (disabled for a moment while it shows "Reset ✓"), is roadmap 22.
 - **A roadmap item found during 9c.** 20, the Character kit helper's stage can stop drawing while on screen (its visibility observer reads a stale entry).
 - **Two roadmap items found during 9a.** 8d, the fridge as a film (the 3D stage fills a 960 x 640 sheet, the steps in a floating panel), scheduled before 9b; and 18, funding the asset management mandate (a transfer to it turns "Pending" into a balance).
