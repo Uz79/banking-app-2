@@ -32,7 +32,8 @@ function readDraft() {
 }
 function writeDraft() {
   try {
-    window.sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ step: index, answers, fridgeAmount, from }));
+    /* The fridge's values ride along, so Start over and completion are the only things that forget them (phone polish D11). */
+    window.sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ page: 'opening', fridge: keptFridge, step: index, answers, fridgeAmount, from }));
   } catch (e) { /* storage blocked: the flow still works, it just does not resume */ }
 }
 function clearDraft() {
@@ -43,6 +44,7 @@ const draft = readDraft();
 let answers = draft ? draft.answers : {};
 const fridgeAmount = draft && Number.isFinite(draft.fridgeAmount) ? Math.max(0, Math.round(draft.fridgeAmount)) : 0;
 const from = draft && typeof draft.from === 'string' ? draft.from : 'direct';
+const keptFridge = draft && draft.fridge && typeof draft.fridge === 'object' ? draft.fridge : undefined;
 /* A resumed draft never lands on completion: that screen only follows the summary. */
 let index = draft && draft.step >= 0 && draft.step < SCREENS.length && SCREENS[draft.step].id !== 'complete' ? draft.step : 0;
 
@@ -110,9 +112,14 @@ function button(label, kind, onClick) {
 }
 
 /* Done on completion: close the sheet, or go home when the page is on its own. */
+/* Whether the last input was the keyboard: the sheet shows the focus ring on Investment only then (phone polish D9). */
+let byKeyboard = false;
+window.addEventListener('keydown', () => { byKeyboard = true; }, true);
+window.addEventListener('pointerdown', () => { byKeyboard = false; }, true);
+
 function leave() {
   assistant.close(false);
-  if (framed) send({ type: 'uzbank:fridge-close' });
+  if (framed) send({ type: 'uzbank:fridge-close', keyboard: byKeyboard });
   else window.location.href = 'overview.html';
 }
 
@@ -1104,11 +1111,12 @@ function render(moveFocus, animate, back) {
 
   const n = COUNTED.indexOf(screen);
   announce((n >= 0 ? 'Step ' + (n + 1) + ' of ' + TOTAL + ', ' : '') + screen.title);
-  /* Nothing to lose on completion or after booking; everywhere else the exit asks first, and says the answers are kept (D3). */
+  /* Nothing to lose on completion or after booking; everywhere else, the intro included, the exit asks first and says
+     the progress is kept (D3, phone polish D10, D13). */
   const complete = screen.id === 'complete';
   publish({
     canBack: index > 0 && !complete,
-    dirty: built.dirty !== false && !complete && (index > 0 || Object.keys(answers).length > 0),
+    dirty: built.dirty !== false && !complete,
   });
   if (complete) clearDraft();
   else writeDraft();

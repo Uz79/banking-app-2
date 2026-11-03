@@ -38,11 +38,11 @@ What you see: Help? opens a layer with "Questions about this step" and its own X
 
 What you see: X asks "Leave for now?" on every step; Investment reopens on the same step with the same values; focus on Investment shows its ring only after a keyboard close.
 
-- [ ] `js/fridge-advisor.js`: write `page: 'fridge'`, its step and values into the draft on every change; read them on load (no prefill when kept; the scene straight to the step's pose); "Show suitable products" keeps them and sets `page: 'opening'`
-- [ ] `js/investment-opening.js`: keep `page` and `fridge` when writing the draft; `dirty` on every screen except completion and booked
-- [ ] `js/fridge-advisor-sheet.js`: one prompt text; reopen by `page` (and a draft without `page` as today); the quiet focus on Investment after a pointer close (D9)
-- [ ] `css/styles.css`: the quiet focus class, if the fallback is needed
-- [ ] Check: close and reopen on fridge steps 1, 4 and 7 and on opening intro, strategy and summary; completion then Investment starts fresh with the prefill; Start over; demo reset; an old-shape draft; keyboard and pointer closes for the focus ring; desktop and 390
+- [x] `js/fridge-advisor.js`: write `page: 'fridge'`, its step and values into the draft on every change; read them on load (no prefill when kept; the scene straight to the step's pose); "Show suitable products" keeps them and sets `page: 'opening'`
+- [x] `js/investment-opening.js`: keep `page` and `fridge` when writing the draft; `dirty` on every screen except completion and booked
+- [x] `js/fridge-advisor-sheet.js`: one prompt text; reopen by `page` (and a draft without `page` as today); the quiet focus on Investment after a pointer close (D9)
+- [x] `css/styles.css`: the quiet focus class, if the fallback is needed
+- [x] Check: close and reopen on fridge steps 1, 4 and 7 and on opening intro, strategy and summary; completion then Investment starts fresh with the prefill; Start over; demo reset; an old-shape draft; keyboard and pointer closes for the focus ring; desktop and 390
 
 ## 5. Wrap-up
 

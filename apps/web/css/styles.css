@@ -5016,6 +5016,12 @@ a.list-item:focus-visible {
   outline-offset: 0.125rem;
 }
 
+/* Investment after a flow closed by a tap or click: focused, without the ring, until a key is pressed
+   (phone polish D9, set by js/fridge-advisor-sheet.js). */
+a.list-item.is-quiet-focus:focus-visible {
+  outline: none;
+}
+
 .sidebar__logo a {
   text-decoration: none;
   color: inherit;
