@@ -13,7 +13,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 - [ ] First visit (`uzBankWebPaymentState` removed): no mandate row, the total 64'900, the transfer's lists Household and Savings only
 - [ ] A mandate with nothing funded: "Pending: CHF …" in the secondary style, not in the total
-- [ ] An executed transfer of CHF 1'000 to it: the row shows CHF 1'000 as a balance, the total grows by 1'000, Household drops by 1'000; Household's list shows "Transfer to Asset management"
+- [ ] An executed transfer of CHF 1'000 to it: the row shows CHF 1'000 as a balance, Household drops by 1'000 and the total stays the same (the money moved within it; before this branch it dropped); Household's list shows "Transfer to Asset management"
 - [ ] A second transfer adds to the balance (the interview: any amount, any number of times)
 - [ ] A pending and a recurring transfer to it: booked, nothing funded (D6)
 - [ ] After a reload the row and the total are the same
@@ -31,7 +31,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 ## 4. Completion (D9)
 
 - [ ] In the Overview sheet: completion shows the new copy, "Transfer now" (primary) and Done (secondary); "Transfer now" closes the sheet without "Leave for now?" and opens the transfer: Household to this mandate, the opening's amount, Immediately on
-- [ ] Execute there: the row turns into a balance, the total grows
+- [ ] Execute there: the row turns into a balance, Household drops by the amount, the total stays the same
 - [ ] On `investment-opening.html` on its own: "Transfer now" goes to Overview with the transfer open, prefilled
 - [ ] Done still closes as before
 

@@ -6,9 +6,9 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 1. The state and the Overview row (D5 to D8, D12)
 
-- [ ] `js/payment-state.js`: `funded` on mandates (normalised, default 0); a transfer to a mandate key adds to `funded` when executed and books only the out-leg (D5, D6); `commitMandate` returns the new id; the Overview total counts `funded` (D8)
-- [ ] `js/data-render.js`: the row shows "Pending: CHF …" until funded, then the funded balance (D7)
-- [ ] Check (by script through `UZBankPayState`): an executed, a pending and a recurring transfer to a mandate; the row, the total, Household; a reload; a stored state without `funded`
+- [x] `js/payment-state.js`: `funded` on mandates (normalised, default 0); a transfer to a mandate key adds to `funded` when executed and books only the out-leg (D5, D6); `commitMandate` returns the new id; the Overview total counts `funded` (D8)
+- [x] `js/data-render.js`: the row shows "Pending: CHF …" until funded, then the funded balance (D7)
+- [x] Check (by script through `UZBankPayState`): an executed, a pending and a recurring transfer to a mandate; the row, the total, Household; a reload; a stored state without `funded`
 
 ## 2. The transfer (D1 to D4, D11)
 
@@ -20,7 +20,7 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 - [ ] `js/investment-opening.js`, `js/investment-opening-config.js`: "Transfer now" and the new copy; in a sheet it posts a message with the mandate id and amount, on its own page it goes to `overview.html#iat/fund/{id}`
 - [ ] `js/fridge-advisor-sheet.js`: on that message, close the sheet without asking and open the transfer prefilled
-- [ ] Check: open an account through the opening in the Overview sheet, "Transfer now", Execute; the row turns into a balance and the total grows. The same from `investment-opening.html` on its own
+- [ ] Check: open an account through the opening in the Overview sheet, "Transfer now", Execute; the row turns into a balance and the total stays the same. The same from `investment-opening.html` on its own
 
 ## 4. Wrap-up
 

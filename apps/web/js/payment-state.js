@@ -23,7 +23,9 @@
  *   commitPayment({ recipient, amount, currency, dateISO, status?, executeOn? }) → records the booking, debits balance
  *                               (status 'pending' or 'recurring' records it without moving money; default 'executed')
  *   commitMandate({ strategy, strategyName, amount, dateISO? }) → records an asset management mandate opened in
- *                               investment-opening.html; pending, so no balance or total counts it (9a D21)
+ *                               investment-opening.html and returns its id; pending until a transfer funds it (9a D21)
+ *   commitInternalTransfer({ fromKey, toKey, … }) → toKey may be a mandate's id: an executed transfer adds to its
+ *                               `funded`, which Overview's total counts (roadmap 18)
  *   reset()                     → wipe storage, restore initial state (and the opening's session draft)
  *   formatMoney(n)              → "10'000.00" Swiss style
  *   STORAGE_KEY                 → string constant (for boot-script reuse)
@@ -208,7 +210,23 @@
     if (!Array.isArray(raw)) return [];
     return raw.filter(function (m) {
       return m && typeof m.amount === 'number' && typeof m.strategy === 'string';
+    }).map(function (m) {
+      /* What transfers have put in (roadmap 18, D12); missing or broken is nothing yet. */
+      var funded = typeof m.funded === 'number' && isFinite(m.funded) && m.funded > 0 ? m.funded : 0;
+      return Object.assign({}, m, { funded: funded });
     });
+  }
+
+  function findMandate(id) {
+    var list = state.mandates || [];
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].id === id) return list[i];
+    }
+    return null;
+  }
+
+  function mandatesFunded() {
+    return (state.mandates || []).reduce(function (sum, m) { return sum + (m.funded || 0); }, 0);
   }
 
   function normalizePositions(raw) {
@@ -369,7 +387,7 @@
       },
       // Page-specific sums of the running balances, so each total adds up to
       // the rows under it after a payment or a transfer.
-      overviewAccountsTotal:        Math.round((householdRunning + savingsRunning + DEPOSIT + RETIREMENT) * 100) / 100,
+      overviewAccountsTotal:        Math.round((householdRunning + savingsRunning + DEPOSIT + RETIREMENT + mandatesFunded()) * 100) / 100,
       accountDetailsAccountsTotal:  Math.round((householdRunning + savingsRunning) * 100) / 100,
       // What bookings dropped by the limit had moved per account (roadmap 14), for pages that sum the listed bookings.
       carried: Object.assign({}, state.carried || noCarry()),
@@ -503,6 +521,18 @@
     });
     applySchedule(state.bookings[state.bookings.length - 1], transfer);
 
+    /* To a mandate (roadmap 18, D5, D6): no in-leg, since a mandate has no bookings list; an executed transfer adds
+       to what it holds, a pending or recurring one funds nothing, as it adds nothing to Savings. */
+    var mandate = findMandate(transfer.toKey);
+    if (mandate) {
+      if (isExecuted(state.bookings[state.bookings.length - 1])) {
+        mandate.funded = Math.round(((mandate.funded || 0) + transfer.amount) * 100) / 100;
+      }
+      trimBookings(state);
+      dispatchChange();
+      return;
+    }
+
     state.bookings.push({
       id: 'iat_in_' + suffix,
       recipientName: 'Transfer from ' + (transfer.fromName || 'Account'),
@@ -602,20 +632,23 @@
   }
 
   /**
-   * Record an asset management mandate (9a D21). No money moves: it shows on Overview as pending and is not
-   * counted in any total until a transfer funds it (roadmap).
+   * Record an asset management mandate (9a D21) and return its id. No money moves: it shows on Overview as pending
+   * and is not counted in any total until a transfer funds it (roadmap 18).
    */
   function commitMandate(mandate) {
     if (!mandate || typeof mandate.amount !== 'number' || mandate.amount <= 0 || !mandate.strategy) return;
     if (!state.mandates) state.mandates = [];
+    var id = 'mandate_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
     state.mandates.push({
-      id: 'mandate_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+      id: id,
       strategy: mandate.strategy,
       strategyName: mandate.strategyName || mandate.strategy,
       amount: mandate.amount,
+      funded: 0,
       dateISO: mandate.dateISO || new Date().toISOString()
     });
     dispatchChange();
+    return id;
   }
 
   /* Another page of the same origin changed the state (the opening runs in the Overview sheet's iframe, with its

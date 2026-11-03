@@ -159,7 +159,8 @@
 
   /* ── Asset management mandates (Overview, 9a D21) ───────────────────
    * One row per mandate after Retirement savings 3a: pending until a transfer funds it, so the amount is in the
-   * secondary style and the Accounts & investment total does not count it. */
+   * secondary style and the Accounts & investment total does not count it; once funded, the balance in the regular
+   * style, as the rows above (roadmap 18, D7). */
 
   function renderMandates(state) {
     var host = document.querySelector('[data-mandates]');
@@ -172,9 +173,14 @@
             '<span class="product-item__name type-sm type-trim">Asset management</span>' +
             '<span class="product-item__iban type-xs type-trim">' + escapeHtml(m.strategyName || m.strategy) + '</span>' +
           '</div>' +
-          '<span class="product-item__amount product-item__amount--pending">' +
-            'Pending: CHF ' + escapeHtml(fmt(m.amount).replace(/\.00$/, '')) +
-          '</span>' +
+          (m.funded > 0
+            ? '<span class="product-item__amount">' +
+                '<span class="product-item__currency">CHF</span>' +
+                '<span class="product-item__value">' + escapeHtml(fmt(m.funded)) + '</span>' +
+              '</span>'
+            : '<span class="product-item__amount product-item__amount--pending">' +
+                'Pending: CHF ' + escapeHtml(fmt(m.amount).replace(/\.00$/, '')) +
+              '</span>') +
         '</div>';
     }).join('');
   }
