@@ -13,8 +13,8 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 - [x] 390: the sliders are the regular size (24px); from 640 (the floating panel) still compact (16px)
 - [x] 390: every fridge step fits without scrolling, Next visible (steps 1 to 7 measured)
-- [x] Keyboard still moves the sliders as before (Arrow Right, Page Up, Home, the number fields). Touch on a real phone not tried
-- [x] "Show suitable products": the cause of the pale look recorded in D7 (the hover colour sticking after a tap); the base colour is the primary's in Light and Dark (measured), Custom 06 checked on the opening's Next. The touch fix itself needs a real touch screen (Klaudiusz's phone)
+- [x] Keyboard still moves the sliders as before (Arrow Right, Page Up, Home, the number fields); touch checked by Klaudiusz on an iPhone
+- [x] "Show suitable products": the cause of the pale look recorded in D7 (the hover colour sticking after a tap); the base colour is the primary's in Light and Dark (measured), Custom 06 checked on the opening's Next. The touch fix checked by Klaudiusz on an iPhone
 - [x] 390: "You could invest" above the ring, only the amount inside; CHF 0 (28px), CHF 26'900 (21px, 92 wide), CHF 482'000 (a real result, 94 wide) and CHF 999'999 (91 wide) inside the 109px inner circle. Legibility's font size does not reach the fridge page (no `app-mp.js`), so the largest size does not apply
 - [x] Desktop (960 sheet): the result as before (label inside, 11rem ring)
 - [ ] Reduced motion: the ring is drawn at once, as before. Not checked: unchanged code, the system setting was not switched
@@ -59,15 +59,15 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [x] Profile's demo data reset clears the draft
 - [x] A draft in the old shape (no `page`): Investment opens as before (the opening at step 2, the fridge at step 0)
 - [x] First visit (no draft): the fridge at step 1 with the prefill
-- [x] Focus after a close: Investment has focus with a visible ring after Escape and Enter on Leave (real keys); no ring after a click on X and Leave (real clicks, `:focus-visible` false); the next Tab shows the ring. A tap on a real phone not tried
+- [x] Focus after a close: Investment has focus with a visible ring after Escape and Enter on Leave (real keys); no ring after a click on X and Leave (real clicks, `:focus-visible` false); the next Tab shows the ring. A tap on an iPhone checked by Klaudiusz
 - [ ] Desktop: the same prompt, keeping and resuming. Checked at 390; the code has no width rule for it. Desktop resume checked on the strategy step only
 
 ## 6. VoiceOver (D14, Klaudiusz on an iPhone, preview URL)
 
-- [ ] The layer is announced as "Questions about this step", its X as "Close questions"
-- [ ] Next with something missing: the message is read when focus lands on the field
-- [ ] The strategy carousel's names still as in 9d ("Balanced, 3 of 5, recommended")
-- [ ] The exit prompt reads its title and message
+- [x] The layer is announced as "Questions about this step", its X as "Close questions"
+- [x] Next with something missing: the message is read when focus lands on the field
+- [x] The strategy carousel's names still as in 9d ("Balanced, 3 of 5, recommended")
+- [x] The exit prompt reads its title and message
 
 ## 7. Baseline smoke test
 
@@ -110,4 +110,4 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 - [x] Tab through Overview: focus is always visible
 - [ ] With reduced motion on (System Settings → Accessibility → Display), page transitions and the character are still, and nothing is stuck mid-animation. Not checked: the system setting was not switched
 
-Checked on 2026-11-03 against `feature/phone-polish`, Chrome on the agent's server (port 5199): the phone as a 390×823 frame of Overview in the 1440×823 window, desktop in a 1440×823 frame (a 677 sheet) and the real pages; Light, Dark and Custom 06; real key presses and clicks for the focus and the layer's keyboard, scripted clicks elsewhere. Not checked: VoiceOver (section 6, Klaudiusz on an iPhone), a real touch screen (the sticky hover fix, slider touch, the quiet focus after a tap), the system reduced-motion setting, Enter and Space on Next, the full keep-and-resume set on desktop, the baseline's starred items at 390 and the status message's dismissal, Motion and Components. Known and not from this branch: Escape does nothing in the trade flow, "Continue payment" in its discard prompt, the 9d changelog line that still says Next is disabled (superseded by this branch's Changed entry).
+Checked on 2026-11-03 against `feature/phone-polish`, Chrome on the agent's server (port 5199): the phone as a 390×823 frame of Overview in the 1440×823 window, desktop in a 1440×823 frame (a 677 sheet) and the real pages; Light, Dark and Custom 06; real key presses and clicks for the focus and the layer's keyboard, scripted clicks elsewhere. VoiceOver (section 6) and touch (the sticky hover fix, slider touch, the quiet focus after a tap) checked by Klaudiusz on an iPhone on the branch's Vercel preview the same day. Not checked: the system reduced-motion setting, Enter and Space on Next, the full keep-and-resume set on desktop, the baseline's starred items at 390 and the status message's dismissal, Motion and Components. Known and not from this branch: Escape does nothing in the trade flow, "Continue payment" in its discard prompt, the 9d changelog line that still says Next is disabled (superseded by this branch's Changed entry).
