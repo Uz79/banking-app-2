@@ -3,9 +3,14 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit b020bf62b298289387effa0df898c60b75c7dc6b -->
+<!-- changelog: last-commit 510d855678952a8a0afd2999c571d813448b48fa -->
 
 ### Added
+- **The strategy step as a carousel with the vehicles** (roadmap 9d). The five strategies are cards in a row, one at a time, the neighbours peeking in at the edges. Each card shows the customer's own persona with the strategy's vehicle large at the top, the name with "Recommended" or "Above your risk profile", one line of description, and risk and expected return in the theme's colours. Arrows, swipe, the arrow keys and five labelled markers below (the recommended one marked) move between cards; it starts on the chosen strategy, or on the recommended one. Choosing is explicit: "Choose this strategy" on a card, and Next stays disabled until then and reads "Continue with <name>". Growth and Dynamic above the profile stay in the carousel, dimmed, with a one-line reason, and cannot be chosen. Each card is named for screen readers ("Balanced, 3 of 5, recommended") and announced when it changes; with reduced motion the card swaps at once. One live 3D stage moves with the current card and the others show stills from it; the models load on the risk step, and without 3D the cards keep everything but the picture. The recommendation and the stored answers are unchanged.
+- **The vehicle on the summary.** The summary's Strategy section shows the persona with the chosen vehicle beside the name and the meters, the same live stage idling there; it follows an edit of the strategy.
+- **Model credits for customers.** "Model credits" in the corner of each card's picture shows the credits in the carousel's place as one short paragraph, each model and licence linked; "Back to the vehicles" returns.
+- **A new assistant question** on the strategy step: "What do the vehicles mean?"
+- Spec: `specs/2026-11-02-strategy-vehicles/`.
 - **Vehicles in the Character kit** (roadmap 9c). Each investment strategy gets a way of travelling, faster and riskier as it goes up: Income a tent, Conservative a tricycle, Balanced a Vespa, Growth a parachute, Dynamic a jetpack. A new "Vehicles" section on the Character kit page shows one 3D stage with the persona and the picked strategy's vehicle, five strategy buttons, the entry and a table of all five. The vehicles take the theme's monochrome and the persona keeps the one accent; the persona stands by the tent, sits on the tricycle and the Vespa, and hangs from the parachute or wears the jetpack, seen from the side. Switching squashes and springs the whole group; the jetpack hovers and the parachute sways. The persona follows the profile picked in the live specimen above. Reduced motion holds everything still and switches at once.
 - **Credits.** A "Credits" section on the Character kit page names the four CC BY models (Tricycle and Parachute by Poly by Google, Jetpack by Roman Miller, Vespa by Jasmine Roberts) and the tent by Quaternius (CC0), each linked to Poly Pizza; the same list is in `assets/3d/vehicles/CREDITS.md`. The page is admin only; 9d gives the credits a place customers can reach.
 - Spec: `specs/2026-11-02-character-kit-vehicles/`.
@@ -22,6 +27,8 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-10-29-investment-opening/`.
 
 ### Changed
+- **A taller flow sheet** (9d). The fridge and the opening sheet is now `clamp(480px, 100dvh - 2 * var(--space-7), 800px)` high from 1024px: 64px above and below, never taller than 800, still one height for every step. No step of the fridge or the opening scrolls in it.
+- **The strategy step's intro** is one line: "We recommend one strategy. You can also choose a more careful one." (9d), and nothing is chosen on arrival any more.
 - **The fridge's persona walks out and back** (roadmap 8e). Leaving step 1, the persona turns and walks out of the frame to the right, and the camera moves to the fridge once it has gone; steps 2 to 6 show the fridge alone. On step 7 it walks back in during the cooling moment and stands next to the open freezer, in a wider frame than the tour's freezer close-up. Back reverses each walk, and a quick Next or Back turns it around from wherever it is. With reduced motion it simply shows on steps 1 and 7. Spec: `specs/2026-11-02-fridge-persona-walk/`.
 - **Flow sheet focus after the exit prompt.** In the fridge and opening sheet, Keep going returns focus to the control that had it, and Leave returns it to Investment (it used to land on the page body).
 

@@ -18,7 +18,7 @@ export const SCREENS = [
   { id: 'purpose', title: 'What is the money for?' },
   { id: 'amount', title: 'How much do you want to invest?' },
   { id: 'risk', title: 'How do you feel about risk?' },
-  { id: 'strategy', title: 'Choose your strategy', text: 'Based on your answers, we recommend one strategy. You can also choose a more careful one.' },
+  { id: 'strategy', title: 'Choose your strategy', text: 'We recommend one strategy. You can also choose a more careful one.' },
   { id: 'esg', title: 'Sustainability', text: 'Sustainable investing also looks at the environment, society and how companies are run (ESG).' },
   { id: 'tax', title: 'Tax status' },
   { id: 'documents', title: 'Documents', text: 'Take your time to read them before you continue.' },
@@ -108,11 +108,11 @@ export const RISK = {
 
 /* ── Strategies (D11), from the most careful to the riskiest. `risk` and `ret` are out of five. ── */
 export const STRATEGIES = [
-  { id: 'income', name: 'Income', line: 'Mostly bonds. Small ups and downs, a modest return.', risk: 1, ret: 1 },
-  { id: 'conservative', name: 'Conservative', line: 'Mainly bonds, some shares. Steady, with a little more return.', risk: 2, ret: 2 },
-  { id: 'balanced', name: 'Balanced', line: 'Bonds and shares in about equal parts.', risk: 3, ret: 3 },
-  { id: 'growth', name: 'Growth', line: 'Mainly shares. Bigger ups and downs, more return over time.', risk: 4, ret: 4 },
-  { id: 'dynamic', name: 'Dynamic', line: 'Almost only shares. The biggest ups and downs, the most return over time.', risk: 5, ret: 5 },
+  { id: 'income', name: 'Income', short: 'Mostly bonds. Small ups and downs.', line: 'Mostly bonds. Small ups and downs, a modest return.', risk: 1, ret: 1 },
+  { id: 'conservative', name: 'Conservative', short: 'Mainly bonds, some shares.', line: 'Mainly bonds, some shares. Steady, with a little more return.', risk: 2, ret: 2 },
+  { id: 'balanced', name: 'Balanced', short: 'Bonds and shares in about equal parts.', line: 'Bonds and shares in about equal parts.', risk: 3, ret: 3 },
+  { id: 'growth', name: 'Growth', short: 'Mainly shares. Bigger ups and downs.', line: 'Mainly shares. Bigger ups and downs, more return over time.', risk: 4, ret: 4 },
+  { id: 'dynamic', name: 'Dynamic', short: 'Almost only shares. The biggest swings.', line: 'Almost only shares. The biggest ups and downs, the most return over time.', risk: 5, ret: 5 },
 ];
 export const STRATEGY = {
   recommended: 'Recommended',
@@ -121,6 +121,40 @@ export const STRATEGY = {
   returnLabel: 'Expected return',
   fellBack: 'Your answers changed, so we now recommend {name}.',
   missing: 'Choose a strategy.',
+  /* The carousel (9d D16 to D18): one card at a time, chosen explicitly. A card's name for screen readers is
+     "{name}, {n} of {total}" and its tag in lower case. */
+  carousel: 'Strategies',
+  position: '{n} of {total}',
+  choose: 'Choose this strategy',
+  chosen: 'Chosen',
+  reason: 'Riskier than your answers allow.',
+  continueWith: 'Continue with {name}',
+  previous: 'Previous strategy',
+  next: 'Next strategy',
+};
+
+/* ── The vehicles (9d) ── the persona travels with the strategy's vehicle at the top of each card. The caption names
+   the card's figure for screen readers (the canvas is hidden from them, D8, D17). */
+export const VEHICLE_STAGE = {
+  captions: {
+    income: 'Income goes hiking: slow and steady.',
+    conservative: 'Conservative rides a tricycle: steady, a little quicker.',
+    balanced: 'Balanced rides a Vespa: quicker, with some bumps.',
+    growth: 'Growth jumps with a parachute: fast, with big swings.',
+    dynamic: 'Dynamic flies a jetpack: the fastest, with the biggest swings.',
+  },
+  /* The credits (D9): the CC BY models with their authors and pages, the tent as a courtesy line. Written as one short
+     paragraph grouped by licence and author, so it fits the stage's place on a phone. */
+  creditsLink: 'Model credits',
+  backLink: 'Back to the vehicles',
+  creditsSource: 'All from Poly Pizza.',
+  credits: [
+    { name: 'Tricycle', by: 'Poly by Google', url: 'https://poly.pizza/m/9UE6AhwMhbc', licence: 'CC BY 3.0', licenceUrl: 'https://creativecommons.org/licenses/by/3.0/' },
+    { name: 'Vespa', by: 'Jasmine Roberts', url: 'https://poly.pizza/m/blGLclvvdEM', licence: 'CC BY 3.0', licenceUrl: 'https://creativecommons.org/licenses/by/3.0/' },
+    { name: 'Parachute', by: 'Poly by Google', url: 'https://poly.pizza/m/3Z7vJ96JIEB', licence: 'CC BY 3.0', licenceUrl: 'https://creativecommons.org/licenses/by/3.0/' },
+    { name: 'Jetpack', by: 'Roman Miller', url: 'https://poly.pizza/m/8VafbXInymc', licence: 'CC BY 3.0', licenceUrl: 'https://creativecommons.org/licenses/by/3.0/' },
+    { name: 'Tent', by: 'Quaternius', url: 'https://poly.pizza/m/5Q7qIrfDxA', licence: 'CC0', licenceUrl: 'https://creativecommons.org/publicdomain/zero/1.0/' },
+  ],
 };
 
 /* ── The recommendation (D12, flagged: a placeholder for the bank's rules) ──

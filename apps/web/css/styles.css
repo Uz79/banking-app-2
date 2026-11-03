@@ -2597,11 +2597,12 @@ a.show-all-btn {
 }
 
 /* Fixed-height flow sheet (modifier on .modal-shell): from 1024px the sheet keeps one height whatever the step holds,
-   so a short step does not leave the sheet jumping in size and a long one scrolls inside it (9a D26). Never taller
-   than the viewport allows. Below 1024px the sheet is full screen, as every flow sheet. */
+   so a short step does not leave the sheet jumping in size and a long one scrolls inside it (9a D26). As tall as the
+   window allows with a --space-7 margin above and below, 800 at most (9d D14). Never taller than the viewport allows.
+   Below 1024px the sheet is full screen, as every flow sheet. */
 @media (min-width: 1024px) {
   .modal-shell.modal-shell--fixed-height > .modal {
-    --modal-fixed-height: clamp(480px, 60vh, 640px);
+    --modal-fixed-height: clamp(480px, 100dvh - 2 * var(--space-7), 800px);
     height: min(var(--modal-fixed-height), calc(100dvh - 2 * var(--space-4)));
     max-height: min(var(--modal-fixed-height), calc(100dvh - 2 * var(--space-4)));
   }
@@ -11931,25 +11932,7 @@ html.fridge--wide .fridge__panel {
   color: var(--color-fg-disabled);
 }
 
-/* Strategy cards (D11): one column at every width, the sheet is 640 at most. */
-.opening-option__head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.125rem var(--space-2);
-}
-
-.opening-option__name {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-}
-
-.opening-option--card .opening-option__label {
-  font-weight: var(--fw-medium);
-}
-
+/* The strategy's "Recommended" tag, on the carousel's cards and the summary. */
 .opening-option__tag {
   flex-shrink: 0;
   padding: 0.125rem var(--space-2);
@@ -11967,16 +11950,360 @@ html.fridge--wide .fridge__panel {
   gap: 0 var(--space-3);
 }
 
-/* The strategy's line is shown on the chosen card only (D27); the card is described by it either way. */
-.opening-option:not([aria-checked="true"]) .opening-option__line--chosen {
+/* The strategy carousel (9d D16 to D19): one card at a time in a horizontal scroller with scroll snap, the
+   neighbours peeking in, the markers and the credits link under it. The carousel takes the height the screen leaves
+   and each card's figure takes what the card leaves, so the step never scrolls (D14). */
+.opening__screen:has(.opening-carousel),
+.opening__screen:has(.opening-carousel) .opening__body {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.opening__screen:has(.opening-carousel) .opening__body > :not(.opening-carousel) {
+  flex-shrink: 0;
+}
+
+.opening-carousel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.opening-carousel__frame {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  container-type: inline-size;
+}
+
+.opening-carousel__frame[hidden],
+.opening-vehicles__credits[hidden] {
   display: none;
 }
 
-.opening-options__why {
-  margin: var(--space-1) 0 0;
+/* The card is at most 22rem and leaves at least 2.25rem of each neighbour in view. */
+.opening-carousel__track {
+  --opening-card: min(22rem, 100cqw - 4.5rem);
+  display: flex;
+  gap: var(--space-2);
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0.125rem calc((100cqw - var(--opening-card)) / 2);
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.opening-carousel__track::-webkit-scrollbar {
+  display: none;
+}
+
+.opening-carousel__card {
+  position: relative;
+  flex: 0 0 var(--opening-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  box-sizing: border-box;
+  height: 100%;
+  padding: var(--space-2);
+  border: 1px solid var(--color-separator);
+  border-radius: var(--radius-regular);
+  background: var(--color-bg);
+  scroll-snap-align: center;
+  transition: opacity 0.2s ease-out, border-color 0.2s ease-out;
+}
+
+/* The neighbours step back; a click on one moves to it. */
+.opening-carousel__card:not(.is-current) {
+  opacity: 0.55;
+  cursor: pointer;
+}
+
+.opening-carousel__card:focus-visible {
+  outline: 0.125rem solid var(--color-fg-interactive);
+  outline-offset: 2px;
+}
+
+.opening-carousel__card.is-chosen {
+  border-color: var(--color-fg-interactive);
+  box-shadow: inset 0 0 0 1px var(--color-fg-interactive);
+}
+
+/* The figure: the live stage in the current card, a still of the same renderer in the others (D19). */
+.opening-carousel__pic {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 3rem;
+  margin-bottom: var(--space-1);
+}
+
+.opening-carousel__figure {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-regular);
+  background: var(--color-bg-secondary);
+  overflow: hidden;
+}
+
+/* "Model credits" in the picture's corner (D9), on the figure's background. */
+.opening-carousel__credit {
+  position: absolute;
+  right: var(--space-2);
+  bottom: var(--space-1);
+  font-size: var(--fs-text-xs);
+  line-height: var(--lh-text);
+}
+
+.opening-carousel__figure > canvas,
+.opening-carousel__still {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.24s ease-out;
+}
+
+.opening-carousel.is-ready .opening-carousel__figure > canvas,
+.opening-carousel.is-ready .opening-carousel__still {
+  opacity: 1;
+}
+
+/* The canvas is transparent: the current card's still would show through it. */
+.opening-carousel.is-ready .is-current .opening-carousel__still {
+  visibility: hidden;
+}
+
+.opening-carousel.is-ready [data-above] .opening-carousel__figure > canvas,
+.opening-carousel.is-ready [data-above] .opening-carousel__still {
+  opacity: 0.45;
+}
+
+.opening-carousel__name,
+.opening-carousel__line,
+.opening-carousel__meters,
+.opening-carousel__reason {
+  margin: 0;
+}
+
+.opening-carousel__name {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+}
+
+.opening-carousel__label {
+  font-size: var(--fs-text-md);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-text);
+}
+
+/* Above the profile: an outline, not a coloured badge (D16). */
+.opening-carousel__above {
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-separator);
+  border-radius: var(--radius-pill);
+  color: var(--color-fg-secondary);
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+}
+
+.opening-carousel__line,
+.opening-carousel__reason {
   font-size: var(--fs-text-sm);
   line-height: var(--lh-text);
   color: var(--color-fg-secondary);
+}
+
+/* One line (D16). */
+.opening-carousel__line {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.opening-carousel__meters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+}
+
+/* The reason sits where the button would, at its height. */
+.opening-carousel__reason {
+  display: flex;
+  align-items: center;
+  min-height: 2.5rem;
+}
+
+.opening-carousel__choose[aria-pressed="true"] {
+  border-color: var(--color-fg-interactive);
+  color: var(--color-fg-interactive);
+}
+
+/* The arrows over the neighbours, the app's carousel arrows on a disc; at the ends they stay focusable but quiet. */
+.opening-carousel__arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  border: 1px solid var(--color-separator);
+  border-radius: 50%;
+  background: var(--color-bg);
+  color: var(--color-fg);
+  transform: translateY(-50%);
+}
+
+.opening-carousel__arrow--prev {
+  left: 0;
+}
+
+.opening-carousel__arrow--next {
+  right: 0;
+}
+
+.opening-carousel__arrow[aria-disabled="true"] {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* The markers (D17): a bar and the strategy's name each; the current one in the interactive ink, the recommended
+   one with a dot, the ones above the profile quiet. */
+.opening-carousel__markers {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-1);
+}
+
+.opening-carousel__marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+  padding: 0.25rem 0;
+  border: 0;
+  border-radius: var(--radius-small);
+  background: none;
+  color: var(--color-fg-secondary);
+  font: inherit;
+  cursor: pointer;
+}
+
+.opening-carousel__marker:focus-visible {
+  outline: 0.125rem solid var(--color-fg-interactive);
+  outline-offset: 2px;
+}
+
+.opening-carousel__marker-bar {
+  width: 100%;
+  height: 0.25rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-separator);
+  transition: background-color 0.2s ease-out;
+}
+
+.opening-carousel__marker-label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-text-xs);
+  line-height: var(--lh-text);
+}
+
+.opening-carousel__marker[data-recommended] .opening-carousel__marker-label::before {
+  content: "";
+  display: inline-block;
+  width: 0.375rem;
+  height: 0.375rem;
+  margin-right: 0.25rem;
+  border-radius: 50%;
+  background: currentColor;
+  vertical-align: 0.1em;
+}
+
+.opening-carousel__marker[data-above] {
+  color: var(--color-fg-disabled);
+}
+
+.opening-carousel__marker[aria-current="true"] {
+  color: var(--color-fg);
+  font-weight: var(--fw-medium);
+}
+
+.opening-carousel__marker[aria-current="true"] .opening-carousel__marker-bar {
+  background: var(--color-fg-interactive);
+}
+
+/* Without 3D (D4): no figures and no credits; the cards keep the rest and their own height. */
+.opening-carousel.is-flat .opening-carousel__pic {
+  display: none;
+}
+
+.opening-carousel.is-flat .opening-carousel__frame {
+  flex: 0 0 auto;
+}
+
+.opening-carousel.is-flat .opening-carousel__card {
+  height: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .opening-carousel__card,
+  .opening-carousel__figure > canvas,
+  .opening-carousel__still,
+  .opening-carousel__marker-bar {
+    transition: none;
+  }
+}
+
+/* The credits in the cards' place (D9). */
+.opening-vehicles__credits {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: var(--space-2);
+  border-radius: var(--radius-regular);
+  background: var(--color-bg-secondary);
+  overflow: hidden;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
+
+.opening-vehicles__credits-text {
+  margin: 0;
+}
+
+/* The credits' links and their toggle: the interactive ink with its focus ring, as on the Character kit (9c D14). */
+.opening-vehicles__link {
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-small);
+  background: none;
+  color: var(--color-fg-interactive);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  cursor: pointer;
+}
+
+.opening-vehicles__toggle {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+}
+
+.opening-vehicles__link:focus-visible {
+  outline: 0.125rem solid var(--color-fg-interactive);
+  outline-offset: 2px;
 }
 
 .opening-meter {
@@ -12274,10 +12601,58 @@ html.fridge--wide .fridge__panel {
   color: var(--color-fg);
 }
 
+/* The strategy with its vehicle on the left (9d D20): a small carousel card, 6rem wide on a phone, 9.5 by
+   at least 8.5rem in the desktop sheet (the most that fits a 677 sheet), and as tall as the text beside it. */
 .opening-summary__strategy {
   display: flex;
+  align-items: stretch;
+  gap: var(--space-3);
+}
+
+.opening-summary__strategy-text {
+  display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
   gap: 0.125rem;
+  min-width: 0;
+}
+
+.opening-summary__figure {
+  position: relative;
+  flex: 0 0 6rem;
+  min-height: 5rem;
+  border-radius: var(--radius-regular);
+  background: var(--color-bg-secondary);
+  overflow: hidden;
+}
+
+.assistant--wide .opening-summary__figure {
+  flex-basis: 9.5rem;
+  min-height: 8.5rem;
+}
+
+.opening-summary__figure > canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.24s ease-out;
+}
+
+.opening-summary__strategy.is-ready .opening-summary__figure > canvas {
+  opacity: 1;
+}
+
+.opening-summary__strategy.is-flat .opening-summary__figure {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .opening-summary__figure > canvas {
+    transition: none;
+  }
 }
 
 .opening-summary__name {

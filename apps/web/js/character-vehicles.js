@@ -69,15 +69,17 @@ function placeVehicle(scene, cfg) {
 }
 
 /**
- * Mounts the stage into `box` (sized by CSS) and returns `{ show(strategy), wake() }`.
+ * Mounts the stage into `box` (sized by CSS) and returns `{ show(strategy), wake(), attach(box, strategy), snapshot(strategy) }`.
  * `active()` says whether to keep drawing; `wake()` starts the loop again. `recipe()` gives the persona's recipe once the models
- * have loaded; later changes come as `uzbank:persona-change`.
+ * have loaded; later changes come as `uzbank:persona-change`. `onTheme()` is called after the stage takes a new theme.
+ * The opening's carousel (9d D19) moves the canvas between its cards with `attach` and shows the other cards as `snapshot`s.
  */
 export async function mountVehicles(box, {
   reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
   active = () => true,
   strategy: first = 'income',
   recipe = () => ({ head: 'rogue', headwear: 'none', outfit: 'barbarian', back: 'none' }),
+  onTheme = () => {},
 } = {}) {
   const loader = new GLTFLoader();
   const keys = Object.keys(VEHICLES);
@@ -217,6 +219,7 @@ export async function mountVehicles(box, {
     figure.recolour(theme);
     recolours.forEach((fn) => fn(theme));
     render();
+    onTheme();
   }
   new MutationObserver(() => requestAnimationFrame(applyTheme))
     .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'style', 'class'] });
@@ -236,7 +239,8 @@ export async function mountVehicles(box, {
     camera.lookAt(target);
     camera.updateProjectionMatrix();
   }
-  new ResizeObserver(() => { frameCamera(); render(); }).observe(box);
+  const resize = new ResizeObserver(() => { frameCamera(); render(); });
+  resize.observe(box);
 
   function render() { renderer.render(scene, camera); }
 
@@ -294,6 +298,13 @@ export async function mountVehicles(box, {
   box.append(canvas);
   place(VEHICLES[first] ? first : 'income');
   applyTheme();
+  /* Settle any swap at once: the carousel changes vehicles by moving, not by squashing. */
+  function settle(k) {
+    swap = null;
+    pending = null;
+    group.scale.set(1, 1, 1);
+    place(k);
+  }
   const helper = {
     show,
     wake() {
@@ -302,6 +313,27 @@ export async function mountVehicles(box, {
       clock.getDelta();
       frameCamera();
       requestAnimationFrame(tick);
+    },
+    /* Move the canvas into another box of the same kind and show `k` there, without the swap. */
+    attach(next, k) {
+      if (next !== box) {
+        resize.unobserve(box);
+        box = next;
+        box.append(canvas);
+        resize.observe(box);
+      }
+      settle(VEHICLES[k] ? k : current);
+      render();
+    },
+    /* A still of `k` at the box's size, as a data URL; the stage then shows what it showed before. */
+    snapshot(k) {
+      const was = current;
+      settle(k);
+      render();
+      const url = canvas.toDataURL('image/png');
+      settle(was);
+      render();
+      return url;
     },
   };
   helper.wake();

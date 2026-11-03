@@ -6,7 +6,7 @@
  * fridge (D2, D3). Opened on its own, the page shows its own header.
  */
 import {
-  SCREENS, DRAFT_KEY, KNOWLEDGE, PURPOSE, HORIZON, AMOUNT, RISK, STRATEGIES, STRATEGY, SCORING,
+  SCREENS, DRAFT_KEY, KNOWLEDGE, PURPOSE, HORIZON, AMOUNT, RISK, STRATEGIES, STRATEGY, SCORING, VEHICLE_STAGE,
   ESG, TAX, INELIGIBLE, DOCUMENTS, SUMMARY, COMPLETE,
 } from './investment-opening-config.js';
 import * as assistant from './opening-assistant.js';
@@ -228,6 +228,321 @@ function reconcile() {
   }
 }
 
+/* ── The vehicles (9d) ──────────────────────────────────────────────────
+   The module and the models load on the risk screen (or on arrival, D3) into a holder that is never shown, so they
+   stay for the session. The screen on show hosts the canvas: the strategy carousel in its current card, with the
+   other cards as stills from the same renderer (D19), and the summary in its Strategy section (9d D20). Without 3D the
+   host drops its figures (D4). */
+const vehicles = { holder: document.createElement('div'), stage: null, failed: false, loading: false, on: false, shots: {}, shotsKey: '', host: null };
+const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function loadVehicles() {
+  if (vehicles.loading || vehicles.failed) return;
+  vehicles.loading = true;
+  import('./character-vehicles.js')
+    .then(({ mountVehicles }) => mountVehicles(vehicles.holder, {
+      reduced: reducedMotion,
+      active: () => vehicles.on && !document.hidden,
+      strategy: answers.strategy || recommendation() || 'balanced',
+      /* The customer's own persona (D5); the pose, not the profile's loop, decides the clip. */
+      recipe: () => {
+        const { loop, ...parts } = window.UZBankPersona.read().recipe;
+        return parts;
+      },
+      /* A new theme recolours the stage, so the stills are taken again. */
+      onTheme: () => { vehicles.shotsKey = ''; placeVehicles(); },
+    }))
+    .then((stage) => {
+      vehicles.stage = stage;
+      placeVehicles();
+    })
+    .catch((err) => {
+      vehicles.failed = true;
+      if (vehicles.host) vehicles.host.root.classList.add('is-flat');
+      console.warn('[opening] the vehicles did not load', err);
+    });
+}
+
+/* The canvas goes into the host's figure. A host with stills (the carousel) gets them again when its figure's size
+   changes. */
+function placeVehicles() {
+  const c = vehicles.host;
+  if (!vehicles.stage || !c || !c.root.isConnected) return;
+  const figure = c.figure();
+  if (!figure.clientWidth || !figure.clientHeight) return;
+  const id = c.id();
+  if (c.stills) {
+    const key = figure.clientWidth + 'x' + figure.clientHeight;
+    if (key !== vehicles.shotsKey) {
+      vehicles.stage.attach(figure, id);
+      STRATEGIES.forEach((s) => { vehicles.shots[s.id] = vehicles.stage.snapshot(s.id); });
+      vehicles.shotsKey = key;
+    }
+    c.stills(vehicles.shots);
+  }
+  vehicles.stage.attach(figure, id);
+  c.root.classList.add('is-ready');
+  if (vehicles.on) vehicles.stage.wake();
+}
+
+/* Drawing only while the strategy screen or the summary is on show and the page is visible (9d D11, D20). */
+function vehiclesOn(on) {
+  vehicles.on = on;
+  vehicles.host = null;
+  if (on && vehicles.stage) vehicles.stage.wake();
+}
+document.addEventListener('visibilitychange', () => { if (vehicles.on && !document.hidden && vehicles.stage) vehicles.stage.wake(); });
+
+/* The models' credits as one short paragraph (D9): "Tricycle and Parachute by Poly by Google, …, CC BY 3.0. Tent by
+   Quaternius, CC0. All from Poly Pizza." */
+function vehicleCredits() {
+  const link = (text, href) => {
+    const a = el('a', 'opening-vehicles__link', text);
+    a.href = href;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    return a;
+  };
+  const text = el('p', 'opening-vehicles__credits-text');
+  const licences = [...new Set(VEHICLE_STAGE.credits.map((c) => c.licence))];
+  licences.forEach((licence, i) => {
+    const ofLicence = VEHICLE_STAGE.credits.filter((c) => c.licence === licence);
+    const authors = [...new Set(ofLicence.map((c) => c.by))];
+    if (i) text.append(' ');
+    authors.forEach((by, j) => {
+      if (j) text.append(', ');
+      ofLicence.filter((c) => c.by === by).forEach((c, k, all) => {
+        if (k) text.append(k === all.length - 1 ? ' and ' : ', ');
+        text.append(link(c.name, c.url));
+      });
+      text.append(' by ' + by);
+    });
+    text.append(', ', link(licence, ofLicence[0].licenceUrl), '.');
+  });
+  text.append(' ' + VEHICLE_STAGE.creditsSource);
+  return text;
+}
+
+/* ── The strategy carousel (9d D16 to D18) ──────────────────────────────
+   Five cards in a horizontal scroller with scroll snap (swipe and trackpad for free); the arrows, the markers and the
+   arrow keys call `go`. Only the current card is in the Tab order and the accessibility tree; a click on a peeking
+   card moves to it. Choosing is the card's own button (D18). */
+function strategyCarousel(rec) {
+  const above = (s) => !!rec && rankOf(s.id) > rankOf(rec);
+  const total = STRATEGIES.length;
+  /* "Balanced, 3 of 5, recommended" (D17). */
+  const nameOf = (s) => [
+    s.name,
+    fill(STRATEGY.position, { n: rankOf(s.id) + 1, total }),
+    s.id === rec ? STRATEGY.recommended.toLowerCase() : above(s) ? STRATEGY.unavailable.toLowerCase() : '',
+  ].filter(Boolean).join(', ');
+  const start = Math.max(0, rankOf(answers.strategy || rec || STRATEGIES[0].id));
+  let at = start;
+
+  const root = el('div', 'opening-carousel' + (vehicles.failed ? ' is-flat' : ''));
+  root.setAttribute('role', 'region');
+  root.setAttribute('aria-roledescription', 'carousel');
+  root.setAttribute('aria-label', STRATEGY.carousel);
+  const frame = el('div', 'opening-carousel__frame');
+  const track = el('div', 'opening-carousel__track');
+
+  const cards = STRATEGIES.map((s, i) => {
+    const card = el('div', 'opening-carousel__card');
+    card.dataset.option = s.id;
+    card.tabIndex = -1;
+    card.setAttribute('role', 'group');
+    card.setAttribute('aria-roledescription', 'slide');
+    card.setAttribute('aria-label', nameOf(s));
+    if (above(s)) card.dataset.above = '';
+    /* The picture: the figure, named by its caption (D8), and "Model credits" in its corner (D9). */
+    const pic = el('div', 'opening-carousel__pic');
+    const figure = el('div', 'opening-carousel__figure');
+    figure.setAttribute('role', 'img');
+    figure.setAttribute('aria-label', VEHICLE_STAGE.captions[s.id]);
+    const still = el('img', 'opening-carousel__still');
+    still.alt = '';
+    still.hidden = true;
+    figure.append(still);
+    const credit = el('button', 'opening-vehicles__link opening-carousel__credit', VEHICLE_STAGE.creditsLink);
+    credit.type = 'button';
+    credit.setAttribute('aria-expanded', 'false');
+    credit.setAttribute('aria-controls', 'opening-vehicle-credits');
+    credit.addEventListener('click', () => showCredits(true));
+    pic.append(figure, credit);
+    const head = el('p', 'opening-carousel__name');
+    head.append(el('span', 'opening-carousel__label', s.name));
+    if (s.id === rec) head.append(el('span', 'opening-option__tag', STRATEGY.recommended));
+    else if (above(s)) head.append(el('span', 'opening-carousel__above', STRATEGY.unavailable));
+    const meters = el('p', 'opening-carousel__meters');
+    meters.append(meter(STRATEGY.riskLabel, s.risk, 'bar'), meter(STRATEGY.returnLabel, s.ret, 'dots'));
+    let action;
+    if (above(s)) action = el('p', 'opening-carousel__reason', STRATEGY.reason);
+    else {
+      action = button(STRATEGY.choose, 'secondary', () => { answers.strategy = s.id; changed(); });
+      action.classList.add('opening-carousel__choose');
+    }
+    card.append(pic, head, el('p', 'opening-carousel__line', s.short), meters, action);
+    /* A peeking card is a way to it, not to its button. */
+    card.addEventListener('click', (event) => {
+      if (i === at) return;
+      event.preventDefault();
+      event.stopPropagation();
+      go(i);
+    }, true);
+    track.append(card);
+    return { card, figure, still, action, credit };
+  });
+
+  const arrow = (dir) => {
+    const b = el('button', 'carousel__arrow opening-carousel__arrow opening-carousel__arrow--' + dir);
+    b.type = 'button';
+    b.setAttribute('aria-label', dir === 'prev' ? STRATEGY.previous : STRATEGY.next);
+    b.innerHTML = '<svg class="carousel__arrow-icon" aria-hidden="true" focusable="false"><use href="#i-chevron-'
+      + (dir === 'prev' ? 'left' : 'right') + '"/></svg>';
+    b.addEventListener('click', () => go(at + (dir === 'prev' ? -1 : 1)));
+    return b;
+  };
+  const prev = arrow('prev');
+  const next = arrow('next');
+  frame.append(track, prev, next);
+
+  /* The markers (D17): where you are, a jump to each card, one tab stop with the arrow keys. */
+  const markers = el('div', 'opening-carousel__markers');
+  markers.setAttribute('role', 'group');
+  markers.setAttribute('aria-label', STRATEGY.carousel);
+  const marks = STRATEGIES.map((s, i) => {
+    const m = el('button', 'opening-carousel__marker');
+    m.type = 'button';
+    m.setAttribute('aria-label', nameOf(s));
+    if (s.id === rec) m.dataset.recommended = '';
+    if (above(s)) m.dataset.above = '';
+    m.append(el('span', 'opening-carousel__marker-bar'), el('span', 'opening-carousel__marker-label', s.name));
+    m.addEventListener('click', () => go(i));
+    markers.append(m);
+    return m;
+  });
+
+  /* The credits take the cards' place, so the step keeps its height (D9). */
+  const credits = el('div', 'opening-vehicles__credits opening-carousel__credits');
+  credits.id = 'opening-vehicle-credits';
+  credits.hidden = true;
+  const back = el('button', 'opening-vehicles__link opening-vehicles__toggle', VEHICLE_STAGE.backLink);
+  back.type = 'button';
+  back.addEventListener('click', () => showCredits(false));
+  credits.append(vehicleCredits(), back);
+  /* The focus follows: to "Back to the vehicles", then to the card's "Model credits" again. */
+  function showCredits(open) {
+    credits.hidden = !open;
+    frame.hidden = open;
+    cards.forEach(({ credit }) => credit.setAttribute('aria-expanded', String(open)));
+    if (open) back.focus();
+    else {
+      centre(false);
+      placeVehicles();
+      if (credits.contains(document.activeElement) || document.activeElement === document.body) cards[at].credit.focus();
+    }
+  }
+  root.append(frame, credits, markers);
+
+  /* The current card: in the Tab order and the tree, its marker current, the arrows stop at the ends. */
+  function mark(i) {
+    cards.forEach(({ card, action, credit }, j) => {
+      card.classList.toggle('is-current', j === i);
+      card.toggleAttribute('aria-hidden', j !== i);
+      credit.tabIndex = j === i ? 0 : -1;
+      if (action.tagName === 'BUTTON') action.tabIndex = j === i ? 0 : -1;
+    });
+    marks.forEach((m, j) => {
+      m.tabIndex = j === i ? 0 : -1;
+      if (j === i) m.setAttribute('aria-current', 'true');
+      else m.removeAttribute('aria-current');
+    });
+    prev.setAttribute('aria-disabled', String(i === 0));
+    next.setAttribute('aria-disabled', String(i === total - 1));
+  }
+
+  function centre(smooth) {
+    const c = cards[at].card;
+    const left = c.offsetLeft - (track.clientWidth - c.offsetWidth) / 2;
+    track.scrollTo({ left, behavior: smooth && !reducedMotion() ? 'smooth' : 'instant' });
+  }
+
+  /* A new card: the stage moves into it and its name is announced (D17). */
+  function settle(i) {
+    if (i === at) return;
+    at = i;
+    mark(at);
+    placeVehicles();
+    announce(nameOf(STRATEGIES[at]));
+  }
+
+  function go(i, focus) {
+    const to = Math.max(0, Math.min(total - 1, i));
+    if (!credits.hidden) showCredits(false);
+    settle(to);
+    centre(true);
+    if (focus === 'card') (cards[at].action.tagName === 'BUTTON' ? cards[at].action : cards[at].card).focus({ preventScroll: true });
+    if (focus === 'marker') marks[at].focus();
+  }
+
+  /* Swipes and the trackpad: the card nearest the middle once the scrolling stops. */
+  const nearest = () => {
+    const middle = track.scrollLeft + track.clientWidth / 2;
+    let best = 0;
+    cards.forEach(({ card }, j) => {
+      const d = Math.abs(card.offsetLeft + card.offsetWidth / 2 - middle);
+      if (d < Math.abs(cards[best].card.offsetLeft + cards[best].card.offsetWidth / 2 - middle)) best = j;
+    });
+    return best;
+  };
+  let settling = 0;
+  track.addEventListener('scroll', () => {
+    window.clearTimeout(settling);
+    settling = window.setTimeout(() => settle(nearest()), 120);
+  }, { passive: true });
+
+  /* The arrow keys move a card from anywhere in the carousel; on the markers also Home and End. */
+  root.addEventListener('keydown', (event) => {
+    const onMarker = marks.includes(event.target);
+    let to = null;
+    if (event.key === 'ArrowRight') to = at + 1;
+    else if (event.key === 'ArrowLeft') to = at - 1;
+    else if (onMarker && event.key === 'Home') to = 0;
+    else if (onMarker && event.key === 'End') to = total - 1;
+    if (to === null || event.target.closest('.opening-carousel__credits')) return;
+    event.preventDefault();
+    go(to, onMarker ? 'marker' : track.contains(event.target) ? 'card' : null);
+  });
+
+  /* Keep the current card in the middle when the sheet changes size. */
+  new ResizeObserver(() => { if (frame.hidden) return; centre(false); placeVehicles(); }).observe(track);
+
+  mark(at);
+  return {
+    root,
+    id: () => STRATEGIES[at].id,
+    figure: () => cards[at].figure,
+    stills(shots) {
+      cards.forEach(({ still }, j) => {
+        const src = shots[STRATEGIES[j].id];
+        if (src && still.getAttribute('src') !== src) still.src = src;
+        still.hidden = !src;
+      });
+    },
+    /* Placed once the screen is in the page: the starting card in the middle at once. */
+    mounted() { centre(false); placeVehicles(); },
+    refresh() {
+      cards.forEach(({ card, action }, j) => {
+        const chosen = STRATEGIES[j].id === answers.strategy;
+        card.classList.toggle('is-chosen', chosen);
+        if (action.tagName !== 'BUTTON') return;
+        action.textContent = chosen ? STRATEGY.chosen : STRATEGY.choose;
+        action.setAttribute('aria-pressed', String(chosen));
+      });
+    },
+  };
+}
+
 /* The knowledge the Profile's financial knowledge slider suggests (D7), or null when it was never set. */
 function profileKnowledge() {
   try {
@@ -406,31 +721,23 @@ const BUILD = {
 
   strategy() {
     const rec = recommendation();
-    if (!answers.strategy && rec) answers.strategy = rec;
     const nodes = [];
     if (answers.strategyFellBack && rec) {
       nodes.push(el('p', 'opening__note opening__note--check', fill(STRATEGY.fellBack, { name: STRATEGIES[rankOf(rec)].name })));
       delete answers.strategyFellBack; /* said once */
     }
-    const above = (s) => rec && rankOf(s.id) > rankOf(rec);
-    const { group, refresh } = optionGroup({
-      options: STRATEGIES,
-      get: () => answers.strategy,
-      set: (id) => { answers.strategy = id; changed(); },
-      disabled: above,
-      content: (s, b) => strategyCard(s, b, s.id === rec, above(s)),
-    });
-    group.classList.add('opening-options--cards');
-    group.setAttribute('aria-labelledby', 'opening-heading');
-    /* The unavailable cards are the riskiest, so they come last: one line above them says why (D11, D27). */
-    const firstAbove = STRATEGIES.find(above);
-    if (firstAbove) {
-      const why = el('p', 'opening-options__why', STRATEGY.unavailable);
-      why.id = 'opening-strategy-above';
-      group.querySelector('[data-option="' + firstAbove.id + '"]').before(why);
-    }
-    nodes.push(group);
-    return { nodes, missing: () => (answers.strategy ? '' : STRATEGY.missing), refresh };
+    /* One card at a time, chosen explicitly (D16 to D18): nothing is chosen on arrival. */
+    const carousel = strategyCarousel(rec);
+    vehicles.host = carousel;
+    nodes.push(carousel.root);
+    const chosen = () => STRATEGIES[rankOf(answers.strategy)];
+    return {
+      nodes,
+      missing: () => (answers.strategy ? '' : STRATEGY.missing),
+      next: () => (answers.strategy ? fill(STRATEGY.continueWith, { name: chosen().name }) : null),
+      refresh: carousel.refresh,
+      mounted: carousel.mounted,
+    };
   },
 
   esg() {
@@ -544,19 +851,26 @@ const BUILD = {
       head.append(edit);
       box.append(head);
       if (section.id === 'strategy' && s) {
-        const card = el('div', 'opening-summary__strategy');
+        /* A small carousel card (9d D20): the persona with the chosen vehicle on the left, decorative, since the name
+           says it; the live stage moves here and only idles. */
+        const card = el('div', 'opening-summary__strategy' + (vehicles.failed ? ' is-flat' : ''));
+        const figure = el('div', 'opening-summary__figure');
+        figure.setAttribute('aria-hidden', 'true');
+        const text = el('div', 'opening-summary__strategy-text');
         const name = el('p', 'opening-summary__name');
         name.append(el('span', 'opening-option__label', s.name));
         if (s.id === rec) name.append(el('span', 'opening-option__tag', STRATEGY.recommended));
         const meters = el('div', 'opening-option__meters');
         meters.append(meter(STRATEGY.riskLabel, s.risk, 'bar'), meter(STRATEGY.returnLabel, s.ret, 'dots'));
-        card.append(name, el('p', 'opening__note', s.line), meters);
+        text.append(name, el('p', 'opening__note', s.line), meters);
+        card.append(figure, text);
         box.append(card);
+        vehicles.host = { root: card, id: () => s.id, figure: () => figure };
       }
       if (section.id === 'answers') box.append(answerList(rec));
       nodes.push(box);
     });
-    return { nodes };
+    return { nodes, mounted: placeVehicles };
   },
 
   /* Completion (D20): the strategy, the amount and the next step in words; the mandate is already stored. */
@@ -608,24 +922,6 @@ function meter(name, n, kind) {
   for (let i = 1; i <= 5; i++) marks.append(el('span', 'opening-meter__mark' + (i <= n ? ' is-filled' : '')));
   row.append(marks, el('span', 'opening__sr', n + ' of 5'));
   return row;
-}
-
-/* A strategy card (D11): one row with the name, the tag and risk and return, then the line. The line shows on the
-   chosen card only, so five cards fit the sheet (D27); every card is still described by it, and an unavailable one
-   also by the "Above your risk profile" line over the unavailable cards (see the strategy screen). */
-function strategyCard(s, b, recommended, above) {
-  b.classList.add('opening-option--card');
-  const head = el('span', 'opening-option__head');
-  const name = el('span', 'opening-option__name');
-  name.append(el('span', 'opening-option__label', s.name));
-  if (recommended) name.append(el('span', 'opening-option__tag', STRATEGY.recommended));
-  const meters = el('span', 'opening-option__meters');
-  meters.append(meter(STRATEGY.riskLabel, s.risk, 'bar'), meter(STRATEGY.returnLabel, s.ret, 'dots'));
-  head.append(name, meters);
-  const line = el('span', 'opening-option__line opening-option__line--chosen', s.line);
-  line.id = 'opening-strategy-' + s.id;
-  b.setAttribute('aria-describedby', line.id + (above ? ' opening-strategy-above' : ''));
-  b.append(head, line);
 }
 
 /* The screen on show: its gate and refresh, called after every change. */
@@ -681,6 +977,9 @@ function changed() {
 function render(moveFocus, animate, back) {
   const screen = SCREENS[index];
   panel.innerHTML = '';
+  /* The vehicles load one screen ahead and draw on the strategy screen and the summary only (9d D3, D11, D20). */
+  if (['risk', 'strategy', 'summary'].includes(screen.id)) loadVehicles();
+  vehiclesOn(screen.id === 'strategy' || screen.id === 'summary');
   const heading = el('h2', 'opening__heading', screen.title);
   heading.id = 'opening-heading';
   heading.tabIndex = -1;
@@ -700,10 +999,12 @@ function render(moveFocus, animate, back) {
   hint.id = 'opening-hint';
   const buttons = [];
   const gated = []; /* the buttons that wait for the screen's answers */
+  let named = null; /* Next, when the screen names it after the answer (the strategy's "Continue with", 9d D18) */
   if (built.actions) buttons.push(...built.actions);
   else {
     const editing = edit && edit.screens.includes(screen.id);
     const next = button(editing ? SUMMARY.backToSummary : screen.next || 'Next', 'primary', forward);
+    if (built.next && !editing) named = next;
     next.setAttribute('aria-describedby', hint.id);
     buttons.push(next);
     gated.push(next);
@@ -728,6 +1029,7 @@ function render(moveFocus, animate, back) {
       if (built.refresh) built.refresh();
       const missing = built.missing ? built.missing() : '';
       gated.forEach((b) => { b.disabled = !!missing; });
+      if (named) named.textContent = built.next() || screen.next || 'Next';
       hint.textContent = missing;
       hint.hidden = !missing;
     },
@@ -735,6 +1037,7 @@ function render(moveFocus, animate, back) {
   current.update();
 
   panel.append(content, actions);
+  if (built.mounted) built.mounted();
   panel.scrollTop = 0;
   showStep(animate);
   if (moveFocus) heading.focus({ preventScroll: true });
