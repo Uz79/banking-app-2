@@ -11584,8 +11584,11 @@ html.fridge--wide .fridge__track .cc-color-slider {
   color: var(--color-fg-secondary);
 }
 
-.fridge__actions .fridge__note {
-  margin-bottom: var(--space-2);
+/* What Next needs before it can go on (phone polish D5), under the field: the opening's accent-bar note. */
+.fridge__need {
+  padding-left: var(--space-2);
+  border-left: 2px solid var(--color-fg-interactive);
+  color: var(--color-fg);
 }
 
 /* Wide page (js sets html.fridge--wide from 640px: the 960 sheet, a tablet): the panel floats on the right,
@@ -11878,9 +11881,6 @@ html:not(.fridge--wide) .fridge__ring-amount {
   color: var(--color-fg);
 }
 
-.opening__actions .opening__hint {
-  margin-bottom: var(--space-1);
-}
 
 /* Option cards (D6): a radio group of full-width buttons; the chosen one has the accent border and a filled dot.
    Compact, so every step fits the 640 sheet without scrolling (D27). */

@@ -17,12 +17,12 @@ What you see: regular sliders on a phone, a strong "Show suitable products", and
 
 What you see: Next always looks ready; tapping it with something missing puts a message under the field and the focus on it.
 
-- [ ] `js/fridge-advisor.js`: step 5's Next enabled; "Set your monthly salary to continue." under the salary, focus to its slider; the message goes once a salary is set
-- [ ] `js/investment-opening.js`: no `gated` disabling; the message under the first missing question and focus to its first control, on every screen; the strategy's case (D5: the current card's choose button, moving to the recommended card first when the current one is above the profile)
-- [ ] `js/investment-opening-config.js`: "Choose a strategy first."
-- [ ] `css/styles.css`: the field message's style (the step's small text, a clear but not alarming colour from the tokens)
-- [ ] List the other disabled call-to-actions in the app (D6) for `validation.md` and the roadmap
-- [ ] Check: each opening screen's Next with nothing answered, by tap and by keyboard; desktop and 390; summary edits ("Back to summary", "Next in this section")
+- [x] `js/fridge-advisor.js`: step 5's Next enabled; "Set your monthly salary to continue." under the salary, focus to its slider; the message goes once a salary is set
+- [x] `js/investment-opening.js`: no `gated` disabling; the message under the first missing question and focus to its first control, on every screen; the strategy's case (D5: the current card's choose button, moving to the recommended card first when the current one is above the profile)
+- [x] `js/investment-opening-config.js`: "Choose a strategy first."
+- [x] `css/styles.css`: the field message's style (the step's small text, a clear but not alarming colour from the tokens)
+- [x] List the other disabled call-to-actions in the app (D6) for `validation.md` and the roadmap
+- [x] Check: each opening screen's Next with nothing answered, by tap and by keyboard; desktop and 390; summary edits ("Back to summary", "Next in this section")
 
 ## 3. The assistant's layer on a phone (D2, D3)
 

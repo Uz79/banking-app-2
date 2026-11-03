@@ -120,7 +120,7 @@ export const STRATEGY = {
   riskLabel: 'Risk',
   returnLabel: 'Expected return',
   fellBack: 'Your answers changed, so we now recommend {name}.',
-  missing: 'Choose a strategy.',
+  missing: 'Choose a strategy first.',
   /* The carousel (9d D16 to D18): one card at a time, chosen explicitly. A card's name for screen readers is
      "{name}, {n} of {total}" and its tag in lower case. */
   carousel: 'Strategies',

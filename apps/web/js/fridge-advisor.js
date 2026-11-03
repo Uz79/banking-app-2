@@ -270,7 +270,7 @@ function buildField(key, onChange) {
   };
   num.addEventListener('keydown', (event) => { if (event.key === 'Enter') { event.preventDefault(); settle(); } });
   num.addEventListener('blur', settle);
-  return { row, refresh };
+  return { row, refresh, range };
 }
 
 const NOTE = 'A rough guide, not financial advice.';
@@ -336,33 +336,51 @@ function render(moveFocus) {
   text.className = 'fridge__text';
   text.textContent = step.text || '';
   text.hidden = !step.text;
-  const fields = [];
-  const refreshAll = () => { fields.forEach((f) => f.refresh()); gate(); };
+  const fields = {};
+  const refreshAll = () => { Object.values(fields).forEach((f) => f.refresh()); gate(); };
   const form = document.createElement('div');
   form.className = 'fridge__fields';
   (step.fields || []).forEach((key) => {
     const f = buildField(key, refreshAll);
-    fields.push(f);
+    fields[key] = f;
     form.append(f.row);
   });
   const actions = document.createElement('div');
   actions.className = 'fridge__actions';
-  const hint = document.createElement('p');
-  hint.className = 'fridge__note';
   const next = document.createElement('button');
   next.type = 'button';
   next.setAttribute('data-fridge-next', '');
   next.className = 'uz-btn uz-btn--primary uz-btn--md uz-btn--block';
   next.textContent = step.next || 'Next';
-  next.addEventListener('click', () => (last ? showProducts() : go(index + 1)));
-  /* Step 5 needs a salary: everything else is measured against it (D4). */
+  /* Step 5 needs a salary: everything else is measured against it (D4). Next stays enabled (phone polish D4, D5):
+     a tap without one says so under the salary and moves the focus to its slider. */
+  const need = document.createElement('p');
+  need.className = 'fridge__note fridge__need';
+  need.id = 'fridge-need';
+  need.textContent = 'Set your monthly salary to continue.';
+  const blocked = () => step.id === 'main-sliders' && values.salary <= 0;
+  const describe = (node, on) => {
+    const ids = (node.getAttribute('aria-describedby') || '').split(' ').filter((x) => x && x !== need.id);
+    if (on) ids.push(need.id);
+    if (ids.length) node.setAttribute('aria-describedby', ids.join(' '));
+    else node.removeAttribute('aria-describedby');
+  };
   function gate() {
-    const blocked = step.id === 'main-sliders' && values.salary <= 0;
-    next.disabled = blocked;
-    hint.textContent = blocked ? 'Set your monthly salary to continue.' : '';
-    hint.hidden = !blocked;
+    if (blocked() || !need.isConnected) return;
+    need.remove();
+    describe(fields.salary.range, false);
   }
-  actions.append(hint, next);
+  next.addEventListener('click', () => {
+    if (blocked()) {
+      fields.salary.row.append(need);
+      describe(fields.salary.range, true);
+      fields.salary.range.focus();
+      return;
+    }
+    if (last) showProducts();
+    else go(index + 1);
+  });
+  actions.append(next);
   const body = step.kind === 'result' ? buildResult() : null;
   panel.append(caption, heading, text, ...(body ? [body] : []), form, actions);
   refreshAll();
