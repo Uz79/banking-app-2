@@ -32,7 +32,8 @@ function readDraft() {
 }
 function writeDraft() {
   try {
-    window.sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ step: index, answers, fridgeAmount, from }));
+    /* The fridge's values ride along, so Start over and completion are the only things that forget them (phone polish D11). */
+    window.sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ page: 'opening', fridge: keptFridge, step: index, answers, fridgeAmount, from }));
   } catch (e) { /* storage blocked: the flow still works, it just does not resume */ }
 }
 function clearDraft() {
@@ -43,6 +44,7 @@ const draft = readDraft();
 let answers = draft ? draft.answers : {};
 const fridgeAmount = draft && Number.isFinite(draft.fridgeAmount) ? Math.max(0, Math.round(draft.fridgeAmount)) : 0;
 const from = draft && typeof draft.from === 'string' ? draft.from : 'direct';
+const keptFridge = draft && draft.fridge && typeof draft.fridge === 'object' ? draft.fridge : undefined;
 /* A resumed draft never lands on completion: that screen only follows the summary. */
 let index = draft && draft.step >= 0 && draft.step < SCREENS.length && SCREENS[draft.step].id !== 'complete' ? draft.step : 0;
 
@@ -110,9 +112,14 @@ function button(label, kind, onClick) {
 }
 
 /* Done on completion: close the sheet, or go home when the page is on its own. */
+/* Whether the last input was the keyboard: the sheet shows the focus ring on Investment only then (phone polish D9). */
+let byKeyboard = false;
+window.addEventListener('keydown', () => { byKeyboard = true; }, true);
+window.addEventListener('pointerdown', () => { byKeyboard = false; }, true);
+
 function leave() {
   assistant.close(false);
-  if (framed) send({ type: 'uzbank:fridge-close' });
+  if (framed) send({ type: 'uzbank:fridge-close', keyboard: byKeyboard });
   else window.location.href = 'overview.html';
 }
 
@@ -200,8 +207,9 @@ function optionGroup({ labelEl, options, get, set, disabled = () => false, conte
     buttons.forEach((b) => { b.tabIndex = b === stop ? 0 : -1; });
   }
   /* Focus the group's tab stop (the chosen option, or the first available one). */
-  const focus = () => { const stop = buttons.find((b) => b.tabIndex === 0); if (stop) stop.focus(); };
-  return { group, refresh, focus };
+  const stop = () => buttons.find((b) => b.tabIndex === 0);
+  const focus = () => { if (stop()) stop().focus(); };
+  return { group, refresh, focus, stop };
 }
 
 /* ── The recommendation (D12) ───────────────────────────────────────── */
@@ -531,6 +539,12 @@ function strategyCarousel(rec) {
     },
     /* Placed once the screen is in the page: the starting card in the middle at once. */
     mounted() { centre(false); placeVehicles(); },
+    /* Next with nothing chosen (phone polish D5): the message under the cards, the focus on the current card's
+       button; from a card above the profile the carousel first moves to the recommended one. */
+    need(move) {
+      if (move && cards[at].action.tagName !== 'BUTTON') go(Math.max(0, rankOf(rec)));
+      return { after: frame, target: cards[at].action.tagName === 'BUTTON' ? cards[at].action : null };
+    },
     refresh() {
       cards.forEach(({ card, action }, j) => {
         const chosen = STRATEGIES[j].id === answers.strategy;
@@ -566,7 +580,7 @@ const BUILD = {
       if (pre) { answers.knowledge = pre; answers.knowledgeFrom = 'profile'; }
     }
     const note = el('p', 'opening__note', KNOWLEDGE.preselectedNote);
-    const { group, refresh } = optionGroup({
+    const { group, refresh, stop } = optionGroup({
       options: KNOWLEDGE.options,
       get: () => answers.knowledge,
       set: (id) => { answers.knowledge = id; delete answers.knowledgeFrom; changed(); },
@@ -575,6 +589,7 @@ const BUILD = {
     return {
       nodes: [group, note],
       missing: () => (answers.knowledge ? '' : KNOWLEDGE.missing),
+      need: () => ({ after: group, target: stop() }),
       refresh() { refresh(); note.hidden = answers.knowledgeFrom !== 'profile'; },
     };
   },
@@ -614,6 +629,10 @@ const BUILD = {
     return {
       nodes: [purposeLabel, purpose.group, horizonLabel, horizon.group, note],
       missing: () => (!answers.purpose ? PURPOSE.missing : !answers.horizon ? HORIZON.missing : ''),
+      need: () => {
+        const g = !answers.purpose ? purpose : horizon;
+        return { after: g.group, target: g.stop() };
+      },
       refresh() {
         purpose.refresh();
         horizon.refresh();
@@ -662,6 +681,7 @@ const BUILD = {
       nodes: [field],
       missing: () => (answers.amount == null ? AMOUNT.missing
         : answers.amount < AMOUNT.min ? fill(AMOUNT.belowMin, { min: chf(AMOUNT.min) }) : ''),
+      need: () => ({ after: box, target: input }),
       refresh() { above.hidden = !(fridgeAmount > 0 && answers.amount > fridgeAmount); },
     };
   },
@@ -705,6 +725,12 @@ const BUILD = {
     return {
       nodes,
       missing: () => (RISK.questions.every((q) => answers[q.id]) ? '' : RISK.missing),
+      /* The first unanswered question opens, the message under it. */
+      need(move) {
+        if (move) open = firstOpen();
+        const part = parts.find((p) => p.q.id === open) || parts.find((p) => !answers[p.q.id]);
+        return part ? { after: part.g.group, target: part.g.stop() } : null;
+      },
       refresh() {
         parts.forEach(({ q, g, box, done, doneText }) => {
           g.refresh();
@@ -734,6 +760,7 @@ const BUILD = {
     return {
       nodes,
       missing: () => (answers.strategy ? '' : STRATEGY.missing),
+      need: carousel.need,
       next: () => (answers.strategy ? fill(STRATEGY.continueWith, { name: chosen().name }) : null),
       refresh: carousel.refresh,
       mounted: carousel.mounted,
@@ -742,13 +769,18 @@ const BUILD = {
 
   esg() {
     const lab = label(ESG.label);
-    const { group, refresh } = optionGroup({
+    const { group, refresh, stop } = optionGroup({
       labelEl: lab,
       options: ESG.options,
       get: () => answers.esg,
       set: (id) => { answers.esg = id; changed(); },
     });
-    return { nodes: [lab, group], missing: () => (answers.esg ? '' : ESG.missing), refresh };
+    return {
+      nodes: [lab, group],
+      missing: () => (answers.esg ? '' : ESG.missing),
+      need: () => ({ after: group, target: stop() }),
+      refresh,
+    };
   },
 
   /* Two questions; the US criteria wait behind "What counts?" (D14, D27). */
@@ -775,6 +807,10 @@ const BUILD = {
     return {
       nodes,
       missing: () => (TAX.questions.every((q) => answers[q.id]) ? '' : TAX.missing),
+      need: () => {
+        const g = groups[TAX.questions.findIndex((q) => !answers[q.id])];
+        return g ? { after: g.group, target: g.stop() } : null;
+      },
       refresh() { groups.forEach((g) => g.refresh()); },
     };
   },
@@ -829,7 +865,14 @@ const BUILD = {
       (open ? back : row).focus();
     }
     row.addEventListener('click', () => show(true));
-    return { nodes: [main, sheets], missing: () => (answers.documents ? '' : DOCUMENTS.missing) };
+    return {
+      nodes: [main, sheets],
+      missing: () => (answers.documents ? '' : DOCUMENTS.missing),
+      need(move) {
+        if (move && main.hidden) { main.hidden = false; sheets.hidden = true; }
+        return { after: check, target: box };
+      },
+    };
   },
 
   /* Grouped sections, one Edit each (D17, D27). */
@@ -995,25 +1038,19 @@ function render(moveFocus, animate, back) {
   content.append(heading, text, body);
 
   const actions = el('div', 'opening__actions');
-  const hint = el('p', 'opening__note opening__hint');
-  hint.id = 'opening-hint';
   const buttons = [];
-  const gated = []; /* the buttons that wait for the screen's answers */
   let named = null; /* Next, when the screen names it after the answer (the strategy's "Continue with", 9d D18) */
   if (built.actions) buttons.push(...built.actions);
   else {
     const editing = edit && edit.screens.includes(screen.id);
-    const next = button(editing ? SUMMARY.backToSummary : screen.next || 'Next', 'primary', forward);
+    const next = button(editing ? SUMMARY.backToSummary : screen.next || 'Next', 'primary', () => { if (!showNeed()) forward(); });
     if (built.next && !editing) named = next;
-    next.setAttribute('aria-describedby', hint.id);
     buttons.push(next);
-    gated.push(next);
     /* While editing, the section's next screen is one step away; the last one only returns. */
     const after = editing ? edit.screens[edit.screens.indexOf(screen.id) + 1] : null;
     if (after) {
-      const more = button(SUMMARY.nextInSection, 'secondary', () => go(indexOf(after)));
+      const more = button(SUMMARY.nextInSection, 'secondary', () => { if (!showNeed()) go(indexOf(after)); });
       buttons.push(more);
-      gated.push(more);
     }
     if (screen.id === 'intro') buttons.push(button('Start over', 'secondary', startOver));
   }
@@ -1021,17 +1058,47 @@ function render(moveFocus, animate, back) {
   const row = el('div', 'opening__action-row');
   if (buttons.length) row.append(assistant.helpButton(), buttons.shift());
   else row.append(assistant.helpButton());
-  actions.append(hint, row, ...buttons);
+  actions.append(row, ...buttons);
 
-  /* Next waits for the screen's answers, and a line says what is missing (D6). */
+  /* Next is never disabled (phone polish D4, D5): a tap with something missing puts the screen's message under the
+     first missing question, tied to it, and moves the focus there. The message follows the answers until none is
+     missing. */
+  const need = el('p', 'opening__note opening__note--check opening__need');
+  need.id = 'opening-need';
+  let needOn = false;
+  let needTarget = null;
+  const describe = (node, on) => {
+    if (!node) return;
+    const ids = (node.getAttribute('aria-describedby') || '').split(' ').filter((x) => x && x !== need.id);
+    if (on) ids.push(need.id);
+    if (ids.length) node.setAttribute('aria-describedby', ids.join(' '));
+    else node.removeAttribute('aria-describedby');
+  };
+  function placeNeed(missing) {
+    describe(needTarget, false);
+    needTarget = null;
+    if (!missing) needOn = false;
+    if (!needOn) { need.remove(); return; }
+    need.textContent = missing;
+    const spot = built.need ? built.need(false) : null;
+    if (spot && spot.after) spot.after.after(need);
+    else actions.prepend(need);
+    needTarget = spot ? spot.target : null;
+    describe(needTarget, true);
+  }
+  function showNeed() {
+    if (!built.missing || !built.missing()) return false;
+    needOn = true;
+    if (built.need) built.need(true);
+    current.update();
+    if (needTarget) needTarget.focus({ preventScroll: true });
+    return true;
+  }
   current = {
     update() {
       if (built.refresh) built.refresh();
-      const missing = built.missing ? built.missing() : '';
-      gated.forEach((b) => { b.disabled = !!missing; });
       if (named) named.textContent = built.next() || screen.next || 'Next';
-      hint.textContent = missing;
-      hint.hidden = !missing;
+      placeNeed(built.missing ? built.missing() : '');
     },
   };
   current.update();
@@ -1044,11 +1111,12 @@ function render(moveFocus, animate, back) {
 
   const n = COUNTED.indexOf(screen);
   announce((n >= 0 ? 'Step ' + (n + 1) + ' of ' + TOTAL + ', ' : '') + screen.title);
-  /* Nothing to lose on completion or after booking; everywhere else the exit asks first, and says the answers are kept (D3). */
+  /* Nothing to lose on completion or after booking; everywhere else, the intro included, the exit asks first and says
+     the progress is kept (D3, phone polish D10, D13). */
   const complete = screen.id === 'complete';
   publish({
     canBack: index > 0 && !complete,
-    dirty: built.dirty !== false && !complete && (index > 0 || Object.keys(answers).length > 0),
+    dirty: built.dirty !== false && !complete,
   });
   if (complete) clearDraft();
   else writeDraft();

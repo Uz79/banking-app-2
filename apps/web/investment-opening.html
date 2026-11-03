@@ -2341,6 +2341,13 @@
           <div class="opening__panel" data-opening-panel></div>
           <!-- The UZ Bank assistant (9b): a column beside the step on desktop, full screen from Help? on a phone (D24, D29). -->
           <aside class="assistant" id="opening-assistant" aria-labelledby="assistant-title" hidden data-assistant>
+            <!-- Phone polish D2: on a phone a layer of its own over the whole sheet; this bar takes the title and has the
+                 layer's own X, in place of the sheet's header. -->
+            <div class="assistant__bar" hidden data-assistant-bar>
+              <button class="modal__close assistant__close" type="button" aria-label="Close questions" data-assistant-close>
+                <svg class="modal__close-icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>
+              </button>
+            </div>
             <div class="assistant__head">
               <!-- The helper (D11, D19): a 3D figure, large in the invitation; a quiet placeholder until it loads. -->
               <div class="assistant__figure" aria-hidden="true" data-assistant-figure></div>

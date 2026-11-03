@@ -24,14 +24,12 @@
   var backBtn = overlay.querySelector('[data-fridge-back]');
   var closeBtn = overlay.querySelector('[data-fridge-close]');
   var titleEl = overlay.querySelector('.modal__title');
+  var nav = overlay.querySelector('.modal__nav');
 
   var FRIDGE = { src: 'fridge-advisor.html', title: 'How much should I invest?' };
   var OPENING = { src: 'investment-opening.html', title: 'Open asset management' };
-  /* The exit prompt, per page: the fridge forgets its sliders, the opening keeps its draft for the tab (9a D3). */
-  var PROMPTS = {
-    'fridge-advisor.html': { title: 'Leave this guide?', message: 'Your entries will be lost.' },
-    'investment-opening.html': { title: 'Leave the opening?', message: 'Your answers are kept until you close this tab.' }
-  };
+  /* One exit prompt for both pages: both keep their progress for the session (phone polish D10, D11). */
+  var PROMPT = { title: 'Leave for now?', message: 'Your progress is kept for this session, so you can continue where you left off.' };
 
   var frame = null;
   var closing = false;
@@ -56,30 +54,51 @@
 
   /* 960 for the whole flow, the fridge and the opening with its assistant column (9b D24); the CSS widens it from a
      1024px window only. One fixed height (9a D26). */
+  /* The opening's assistant on a phone is a layer over the whole sheet with its own X: the sheet's header steps
+     aside while it is open (phone polish D2). */
+  function setChat(on) {
+    shell.classList.toggle('modal-shell--chat', on);
+    nav.inert = on;
+  }
+
   function setWide(on) {
     shell.classList.toggle('modal-shell--wide', on);
     /* The fridge and the opening share one sheet height (8d D1); only the width changes at the hand-over. */
     shell.classList.add('modal-shell--fixed-height');
   }
 
-  /* A draft past the intro resumes the opening (9a D18, D19). Anything unreadable starts with the fridge. */
-  function resumable() {
+  /* Investment reopens where the customer left (phone polish D12): the draft's page, the fridge or the opening. A draft
+     without a page (from before) resumes the opening past its intro, as in 9a D19. Anything unreadable starts with
+     the fridge. */
+  function resumePage() {
     try {
       var d = JSON.parse(window.sessionStorage.getItem('uzBankWebOpeningDraft'));
-      return !!(d && typeof d === 'object' && typeof d.step === 'number' && d.step > 0);
-    } catch (err) { return false; }
+      if (!d || typeof d !== 'object') return FRIDGE;
+      if (d.page === 'opening') return OPENING;
+      if (d.page === 'fridge') return FRIDGE;
+      return typeof d.step === 'number' && d.step > 0 ? OPENING : FRIDGE;
+    } catch (err) { return FRIDGE; }
   }
 
-  /* Which page the frame holds now, for the exit prompt. */
-  function framePage() {
-    try { return frame.contentWindow.location.pathname.split('/').pop(); } catch (err) { return ''; }
+  /* The focus ring on Investment after a close shows only when the close came from the keyboard (phone polish D9).
+     Keys and pointers in this page set it here; the page in the frame says how its own closes came. */
+  var byKeyboard = false;
+  document.addEventListener('keydown', function () { byKeyboard = true; }, true);
+  document.addEventListener('pointerdown', function () { byKeyboard = false; }, true);
+  function focusOpener() {
+    opener.classList.toggle('is-quiet-focus', !byKeyboard);
+    opener.focus(byKeyboard ? undefined : { focusVisible: false });
   }
+  /* The quiet focus lasts until the keyboard is used or the focus moves on. */
+  function speakUp() { opener.classList.remove('is-quiet-focus'); }
+  opener.addEventListener('keydown', speakUp);
+  opener.addEventListener('blur', speakUp);
 
   function open() {
     if (isOpen() || closing) return;
     pageState = { canBack: false, dirty: false };
     showBack(false);
-    var page = resumable() ? OPENING : FRIDGE;
+    var page = resumePage();
     setWide(true);
     frame = document.createElement('iframe');
     frame.className = 'fridge-frame';
@@ -113,10 +132,11 @@
     shell.classList.remove('modal-shell--closing');
     shell.classList.add('modal-shell--offscreen', 'modal-shell--no-transition');
     if (frame) { frame.remove(); frame = null; }
+    setChat(false);
     setWide(true);
     setTitle(FRIDGE.title);
     if (app) app.inert = false;
-    opener.focus();
+    focusOpener();
   }
 
   function close() {
@@ -143,7 +163,6 @@
   function requestClose() {
     if (!isOpen() || closing) return;
     if (!pageState.dirty || typeof window.UZBankPaymentExitPrompt !== 'function') { close(); return; }
-    var prompt = PROMPTS[framePage()] || PROMPTS[FRIDGE.src];
     /* What had the keyboard inside the sheet before the prompt: the header's X or Back, or a control in the page. */
     var before = document.activeElement;
     var inner = null;
@@ -156,11 +175,11 @@
     }
     window.UZBankPaymentExitPrompt(function () {
       /* Leave: back on Investment, unless the sheet is still closing (then finish() does it). */
-      afterPrompt(function () { if (!isOpen()) opener.focus(); });
+      afterPrompt(function () { if (!isOpen()) focusOpener(); });
       close();
     }, {
-      title: prompt.title,
-      message: prompt.message,
+      title: PROMPT.title,
+      message: PROMPT.message,
       /* Keep going: focus returns to what had it before (falling back to the page in the frame). */
       onStay: function () {
         afterPrompt(function () {
@@ -200,9 +219,13 @@
       pageState = { canBack: !!data.canBack, dirty: !!data.dirty };
       showBack(pageState.canBack);
     } else if (data.type === 'uzbank:fridge-escape') {
+      byKeyboard = true;
       requestClose();
     } else if (data.type === 'uzbank:fridge-close') {
+      byKeyboard = !!data.keyboard;
       close();
+    } else if (data.type === 'uzbank:sheet-chat') {
+      setChat(!!data.open);
     } else if (data.type === 'uzbank:sheet-layout') {
       setWide(data.wide !== false);
     } else if (data.type === 'uzbank:sheet-title' && typeof data.title === 'string') {

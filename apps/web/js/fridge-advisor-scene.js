@@ -354,8 +354,9 @@ export async function createFridgeScene(host, cfg, { reduced }) {
   const ease = (t) => 1 - Math.pow(1 - t, 4);
   const tweens = [];
   /* Returns the running tween (or null when it ran at once), so a newer one can replace it. */
+  let instant = false; /* a resumed step: everything lands at once (phone polish D12) */
   function tween(duration, apply, done) {
-    if (reduced() || duration <= 0) { apply(1); dirty = true; if (done) done(); return null; }
+    if (reduced() || instant || duration <= 0) { apply(1); dirty = true; if (done) done(); return null; }
     const tw = { t: 0, duration, apply, done };
     tweens.push(tw);
     return tw;
@@ -525,7 +526,13 @@ export async function createFridgeScene(host, cfg, { reduced }) {
   /* Go to a stage: the camera glides, doors swing, the tint moves, the persona walks. */
   /* `seq` lets a newer stage cancel what an older one still had queued (the cooling sequence). */
   let seq = 0;
-  function goTo(step) {
+  /* `{ instant: true }` puts the stage straight into the step's pose: a fridge reopened where it was left. */
+  function goTo(step, { instant: now = false } = {}) {
+    if (now) {
+      instant = true;
+      try { goTo(step); } finally { instant = false; }
+      return;
+    }
     const mine = ++seq;
     /* Walking out, the persona leaves the frame first and then the camera moves, so it never crosses a close-up (D3). */
     afterExit = null;

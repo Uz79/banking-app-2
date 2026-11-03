@@ -4109,9 +4109,13 @@ button.debit-account:focus-visible {
   border-color: var(--color-btn-primary-bg);
 }
 
-.uz-btn--primary:hover {
-  background-color: var(--color-btn-primary-hover);
-  border-color: var(--color-btn-primary-hover);
+/* Hover only where there is a pointer that hovers: on touch the state sticks after a tap, and a button that
+   replaces the tapped one (the next step's) would start pale (phone polish D7). */
+@media (hover: hover) {
+  .uz-btn--primary:hover {
+    background-color: var(--color-btn-primary-hover);
+    border-color: var(--color-btn-primary-hover);
+  }
 }
 
 .uz-btn--primary:active,
@@ -5010,6 +5014,12 @@ a.product-item:focus-visible,
 a.list-item:focus-visible {
   outline: 0.125rem solid var(--color-fg-interactive);
   outline-offset: 0.125rem;
+}
+
+/* Investment after a flow closed by a tap or click: focused, without the ring, until a key is pressed
+   (phone polish D9, set by js/fridge-advisor-sheet.js). */
+a.list-item.is-quiet-focus:focus-visible {
+  outline: none;
 }
 
 .sidebar__logo a {
@@ -11544,10 +11554,22 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
 
 /* The slider's own focus ring is drawn on the thumb; here the track also holds the recommended-value tick. */
 .fridge__track {
-  --fridge-thumb: 1.25rem; /* the compact slider's thumb width: the thumb's centre runs inset by half of it */
+  --fridge-thumb: 2.625rem; /* the slider's thumb width: the thumb's centre runs inset by half of it */
   position: relative;
   display: flex;
   align-items: center;
+}
+
+/* The floating panel keeps the compact slider; a phone gets the regular one (phone polish D1). */
+html.fridge--wide .fridge__track {
+  --fridge-thumb: 1.25rem;
+}
+
+html.fridge--wide .fridge__track .cc-color-slider {
+  --slider-thumb-w: 1.25rem;
+  --slider-thumb-h: 0.75rem;
+  --slider-track-h: 0.125rem;
+  height: 1rem;
 }
 
 .fridge__tick {
@@ -11568,8 +11590,11 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
   color: var(--color-fg-secondary);
 }
 
-.fridge__actions .fridge__note {
-  margin-bottom: var(--space-2);
+/* What Next needs before it can go on (phone polish D5), under the field: the opening's accent-bar note. */
+.fridge__need {
+  padding-left: var(--space-2);
+  border-left: 2px solid var(--color-fg-interactive);
+  color: var(--color-fg);
 }
 
 /* Wide page (js sets html.fridge--wide from 640px: the 960 sheet, a tablet): the panel floats on the right,
@@ -11657,15 +11682,37 @@ html.fridge--wide .fridge__panel {
   }
 }
 
-@media (max-width: 480px) {
-  .fridge__ring {
-    width: 8.5rem;
-    height: 8.5rem;
-  }
+/* The label above the ring is the phone's (D8); from the floating panel it stays inside the ring. */
+.fridge__result-label {
+  margin: 0 0 calc(var(--space-2) * -1);
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
 
-  .fridge__ring-amount {
-    font-size: var(--fs-h5);
-  }
+html.fridge--wide .fridge__result-label {
+  display: none;
+}
+
+/* Phone: only the amount inside the ring, on one line, its size stepping down with its length so CHF 999'999
+   still fits the inner circle (phone polish D8, roadmap 19). */
+html:not(.fridge--wide) .fridge__ring {
+  width: 8.5rem;
+  height: 8.5rem;
+  container-type: inline-size;
+}
+
+html:not(.fridge--wide) .fridge__ring-text {
+  padding: 0;
+}
+
+html:not(.fridge--wide) .fridge__ring-label {
+  display: none;
+}
+
+html:not(.fridge--wide) .fridge__ring-amount {
+  white-space: nowrap;
+  font-size: min(var(--fs-h5), calc(155cqw / var(--ring-chars, 10)));
 }
 
 /* ── Investment opening ("Open asset management"): follows the fridge in the same sheet ─────────── */
@@ -11840,9 +11887,6 @@ html.fridge--wide .fridge__panel {
   color: var(--color-fg);
 }
 
-.opening__actions .opening__hint {
-  margin-bottom: var(--space-1);
-}
 
 /* Option cards (D6): a radio group of full-width buttons; the chosen one has the accent border and a filled dot.
    Compact, so every step fits the 640 sheet without scrolling (D27). */
@@ -12924,10 +12968,9 @@ html.fridge--wide .fridge__panel {
   outline: none;
 }
 
-/* "I can do it myself" (D27) at the bottom, in the conversation only. */
+/* "I can do it myself" (D27) at the bottom, in the conversation only; no line above it (phone polish D16). */
 .assistant__foot {
   padding: var(--space-2) var(--space-4) max(var(--space-3), env(safe-area-inset-bottom));
-  border-top: 1px solid var(--color-separator);
 }
 
 .assistant__foot[hidden] {
@@ -12948,7 +12991,43 @@ html.fridge--wide .fridge__panel {
   bottom: 0;
   width: clamp(0px, calc(100% - 600px), 360px);
   overflow: hidden;
-  border-left: 1px solid var(--color-separator);
+}
+
+/* Phone polish D16 to D18: no line beside the column. Once "Yes, help me" opens the conversation, the column is a
+   floating container: inset from the sheet's edges, rounded, a space-1 padding, the secondary background (a shade
+   darker in Light, lighter in Dark) and a separator stroke. Its bottom is set so "I can do it myself" ends where the
+   step's Next ends (the step's actions keep --space-4 below Next). */
+.assistant--wide .assistant:not(.assistant--inviting) {
+  top: var(--space-3);
+  right: var(--space-3);
+  bottom: calc(var(--space-4) - var(--space-1) - 1px);
+  width: calc(clamp(0px, calc(100% - 600px), 360px) - var(--space-3));
+  padding: var(--space-1);
+  border: 1px solid var(--color-separator);
+  border-radius: var(--radius-regular);
+  background-color: var(--color-bg-secondary);
+}
+
+.assistant--wide .assistant:not(.assistant--inviting) > * {
+  min-width: 0;
+}
+
+.assistant--wide .assistant:not(.assistant--inviting) .assistant__head,
+.assistant--wide .assistant:not(.assistant--inviting) .assistant__body,
+.assistant--wide .assistant:not(.assistant--inviting) .assistant__foot {
+  padding-left: var(--space-3);
+  padding-right: var(--space-3);
+}
+
+.assistant--wide .assistant:not(.assistant--inviting) .assistant__foot {
+  padding-bottom: 0;
+}
+
+/* On the container's secondary background the customer's lines and "I can do it myself" (a tonal button, the same
+   secondary fill) take the page background, so they still stand out. */
+.assistant--wide .assistant:not(.assistant--inviting) .assistant-line--customer,
+.assistant--wide .assistant:not(.assistant--inviting) .assistant__foot .uz-btn--tonal:not(:hover) {
+  background-color: var(--color-bg);
 }
 
 .assistant--wide .assistant__head,
@@ -13004,12 +13083,47 @@ html.fridge--wide .fridge__panel {
   }
 }
 
-/* Phone (D29): the conversation covers the sheet's body, under the sheet's own header, above the step and its
-   buttons. It appears at once: no slide, so nothing to reduce. */
+/* Phone (phone polish D2, replacing 9b D29's place under the sheet's header): the conversation is a layer over
+   the whole sheet, which hides its own header meanwhile; the layer's bar holds the title and its own X, laid out
+   like the sheet's header. It slides up; with reduced motion it appears at once. */
 .assistant--full .assistant {
   position: fixed;
   inset: 0;
   z-index: 3;
+  animation: assistant-layer-in 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes assistant-layer-in {
+  from { transform: translateY(100%); }
+}
+
+.assistant__bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-height: calc(2.75rem + 2 * var(--space-3));
+  padding: var(--space-3) calc(var(--space-3) + 2.75rem + var(--space-2));
+}
+
+.assistant__bar[hidden] {
+  display: none;
+}
+
+.assistant__bar .assistant__title {
+  font-size: var(--fs-text-lg);
+  text-align: center;
+}
+
+.modal-shell--chat .modal__nav {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assistant--full .assistant {
+    animation: none;
+  }
 }
 
 /* D28: the bottom bar holds Help? and the step's main button side by side; on desktop the row is the main button. */

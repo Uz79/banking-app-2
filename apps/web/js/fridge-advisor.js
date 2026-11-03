@@ -72,19 +72,39 @@ createFridgeScene(stage, CONFIG, { reduced })
       scene.setDoor('freezer', CONFIG.doors.open);
       scene.setDoor('fridge', CONFIG.doors.open);
     } else {
-      scene.goTo(STEPS[index]);
+      /* Straight into the step's pose: on a resumed step nothing walks in or swings (phone polish D12). */
+      scene.goTo(STEPS[index], { instant: true });
     }
   })
   .catch((err) => console.warn('[fridge-advisor] 3D failed to load', err));
 
-/* ── Values (D8: in memory only, all zero on every visit, apart from the prefill) ── */
+/* ── Values (D8: all zero on a first visit, apart from the prefill; kept for the session since phone polish D11) ── */
 const values = { salary: 0, left: 0, assets: 0, unplanned: 0, bigger: 0 };
+const DRAFT_KEY = 'uzBankWebOpeningDraft';
+/* The session draft the opening shares (phone polish D11): `page` says where the customer left, `fridge` holds this
+   page's step and values. Anything unreadable is a fresh start. */
+function readKept() {
+  try {
+    const d = JSON.parse(window.sessionStorage.getItem(DRAFT_KEY));
+    const f = d && d.page === 'fridge' && d.fridge;
+    if (!f || !Number.isInteger(f.step) || !f.values || typeof f.values !== 'object') return null;
+    return f;
+  } catch (e) { return null; }
+}
+function writeKept(page, extra) {
+  try {
+    window.sessionStorage.setItem(DRAFT_KEY, JSON.stringify({
+      page, fridge: { step: index, values: { ...values }, prefilled }, step: 0, answers: {}, ...extra,
+    }));
+  } catch (e) { /* storage blocked: the fridge still works, it just does not resume */ }
+}
+const kept = readKept();
 const TRACK = 1000; /* positions on the native range; the value comes from the position, never the other way round */
 
 /* Total assets starts at the liquid accounts, Household + Savings, as every other page shows them (D28).
    Set directly, not through setValue, so it does not count as an entry (D29). */
-let prefilled = false;
-try {
+let prefilled = !!(kept && kept.prefilled);
+if (!kept) try {
   const balances = window.UZBankPayState.getState().accountBalances;
   const sum = Math.round((balances.household || 0) + (balances.savings || 0));
   if (Number.isFinite(sum)) {
@@ -107,12 +127,19 @@ const fromPos = (key, t) => {
   const { step } = FIELDS[key];
   return clampTo(key, Math.round(maxOf(key) * Math.pow(t, curveOf(key)) / step) * step);
 };
+/* Kept values come back in the fields' order, so each is clamped against the ones it depends on. */
+if (kept) {
+  Object.keys(values).forEach((k) => {
+    const v = Number(kept.values[k]);
+    if (Number.isFinite(v)) values[k] = clampTo(k, v);
+  });
+}
 
 /* Setting a value keeps the others inside their ranges (lowering the salary lowers what depends on it). */
 function setValue(key, v) {
   values[key] = clampTo(key, v);
   Object.keys(values).forEach((k) => { if (values[k] > maxOf(k)) values[k] = maxOf(k); });
-  publish({ dirty: true });
+  writeKept('fridge');
   updateFood();
 }
 
@@ -149,7 +176,7 @@ function updateFood() {
 }
 
 /* ── Steps ─────────────────────────────────────────────────────────── */
-let index = 0;
+let index = kept && kept.step >= 0 && kept.step < STEPS.length ? kept.step : 0;
 const TOTAL = 7; /* the screens in D4, without the closing screen (9a D1) */
 
 function announce(text) {
@@ -194,7 +221,8 @@ function buildField(key, onChange) {
   range.min = '0';
   range.max = String(TRACK);
   range.step = '1';
-  range.className = 'cc-color-slider cc-color-slider--compact';
+  /* The regular slider on a phone, the compact one in the floating panel (phone polish D1, in the CSS). */
+  range.className = 'cc-color-slider';
   track.append(range);
   if (def.mark) {
     const tick = document.createElement('span');
@@ -269,7 +297,7 @@ function buildField(key, onChange) {
   };
   num.addEventListener('keydown', (event) => { if (event.key === 'Enter') { event.preventDefault(); settle(); } });
   num.addEventListener('blur', settle);
-  return { row, refresh };
+  return { row, refresh, range };
 }
 
 const NOTE = 'A rough guide, not financial advice.';
@@ -286,6 +314,13 @@ function buildResult() {
   ring.innerHTML = '<svg viewBox="0 0 120 120" focusable="false"><circle class="fridge__ring-track" cx="60" cy="60" r="52" pathLength="100"/>'
     + '<circle class="fridge__ring-bar" cx="60" cy="60" r="52" pathLength="100" stroke-dasharray="' + (reduced() ? share * 100 : 0) + ' 100"/></svg>'
     + '<div class="fridge__ring-text"><span class="fridge__ring-label">You could invest</span><span class="fridge__ring-amount">' + chf(amount) + '</span></div>';
+  /* The amount's type shrinks with its length so any amount fits inside the ring (phone polish D8). */
+  ring.style.setProperty('--ring-chars', String(chf(amount).length));
+  /* On a phone the label sits above the ring and only the amount is inside (D8); the CSS shows one of the two. */
+  const label = document.createElement('p');
+  label.className = 'fridge__result-label';
+  label.setAttribute('aria-hidden', 'true');
+  label.textContent = 'You could invest';
   if (!reduced()) {
     const bar = ring.querySelector('.fridge__ring-bar');
     requestAnimationFrame(() => requestAnimationFrame(() => bar.setAttribute('stroke-dasharray', share * 100 + ' 100')));
@@ -299,17 +334,15 @@ function buildResult() {
   const note = document.createElement('p');
   note.className = 'fridge__note';
   note.textContent = NOTE;
-  box.append(ring, sr, year, note);
+  box.append(label, ring, sr, year, note);
   return box;
 }
 
 /* "Show suitable products" (9a D1, D18): the result goes into the opening's session draft, and the opening replaces
-   this page, in the sheet or on its own. The sliders themselves are still not remembered (D8). */
+   this page, in the sheet or on its own. */
 function showProducts() {
-  try {
-    window.sessionStorage.setItem('uzBankWebOpeningDraft',
-      JSON.stringify({ step: 0, answers: {}, fridgeAmount: Math.round(investable()), from: 'fridge' }));
-  } catch (e) { /* storage blocked: the opening starts without the amount */ }
+  /* The fridge's values stay in the draft (phone polish D11); the opening is where the customer now is. */
+  writeKept('opening', { fridgeAmount: Math.round(investable()), from: 'fridge' });
   window.location.href = 'investment-opening.html';
 }
 
@@ -328,40 +361,60 @@ function render(moveFocus) {
   text.className = 'fridge__text';
   text.textContent = step.text || '';
   text.hidden = !step.text;
-  const fields = [];
-  const refreshAll = () => { fields.forEach((f) => f.refresh()); gate(); };
+  const fields = {};
+  const refreshAll = () => { Object.values(fields).forEach((f) => f.refresh()); gate(); };
   const form = document.createElement('div');
   form.className = 'fridge__fields';
   (step.fields || []).forEach((key) => {
     const f = buildField(key, refreshAll);
-    fields.push(f);
+    fields[key] = f;
     form.append(f.row);
   });
   const actions = document.createElement('div');
   actions.className = 'fridge__actions';
-  const hint = document.createElement('p');
-  hint.className = 'fridge__note';
   const next = document.createElement('button');
   next.type = 'button';
   next.setAttribute('data-fridge-next', '');
   next.className = 'uz-btn uz-btn--primary uz-btn--md uz-btn--block';
   next.textContent = step.next || 'Next';
-  next.addEventListener('click', () => (last ? showProducts() : go(index + 1)));
-  /* Step 5 needs a salary: everything else is measured against it (D4). */
+  /* Step 5 needs a salary: everything else is measured against it (D4). Next stays enabled (phone polish D4, D5):
+     a tap without one says so under the salary and moves the focus to its slider. */
+  const need = document.createElement('p');
+  need.className = 'fridge__note fridge__need';
+  need.id = 'fridge-need';
+  need.textContent = 'Set your monthly salary to continue.';
+  const blocked = () => step.id === 'main-sliders' && values.salary <= 0;
+  const describe = (node, on) => {
+    const ids = (node.getAttribute('aria-describedby') || '').split(' ').filter((x) => x && x !== need.id);
+    if (on) ids.push(need.id);
+    if (ids.length) node.setAttribute('aria-describedby', ids.join(' '));
+    else node.removeAttribute('aria-describedby');
+  };
   function gate() {
-    const blocked = step.id === 'main-sliders' && values.salary <= 0;
-    next.disabled = blocked;
-    hint.textContent = blocked ? 'Set your monthly salary to continue.' : '';
-    hint.hidden = !blocked;
+    if (blocked() || !need.isConnected) return;
+    need.remove();
+    describe(fields.salary.range, false);
   }
-  actions.append(hint, next);
+  next.addEventListener('click', () => {
+    if (blocked()) {
+      fields.salary.row.append(need);
+      describe(fields.salary.range, true);
+      fields.salary.range.focus();
+      return;
+    }
+    if (last) showProducts();
+    else go(index + 1);
+  });
+  actions.append(next);
   const body = step.kind === 'result' ? buildResult() : null;
   panel.append(caption, heading, text, ...(body ? [body] : []), form, actions);
   refreshAll();
   if (moveFocus) heading.focus({ preventScroll: true });
   announce(caption.textContent + '. ' + (step.kind === 'result' ? 'You could invest ' + chf(investable()) + '. ' + NOTE
     : step.title + '. ' + step.text));
-  publish({ canBack: index > 0 });
+  /* Closing always asks: the progress is kept for the session (phone polish D10, D11). */
+  publish({ canBack: index > 0, dirty: true });
+  writeKept('fridge');
   if (scene) { scene.goTo(step); updateFood(); }
 }
 
