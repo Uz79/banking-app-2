@@ -377,6 +377,15 @@ export function setScreen(id) {
 /* The customer's own numbers for answers that use them ({amount}). */
 export function setValues(fn) { values = fn; }
 
+/* The User Type as the answers read it (D9), for the nudges' thresholds (9f D5). */
+export { level };
+
+/* The customer is in help on this step: past "Yes, help me" on desktop, the layer open on a phone (9f D2). */
+export function isHelping() { return wide ? !inviting : open; }
+
+/* Whether a question was asked on a screen in this visit (9f D6). */
+export function wasAsked(id, q) { return talks.has(id) && talks.get(id).asked.has(q); }
+
 /* The phone's conversation is open (it takes the first Escape). */
 export function isOpen() { return open; }
 export function close(returnFocus) { hideFull(returnFocus); }

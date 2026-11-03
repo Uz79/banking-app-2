@@ -25,9 +25,10 @@ export const ASSISTANT = {
   helpLabel: 'Questions about this step',
   chipsLabel: 'Questions',
   more: 'More',
+  /* Asking it starts the handoff (9f D12): its answer is `HANDOFF.start`. */
   advisor: {
     q: 'Talk to an advisor',
-    short: 'We will call you to find a time. Your answers are kept.',
+    handoff: true,
   },
 };
 
@@ -306,4 +307,74 @@ export const CHIPS = {
       },
     ],
   },
+};
+
+/* ── Nudges (9f D1 to D10) ──────────────────────────────────────────────
+   Per screen: `read`, the expected reading time in seconds (placeholders, D3); `q`, the nudge question, one of the
+   screen's own chips (D6); `signals`, the hesitation signals besides time that the intervention map lists for it
+   (D1): 'switch' (a third change of an answer), 'back' (the second return to the step), 'lookup' (the second open
+   of an in-step toggle), 'empty' (the amount field left empty or under the minimum), 'browse' (every strategy card
+   seen). `advisor: true` adds "Talk to an advisor" to the nudge (D10). Completion and the exit screen never nudge. */
+export const NUDGES = {
+  screens: {
+    intro: { read: 15, q: 'Can I stop and come back?', signals: [] },
+    knowledge: { read: 15, q: 'What counts as basic knowledge?', signals: ['switch'], high: true },
+    purpose: { read: 20, q: 'What if I am not sure when I need it?', signals: [] },
+    amount: { read: 20, q: 'What if I invest more than the fridge suggests?', signals: ['empty'], high: true },
+    risk: { read: 45, q: 'Is there a right answer?', signals: ['switch', 'lookup'], high: true },
+    strategy: { read: 40, q: 'Do I have to take the recommendation?', signals: ['browse', 'back'] },
+    esg: { read: 15, q: 'Does it cost me return?', signals: [] },
+    tax: { read: 25, q: 'Who counts as a US person?', signals: ['lookup'], high: true },
+    documents: { read: 40, q: 'Which documents matter most?', signals: ['lookup'], high: true, advisor: true },
+    summary: { read: 30, q: 'Can I still change something?', signals: ['back'], advisor: true },
+  },
+  /* By User Type (D5): how many times the reading time to wait, and whether every step or only the high ones nudge.
+     Power user never. */
+  levels: {
+    novice: { factor: 1.5, steps: 'all' },
+    standard: { factor: 2.5, steps: 'high' },
+    power: null,
+  },
+  /* The third nudge in one opening also offers a person (D10). */
+  advisorFrom: 3,
+  /* How many of a signal before it counts (D1). Changes closer together than `switchGap` ms count as one, so the
+     arrow keys moving through a list are not hesitation. */
+  counts: { switch: 3, back: 2, lookup: 2, empty: 1, browse: 1 },
+  switchGap: 1000,
+  /* `?nudge=fast` divides the reading times (D4). */
+  fastFactor: 10,
+  /* The customer's words in the nudge (D7, D8, D10, D17) and the announcement (D9). */
+  show: 'Show me',
+  dismiss: 'No, thanks',
+  advisor: 'Talk to an advisor',
+  orAdvisor: 'Or talk to an advisor',
+  announce: 'A question about this step: {q}',
+};
+
+/* ── The handoff to a person (9f D12 to D16) ────────────────────────────
+   Simulated: no contact data asked or shown, nothing sent (D14). The times come from the browser's clock (D13). */
+export const HANDOFF = {
+  start: 'We can call you back, or you can book a video meeting with an advisor.',
+  call: { q: 'Call me back', ask: 'When suits you? An advisor calls you on the number we have for you.', minutes: 60 },
+  meeting: { q: 'Book a video meeting', ask: 'When suits you? A meeting takes 30 minutes.', minutes: 30 },
+  /* Office hours, working days only (D13). */
+  opens: 8,
+  closes: 18,
+  /* The second and third times: the next working days at these hours. */
+  laterAt: [9, 14],
+  today: 'Today',
+  tomorrow: 'Tomorrow',
+  days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+  /* {when} is "today", "tomorrow" or "on Thursday"; {time} "15:00 to 16:00". */
+  bookedCall: 'Done. An advisor will call you {when}, {time}.',
+  bookedMeeting: 'Done. Your video meeting is {when}, {time}. The link comes by email.',
+  kept: 'Your answers are kept.',
+  hasCall: 'An advisor will call you {when}, {time}. Your answers are kept.',
+  hasMeeting: 'Your video meeting is {when}, {time}. The link comes by email.',
+  other: 'Choose another time',
+  cancel: 'Cancel it',
+  cancelled: 'It is cancelled. You can book again at any time.',
+  /* The exit screen's line once something is booked (D16). */
+  screenCall: 'An advisor will call you {when}, {time}.',
+  screenMeeting: 'Your video meeting is {when}, {time}.',
 };

@@ -8,11 +8,11 @@ Each group ends with something to look at in the browser on the agent's server (
 
 What you see: nothing yet on screen; in the console (a temporary debug line, removed in group 2), "nudge: knowledge" when a step would nudge.
 
-- [ ] `js/opening-assistant-config.js`: `NUDGES` (the reading time and the nudge question per screen, D3, D6; the thresholds per User Type, D5; the high steps)
-- [ ] `js/opening-hesitation.js` (new): the clock (visible tab, step on screen, assistant not open, D2), the counters for switching, going back, looking up and left empty (D1), the User Type rule (D5), `?nudge=fast` (D4); one callback per step at most
-- [ ] `js/investment-opening.js`: report the step, answer changes, Back and summary edits, the toggles and the amount field to the hesitation module
-- [ ] `js/opening-assistant.js`: tell the hesitation module when the conversation is open on a step
-- [ ] Check: each User Type with `?nudge=fast`: Newbie fires on every counted step by time, All-rounder only on the high steps, Power user never; switching an answer three times fires at once; the clock pauses in a hidden tab and while help is open
+- [x] `js/opening-assistant-config.js`: `NUDGES` (the reading time and the nudge question per screen, D3, D6; the thresholds per User Type, D5; the high steps)
+- [x] `js/opening-hesitation.js` (new): the clock (visible tab, step on screen, assistant not open, D2), the counters for switching, going back, looking up and left empty (D1), the User Type rule (D5), `?nudge=fast` (D4); one callback per step at most
+- [x] `js/investment-opening.js`: report the step, answer changes, Back and summary edits, the toggles and the amount field to the hesitation module
+- [x] `js/opening-assistant.js`: tell the hesitation module when the conversation is open on a step
+- [x] Check: each User Type with `?nudge=fast`: Newbie fires on every counted step by time, All-rounder only on the high steps, Power user never; switching an answer three times fires at once; the clock pauses in a hidden tab (and while help is open, checked in group 2)
 
 ## 2. The nudge (D6 to D11)
 
