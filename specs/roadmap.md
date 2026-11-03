@@ -185,3 +185,7 @@ Added 2026-11-03, point 7 of the phone polish brief (points 1 to 6 were built in
 ## 26. Fridge result: the amount spills over its ring on desktop with Large type
 
 Found during 25 (2026-11-03). With Legibility set to Large, the fridge's result on the desktop panel puts the amount across the ring's edge, as item 19 did on a phone before 21 fixed it there. To settle in its spec: whether the ring grows with the type scale, or the amount's size is capped inside it.
+
+## 27. Sheets: Tab leaves them for the page behind
+
+Found during 25 (2026-11-03). In the Pay sheet and the Buy sheet on desktop, Tab past the last control moves focus to the page behind the scrim (Overview's Scan and Pay, the position's Sell), which can't be seen or used while the sheet is open. The "Discard" dialogs and the opening's phone layer were not affected. To settle in its spec: make the page behind inert while a sheet is open (or keep focus in the sheet), and which sheets share the code.
