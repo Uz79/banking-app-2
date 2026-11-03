@@ -176,3 +176,16 @@ Added 2026-11-03. The list on All bookings runs day group after day group with n
 - **Linked to the month chips:** tapping a chip scrolls to its separator; while scrolling, the chip of the month in view becomes active.
 - **Sticky (optional):** the current month's separator sticks below the header until the next one pushes it away. To decide in its spec.
 - **Everywhere:** in all three tabs (Executed, Pending, Recurring) and with the search field (a month with no matches shows no separator). Screen readers read it as a heading.
+- **Focus after a chip (found during 25, 2026-11-03):** a click on a chip in the list, or Enter on it, docks the bar and hides the list's bar, so focus drops to the page body and the next Tab starts from the top. To settle with the chip linking above: focus moves to the same chip in the docked bar, or to the month's separator.
+
+## 25. Focus rings app-wide (done)
+
+Added 2026-11-03, point 7 of the phone polish brief (points 1 to 6 were built in 21). No browser-default outlines anywhere: every interactive element shows the app's ring in `--color-fg-interactive`, only for keyboard focus (`:focus-visible`), never after a click or tap. First known case: the selected month chip on All bookings shows a blue browser ring after a click. Spec: `specs/2026-11-03-focus-rings/` (branch `feature/focus-rings`). Settled in its interview: one global base rule at zero specificity, so the component rings keep winning; text fields keep their focused stroke on a click; outlines in other tokens move to `--color-fg-interactive`, the fields' inset stroke stays; a scripted audit of every page and flow.
+
+## 26. Fridge result: the amount spills over its ring on desktop with Large type
+
+Found during 25 (2026-11-03). With Legibility set to Large, the fridge's result on the desktop panel puts the amount across the ring's edge, as item 19 did on a phone before 21 fixed it there. To settle in its spec: whether the ring grows with the type scale, or the amount's size is capped inside it.
+
+## 27. Sheets: Tab leaves them for the page behind
+
+Found during 25 (2026-11-03). In the Pay sheet and the Buy sheet on desktop, Tab past the last control moves focus to the page behind the scrim (Overview's Scan and Pay, the position's Sell), which can't be seen or used while the sheet is open. The "Discard" dialogs and the opening's phone layer were not affected. To settle in its spec: make the page behind inert while a sheet is open (or keep focus in the sheet), and which sheets share the code.

@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 665609e702d65e9f780b0223bec1e180c0c16261 -->
+<!-- changelog: last-commit d071655cb40b68d9406522d3958c9fefa6c5827a -->
 
 ### Added
 - **The assistant notices when a customer seems stuck** (roadmap 9f). Time on a step against its reading time, changing an answer again and again, coming back to a step, opening the same explanation twice or leaving the amount empty make the assistant offer that step's own question, once, quietly: on desktop the invitation shows the question with "Show me" and "No, thanks", on a phone a bubble rises above Help?. Newbie gets it on every step, All-rounder only on knowledge, amount, risk, tax and documents and later, Power user never. The third nudge, and any on documents or the summary, also offers a person. Nudges are remembered with the progress for the session. `?nudge=fast` shortens the waits for testing.
@@ -39,6 +39,7 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-10-29-investment-opening/`.
 
 ### Changed
+- **Focus rings app-wide** (roadmap 25). Everything that takes keyboard focus now shows the app's ring in the interactive colour, and nothing shows one after a click or a tap. The month chips on All bookings had the browser's blue ring from the keyboard; they now have the app's, with room so it is not cut off (the docked month header is 4px taller). The payment rows and the amount's currency button ring in the interactive colour, so Multi-color themes colour them too. The hidden docked month bar is no longer an invisible stop in the Tab order. Text fields keep their focused stroke. One base rule in `css/styles.css`, recorded in `specs/tech-spec.md`. Spec: `specs/2026-11-03-focus-rings/`.
 - **A booking dropped from the list keeps its money** (roadmap 14). Past 100 bookings the oldest leaves the list, and its money used to come back into the balance. Now what it moved is carried per account, so Household, Savings, the totals, the Today headers and the available balance in the sheets stay right. A demo reset clears it. Spec: `specs/2026-11-03-booking-balance/`.
 - **Next is never disabled** in the fridge and the opening (a design-system rule now, `specs/tech-spec.md`). Tapping it with something missing puts a short message under the missing field, read with it by screen readers, and moves the focus there: "Set your monthly salary to continue." on the fridge's step 5, "Choose a strategy first." on the strategy step (focus on the card's "Choose this strategy", from Growth or Dynamic the carousel first moves to the recommended card), and each opening screen's own message under its first unanswered question. Replaces the disabled Next of 9a and 9d.
 - **Primary buttons on touch screens** no longer stay in their lighter hover colour after a tap. That is why the fridge's "Show suitable products" looked pale on a phone: it appears where step 6's Next was tapped. The hover is unchanged where a mouse can hover.
@@ -50,7 +51,8 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - **Flow sheet focus after the exit prompt.** In the fridge and opening sheet, Keep going returns focus to the control that had it, and Leave returns it to Investment (it used to land on the page body).
 
 ### Decided
-- **9g, Personalisation, is for later** (roadmap): not as a step, since people found the flow too long, but as an opt-in from the summary. Editing a pending payment turning it executed went onto the roadmap as item 23.
+- **Focus rings are a design-system rule** (`specs/tech-spec.md`): keyboard only, in the interactive colour, never the browser's. **Three findings from its audit went onto the roadmap:** focus after a month chip docks the bar (with 24), the fridge result's amount over its ring on desktop with Large type (26), and Tab leaving the Pay and Buy sheets for the page behind (27).
+- **9g, Personalisation, is for later** (roadmap): not as a step, since people found the flow too long, but as an opt-in from the summary. Editing a pending payment turning it executed went onto the roadmap as item 23. Month separators on All bookings, linked to the month chips, are item 24.
 - **No disabled call-to-action buttons**, anywhere in the app: recorded in `specs/tech-spec.md`. The one left outside the two flows, Profile's "Reset demo data" (disabled for a moment while it shows "Reset ✓"), is roadmap 22.
 - **A roadmap item found during 9c.** 20, the Character kit helper's stage can stop drawing while on screen (its visibility observer reads a stale entry).
 - **Two roadmap items found during 9a.** 8d, the fridge as a film (the 3D stage fills a 960 x 640 sheet, the steps in a floating panel), scheduled before 9b; and 18, funding the asset management mandate (a transfer to it turns "Pending" into a balance).
