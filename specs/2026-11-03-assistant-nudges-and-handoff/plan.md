@@ -28,11 +28,11 @@ What you see: the desktop invitation turning into the step's question with "Show
 
 What you see: "Talk to an advisor" offering a callback or a video meeting, three times, a confirmation that stays.
 
-- [ ] `js/opening-assistant-config.js`: `HANDOFF` (the lines and the choices, D12, D13, D17)
-- [ ] `js/opening-assistant.js`: the handoff in the conversation (the two choices, the three times from the clock, the confirmation, the booked state with "Choose another time" and "Cancel it")
-- [ ] `js/investment-opening.js`: the draft's `handoff` (D15, a past booking dropped); the exit screen's "Book an appointment" opening the handoff and showing the booking (D16)
-- [ ] `css/styles.css`: the time chips
-- [ ] Check: a callback and a meeting on a weekday morning, a weekday evening and a weekend (the clock faked in the console); the booking shown on another step and after a resume; Cancel; the exit screen; the escalation's advisor button opens it; nothing asks for personal data
+- [x] `js/opening-assistant-config.js`: `HANDOFF` (the lines and the choices, D12, D13, D17)
+- [x] `js/opening-assistant.js`: the handoff in the conversation (the two choices, the three times from the clock, the confirmation, the booked state with "Choose another time" and "Cancel it")
+- [x] `js/investment-opening.js`: the draft's `handoff` (D15, a past booking dropped); the exit screen's "Book an appointment" opening the handoff and showing the booking (D16)
+- [x] `css/styles.css`: the time chips (none needed: they are the conversation's own chips)
+- [x] Check: a callback and a meeting on a weekday morning, a weekday evening and a weekend (the clock faked in the console); the booking shown on another step and after a resume; Cancel; the exit screen; the escalation's advisor button opens it; nothing asks for personal data
 
 ## 4. Wrap-up
 

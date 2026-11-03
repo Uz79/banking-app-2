@@ -225,10 +225,97 @@ const fill = (text) => {
   return text.replace(/\{(\w+)\}/g, (m, k) => (k in v ? v[k] : m));
 };
 
+/* ── The handoff to a person (9f D12 to D16) ─────────────────────────────
+   "Talk to an advisor" leads through a callback or a video meeting, three times and a confirmation. While it runs,
+   its choices take the chips row. The page keeps the booking in its draft (`setBooking`). */
+let booking = { get: () => null, set: () => {} };
+
+const pad = (n) => String(n).padStart(2, '0');
+const clock = (d) => d.getHours() + ':' + pad(d.getMinutes());
+const dayStart = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+const working = (d) => d.getDay() !== 0 && d.getDay() !== 6;
+
+/* "today", "tomorrow" or "on Thursday" (or "Today", "Tomorrow", "Thursday" for a chip). */
+function dayName(d, now, chip) {
+  const days = Math.round((dayStart(d) - dayStart(now)) / 86400000);
+  if (days === 0) return chip ? HANDOFF.today : HANDOFF.today.toLowerCase();
+  if (days === 1) return chip ? HANDOFF.tomorrow : HANDOFF.tomorrow.toLowerCase();
+  return (chip ? '' : 'on ') + HANDOFF.days[d.getDay()];
+}
+
+/* The booking's day and time as words: { when: 'today', time: '15:00 to 16:00' }. */
+export function describeBooking(b, now = new Date()) {
+  const start = new Date(b.slot);
+  const end = new Date(start.getTime() + HANDOFF[b.kind].minutes * 60000);
+  return { when: dayName(start, now, false), time: clock(start) + ' to ' + clock(end) };
+}
+
+/* Three times on working days within office hours (D13): the first from the full hour after next, then the next two
+   working days at `laterAt`. */
+export function slotsFor(kind, now = new Date()) {
+  const minutes = HANDOFF[kind].minutes;
+  const fits = (d) => working(d) && d.getHours() >= HANDOFF.opens
+    && d.getHours() * 60 + d.getMinutes() + minutes <= HANDOFF.closes * 60;
+  const nextDay = (d, hour) => {
+    const n = dayStart(d);
+    do n.setDate(n.getDate() + 1); while (!working(n));
+    n.setHours(hour);
+    return n;
+  };
+  let start = new Date(now);
+  start.setMinutes(0, 0, 0);
+  start.setHours(start.getHours() + 2);
+  for (;;) {
+    if (working(start) && start.getHours() < HANDOFF.opens) start.setHours(HANDOFF.opens);
+    if (fits(start)) break;
+    start = nextDay(start, HANDOFF.opens);
+  }
+  const second = nextDay(start, HANDOFF.laterAt[0]);
+  const third = nextDay(second, HANDOFF.laterAt[1]);
+  return [start, second, third];
+}
+
+function bookingLine(b, call, meeting) {
+  return (b.kind === 'call' ? call : meeting).replace(/\{(\w+)\}/g, (m, k) => describeBooking(b)[k] || m);
+}
+
+/* The handoff's chips for the step it is at; each answers with its own line and moves the handoff on. */
+function handoffChips(t) {
+  const reply = (q, text, next, act) => ({ q, handoff: 'step', reply: () => { if (act) act(); t.handoff = next; return text; } });
+  if (t.handoff === 'choose') {
+    return ['call', 'meeting'].map((kind) => reply(HANDOFF[kind].q, HANDOFF[kind].ask, kind, () => { t.slots = slotsFor(kind); }));
+  }
+  if (t.handoff === 'call' || t.handoff === 'meeting') {
+    const kind = t.handoff;
+    const now = new Date();
+    return t.slots.map((d) => {
+      const end = new Date(d.getTime() + HANDOFF[kind].minutes * 60000);
+      const b = { kind, slot: d.toISOString() };
+      return {
+        q: dayName(d, now, true) + ', ' + clock(d) + ' to ' + clock(end),
+        handoff: 'step',
+        reply: () => {
+          booking.set(b);
+          t.handoff = null;
+          return bookingLine(b, HANDOFF.bookedCall, HANDOFF.bookedMeeting) + ' ' + HANDOFF.kept;
+        },
+      };
+    });
+  }
+  if (t.handoff === 'booked') {
+    return [
+      reply(HANDOFF.other, HANDOFF.start, 'choose'),
+      reply(HANDOFF.cancel, HANDOFF.cancelled, null, () => booking.set(null)),
+    ];
+  }
+  return [];
+}
+
 /* The chips still to ask: the screen's own, then the follow-ups of what was asked, minus what was asked. */
 function openChips() {
   const set = CHIPS[screenId] || { chips: [] };
   const t = talk();
+  if (t.handoff) return { list: handoffChips(t), advisor: null, advisorAsChip: false };
   const all = [...set.chips];
   set.chips.forEach((c) => { if (t.asked.has(c.q) && c.then) all.push(...c.then); });
   const list = all.filter((c) => !t.asked.has(c.q));
@@ -304,10 +391,20 @@ function renderChips(focusAt) {
 function ask(chip) {
   const t = talk();
   const focusAt = [...chipsRow.children].findIndex((b) => b.textContent === chip.q);
-  t.asked.add(chip.q);
+  if (chip.handoff !== 'step') t.asked.add(chip.q);
   const q = { from: 'you', text: chip.q };
-  const a = chip.handoff ? { from: 'bank', text: HANDOFF.start, more: '' }
-    : { from: 'bank', text: fill(chip.short), more: chip.more ? fill(chip.more) : '' };
+  let a;
+  if (chip.handoff === 'step') {
+    a = { from: 'bank', text: chip.reply(), more: '' };
+    /* Once booked or cancelled, "Talk to an advisor" is offered again, so the booking can be changed (D15). */
+    if (!t.handoff) t.asked.delete(ASSISTANT.advisor.q);
+  }
+  else if (chip.handoff) {
+    /* "Talk to an advisor": what is booked, or the two ways to a person (D12, D15). */
+    const b = booking.get();
+    t.handoff = b ? 'booked' : 'choose';
+    a = { from: 'bank', text: b ? bookingLine(b, HANDOFF.hasCall, HANDOFF.hasMeeting) : HANDOFF.start, more: '' };
+  } else a = { from: 'bank', text: fill(chip.short), more: chip.more ? fill(chip.more) : '' };
   t.lines.push(q, a);
   aside.querySelector('.assistant__prompt').hidden = true;
   /* Open question 1: the figure makes room for the answers once the conversation starts. */
@@ -480,6 +577,12 @@ export function nudge(id, { advisor = false } = {}) {
   if (helper) helper.wave();
   return true;
 }
+
+/* The page keeps the booking (9f D11, D15): `{ get(), set(booking or null) }`. */
+export function setBooking(store) { booking = store; }
+
+/* The exit screen's "Book an appointment" opens the handoff (9f D16). */
+export function startHandoff() { answerNudge(ASSISTANT.advisor); }
 
 /* The User Type as the answers read it (D9), for the nudges' thresholds (9f D5). */
 export { level };
