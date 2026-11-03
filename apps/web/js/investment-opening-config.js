@@ -228,7 +228,6 @@ export const TAX = {
 export const INELIGIBLE = {
   book: 'Book an appointment',
   change: 'Change my answers',
-  booked: 'We will call you to find a time.',
   kept: 'Your answers are kept until you close this tab.',
   done: 'Done',
 };

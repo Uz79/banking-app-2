@@ -19,7 +19,7 @@ Status: draft of 2026-10-28, input for roadmap item 9 (9a to 9g). Every step of 
 
 ## Help level by User Type
 
-The average of the three Profile sliders (`uzBankWebPersonaProfile`) sets how the helper behaves. Starting values, tuned in 9f.
+The average of the three Profile sliders (`uzBankWebPersonaProfile`) sets how the helper behaves. Built in 9f as in this table (`NUDGES` in `js/opening-assistant-config.js`, each step's reading time a placeholder there); the length of answers follows 9b D9. A nudge offers the step's own question once (9f D6); the third nudge, and any on documents or the summary, also offers a person (9f D10).
 
 | User Type | Nudge after (share of the step's reading time) | Answer length | Proactive nudges |
 |---|---|---|---|

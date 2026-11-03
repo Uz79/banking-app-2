@@ -13342,11 +13342,20 @@ html:not(.fridge--wide) .fridge__ring-amount {
   position: fixed;
   inset: 0;
   z-index: 3;
-  animation: assistant-layer-in 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: assistant-layer-in 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @keyframes assistant-layer-in {
   from { transform: translateY(100%); }
+}
+
+/* Closing by the customer's own hand slides it back down, with the flow sheets' timing (9f D21). */
+.assistant--full .assistant.assistant--leaving {
+  animation: assistant-layer-out 0.28s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes assistant-layer-out {
+  to { transform: translateY(100%); }
 }
 
 .assistant__bar {
@@ -13373,7 +13382,8 @@ html:not(.fridge--wide) .fridge__ring-amount {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .assistant--full .assistant {
+  .assistant--full .assistant,
+  .assistant--full .assistant.assistant--leaving {
     animation: none;
   }
 }
@@ -13428,6 +13438,135 @@ html:not(.fridge--wide) .fridge__ring-amount {
 
 .opening-help__head[hidden] {
   display: none;
+}
+
+/* 9f D7: the nudge in the desktop invitation. The title is the step's question, "Show me" under it, then the quiet
+   "No, thanks" (and "Talk to an advisor" on escalation, D10), centred. It fades in. */
+.assistant--inviting .assistant__body {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.assistant__quiet {
+  margin-top: var(--space-2);
+}
+
+.assistant--nudge .assistant__title,
+.assistant--nudge .assistant__body {
+  animation: assistant-nudge-in 0.2s ease-out;
+}
+
+@keyframes assistant-nudge-in {
+  from { opacity: 0; transform: translateY(0.25rem); }
+}
+
+/* 9f D8: the phone's bubble above Help?, over the step's content (not in the layout, so nothing moves). Its tail
+   points at Help?. It fades in. */
+.opening__action-row {
+  position: relative;
+}
+
+.opening-nudge {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + var(--space-2));
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-1);
+  max-width: min(18rem, 100%);
+  padding: var(--space-2) var(--space-1) var(--space-2) var(--space-3);
+  border: 1px solid var(--color-separator);
+  border-radius: var(--radius-regular);
+  background-color: var(--color-bg);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-modal-elevated-shadow) 45%, transparent);
+  color: var(--color-fg);
+  animation: assistant-nudge-in 0.2s ease-out;
+}
+
+.opening-nudge::after {
+  content: "";
+  position: absolute;
+  left: 1.5rem;
+  bottom: -0.4375rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-right: 1px solid var(--color-separator);
+  border-bottom: 1px solid var(--color-separator);
+  background-color: var(--color-bg);
+  transform: rotate(45deg);
+}
+
+.assistant--wide .opening-nudge {
+  display: none;
+}
+
+.opening-nudge__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  min-width: 0;
+  padding-top: var(--space-1);
+}
+
+.opening-nudge__ask,
+.opening-nudge__advisor {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-fg);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.opening-nudge__ask {
+  font-size: var(--fs-text-md);
+  line-height: var(--lh-text);
+}
+
+.opening-nudge__advisor {
+  font-size: var(--fs-text-sm);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.opening-nudge__close {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--color-fg-secondary);
+  cursor: pointer;
+}
+
+.opening-nudge__close svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.opening-nudge__ask:focus-visible,
+.opening-nudge__advisor:focus-visible,
+.opening-nudge__close:focus-visible {
+  outline: 0.125rem solid var(--color-fg-interactive);
+  outline-offset: 0.125rem;
+  border-radius: var(--radius-small);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assistant--nudge .assistant__title,
+  .assistant--nudge .assistant__body,
+  .opening-nudge {
+    animation: none;
+  }
 }
 
 /* Playground settings dialog: the card of the confirmation dialog (.basic-dialog-payment-exit__surface), a form inside */

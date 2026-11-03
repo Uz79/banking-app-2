@@ -52,6 +52,11 @@
     .ds-caption { font-size: var(--fs-text-sm); color: var(--color-fg-secondary); margin: 0 0 var(--space-2); }
     .ds-note { font-size: var(--fs-text-xs); color: var(--color-fg-secondary); margin-top: var(--space-2); max-width: 40rem; }
     .ds-qa-demo { max-width: 22.5rem; padding: var(--space-4); border: 1px solid var(--color-separator); border-radius: var(--radius-regular); background: var(--color-bg); margin-bottom: var(--space-3); }
+    .ds-qa-demo--nudge { padding-top: 7rem; }
+    .ds-qa-demo--invite { text-align: center; }
+    .ds-qa-demo--invite .assistant__title { font-size: var(--fs-text-lg); margin-bottom: var(--space-3); }
+    .ds-qa-demo--invite .assistant__quiet { margin-inline: auto; }
+    .ds-qa-demo--nudge .opening__action-row > .uz-btn--tonal { flex: none; }
     .ds-float-demo { position: relative; height: 15rem; border-radius: var(--radius-regular); overflow: hidden; margin-bottom: var(--space-3); }
     .ds-float-demo--phone { max-width: 20rem; height: 17rem; }
     .ds-float-demo__scene { position: absolute; inset: 0; background: repeating-linear-gradient(-45deg, var(--color-fg-interactive) 0 0.75rem, var(--color-bg) 0.75rem 1.5rem), var(--color-bg); opacity: 0.85; }
@@ -2517,6 +2522,47 @@
       <button type="button" class="assistant__advisor" tabindex="-1" aria-hidden="true">Talk to an advisor</button>
     </div>
     <p class="ds-note">Classes: <code>.assistant__log</code> (<code>role="log"</code>), <code>.assistant-line--customer</code> and <code>--bank</code>, <code>.assistant-line__more</code>, <code>.assistant__chips</code> with <code>.assistant__chip</code> (secondary, small, wrapping), <code>.assistant__advisor</code>. New lines fade and rise in 0.2 s, at once with reduced motion. Copy lives in <code>js/opening-assistant-config.js</code>; the rules are in the 9b spec.</p>
+  </section>
+
+  <section class="ds-section" aria-labelledby="ds-nudge-heading">
+    <h2 id="ds-nudge-heading">The assistant's nudge</h2>
+    <p class="ds-caption">When a customer seems stuck on a step (time against the step's reading time, changing an answer again and again, going back, opening the same explanation twice), the assistant offers that step's own question once, quietly. On desktop the column's invitation shows the question with "Show me" and "No, thanks"; on a phone a bubble rises above Help?. Nothing moves in the step, focus stays where it is, and a screen reader hears it once. Newbie gets it on every step, All-rounder only on the knowledge-heavy ones and later, Power user never. The third nudge also offers a person.</p>
+    <div class="ds-qa-demo ds-qa-demo--invite" aria-hidden="true">
+      <p class="assistant__title">What counts as basic knowledge?</p>
+      <button type="button" class="uz-btn uz-btn--primary uz-btn--md" tabindex="-1">Show me</button>
+      <button type="button" class="assistant__advisor assistant__quiet" tabindex="-1">No, thanks</button>
+    </div>
+    <div class="ds-qa-demo ds-qa-demo--nudge" aria-hidden="true">
+      <div class="opening__action-row">
+        <div class="opening-nudge">
+          <div class="opening-nudge__text">
+            <button type="button" class="opening-nudge__ask" tabindex="-1">Is there a right answer?</button>
+            <button type="button" class="opening-nudge__advisor" tabindex="-1">Or talk to an advisor</button>
+          </div>
+          <button type="button" class="opening-nudge__close" tabindex="-1"><svg aria-hidden="true" focusable="false"><use href="#i-x"/></svg></button>
+        </div>
+        <button type="button" class="uz-btn uz-btn--tonal uz-btn--md" tabindex="-1">Help?</button>
+        <button type="button" class="uz-btn uz-btn--primary uz-btn--md" tabindex="-1">Next</button>
+      </div>
+    </div>
+    <p class="ds-note">Classes: <code>.assistant--nudge</code> on the invitation, <code>.assistant__quiet</code>; the bubble <code>.opening-nudge</code> with <code>.opening-nudge__ask</code>, <code>.opening-nudge__advisor</code> and <code>.opening-nudge__close</code> (named "No, thanks"), placed in the step's <code>.opening__action-row</code> before Help?. Both fade in over 0.2 s, at once with reduced motion. Signals and thresholds: <code>js/opening-hesitation.js</code> and <code>NUDGES</code> in <code>js/opening-assistant-config.js</code>; <code>?nudge=fast</code> divides the waits by 10 for testing.</p>
+  </section>
+
+  <section class="ds-section" aria-labelledby="ds-handoff-heading">
+    <h2 id="ds-handoff-heading">The handoff to a person</h2>
+    <p class="ds-caption">"Talk to an advisor" offers a callback or a video meeting, then three times on working days within office hours, then a confirmation. Its choices take the chips' place while it runs. Nothing is asked or sent: it is a simulation. The booking is kept with the opening's progress, and "Talk to an advisor" then shows it with "Choose another time" and "Cancel it".</p>
+    <div class="ds-qa-demo" aria-hidden="true">
+      <div class="assistant__log">
+        <div class="assistant-line assistant-line--customer"><p class="assistant-line__text">Call me back</p></div>
+        <div class="assistant-line assistant-line--bank"><p class="assistant-line__text">When suits you? An advisor calls you on the number we have for you.</p></div>
+      </div>
+      <div class="assistant__chips">
+        <button type="button" class="uz-btn uz-btn--secondary uz-btn--sm assistant__chip" tabindex="-1">Today, 15:00 to 16:00</button>
+        <button type="button" class="uz-btn uz-btn--secondary uz-btn--sm assistant__chip" tabindex="-1">Tomorrow, 9:00 to 10:00</button>
+        <button type="button" class="uz-btn uz-btn--secondary uz-btn--sm assistant__chip" tabindex="-1">Thursday, 14:00 to 15:00</button>
+      </div>
+    </div>
+    <p class="ds-note">The times and lines: <code>HANDOFF</code> in <code>js/opening-assistant-config.js</code>; the booking: <code>handoff</code> in the opening's draft (<code>uzBankWebOpeningDraft</code>). The rules are in the 9f spec.</p>
   </section>
           </div>
         </div>

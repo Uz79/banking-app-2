@@ -10,6 +10,8 @@ import {
   ESG, TAX, INELIGIBLE, DOCUMENTS, SUMMARY, COMPLETE,
 } from './investment-opening-config.js';
 import * as assistant from './opening-assistant.js';
+import { NUDGES, HANDOFF } from './opening-assistant-config.js';
+import { createHesitation } from './opening-hesitation.js';
 import { riskChart } from './opening-risk-chart.js';
 
 const framed = window.self !== window.top;
@@ -34,7 +36,7 @@ function readDraft() {
 function writeDraft() {
   try {
     /* The fridge's values ride along, so Start over and completion are the only things that forget them (phone polish D11). */
-    window.sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ page: 'opening', fridge: keptFridge, step: index, answers, fridgeAmount, from }));
+    window.sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ page: 'opening', fridge: keptFridge, step: index, answers, fridgeAmount, from, nudged, handoff }));
   } catch (e) { /* storage blocked: the flow still works, it just does not resume */ }
 }
 function clearDraft() {
@@ -48,6 +50,40 @@ const from = draft && typeof draft.from === 'string' ? draft.from : 'direct';
 const keptFridge = draft && draft.fridge && typeof draft.fridge === 'object' ? draft.fridge : undefined;
 /* A resumed draft never lands on completion: that screen only follows the summary. */
 let index = draft && draft.step >= 0 && draft.step < SCREENS.length && SCREENS[draft.step].id !== 'complete' ? draft.step : 0;
+/* The steps that have nudged in this opening, used or dismissed (9f D6, D11). */
+const nudged = draft && Array.isArray(draft.nudged) ? draft.nudged.filter((x) => typeof x === 'string') : [];
+/* A call or meeting booked through the assistant (9f D15); one whose time has passed is dropped. */
+function readHandoff(h) {
+  if (!h || typeof h !== 'object' || !HANDOFF[h.kind] || typeof h.slot !== 'string') return null;
+  const end = new Date(h.slot).getTime() + HANDOFF[h.kind].minutes * 60000;
+  return Number.isFinite(end) && end > Date.now() ? { kind: h.kind, slot: h.slot } : null;
+}
+let handoff = draft ? readHandoff(draft.handoff) : null;
+
+/* ── Hesitation (9f D1 to D6): the page reports what the customer does; the assistant offers the step's question ── */
+const hesitation = createHesitation({
+  level: assistant.level,
+  helping: assistant.isHelping,
+  skip: (id) => nudged.includes(id) || assistant.wasAsked(id, NUDGES.screens[id].q),
+  onNudge(id) {
+    /* The third nudge in an opening, and the steps marked for it, also offer a person (D10). */
+    const advisor = !!NUDGES.screens[id].advisor || nudged.length + 1 >= NUDGES.advisorFrom;
+    if (!assistant.nudge(id, { advisor })) return;
+    nudged.push(id);
+    writeDraft();
+    announce(fill(NUDGES.announce, { q: NUDGES.screens[id].q }));
+  },
+});
+
+/* The booking lives in the draft; the exit screen shows it as soon as it is made (9f D15, D16). */
+assistant.setBooking({
+  get: () => handoff,
+  set(b) {
+    handoff = b;
+    writeDraft();
+    if (SCREENS[index].id === 'ineligible') render(false, false, false, true);
+  },
+});
 
 /* ── The sheet (D2, D3) ─────────────────────────────────────────────── */
 /* The sheet stays 960 for the opening too: the assistant's column is beside the step (9b D24). */
@@ -173,11 +209,14 @@ function optionGroup({ labelEl, options, get, set, disabled = () => false, conte
     }
     b.addEventListener('click', () => {
       if (b.getAttribute('aria-disabled') === 'true') return;
+      changing(option.id);
       set(option.id, 'click');
     });
     group.append(b);
     return b;
   });
+  /* A change from one answer to another is a hesitation signal (9f D1). */
+  const changing = (id) => { if (get() && get() !== id) hesitation.signal('switch'); };
   const enabled = () => buttons.filter((b) => b.getAttribute('aria-disabled') !== 'true');
   group.addEventListener('keydown', (event) => {
     const list = enabled();
@@ -191,6 +230,7 @@ function optionGroup({ labelEl, options, get, set, disabled = () => false, conte
     if (to === null) return;
     event.preventDefault();
     list[to].focus();
+    changing(list[to].dataset.option);
     set(list[to].dataset.option, 'key');
   });
   function refresh() {
@@ -345,6 +385,7 @@ function strategyCarousel(rec) {
   ].filter(Boolean).join(', ');
   const start = Math.max(0, rankOf(answers.strategy || rec || STRATEGIES[0].id));
   let at = start;
+  const seen = new Set([at]);
 
   const root = el('div', 'opening-carousel' + (vehicles.failed ? ' is-flat' : ''));
   root.setAttribute('role', 'region');
@@ -478,6 +519,9 @@ function strategyCarousel(rec) {
   function settle(i) {
     if (i === at) return;
     at = i;
+    /* Every card seen is a hesitation signal (9f D1). */
+    seen.add(at);
+    if (seen.size === total) hesitation.signal('browse');
     mark(at);
     placeVehicles();
     announce(nameOf(STRATEGIES[at]));
@@ -672,7 +716,11 @@ const BUILD = {
       answers.amount = digits === '' ? null : Number(digits);
       changed();
     });
-    input.addEventListener('blur', () => { if (answers.amount != null) input.value = fmt(answers.amount); });
+    input.addEventListener('blur', () => {
+      if (answers.amount != null) input.value = fmt(answers.amount);
+      /* Left empty or under the minimum: a hesitation signal (9f D1). */
+      if (answers.amount == null || answers.amount < AMOUNT.min) hesitation.signal('empty');
+    });
     input.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') { event.preventDefault(); if (answers.amount != null) input.value = fmt(answers.amount); }
     });
@@ -697,6 +745,10 @@ const BUILD = {
     [90, 80, 75, 40, 25].forEach((p) => { francs['p' + p] = chf((amount * p) / 100); });
     const years = RISK_CHART.years[answers.horizon] || RISK_CHART.fallbackYears;
     const chart = riskChart({ amount, years, config: RISK_CHART });
+    /* "How is this worked out?" opened is a look-up (9f D1). */
+    chart.root.addEventListener('click', (event) => {
+      if (event.target.closest('.opening-chart__toggle') && chart.root.classList.contains('is-explained')) hesitation.signal('lookup');
+    });
     const nodes = [chart.root];
     const questions = RISK.questions.map((q) => ({
       ...q, label: fill(q.label, francs), options: q.options.map((o) => ({ ...o, label: fill(o.label, francs) })),
@@ -809,6 +861,7 @@ const BUILD = {
       if (q.more) {
         const more = el('details', 'opening-more');
         more.append(el('summary', 'opening-more__summary', q.more.label), el('p', 'opening-more__text', q.more.text));
+        more.addEventListener('toggle', () => { if (more.open) hesitation.signal('lookup'); });
         nodes.push(more);
       }
       nodes.push(g.group);
@@ -825,11 +878,14 @@ const BUILD = {
     };
   },
 
-  /* The exit (D15): an appointment (simulated) or back to the tax answers. The draft is kept. */
+  /* The exit (D15): an appointment through the assistant's handoff (9f D16) or back to the tax answers. The draft is
+     kept. */
   ineligible() {
-    if (booked) {
+    if (handoff) {
+      const { when, time } = assistant.describeBooking(handoff);
+      const line = (handoff.kind === 'call' ? HANDOFF.screenCall : HANDOFF.screenMeeting);
       return {
-        nodes: [el('p', 'opening__note opening__note--check', INELIGIBLE.booked), el('p', 'opening__note', INELIGIBLE.kept)],
+        nodes: [el('p', 'opening__note opening__note--check', fill(line, { when, time })), el('p', 'opening__note', INELIGIBLE.kept)],
         actions: [button(INELIGIBLE.done, 'primary', leave)],
         dirty: false,
       };
@@ -837,7 +893,7 @@ const BUILD = {
     return {
       nodes: [el('p', 'opening__note', INELIGIBLE.kept)],
       actions: [
-        button(INELIGIBLE.book, 'primary', () => { booked = true; render(true, false); }),
+        button(INELIGIBLE.book, 'primary', () => assistant.startHandoff()),
         button(INELIGIBLE.change, 'secondary', () => go(indexOf('tax'))),
       ],
     };
@@ -874,7 +930,7 @@ const BUILD = {
       sheets.hidden = !open;
       (open ? back : row).focus();
     }
-    row.addEventListener('click', () => show(true));
+    row.addEventListener('click', () => { show(true); hesitation.signal('lookup'); });
     return {
       nodes: [main, sheets],
       missing: () => (answers.documents ? '' : DOCUMENTS.missing),
@@ -985,7 +1041,6 @@ const indexOf = (id) => SCREENS.findIndex((x) => x.id === id);
 /* Editing from the summary (D17, D27): the screens of one section, and the recommendation before the edit. */
 let edit = null;
 let recChangedTo = null;
-let booked = false;
 
 function startEdit(section) {
   edit = { screens: section.screens, before: recommendation() };
@@ -1006,7 +1061,7 @@ function forward() {
   const id = SCREENS[index].id;
   if (id === 'complete') { done(); return; }
   if (id === 'summary') { openMandate(); return; }
-  if (id === 'tax' && !eligible()) { edit = null; booked = false; go(indexOf('ineligible')); return; }
+  if (id === 'tax' && !eligible()) { edit = null; go(indexOf('ineligible')); return; }
   if (edit && edit.screens.includes(id)) { backToSummary(); return; }
   go(index + 1);
 }
@@ -1027,7 +1082,8 @@ function changed() {
   writeDraft();
 }
 
-function render(moveFocus, animate, back) {
+/* `quiet`: the same screen again with something new on it, not announced as a new step (9f D16). */
+function render(moveFocus, animate, back, quiet) {
   const screen = SCREENS[index];
   panel.innerHTML = '';
   /* The vehicles load one screen ahead and draw on the strategy screen and the summary only (9d D3, D11, D20). */
@@ -1120,7 +1176,7 @@ function render(moveFocus, animate, back) {
   if (moveFocus) heading.focus({ preventScroll: true });
 
   const n = COUNTED.indexOf(screen);
-  announce((n >= 0 ? 'Step ' + (n + 1) + ' of ' + TOTAL + ', ' : '') + screen.title);
+  if (!quiet) announce((n >= 0 ? 'Step ' + (n + 1) + ' of ' + TOTAL + ', ' : '') + screen.title);
   /* Nothing to lose on completion or after booking; everywhere else, the intro included, the exit asks first and says
      the progress is kept (D3, phone polish D10, D13). */
   const complete = screen.id === 'complete';
@@ -1143,6 +1199,7 @@ function go(to, back) {
   if (SCREENS[to].id !== 'summary') recChangedTo = null;
   index = to;
   render(true, true, dir);
+  hesitation.step(SCREENS[index].id, dir);
 }
 
 /* Back walks the counted screens. From the exit it returns to the tax screen that led there (D15); while editing,
@@ -1171,7 +1228,7 @@ window.addEventListener('keydown', (event) => {
   /* The phone's open assistant takes the first Escape (9b D29). */
   if (assistant.isOpen()) {
     event.preventDefault();
-    assistant.close();
+    assistant.close(true, true);
     return;
   }
   if (!framed) return;
@@ -1183,4 +1240,5 @@ window.addEventListener('keydown', (event) => {
 reconcile();
 /* Framed, the page replaced the fridge in the sheet: the heading takes focus so a screen reader starts here. */
 render(framed, false);
+hesitation.step(SCREENS[index].id, false);
 send({ type: 'uzbank:fridge-ready' });
