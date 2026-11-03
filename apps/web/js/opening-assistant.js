@@ -7,7 +7,7 @@
  * stored (D5).
  */
 
-import { ASSISTANT, CHIPS } from './opening-assistant-config.js';
+import { ASSISTANT, CHIPS, NUDGES, HANDOFF } from './opening-assistant-config.js';
 
 const framed = window.self !== window.top;
 
@@ -38,6 +38,7 @@ let wide = false;
 let open = false; /* the phone's full-screen conversation */
 let inviting = true; /* desktop: the invitation, until "Yes, help me" (D25) */
 let screenId = null;
+let nudging = null; /* desktop: the invitation shows the step's question (9f D7): { chip, advisor } */
 
 /* ── The two layouts ────────────────────────────────────────────────── */
 
@@ -53,6 +54,8 @@ function tellSheet(on) {
 
 function applyLayout() {
   wide = wideLayout();
+  nudging = null;
+  removeBubble(false);
   root.classList.toggle('assistant--wide', wide);
   root.classList.toggle('assistant--full', !wide);
   /* The title heads the column on desktop and the layer's bar on a phone (phone polish D2). */
@@ -80,6 +83,7 @@ function applyLayout() {
 /* Phone: "Help?" opens the step's conversation full screen (D29). */
 function showFull() {
   if (wide || open) return;
+  removeBubble(false);
   open = true;
   aside.hidden = false;
   setInert(true);
@@ -302,7 +306,8 @@ function ask(chip) {
   const focusAt = [...chipsRow.children].findIndex((b) => b.textContent === chip.q);
   t.asked.add(chip.q);
   const q = { from: 'you', text: chip.q };
-  const a = { from: 'bank', text: fill(chip.short), more: chip.more ? fill(chip.more) : '' };
+  const a = chip.handoff ? { from: 'bank', text: HANDOFF.start, more: '' }
+    : { from: 'bank', text: fill(chip.short), more: chip.more ? fill(chip.more) : '' };
   t.lines.push(q, a);
   aside.querySelector('.assistant__prompt').hidden = true;
   /* Open question 1: the figure makes room for the answers once the conversation starts. */
@@ -319,19 +324,99 @@ function renderInvite() {
   const yes = document.createElement('button');
   yes.type = 'button';
   yes.className = 'uz-btn uz-btn--primary uz-btn--md assistant__yes';
-  yes.textContent = ASSISTANT.yes;
-  yes.addEventListener('click', () => {
+  if (!nudging) {
+    yes.textContent = ASSISTANT.yes;
+    yes.addEventListener('click', () => {
+      inviting = false;
+      renderPanel();
+      title.focus({ preventScroll: true });
+    });
+    body.replaceChildren(yes);
+    return;
+  }
+  /* The nudge (9f D7, D10): "Show me" asks the step's question, "No, thanks" brings the plain invitation back. */
+  const { chip, advisor } = nudging;
+  yes.textContent = NUDGES.show;
+  yes.addEventListener('click', () => answerNudge(chip));
+  const no = quietButton(NUDGES.dismiss, () => {
+    nudging = null;
+    renderPanel();
+    aside.querySelector('.assistant__yes').focus({ preventScroll: true });
+  });
+  body.replaceChildren(yes, no);
+  if (advisor) no.before(quietButton(NUDGES.advisor, () => answerNudge(ASSISTANT.advisor)));
+}
+
+function quietButton(text, onClick) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'assistant__advisor assistant__quiet';
+  b.textContent = text;
+  b.addEventListener('click', onClick);
+  return b;
+}
+
+/* "Show me" (or the advisor beside it): the conversation opens with that question asked (9f D7, D8). */
+function answerNudge(chip) {
+  nudging = null;
+  removeBubble(false);
+  if (wide) {
     inviting = false;
     renderPanel();
-    title.focus({ preventScroll: true });
-  });
-  body.replaceChildren(yes);
+  } else showFull();
+  ask(chip);
+  title.focus({ preventScroll: true });
+}
+
+/* ── The phone's bubble above Help? (9f D8) ─────────────────────────── */
+let bubble = null;
+
+function removeBubble(returnFocus) {
+  if (!bubble) return;
+  const had = bubble.contains(document.activeElement);
+  bubble.remove();
+  bubble = null;
+  if (returnFocus && had && helpBtn.isConnected) helpBtn.focus({ preventScroll: true });
+}
+
+function showBubble(chip, advisor) {
+  removeBubble(false);
+  bubble = document.createElement('div');
+  bubble.className = 'opening-nudge';
+  bubble.setAttribute('role', 'group');
+  bubble.setAttribute('aria-label', ASSISTANT.name);
+  const text = document.createElement('div');
+  text.className = 'opening-nudge__text';
+  const q = document.createElement('button');
+  q.type = 'button';
+  q.className = 'opening-nudge__ask';
+  q.textContent = chip.q;
+  q.addEventListener('click', () => answerNudge(chip));
+  text.append(q);
+  if (advisor) {
+    const a = document.createElement('button');
+    a.type = 'button';
+    a.className = 'opening-nudge__advisor';
+    a.textContent = NUDGES.orAdvisor;
+    a.addEventListener('click', () => answerNudge(ASSISTANT.advisor));
+    text.append(a);
+  }
+  const x = document.createElement('button');
+  x.type = 'button';
+  x.className = 'opening-nudge__close';
+  x.setAttribute('aria-label', NUDGES.dismiss);
+  x.innerHTML = '<svg aria-hidden="true" focusable="false"><use href="#i-x"/></svg>';
+  x.addEventListener('click', () => removeBubble(true));
+  bubble.append(text, x);
+  /* Before Help? in the reading and Tab order: the question, then the help it points at. */
+  helpBtn.before(bubble);
 }
 
 /* The whole panel for the current screen and state: a new log each time, so switching is not read out as new lines. */
 function renderPanel() {
   aside.classList.toggle('assistant--inviting', inviting);
-  title.textContent = inviting ? ASSISTANT.invite : ASSISTANT.title;
+  aside.classList.toggle('assistant--nudge', inviting && !!nudging);
+  title.textContent = inviting ? (nudging ? nudging.chip.q : ASSISTANT.invite) : ASSISTANT.title;
   nameLine.hidden = inviting;
   foot.hidden = inviting;
   if (inviting) {
@@ -369,6 +454,8 @@ export function setScreen(id) {
   if (id === screenId) return;
   screenId = id;
   body.dataset.screen = screenId;
+  nudging = null;
+  removeBubble(false);
   hideFull(false);
   inviting = wide;
   renderPanel();
@@ -376,6 +463,23 @@ export function setScreen(id) {
 
 /* The customer's own numbers for answers that use them ({amount}). */
 export function setValues(fn) { values = fn; }
+
+/* Offer the step's question (9f D6 to D8): in the desktop invitation, or as the bubble above the phone's Help?. False
+   when it cannot be shown now (another step, help already open, no such chip), so the step has not nudged. */
+export function nudge(id, { advisor = false } = {}) {
+  const set = CHIPS[id];
+  const chip = set && set.chips.find((c) => c.q === NUDGES.screens[id].q);
+  if (id !== screenId || !chip || isHelping()) return false;
+  if (wide) {
+    nudging = { chip, advisor };
+    renderPanel();
+  } else {
+    if (!helpBtn.isConnected) return false;
+    showBubble(chip, advisor);
+  }
+  if (helper) helper.wave();
+  return true;
+}
 
 /* The User Type as the answers read it (D9), for the nudges' thresholds (9f D5). */
 export { level };

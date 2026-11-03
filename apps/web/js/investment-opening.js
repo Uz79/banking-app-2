@@ -58,7 +58,14 @@ const hesitation = createHesitation({
   level: assistant.level,
   helping: assistant.isHelping,
   skip: (id) => nudged.includes(id) || assistant.wasAsked(id, NUDGES.screens[id].q),
-  onNudge: (id) => { console.info('[opening] nudge', id); nudged.push(id); writeDraft(); },
+  onNudge(id) {
+    /* The third nudge in an opening, and the steps marked for it, also offer a person (D10). */
+    const advisor = !!NUDGES.screens[id].advisor || nudged.length + 1 >= NUDGES.advisorFrom;
+    if (!assistant.nudge(id, { advisor })) return;
+    nudged.push(id);
+    writeDraft();
+    announce(fill(NUDGES.announce, { q: NUDGES.screens[id].q }));
+  },
 });
 
 /* ── The sheet (D2, D3) ─────────────────────────────────────────────── */

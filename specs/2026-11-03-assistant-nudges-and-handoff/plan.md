@@ -18,11 +18,11 @@ What you see: nothing yet on screen; in the console (a temporary debug line, rem
 
 What you see: the desktop invitation turning into the step's question with "Show me" and "No, thanks"; the bubble above Help? on a phone.
 
-- [ ] `js/opening-assistant.js`: the invitation's nudge state, "Show me" asking the chip, "No, thanks"; the phone's bubble on Help?; the wave; the announcement through the opening's status region (D9); the advisor line on escalation (D10)
-- [ ] `js/opening-assistant-config.js`: the nudge copy (D17)
-- [ ] `js/investment-opening.js`: the draft's `nudged` (D11), read leniently
-- [ ] `css/styles.css`: the bubble (tokens only, the fade, its reduced-motion path), the invitation's quiet button
-- [ ] Check: desktop and 390, Light, Dark and a Multi-color theme; one nudge per step, never again after a dismissal, also after closing and resuming; a step whose question was asked never nudges; the bubble covers nothing needed (open question 1) and the risk step still fits; focus never moves by itself; keyboard on "Show me", "No, thanks" and the bubble
+- [x] `js/opening-assistant.js`: the invitation's nudge state, "Show me" asking the chip, "No, thanks"; the phone's bubble on Help?; the wave; the announcement through the opening's status region (D9); the advisor line on escalation (D10)
+- [x] `js/opening-assistant-config.js`: the nudge copy (D17)
+- [x] `js/investment-opening.js`: the draft's `nudged` (D11), read leniently
+- [x] `css/styles.css`: the bubble (tokens only, the fade, its reduced-motion path), the invitation's quiet button
+- [x] Check: desktop and 390, Light, Dark and a Multi-color theme; one nudge per step, never again after a dismissal, also after closing and resuming; a step whose question was asked never nudges; the bubble covers nothing needed (open question 1) and the risk step still fits; focus never moves by itself; keyboard on "Show me", "No, thanks" and the bubble
 
 ## 3. The handoff (D12 to D16)
 
