@@ -44,7 +44,7 @@ The order of 9a. "Old" names the reference frames.
 | 2 | Purpose | Anlagebedürfnis | Form | Real estate caps the horizon, a surprise (assumed) | | low | |
 | 3 | Horizon | Anlagedauer | Form | | Real estate: capped | low | |
 | 4 | Amount and the amount check | Wieviel, Validierung | Module (the fridge, 8a) | Uncomfortable to give the situation (observed); "why is my amount too high?" (assumed) | Investable amount from the fridge; balances | high on the check | time on the check, editing the amount back and forth |
-| 5 | Risk | Risiko I to III | Form, then Module (9e) | Questions feel abstract and like a test (observed: fear of lacking knowledge) | | high | switching between options, time |
+| 5 | Risk | Risiko I to III | Module (9e: the customer's amount in a chart, the questions in francs) | Questions feel abstract and like a test (observed: fear of lacking knowledge) | | high | switching between options, time |
 | 6 | Strategy | Strategie, Übersicht | Form, then Module (9d) | Five similar descriptions; "is the recommendation binding?" (assumed) | Recommended from risk | medium | swiping through all cards, going back |
 | 7 | ESG preference | ESG Präferenz | Form | "Does important cost me return?" (assumed) | | low | |
 | 8 | Tax status: Switzerland | Steuerstatus | Form | | Domicile from the profile | low | |
@@ -69,7 +69,7 @@ Each step shows three or four chips; tapping one shows its answer and may offer 
 - *Can I add money later?* Yes, any time after opening.
 
 **5 Risk**
-- *What does a loss of 20% mean in francs?* Shown with their own amount: "CHF 20'000 would be CHF 16'000 for a while."
+- *How are these lines worked out?* An example for a balanced mix over your horizon, not a forecast. (9e: the loss in francs is now in the question's options.)
 - *Is there a right answer?* No. The questions find out how you feel about ups and downs, so your strategy fits you.
 - *Can I change this later?* Yes, you can change your strategy after opening; we ask these questions again.
 
