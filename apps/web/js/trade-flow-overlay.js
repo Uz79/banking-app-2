@@ -549,6 +549,8 @@
     confirmBtn.addEventListener('click', function () {
       var totals = orderTotals();
       if (totals.quantity <= 0 || totals.total <= 0) return;
+      /* The order button stays focused behind the confirmation; a second press must not record again */
+      if (confOverlay && confOverlay.classList.contains('confirmation-overlay--visible')) return;
       /* The order button records the order, then the confirmation says so (roadmap 15, D10) */
       commitOrder();
       showConfirmation();

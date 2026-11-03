@@ -338,6 +338,8 @@
   }
 
   function nextStep() {
+    /* Execute stays focused behind the confirmation; a second press must not record again (D10) */
+    if (confOverlay && confOverlay.classList.contains('confirmation-overlay--visible')) return;
     var current = currentStepName();
     if (current === 'recipient') {
       collectRecipientStep();
