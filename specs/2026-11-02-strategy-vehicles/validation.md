@@ -53,16 +53,17 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 Supersedes the layout checks of section 2 (the stage beside or above the cards) and the hover preview of section 3.
 
-- [ ] Desktop (677 and 800 sheets) and 390: one card centred, the neighbours peeking in, the markers and "Model credits" below; the step does not scroll, also with the fall-back note
-- [ ] Each card: the persona and its vehicle large, the name with Recommended or Above your risk profile, one line of description, risk segments and return dots with labels, "Choose this strategy" or the reason
-- [ ] Starts on the recommended card; with a stored choice (resumed draft, summary edit) on the chosen one
-- [ ] Arrow buttons, markers, swipe (trackpad) and the arrow keys move between cards; the arrows stop at the ends; a click on a peeking card moves to it
-- [ ] Next is disabled with "Choose a strategy." until a card is chosen, then reads "Continue with <name>"; Growth and Dynamic cannot be chosen
-- [ ] Screen reader names: each card "Balanced, 3 of 5, recommended" and announced on change; only the current card is in the Tab order; the figure is named by its caption
-- [ ] Reduced motion (forced): no slide, the card swaps at once; no fade
-- [ ] The live stage moves with the current card, the others show stills; the stills follow Light, Dark and Custom 06
-- [ ] Without 3D: the cards without figures, the rest works
-- [ ] "Model credits" shows the credits in the carousel's place and returns
+- [x] Desktop (677 sheet) and 390: one card centred, the neighbours peeking in, the markers below and "Model credits" on the picture (moved there in the build, D16); the step does not scroll, also with the fall-back note. Figure: 132 at 677 (140 once chosen), 237 in a 928-high frame, 224 by 244 at 390
+- [ ] The 800 cap: a 928-high frame measured a 715 panel, not the expected 800 sheet; the step did not scroll there, but the cap itself was not confirmed
+- [x] Each card: the persona and its vehicle large, the name with Recommended or Above your risk profile, one line of description, risk segments and return dots with labels, "Choose this strategy" or the reason
+- [x] Starts on the recommended card; with a stored choice on the chosen one (a resumed draft on Conservative, an edit from the summary on Balanced)
+- [x] Arrow buttons, markers, a horizontal wheel scroll (as a trackpad sends) and the arrow keys (on the markers and from a card's button) move between cards and snap to the middle; the arrows are quiet and do nothing at the ends; a click on a peeking card moves to it without choosing. A real touch swipe was not tried
+- [x] Next is disabled with "Choose a strategy." until a card is chosen, then reads "Continue with <name>"; Growth and Dynamic have the reason instead of a button
+- [x] Screen reader names: each card "Balanced, 3 of 5, recommended" ("Growth, 4 of 5, above your risk profile") in the live region on change; only the current card is in the tree and the Tab order; the figure is named by its caption. Checked in the DOM, not with VoiceOver
+- [x] Reduced motion (forced in the page's `matchMedia`): an arrow lands on the next card at once. The CSS fade's reduced path not checked with the system setting
+- [x] The live stage moves with the current card, the others show stills; Light, Dark and Custom 06 (monochrome vehicles, the accent on the persona, the tag, the markers and the buttons)
+- [x] Without 3D (a model file missing): the cards without figures, one `[opening]` warning, no error, navigation and Next work
+- [x] "Model credits" shows the credits in the carousel's place, the focus moves to "Back to the vehicles" and back to "Model credits"
 
 ## 7b. The vehicle on the summary (D20)
 
@@ -113,4 +114,4 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 - [x] Tab through Overview: focus is always visible
 - [ ] With reduced motion on (System Settings → Accessibility → Display), page transitions and the character are still, and nothing is stuck mid-animation. Not checked: the system setting was not switched
 
-Checked on 2026-11-03 against `feature/strategy-vehicles`, Chrome on the agent's server (port 5199): desktop at 1440×823 (a 677 sheet) plus a 960×733 frame for the 800 cap, and the phone at 390×823 through Overview; Light, Dark and Custom 06. Not checked: VoiceOver, the system reduced-motion setting, the tab hidden, blocking three.js itself, the fall-back note's extra line, the exact 12 s timing, the transitions' direction by eye, Legibility's manual controls. Known and not from this branch: Hans Meyer on the Pay schedule, "Continue payment" in the trade's discard prompt, the Profile character overlapping the sliders at 390, roadmap 19 and 20.
+Checked on 2026-11-03 against `feature/strategy-vehicles`, Chrome on the agent's server (port 5199): desktop at 1440×823 (a 677 sheet) plus a 960×733 frame and a 928-high frame for the taller sheet, and the phone at 390×823 through Overview; Light, Dark and Custom 06. Groups 5 and 6 (the carousel and the summary's vehicle) checked the same day after the review, with the baseline's Pay flow, the Character kit, the Design system hub and the demo reset run again. Not checked: VoiceOver, the system reduced-motion setting, the tab hidden, blocking three.js itself, a real touch swipe, the 800 cap itself, the exact 12 s timing, the transitions' direction by eye, Legibility's manual controls. Known and not from this branch: Hans Meyer on the Pay schedule, "Continue payment" in the trade's discard prompt, the Profile character overlapping the sliders at 390, roadmap 19 and 20.

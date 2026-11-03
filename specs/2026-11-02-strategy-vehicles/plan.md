@@ -40,12 +40,12 @@ What you see: "What do the vehicles mean?" among the strategy step's questions.
 
 What you see: one strategy card at a time with the persona and its vehicle large, the neighbours peeking in, markers below; "Choose this strategy" makes Next read "Continue with <name>".
 
-- [ ] `js/character-vehicles.js`: `attach(box, strategy)`, `snapshot(strategy)`, an `onTheme` callback (D19)
-- [ ] `js/investment-opening-config.js`: the short lines, the carousel's copy (choose, chosen, the reason, Continue with, the arrows' names)
-- [ ] `js/investment-opening.js`: the carousel replaces the stage card and the list (D16); the arrows, markers, keys and swipe, the names and announcements (D17); the explicit choice and Next's label (D18); the live stage moved between cards and the snapshots (D19); the list's code and `reach` removed
-- [ ] `css/styles.css`: the carousel, the cards, the markers, the credits in the carousel's place; the stage and column-heading rules of D1 and D15 removed
-- [ ] Check: desktop (677 and 800) and 390 without scrolling; Light, Dark, Custom 06; keyboard; the names and announcements; reduced motion (forced in the browser); without 3D; the summary edit and a resumed draft
-- [ ] Docs: CHANGELOG, tech-spec, roadmap 9d's line
+- [x] `js/character-vehicles.js`: `attach(box, strategy)`, `snapshot(strategy)`, an `onTheme` callback (D19)
+- [x] `js/investment-opening-config.js`: the short lines, the carousel's copy (choose, chosen, the reason, Continue with, the arrows' names)
+- [x] `js/investment-opening.js`: the carousel replaces the stage card and the list (D16); the arrows, markers, keys and swipe, the names and announcements (D17); the explicit choice and Next's label (D18); the live stage moved between cards and the snapshots (D19); the list's code and `reach` removed
+- [x] `css/styles.css`: the carousel, the cards, the markers, the credits in the carousel's place; the stage and column-heading rules of D1 and D15 removed
+- [x] Check: desktop (677 and 800) and 390 without scrolling; Light, Dark, Custom 06; keyboard; the names and announcements; reduced motion (forced in the browser); without 3D; the summary edit and a resumed draft
+- [x] Docs: CHANGELOG, tech-spec, roadmap 9d's line (with group 6)
 
 ## 6. The vehicle on the summary (review, D20)
 
