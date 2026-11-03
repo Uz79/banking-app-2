@@ -6,10 +6,11 @@
  * fridge (D2, D3). Opened on its own, the page shows its own header.
  */
 import {
-  SCREENS, DRAFT_KEY, KNOWLEDGE, PURPOSE, HORIZON, AMOUNT, RISK, STRATEGIES, STRATEGY, SCORING, VEHICLE_STAGE,
+  SCREENS, DRAFT_KEY, KNOWLEDGE, PURPOSE, HORIZON, AMOUNT, RISK, RISK_CHART, STRATEGIES, STRATEGY, SCORING, VEHICLE_STAGE,
   ESG, TAX, INELIGIBLE, DOCUMENTS, SUMMARY, COMPLETE,
 } from './investment-opening-config.js';
 import * as assistant from './opening-assistant.js';
+import { riskChart } from './opening-risk-chart.js';
 
 const framed = window.self !== window.top;
 const send = (message) => { if (framed) window.parent.postMessage(message, window.location.origin); };
@@ -132,11 +133,9 @@ function startOver() {
 /* ── Answer controls (D6) ────────────────────────────────────────────── */
 const fmt = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "'");
 const chf = (n) => 'CHF ' + fmt(n);
-/* The assistant's risk answer uses the customer's own amount (9b D7); an example amount until there is one. */
-assistant.setValues(() => {
-  const amount = answers.amount || 10000;
-  return { amount: chf(amount), after20: chf(amount * 0.8) };
-});
+/* The customer's own amount for the assistant's answers (9b D7) and the risk step (9e D2); an example until there is one. */
+const ownAmount = () => answers.amount || RISK_CHART.exampleAmount;
+assistant.setValues(() => ({ amount: chf(ownAmount()) }));
 const fill = (text, values) => text.replace(/\{(\w+)\}/g, (m, k) => (k in values ? values[k] : m));
 let uid = 0;
 
@@ -688,12 +687,21 @@ const BUILD = {
 
   /* Three questions on one screen, one open at a time (D27): an answered question folds into a line with its answer
      and Change, and the next open one follows. Arrow keys only move within the open question; choosing with a click,
-     Space or Enter folds it and moves on. */
+     Space or Enter folds it and moves on. 9e: the chart of the customer's amount above them (D1), the questions in
+     their francs (D6 to D9), the open one's part of the chart highlighted. */
   risk() {
     const firstOpen = () => (RISK.questions.find((q) => !answers[q.id]) || {}).id || null;
     let open = firstOpen();
-    const nodes = [];
-    const parts = RISK.questions.map((q, i) => {
+    const amount = ownAmount();
+    const francs = { amount: chf(amount) };
+    [90, 80, 75, 40, 25].forEach((p) => { francs['p' + p] = chf((amount * p) / 100); });
+    const years = RISK_CHART.years[answers.horizon] || RISK_CHART.fallbackYears;
+    const chart = riskChart({ amount, years, config: RISK_CHART });
+    const nodes = [chart.root];
+    const questions = RISK.questions.map((q) => ({
+      ...q, label: fill(q.label, francs), options: q.options.map((o) => ({ ...o, label: fill(o.label, francs) })),
+    }));
+    const parts = questions.map((q, i) => {
       const box = el('div', 'opening-question');
       const lab = label((i + 1) + '. ' + q.label);
       const g = optionGroup({
@@ -732,14 +740,16 @@ const BUILD = {
         return part ? { after: part.g.group, target: part.g.stop() } : null;
       },
       refresh() {
-        parts.forEach(({ q, g, box, done, doneText }) => {
+        chart.highlight((questions.find((q) => q.id === open) || {}).part || null);
+        parts.forEach(({ q, g, box, done, doneText }, i) => {
           g.refresh();
           const option = q.options.find((o) => o.id === answers[q.id]);
           const state = q.id === open ? 'open' : option ? 'done' : 'waiting';
           box.dataset.state = state;
           g.group.hidden = state !== 'open';
           done.hidden = state !== 'done';
-          doneText.textContent = option ? option.label : '';
+          /* An answered question folds into one line, its number and answer (9e D16); Change still names it. */
+          doneText.textContent = option ? (i + 1) + '. ' + option.label : '';
         });
       },
     };

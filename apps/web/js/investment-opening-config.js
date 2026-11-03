@@ -74,28 +74,30 @@ export const AMOUNT = {
   belowMin: 'The minimum is {min}.',
 };
 
-/* ── Risk (D10) ── three questions, each option with its score (D12). */
+/* ── Risk (D10) ── three questions, each option with its score (D12). 9e D6 to D9: the same ids and scores, worded in
+   the customer's francs. `{amount}` is the amount, `{p90}` 90% of it and so on; `part` is what the chart highlights
+   while the question is open. */
 export const RISK = {
   questions: [
     {
-      id: 'loss', label: 'At what loss would you switch to a more careful strategy?',
+      id: 'loss', part: 'bad', label: 'Say your investment falls. At what point would you switch to a more careful strategy?',
       options: [
-        { id: 'l10', label: 'At a loss of 10%', score: 0 },
-        { id: 'l20', label: 'At a loss of 20%', score: 1 },
-        { id: 'l25', label: 'At a loss of 25%', score: 2 },
-        { id: 'stay', label: 'I would stay with my strategy and might buy more', score: 3 },
+        { id: 'l10', label: 'At {p90} (a loss of 10%)', score: 0 },
+        { id: 'l20', label: 'At {p80} (a loss of 20%)', score: 1 },
+        { id: 'l25', label: 'At {p75} (a loss of 25%)', score: 2 },
+        { id: 'stay', label: 'I would stay and might buy more', score: 3 },
       ],
     },
     {
-      id: 'lottery', label: 'You are given a lottery ticket with a 50:50 chance of CHF 100\'000. What do you do?',
+      id: 'lottery', part: 'band', label: 'You could keep a 50:50 chance of {amount}, or take a sure amount instead. What do you do?',
       options: [
-        { id: 's25', label: 'Sell it for CHF 25\'000', score: 0 },
-        { id: 's40', label: 'Sell it for CHF 40\'000', score: 2 },
-        { id: 'keep', label: 'Keep it', score: 3 },
+        { id: 's25', label: 'Take {p25} for sure', score: 0 },
+        { id: 's40', label: 'Take {p40} for sure', score: 2 },
+        { id: 'keep', label: 'Keep the chance', score: 3 },
       ],
     },
     {
-      id: 'feel', label: 'Which sentence fits you best when prices fall?',
+      id: 'feel', part: 'expected', label: 'Which sentence fits you best when prices fall?',
       options: [
         { id: 'anxious', label: 'Losses make me anxious', score: 0 },
         { id: 'nervous', label: 'Losses make me nervous, but I think long term', score: 1 },
@@ -104,6 +106,23 @@ export const RISK = {
     },
   ],
   missing: 'Answer all three questions.',
+};
+
+/* ── The risk chart (9e D1 to D4, flagged: placeholders for the bank's numbers) ──
+   One balanced mix as an example. Each line is amount × exp(r × t + z × s × √t): z 0 for expected, +z for good and
+   −z for unfavourable, so 95% of outcomes fall between the two. `years` turns the horizon into the chart's length. */
+export const RISK_CHART = {
+  r: 0.04,
+  s: 0.08,
+  z: 1.96,
+  years: { hlt3: 2, h3to5: 5, h6to10: 10, hgt10: 15 },
+  fallbackYears: 10,
+  exampleAmount: 10000,
+  intro: 'Your {amount} over {years} years',
+  how: 'How is this worked out?',
+  back: 'Back to the chart',
+  lines: { good: 'Good', expected: 'Expected', bad: 'Unfavourable' },
+  footnote: 'An example for a balanced mix, not a forecast. 19 in 20 outcomes end between the good and the unfavourable line.',
 };
 
 /* ── Strategies (D11), from the most careful to the riskiest. `risk` and `ret` are out of five. ── */
