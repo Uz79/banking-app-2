@@ -44,6 +44,7 @@ The interview settled:
 | D8 | **Recorded:** `specs/tech-spec.md`'s Decisions gets the rule (keyboard-only rings in `--color-fg-interactive`, no browser outlines, fields keep their stroke, the base rule in `styles.css`). AGENTS.md's Accessibility convention already points at the token, so it is unchanged. | A design-system rule lives in the tech-spec, like the no-disabled-buttons rule from 21 (D4 there). |
 | D9 | **Reduced motion:** nothing here animates. If an existing ring has a transition, it keeps its present reduced-motion path. | AGENTS.md: every animation has a reduced-motion path. |
 | D10 | **The merge gate** (interview): `npm run build`; this branch's `validation.md` in a real browser, at desktop and 390, in Light, Dark and a Multi-color theme, with the audit (D7) and the accessible names checked in the page tree; the baseline smoke test. No VoiceOver pass: rings don't change what VoiceOver reads. | Chosen in the interview. |
+| D11 | **Room for the chip's ring** (found in the build): the month bar scrolls sideways, which clips anything outside it, so the app's ring on a chip was cut off at the top and bottom. The list's bar gets 0.25rem of padding, given back by its margins (same layout). The docked bar sits in a dock that hides overflow for the merge animation, so it gets 0.25rem more at the top and the docked header grows by 4px | A ring that is cut off is not a visible ring. The docked header's 4px was the smallest change that leaves the merge animation alone |
 
 ## Context
 
@@ -59,4 +60,7 @@ The interview settled:
 
 ## Open questions
 
-1. Why the month chip shows the browser ring after a click (D5). The build settles it before choosing the fix.
+1. Why the month chip shows the browser ring after a click (D5). The build settles it before choosing the fix. **Settled:**
+   - In Chrome, a click on a chip never matches `:focus-visible`, in the list or docked, also after earlier Tab presses. The browser's blue ring (`rgb(0, 95, 204) auto 1px`) shows when Tab lands on a chip, because the chip had no ring of its own. D1 fixes that.
+   - Safari was not checked.
+   - Found on the way, out of this branch's scope: Enter on a chip in the list docks the bar and hides the list's bar, so focus drops to the page body. This is on the roadmap with item 24.

@@ -33,6 +33,23 @@ button, input, select, textarea {
   font-size: inherit;
 }
 
+/* ── Global focus ring (roadmap 25) ──────────────────────────────────────────
+   No browser outlines anywhere: every focusable element shows the app's ring in
+   --color-fg-interactive, for keyboard focus only (D1, D2). :where() keeps it at
+   (0,0,0), so every component's own ring or stroke still wins (D3). Focus targets
+   with tabindex="-1" (step headings, titles) are not controls and get no ring (D4). */
+:where(a[href], button, input, select, textarea, summary, [role="button"], [role="tab"], [role="option"],
+  [role="slider"], [tabindex]:not([tabindex="-1"]), [contenteditable]):focus-visible {
+  outline: 0.125rem solid var(--color-fg-interactive);
+  outline-offset: 0.125rem;
+}
+
+:where(a[href], button, input, select, textarea, summary, [role="button"], [role="tab"], [role="option"],
+  [role="slider"], [tabindex]:not([tabindex="-1"]), [contenteditable]):focus:not(:focus-visible),
+:where([tabindex="-1"]):focus {
+  outline: none;
+}
+
 /* ── Interactive surface (Figma state layer — Tier A) ─────────────────────
    Container: stable --uz-surface-bg. Hover/pressed: ::before tint at 10% / 20%
    (--color-surface-state-*), composited on top — not a flat background swap. */
@@ -2131,7 +2148,8 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
 .all-bookings__month-bar--docked {
   min-height: 0;
   opacity: 0;
-  padding: 0 var(--space-3) var(--space-2);
+  /* Room for a chip's focus ring above it, which the bar's scroll area and the dock would clip (roadmap 25). */
+  padding: 0.25rem var(--space-3) var(--space-2);
   margin: 0;
   pointer-events: none;
   background-color: transparent;
@@ -2304,9 +2322,9 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
 .all-bookings__month-bar[data-all-bookings-month-bar] {
   position: relative;
   z-index: 1;
-  padding: 0;
-  margin-top: var(--all-bookings-month-gap-top);
-  margin-bottom: var(--all-bookings-month-gap-bottom);
+  /* Room for a chip's focus ring, which the bar's scroll area would clip; the margins give it back (roadmap 25). */
+  padding: 0.25rem;
+  margin: calc(var(--all-bookings-month-gap-top) - 0.25rem) -0.25rem calc(var(--all-bookings-month-gap-bottom) - 0.25rem);
   background-color: transparent;
   opacity: 1;
   transition: opacity 0.12s var(--all-bookings-merge-ease);
