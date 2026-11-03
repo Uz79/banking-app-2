@@ -40,3 +40,11 @@ What you see: "Talk to an advisor" offering a callback or a video meeting, three
 - [x] `npm run build` in `apps/web`
 - [x] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line; VoiceOver and touch left for Klaudiusz on the preview
 - [x] Docs: `specs/roadmap.md` 9f marked done; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the opening's assistant: nudges and the handoff); `apps/web/README.md` (the draft's `nudged` and `handoff`); the intervention map (the signals and the help levels as built)
+
+## 5. Review change: the layer slides down (D21)
+
+- [x] `js/opening-assistant.js`: `hideFull` slides the layer down for the X, "I can do it myself" and Escape, then hides it and returns focus to Help?; reopening or a layout change mid-slide finishes it at once; reduced motion closes at once
+- [x] `js/investment-opening.js`: Escape closes the layer with the slide
+- [x] `css/styles.css`: the slide-up at 0.35 s; `.assistant--leaving` slides down in 0.28 s ease-in; none with reduced motion
+- [x] Check at 390 in Light and Dark: each close slides down, focus lands on Help? after it; `?reduced` closes at once; desktop unchanged; `npm run build`
+- [x] `CHANGELOG.md`

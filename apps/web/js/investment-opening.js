@@ -1228,7 +1228,7 @@ window.addEventListener('keydown', (event) => {
   /* The phone's open assistant takes the first Escape (9b D29). */
   if (assistant.isOpen()) {
     event.preventDefault();
-    assistant.close();
+    assistant.close(true, true);
     return;
   }
   if (!framed) return;

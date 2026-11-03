@@ -54,6 +54,7 @@ function tellSheet(on) {
 
 function applyLayout() {
   wide = wideLayout();
+  finishLeaving();
   nudging = null;
   removeBubble(false);
   root.classList.toggle('assistant--wide', wide);
@@ -83,6 +84,7 @@ function applyLayout() {
 /* Phone: "Help?" opens the step's conversation full screen (D29). */
 function showFull() {
   if (wide || open) return;
+  finishLeaving();
   removeBubble(false);
   open = true;
   aside.hidden = false;
@@ -94,21 +96,45 @@ function showFull() {
   if (helper) helper.wake();
 }
 
-function hideFull(returnFocus = true) {
+/* The customer's own close slides the layer down first; focus goes back to Help? once it is gone (9f D21). */
+let leaving = null; /* { done, end, timer } while the layer slides down */
+
+function finishLeaving() {
+  if (leaving) leaving.done(false);
+}
+
+function hideFull(returnFocus = true, slide = false) {
   if (!open) return;
   open = false;
-  aside.hidden = true;
-  setInert(false);
-  tellSheet(false);
-  if (returnFocus && helpBtn.isConnected) helpBtn.focus({ preventScroll: true });
+  let finished = false;
+  const done = (focus) => {
+    if (finished) return;
+    finished = true;
+    if (leaving) {
+      clearTimeout(leaving.timer);
+      aside.removeEventListener('animationend', leaving.end);
+      leaving = null;
+    }
+    aside.classList.remove('assistant--leaving');
+    aside.hidden = true;
+    setInert(false);
+    tellSheet(false);
+    if (focus && helpBtn.isConnected) helpBtn.focus({ preventScroll: true });
+  };
+  if (!slide || reduced()) { done(returnFocus); return; }
+  const end = (event) => { if (event.target === aside) done(returnFocus); };
+  /* The timer is a fallback in case animationend never comes (a hidden tab). */
+  leaving = { done, end, timer: setTimeout(() => done(returnFocus), 400) };
+  aside.addEventListener('animationend', end);
+  aside.classList.add('assistant--leaving');
 }
 
 /* The layer's own X closes only the layer (phone polish D2). */
-aside.querySelector('[data-assistant-close]').addEventListener('click', () => hideFull());
+aside.querySelector('[data-assistant-close]').addEventListener('click', () => hideFull(true, true));
 
 /* "I can do it myself": back to the invitation on desktop, closed on the phone (D27, D29). */
 selfBtn.addEventListener('click', () => {
-  if (!wide) { hideFull(); return; }
+  if (!wide) { hideFull(true, true); return; }
   inviting = true;
   renderPanel();
   aside.querySelector('.assistant__yes').focus({ preventScroll: true });
@@ -595,6 +621,6 @@ export function wasAsked(id, q) { return talks.has(id) && talks.get(id).asked.ha
 
 /* The phone's conversation is open (it takes the first Escape). */
 export function isOpen() { return open; }
-export function close(returnFocus) { hideFull(returnFocus); }
+export function close(returnFocus, slide = false) { hideFull(returnFocus, slide); }
 
 applyLayout();

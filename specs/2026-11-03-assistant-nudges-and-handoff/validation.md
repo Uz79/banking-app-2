@@ -42,6 +42,15 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [x] No field asks for a name, a number or an email; no request on booking (no new resource entries)
 - [x] Completion clears the booking and the nudges with the draft (the draft is gone). Start over not tried; it clears the same draft
 
+## 4b. Review change: the layer slides down (D21)
+
+- [x] Phone at 390, Light and Dark: the layer's X, "I can do it myself" and Escape each slide the layer down (computed: `assistant-layer-out` 0.28s `cubic-bezier(0.4, 0, 1, 1)`; hidden after 300 to 305 ms); it opens with `assistant-layer-in` 0.35s `cubic-bezier(0.22, 1, 0.36, 1)`. Paused halfway in both themes: the step shows above, the layer's background is solid
+- [x] Focus lands on Help? only once the slide has finished (not on it 60 ms in), and the sheet's header comes back then (still hidden mid-slide). Escape closes only the layer, the sheet stays open
+- [x] Opening Help? again 100 ms into a close works: the layer is open, with no leftover slide
+- [x] Reduced motion (`matchMedia` faked to reduce in the frame): no slide for any of the three, the layer is gone at once and focus is on Help?. Found and fixed: the first version left the layer stuck open on this path
+- [x] Desktop (1440): "I can do it myself" brings the invitation back at once with focus on "Yes, help me", no slide class. The handoff's confirmation stays in the open layer (nothing closes it), as D21 says
+- [x] `npm run build` succeeds
+
 ## 5. Documentation (D19)
 
 - [x] Components: two new sections after "Questions and answers", the nudge (desktop invitation and phone bubble) and the handoff, in Light and Dark
@@ -94,3 +103,5 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 - [ ] With reduced motion on (System Settings → Accessibility → Display), page transitions and the character are still, and nothing is stuck mid-animation. Not checked: the system setting was not switched
 
 Checked on 2026-11-03 against `feature/assistant-nudges-and-handoff`, Chrome on the agent's server (port 5199): desktop in the 1440×823 window (the sheet at 960, and the opening on its own), the phone as a 390×823 frame of Overview; Light, Dark and Custom 06; Legibility on Large as found (restored after the preset test); each User Type through `uzBankWebPersonaProfile`, `?nudge=fast` for the walks and one step at full speed; real keys for the bubble, the Overview focus and the slider, scripted clicks and storage elsewhere; the times also in Node. Not checked: the system reduced-motion setting, VoiceOver and touch (section 6, for Klaudiusz on the preview), the documents' look-up signal, a step whose question was already asked, Start over, no stored User Type, the starred baseline items at 390 except Overview and the opening, the month chips, Typeface, Font and Paddings. The test payment, transfer and mandate were undone with the demo reset.
+
+D21 checked on 2026-11-03 against `feature/assistant-nudges-and-handoff`, Chrome on port 5199: the phone as a 390×823 frame of Overview > Investment, Light and Dark; desktop as a 1440 frame of the opening. Closes, timing and focus by script (clicks and a dispatched Escape), the look from two paused screenshots. Not checked: the system reduced-motion setting itself, a real phone or VoiceOver (for the preview).

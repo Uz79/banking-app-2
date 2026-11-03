@@ -13342,11 +13342,20 @@ html:not(.fridge--wide) .fridge__ring-amount {
   position: fixed;
   inset: 0;
   z-index: 3;
-  animation: assistant-layer-in 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: assistant-layer-in 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @keyframes assistant-layer-in {
   from { transform: translateY(100%); }
+}
+
+/* Closing by the customer's own hand slides it back down, with the flow sheets' timing (9f D21). */
+.assistant--full .assistant.assistant--leaving {
+  animation: assistant-layer-out 0.28s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes assistant-layer-out {
+  to { transform: translateY(100%); }
 }
 
 .assistant__bar {
@@ -13373,7 +13382,8 @@ html:not(.fridge--wide) .fridge__ring-amount {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .assistant--full .assistant {
+  .assistant--full .assistant,
+  .assistant--full .assistant.assistant--leaving {
     animation: none;
   }
 }
