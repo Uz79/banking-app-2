@@ -32,6 +32,7 @@ The interview settled:
 - How a screen reader announces the dialog (not in the interview's merge gate; a check of it, if wanted, is its own item)
 - `spa-source.html`, the old reference that the tech-spec says not to extend
 - Other open roadmap items (23: editing a pending payment turns it executed)
+- Found in the build, on the roadmap: the execution date can't be picked, so a later or recurring booking keeps today's date (28)
 
 ## Decisions
 
