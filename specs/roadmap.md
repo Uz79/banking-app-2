@@ -176,3 +176,7 @@ Added 2026-11-03. The list on All bookings runs day group after day group with n
 - **Linked to the month chips:** tapping a chip scrolls to its separator; while scrolling, the chip of the month in view becomes active.
 - **Sticky (optional):** the current month's separator sticks below the header until the next one pushes it away. To decide in its spec.
 - **Everywhere:** in all three tabs (Executed, Pending, Recurring) and with the search field (a month with no matches shows no separator). Screen readers read it as a heading.
+
+## 25. Focus rings app-wide
+
+Added 2026-11-03, point 7 of the phone polish brief (points 1 to 6 were built in 21). No browser-default outlines anywhere: every interactive element shows the app's ring in `--color-fg-interactive`, only for keyboard focus (`:focus-visible`), never after a click or tap. First known case: the selected month chip on All bookings shows a blue browser ring after a click. Spec: `specs/2026-11-03-focus-rings/` (branch `feature/focus-rings`). Settled in its interview: one global base rule at zero specificity, so the component rings keep winning; text fields keep their focused stroke on a click; outlines in other tokens move to `--color-fg-interactive`, the fields' inset stroke stays; a scripted audit of every page and flow.
