@@ -64,6 +64,7 @@
   var confAmountEl = document.getElementById('uz-trade-conf-amount');
   var confCurrencyEl = document.getElementById('uz-trade-conf-currency');
   var confDetailEl = document.getElementById('uz-trade-conf-detail');
+  var confTermsEl = document.getElementById('uz-trade-conf-terms');
   var confBtn = document.getElementById('uz-trade-conf-btn');
 
   var live = {
@@ -298,6 +299,16 @@
     if (confAmountEl) confAmountEl.textContent = formatMoney(totals.total);
     if (confDetailEl && pos) {
       confDetailEl.textContent = totals.quantity + ' pcs. ' + pos.name;
+    }
+    /* An order is placed, not executed: say so, with the limit and how long it runs (roadmap 15, D6). */
+    if (confTermsEl) {
+      if (orderTypeSelect && orderTypeSelect.value === 'market') {
+        confTermsEl.textContent = 'At the market price';
+      } else {
+        var valid = live.duration === 'gtc' ? 'valid until cancelled'
+          : (live.duration === 'until' ? 'valid until ' + (live.untilDateLabel || formatTodayDate()) : 'valid today');
+        confTermsEl.textContent = 'Limit CHF ' + formatMoney(effectiveLimitPrice()) + ', ' + valid;
+      }
     }
   }
 
@@ -538,13 +549,16 @@
     confirmBtn.addEventListener('click', function () {
       var totals = orderTotals();
       if (totals.quantity <= 0 || totals.total <= 0) return;
+      /* The order button stays focused behind the confirmation; a second press must not record again */
+      if (confOverlay && confOverlay.classList.contains('confirmation-overlay--visible')) return;
+      /* The order button records the order, then the confirmation says so (roadmap 15, D10) */
+      commitOrder();
       showConfirmation();
     });
   }
 
   if (confBtn) {
     confBtn.addEventListener('click', function () {
-      commitOrder();
       hideConfirmation();
       closeOverlay();
     });

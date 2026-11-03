@@ -108,6 +108,9 @@
   var confCurrency   = overlay.querySelector('#uz-iat-conf-currency');
   var confAmount     = overlay.querySelector('#uz-iat-conf-amount');
   var confRecipient  = overlay.querySelector('#uz-iat-conf-recipient');
+  var confLead       = overlay.querySelector('#uz-iat-conf-lead');
+  var confFooter     = overlay.querySelector('#uz-iat-conf-footer');
+  var confDate       = overlay.querySelector('#uz-iat-conf-date');
   var confBtn        = overlay.querySelector('#uz-iat-conf-btn');
 
   /* ── Live state ────────────────────────────────────────────────── */
@@ -279,6 +282,14 @@
     if (confCurrency)  confCurrency.textContent  = live.currency;
     if (confAmount)    confAmount.textContent     = formatAmount(live.amount);
     if (confRecipient) confRecipient.textContent  = to.name;
+    /* Say what happened: done now, made on a later date, or recurring from a date (roadmap 15). */
+    var status = scheduleStatus();
+    if (confLead)   confLead.textContent   = status === 'recurring' ? 'Your recurring transfer of' : 'Your transfer of';
+    if (confFooter) confFooter.textContent = status === 'executed' ? 'is done.' : (status === 'recurring' ? 'starts on' : 'will be made on');
+    if (confDate) {
+      confDate.textContent = live.dateLabel || formatTodayDate();
+      confDate.hidden = status === 'executed';
+    }
   }
 
   function paintStep(name) {
@@ -327,6 +338,8 @@
   }
 
   function nextStep() {
+    /* Execute stays focused behind the confirmation; a second press must not record again (D10) */
+    if (confOverlay && confOverlay.classList.contains('confirmation-overlay--visible')) return;
     var current = currentStepName();
     if (current === 'recipient') {
       collectRecipientStep();
@@ -336,7 +349,8 @@
     if (idx < STEPS.length - 1) {
       goToStep(STEPS[idx + 1]);
     } else {
-      /* Last step (summary) → show confirmation */
+      /* Last step (summary) → Execute records the transfer, then the confirmation says so (roadmap 15, D10) */
+      commitTransfer();
       showConfirmation();
     }
   }
@@ -456,9 +470,8 @@
   /* Confirm / Execute / Next */
   if (confirmBtn) confirmBtn.addEventListener('click', nextStep);
 
-  /* Confirmation dialog: Confirm records transfer + closes */
+  /* Confirmation dialog: Done closes (the transfer was recorded on Execute) */
   if (confBtn) confBtn.addEventListener('click', function () {
-    commitTransfer();
     hideConfirmation();
     closeOverlay();
   });

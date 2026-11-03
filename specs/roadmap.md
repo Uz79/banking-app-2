@@ -129,9 +129,9 @@ Spec: `specs/2026-10-26-web-analytics/` (branch `feature/web-analytics`). Interv
 
 When the bookings list is full and the oldest booking is dropped, its amount is refunded to the balance. The balance should not change when a booking leaves the list. Found at the end of `specs/2026-10-25-all-bookings-real/`. Spec: `specs/2026-11-03-booking-balance/` (branch `feature/booking-balance`). Settled in its interview: the money of a dropped executed booking is carried per account in the stored state (with the Today header's outflow); the edit bug found while reading the code is item 23. Changed in the build: All bookings' own Today header carries it too (D10). Built 2026-11-03.
 
-## 15. Transfer confirmation copy: "will be executed now"
+## 15. Transfer confirmation copy: "will be executed now" (done)
 
-The transfer confirmation still says the transfer "will be executed now". The copy needs another look. Found at the end of `specs/2026-10-25-all-bookings-real/`.
+The transfer confirmation still says the transfer "will be executed now". The copy needs another look. Found at the end of `specs/2026-10-25-all-bookings-real/`. Spec: `specs/2026-11-03-confirmation-copy/` (branch `feature/confirmation-copy`). Settled in its interview: the payment and trade confirmations too (the same shell, the same problem); the text says what happened, following the schedule (done now, made on a date, starts on a date); "Done" on every button. Changed in the build: the transfer and the trade record on Execute and the order button, as the payment does, so the dialog comes after the booking (D10). Built 2026-11-04.
 
 ## 16. Open checks
 
@@ -189,3 +189,7 @@ Found during 25 (2026-11-03). With Legibility set to Large, the fridge's result 
 ## 27. Sheets: Tab leaves them for the page behind
 
 Found during 25 (2026-11-03). In the Pay sheet and the Buy sheet on desktop, Tab past the last control moves focus to the page behind the scrim (Overview's Scan and Pay, the position's Sell), which can't be seen or used while the sheet is open. The "Discard" dialogs and the opening's phone layer were not affected. To settle in its spec: make the page behind inert while a sheet is open (or keep focus in the sheet), and which sheets share the code.
+
+## 28. Payments and transfers: the execution date can't be picked
+
+Found during 15 (2026-11-03). Turning off "As soon as possible" (payment) or "Immediately" (transfer) shows an "Execute on" field, but nothing opens a date picker: the date stays today, so a "later" payment or transfer is pending for today, and a recurring one starts today. The confirmation now says "will be made on" and "starts on" with that date. To settle in its spec: a date picker (the app has none yet), which dates are allowed (working days, not in the past), and when a pending booking becomes executed.
