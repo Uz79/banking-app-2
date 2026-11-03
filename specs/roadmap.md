@@ -125,9 +125,9 @@ Spec: `specs/2026-10-26-web-analytics/` (branch `feature/web-analytics`). Interv
 - **Own visits:** `?analytics=off` stores a localStorage flag so the script never loads in that browser; `?analytics=on` removes it. The flag is checked before the script loads. The new key goes into the localStorage list in `apps/web/README.md`.
 - **Limits to note:** 50,000 events a month shared across all Vercel projects, a one-month reporting window, no custom events, no UTM report on Hobby. PDFs already sent keep their old links and count as direct.
 
-## 14. Booking balance: dropping the oldest booking refunds its money
+## 14. Booking balance: dropping the oldest booking refunds its money (done)
 
-When the bookings list is full and the oldest booking is dropped, its amount is refunded to the balance. The balance should not change when a booking leaves the list. Found at the end of `specs/2026-10-25-all-bookings-real/`. Spec: `specs/2026-11-03-booking-balance/` (branch `feature/booking-balance`). Settled in its interview: the money of a dropped executed booking is carried per account in the stored state (with the Today header's outflow); the edit bug found while reading the code is item 23.
+When the bookings list is full and the oldest booking is dropped, its amount is refunded to the balance. The balance should not change when a booking leaves the list. Found at the end of `specs/2026-10-25-all-bookings-real/`. Spec: `specs/2026-11-03-booking-balance/` (branch `feature/booking-balance`). Settled in its interview: the money of a dropped executed booking is carried per account in the stored state (with the Today header's outflow); the edit bug found while reading the code is item 23. Changed in the build: All bookings' own Today header carries it too (D10). Built 2026-11-03.
 
 ## 15. Transfer confirmation copy: "will be executed now"
 

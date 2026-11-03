@@ -1,6 +1,6 @@
 # Booking balance: a dropped booking keeps its money (14): plan
 
-Branch: `feature/booking-balance`. Decisions are cited as D1 to D9 from `requirements.md`.
+Branch: `feature/booking-balance`. Decisions are cited as D1 to D10 from `requirements.md`.
 
 Each group ends with something to check in the browser on the agent's server (`cd apps/web && npx vite --port 5199 --strictPort --no-open`).
 
@@ -15,6 +15,6 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 2. Wrap-up
 
-- [ ] `npm run build` in `apps/web`
-- [ ] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
-- [ ] Docs: `specs/roadmap.md` 14 marked done, and the edit bug as a new item; `CHANGELOG.md` under `Unreleased`; `apps/web/README.md` (the state's `carried`); `specs/tech-spec.md` only if its description of the payment state needs it
+- [x] `npm run build` in `apps/web`
+- [x] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
+- [x] Docs: `specs/roadmap.md` 14 marked done, and the edit bug as a new item; `CHANGELOG.md` under `Unreleased`; `apps/web/README.md` (the state's `carried`); `specs/tech-spec.md` not changed (its line on the payment state still holds)
