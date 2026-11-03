@@ -36,7 +36,7 @@ What you see: "Talk to an advisor" offering a callback or a video meeting, three
 
 ## 4. Wrap-up
 
-- [ ] `components.html`: the nudge and the handoff in "Questions and answers" (D19)
-- [ ] `npm run build` in `apps/web`
-- [ ] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line; VoiceOver and touch left for Klaudiusz on the preview
-- [ ] Docs: `specs/roadmap.md` 9f marked done; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the opening's assistant: nudges and the handoff); `apps/web/README.md` (the draft's `nudged` and `handoff`); the intervention map (the signals and the help levels as built)
+- [x] `components.html`: the nudge and the handoff in "Questions and answers" (D19)
+- [x] `npm run build` in `apps/web`
+- [x] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line; VoiceOver and touch left for Klaudiusz on the preview
+- [x] Docs: `specs/roadmap.md` 9f marked done; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the opening's assistant: nudges and the handoff); `apps/web/README.md` (the draft's `nudged` and `handoff`); the intervention map (the signals and the help levels as built)

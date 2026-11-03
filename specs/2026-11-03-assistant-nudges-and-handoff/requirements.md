@@ -62,5 +62,13 @@ The interview settled: both parts in one branch with a simple handoff; the nudge
 
 ## Open questions
 
-1. Does the phone's bubble cover anything a customer needs at that moment (the last option of a list right above the bar)? If it does, it sits to the right of Help? over the main button's top edge instead. Settled by eye in the build.
+1. Does the phone's bubble cover anything a customer needs at that moment (the last option of a list right above the bar)? If it does, it sits to the right of Help? over the main button's top edge instead. Settled by eye in the build. **Settled:** it covers nothing at 390 (measured on risk, documents and summary), so it stays above Help?.
 2. The reading times (D3) and the escalation rule (D10) are first guesses; Klaudiusz tunes them after trying each User Type.
+
+## Changed in the build
+
+- D7: "Show me" moves focus to the conversation's title, not to a chip, so a screen reader starts at the answer's heading. "No, thanks" puts focus on "Yes, help me".
+- D8: the bubble sits before Help? in the page, so Tab reaches it before Help? and Next.
+- D15: once a handoff ends (booked or cancelled), "Talk to an advisor" is offered again on that step, so the booking can be changed there.
+- D16: after booking from the exit screen, the screen updates quietly, without announcing the step again.
+- D18: the time chips are the assistant's existing chips; no new CSS was needed for them.

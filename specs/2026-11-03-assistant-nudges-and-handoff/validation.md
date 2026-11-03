@@ -6,45 +6,45 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 ## 1. Build
 
-- [ ] `npm run build` in `apps/web` succeeds with no new warnings (only the known notices about classic scripts)
-- [ ] The browser console shows no errors in the opening, the fridge and Overview (only the extension's own messages)
+- [x] `npm run build` in `apps/web` succeeds with no new warnings (only the known notices about classic scripts)
+- [x] The browser console shows no errors in the opening (a nudge, Show me and a booking), Overview, Character kit and Motion (only Vite's and the extension's own messages). The fridge's own steps were not visited
 
 ## 2. The signals and the thresholds (D1 to D5)
 
-- [ ] Newbie: every counted step nudges after 1.5x its reading time (intro to summary); completion and the exit screen never
-- [ ] All-rounder, and no stored User Type: only knowledge, amount, risk, tax and documents nudge, after 2.5x
-- [ ] Power user: no nudge on any step, whatever the signals
-- [ ] Switching an answer a third time on knowledge or risk nudges at once (Newbie and All-rounder)
-- [ ] Going back to a step a second time, a second "What counts?" on tax, a second open of the information sheets, the amount field left empty: each nudges at once
-- [ ] The clock pauses while the tab is hidden and while the conversation is open on that step, and starts over on the next visit
-- [ ] Without `?nudge=fast` a nudge waits the full time (one step timed with a stopwatch)
+- [x] Newbie: every counted step nudges after 1.5x its reading time (intro to summary, a scripted walk with `?nudge=fast`, none early); completion and the exit screen have no entry in `NUDGES`, so they never nudge (read, not timed)
+- [x] All-rounder: only knowledge, amount, risk, tax and documents nudge, after 2.5x (a scripted walk). No stored User Type was not tried separately; it reads as All-rounder through 9b's `level()`
+- [x] Power user: no nudge on knowledge after four changes and 7 s with `?nudge=fast`
+- [x] Switching an answer a third time nudges at once (knowledge, Newbie, at full speed); changes within a second count once. Found and fixed: a first change within a second of loading the page was not counted
+- [x] Going back to strategy a second time, a second "What counts?" on tax, the amount field left empty, and every strategy card seen: each nudges at once. The documents' information sheets were not tried
+- [x] The clock pauses while the tab is hidden (`document.hidden` faked for 4 s) and while the conversation is open (5 s in help, then the nudge about 3 s after "I can do it myself")
+- [x] Without `?nudge=fast` a nudge waits the full time: the Newbie intro nudged 22.7 s after loading (22.5 s expected)
 
 ## 3. The nudge (D6 to D11)
 
-- [ ] Desktop: the invitation shows the step's question, "Show me" and "No, thanks"; "Show me" opens the conversation with the question asked and answered; "No, thanks" brings back "Questions about this step?" and "Yes, help me"
-- [ ] Phone: the bubble rises above Help? with the question and its X; a tap opens the layer with the answer; the X dismisses it; it is gone on the next step and when Help? is tapped
-- [ ] One nudge per step: a step that nudged never nudges again, also after closing the sheet and resuming; a step whose question the customer already asked never nudges
-- [ ] The escalation (D10): the third nudge, and a nudge on documents or summary, carries "Talk to an advisor"
-- [ ] Focus never moves by itself; the status region reads "A question about this step: ..." once
-- [ ] The bubble covers nothing needed and every step still fits without scrolling at 390 (risk with each question open)
-- [ ] Keyboard: "Show me", "No, thanks", the bubble and its X reachable and working, with a visible ring
-- [ ] Light, Dark and a Multi-color theme: tokens only, readable; the UZ Bank theme restored after
-- [ ] Reduced motion: the bubble and the invitation change appear at once, the helper does not wave
-- [ ] An old draft without `nudged` or `handoff` resumes normally
+- [x] Desktop: the invitation shows the step's question, "Show me" and "No, thanks"; "Show me" opens the conversation with the question asked and answered (focus on the panel's title, fixed in the build); "No, thanks" brings back "Questions about this step?" and "Yes, help me" (focus on it)
+- [x] Phone (a 390×823 frame): the bubble rises above Help? with the question and its X; a tap opens the layer with the answer; the X dismisses it and focus returns to Help?; it is gone on the next step
+- [x] One nudge per step: a step that nudged did not nudge again after the sheet reloaded and resumed. A step whose question was already asked: in the code (`wasAsked`), not tried
+- [x] The escalation (D10): the third nudge, and the first nudge on documents and on summary, carry "Talk to an advisor" (desktop) and "Or talk to an advisor" (phone); it opens the handoff
+- [x] Focus never moves by itself; the status region reads "A question about this step: What counts as basic knowledge?"
+- [x] The bubble covers nothing needed at 390: its top is at 604px; the risk step's lowest option ends at 481 (question 1 open) and 503 (question 3 open), the documents' checkbox at 392, the summary's last section at 471; the summary does not scroll. Measured with Legibility on Large, as it was set
+- [x] Keyboard (real keys, phone frame): Tab from the last option reaches the bubble's question, then its X with a visible ring; Enter dismisses and focus goes to Help?. The bubble comes before Help? in the Tab order (fixed in the build). Desktop's "Show me" and "No, thanks" are plain buttons, used by script
+- [x] Light, Dark (desktop invitation and phone bubble) and Custom 06 ("Show me" in its orange accent): tokens only, readable; the UZ Bank theme restored after
+- [ ] Reduced motion: the bubble and the invitation change appear at once, the helper does not wave. Not checked: the system setting was not switched; the CSS has the rule and the wave already checks reduced motion
+- [x] An old draft without `nudged` or `handoff` resumes normally (the Newbie walk started from one)
 
 ## 4. The handoff (D12 to D16)
 
-- [ ] "Talk to an advisor" (chip and quiet button) offers "Call me back" and "Book a video meeting"
-- [ ] Three times each: never in the past, never on a weekend, within 8:00 to 18:00 (a weekday morning, a weekday evening and a Saturday, the clock faked)
-- [ ] Choosing one shows the confirmation and "Your answers are kept."; on another step "Talk to an advisor" shows the booking with "Choose another time" and "Cancel it"; both work
-- [ ] The booking survives closing the sheet and resuming; a booking in the past is gone
-- [ ] The exit screen's "Book an appointment" opens the handoff (desktop column, phone layer) and the screen then shows the booking with Done
-- [ ] No field asks for a name, a number or an email; nothing leaves the browser (the network panel shows no request on booking)
-- [ ] Completion and Start over clear the booking and the nudges with the draft
+- [x] "Talk to an advisor" (the quiet button, the documents' chip, the nudge's advisor) offers "Call me back" and "Book a video meeting"
+- [x] Three times each: never in the past, never on a weekend, within 8:00 to 18:00. Checked with `slotsFor` in Node for 8 clocks (Tuesday 7:10, 13:20, 15:00, 16:30, 22:00, Friday 16:30, Saturday 10:00, Sunday 23:30) and in the browser on a Tuesday evening
+- [x] Choosing one shows the confirmation and "Your answers are kept."; on another step "Talk to an advisor" shows the booking with "Choose another time" and "Cancel it"; both work. Changed in the build: once booked or cancelled, "Talk to an advisor" comes back on that step too
+- [x] The booking survives the sheet reloading; a booking that ended is gone, one still running is kept until it ends, an invalid one is ignored
+- [x] The exit screen's "Book an appointment" opens the handoff (desktop column, phone layer) and the screen then shows the booking with Done, without announcing the step again
+- [x] No field asks for a name, a number or an email; no request on booking (no new resource entries)
+- [x] Completion clears the booking and the nudges with the draft (the draft is gone). Start over not tried; it clears the same draft
 
 ## 5. Documentation (D19)
 
-- [ ] Components: "Questions and answers" shows the nudge (desktop invitation and phone bubble) and the handoff, in Light and Dark
+- [x] Components: two new sections after "Questions and answers", the nudge (desktop invitation and phone bubble) and the handoff, in Light and Dark
 
 ## 6. VoiceOver and touch (Klaudiusz on an iPhone, preview URL)
 
@@ -58,37 +58,39 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 
 ### 1. Build
 
-- [ ] `npm run build` succeeds with no new warnings
-- [ ] The browser console shows no errors on any page visited below
+- [x] `npm run build` succeeds with no new warnings
+- [x] The browser console shows no errors on any page visited below (read on Overview, the opening, Character kit and Motion)
 
 ### 2. Shell
 
-- [ ] ★ Overview loads with sidebar (desktop) or tab bar (phone); the 3D character appears in the lower right on desktop
-- [ ] ★ Light/Dark toggle switches instantly and survives a reload
-- [ ] Navigating Overview → Account details → All bookings and back plays the page transitions in the right directions
-- [ ] The "Open payment!" status message appears after about 12 s on a main view; tapping it dismisses it
+- [x] ★ Overview loads with sidebar (desktop, its canvas in the lower right); in a 390 frame in Dark it loads and opens Investment (the tab bar not looked at)
+- [x] ★ Light/Dark toggle switches instantly and survives a reload (desktop)
+- [x] Navigating Overview → Account details → All bookings and back (the directions not judged)
+- [x] The "Open payment!" status message is there on Overview; tapping it collapses it into its small bar
 
 ### 3. Banking flows
 
-- [ ] ★ Pay: recipient search → recipient → amount → schedule → summary → confirm; the balance and bookings update
-- [ ] Internal transfer completes
-- [ ] Custody account → a position → Buy opens the trade flow and can be dismissed
-- [ ] All bookings: tabs, month chips and search work
+- [x] ★ Pay: "Lena" → Lena Fischer → CHF 500 → schedule → summary → Execute; Household 9'900 to 9'400 and one booking (desktop, Light; not at 390). The schedule step names Hans Meyer, known
+- [x] Internal transfer completes (Savings 25'500)
+- [x] Custody account → Apple Inc. → Buy opens the trade flow and is dismissed (X, Discard)
+- [x] All bookings: tabs and search work ("Migros" found two); the month chips are there (10), not clicked
 
 ### 4. Profile
 
-- [ ] ★ User Type: moving a slider snaps to an anchor and changes the character, title and preview
-- [ ] Legibility: a preset changes type and spacing app-wide; Typeface, Font and Paddings work
-- [ ] ★ Theme: picking a Multi-color theme recolours every page (focus rings and primary buttons take the accent); the UZ Bank card restores the default look exactly
-- [ ] Demo data reset restores the Household balance
+- [x] ★ User Type: End on financial knowledge puts the wizard hat on the character; Home puts it back (desktop)
+- [x] Legibility: Default changes the stored scale; set back to Large, as it was. Typeface, Font and Paddings not tried
+- [x] ★ Theme: Custom 06 recolours the opening and Profile; the UZ Bank card restores the default look (desktop)
+- [x] Demo data reset restores the Household balance (9'900) and Savings (25'000)
 
 ### 5. Design system (signed in as admin)
 
-- [ ] The Design system hub shows Motion, Components and Character kit; only the trailing arrows move
-- [ ] Motion specimens, Components and Character kit open, and back returns to the hub
-- [ ] The Character kit specimen loads and the profile buttons change the figure
+- [x] The Design system hub shows Motion, Components, Character kit and Payday run (the arrows' motion not judged)
+- [x] Motion specimens, Components and Character kit open, and back returns to the hub (from Character kit)
+- [x] The Character kit specimen loads and "Max · Power user" changes the figure
 
 ### 6. Accessibility
 
-- [ ] Tab through Overview: focus is always visible
-- [ ] With reduced motion on (System Settings → Accessibility → Display), page transitions and the character are still, and nothing is stuck mid-animation
+- [x] Tab through Overview (14 presses): focus always visible, a 2px outline
+- [ ] With reduced motion on (System Settings → Accessibility → Display), page transitions and the character are still, and nothing is stuck mid-animation. Not checked: the system setting was not switched
+
+Checked on 2026-11-03 against `feature/assistant-nudges-and-handoff`, Chrome on the agent's server (port 5199): desktop in the 1440×823 window (the sheet at 960, and the opening on its own), the phone as a 390×823 frame of Overview; Light, Dark and Custom 06; Legibility on Large as found (restored after the preset test); each User Type through `uzBankWebPersonaProfile`, `?nudge=fast` for the walks and one step at full speed; real keys for the bubble, the Overview focus and the slider, scripted clicks and storage elsewhere; the times also in Node. Not checked: the system reduced-motion setting, VoiceOver and touch (section 6, for Klaudiusz on the preview), the documents' look-up signal, a step whose question was already asked, Start over, no stored User Type, the starred baseline items at 390 except Overview and the opening, the month chips, Typeface, Font and Paddings. The test payment, transfer and mandate were undone with the demo reset.
