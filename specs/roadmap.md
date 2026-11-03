@@ -176,6 +176,7 @@ Added 2026-11-03. The list on All bookings runs day group after day group with n
 - **Linked to the month chips:** tapping a chip scrolls to its separator; while scrolling, the chip of the month in view becomes active.
 - **Sticky (optional):** the current month's separator sticks below the header until the next one pushes it away. To decide in its spec.
 - **Everywhere:** in all three tabs (Executed, Pending, Recurring) and with the search field (a month with no matches shows no separator). Screen readers read it as a heading.
+- **Focus after a chip (found during 25, 2026-11-03):** a click on a chip in the list, or Enter on it, docks the bar and hides the list's bar, so focus drops to the page body and the next Tab starts from the top. To settle with the chip linking above: focus moves to the same chip in the docked bar, or to the month's separator.
 
 ## 25. Focus rings app-wide
 
