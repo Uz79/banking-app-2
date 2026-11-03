@@ -24,6 +24,7 @@
   var backBtn = overlay.querySelector('[data-fridge-back]');
   var closeBtn = overlay.querySelector('[data-fridge-close]');
   var titleEl = overlay.querySelector('.modal__title');
+  var nav = overlay.querySelector('.modal__nav');
 
   var FRIDGE = { src: 'fridge-advisor.html', title: 'How much should I invest?' };
   var OPENING = { src: 'investment-opening.html', title: 'Open asset management' };
@@ -56,6 +57,13 @@
 
   /* 960 for the whole flow, the fridge and the opening with its assistant column (9b D24); the CSS widens it from a
      1024px window only. One fixed height (9a D26). */
+  /* The opening's assistant on a phone is a layer over the whole sheet with its own X: the sheet's header steps
+     aside while it is open (phone polish D2). */
+  function setChat(on) {
+    shell.classList.toggle('modal-shell--chat', on);
+    nav.inert = on;
+  }
+
   function setWide(on) {
     shell.classList.toggle('modal-shell--wide', on);
     /* The fridge and the opening share one sheet height (8d D1); only the width changes at the hand-over. */
@@ -113,6 +121,7 @@
     shell.classList.remove('modal-shell--closing');
     shell.classList.add('modal-shell--offscreen', 'modal-shell--no-transition');
     if (frame) { frame.remove(); frame = null; }
+    setChat(false);
     setWide(true);
     setTitle(FRIDGE.title);
     if (app) app.inert = false;
@@ -203,6 +212,8 @@
       requestClose();
     } else if (data.type === 'uzbank:fridge-close') {
       close();
+    } else if (data.type === 'uzbank:sheet-chat') {
+      setChat(!!data.open);
     } else if (data.type === 'uzbank:sheet-layout') {
       setWide(data.wide !== false);
     } else if (data.type === 'uzbank:sheet-title' && typeof data.title === 'string') {

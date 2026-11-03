@@ -28,11 +28,11 @@ What you see: Next always looks ready; tapping it with something missing puts a 
 
 What you see: Help? opens a layer with "Questions about this step" and its own X over the whole flow; closing it returns to Help?.
 
-- [ ] `investment-opening.html`: the layer's header (title, X) in the assistant's markup
-- [ ] `js/opening-assistant.js`: open and close the layer, X and Escape close only it, focus back to Help?; `uzbank:sheet-chat` to the sheet
-- [ ] `js/fridge-advisor-sheet.js`: hide the header and make it inert while the chat is open
-- [ ] `css/styles.css`: the layer, its header like the sheet's, the slide-up with its reduced-motion path; desktop untouched
-- [ ] Check: 390 in Light and Dark; Tab stays in the layer; the sheet's X and Back unreachable while it is open; Escape closes the layer, then a second Escape asks to leave; desktop column unchanged
+- [x] `investment-opening.html`: the layer's header (title, X) in the assistant's markup
+- [x] `js/opening-assistant.js`: open and close the layer, X and Escape close only it, focus back to Help?; `uzbank:sheet-chat` to the sheet
+- [x] `js/fridge-advisor-sheet.js`: hide the header and make it inert while the chat is open
+- [x] `css/styles.css`: the layer, its header like the sheet's, the slide-up with its reduced-motion path; desktop untouched
+- [x] Check: 390 in Light and Dark; Tab stays in the layer; the sheet's X and Back unreachable while it is open; Escape closes the layer, then a second Escape asks to leave; desktop column unchanged
 
 ## 4. Closing asks, the progress is kept, reopening resumes (D9 to D13)
 

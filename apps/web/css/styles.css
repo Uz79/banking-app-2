@@ -13042,12 +13042,47 @@ html:not(.fridge--wide) .fridge__ring-amount {
   }
 }
 
-/* Phone (D29): the conversation covers the sheet's body, under the sheet's own header, above the step and its
-   buttons. It appears at once: no slide, so nothing to reduce. */
+/* Phone (phone polish D2, replacing 9b D29's place under the sheet's header): the conversation is a layer over
+   the whole sheet, which hides its own header meanwhile; the layer's bar holds the title and its own X, laid out
+   like the sheet's header. It slides up; with reduced motion it appears at once. */
 .assistant--full .assistant {
   position: fixed;
   inset: 0;
   z-index: 3;
+  animation: assistant-layer-in 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes assistant-layer-in {
+  from { transform: translateY(100%); }
+}
+
+.assistant__bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-height: calc(2.75rem + 2 * var(--space-3));
+  padding: var(--space-3) calc(var(--space-3) + 2.75rem + var(--space-2));
+}
+
+.assistant__bar[hidden] {
+  display: none;
+}
+
+.assistant__bar .assistant__title {
+  font-size: var(--fs-text-lg);
+  text-align: center;
+}
+
+.modal-shell--chat .modal__nav {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assistant--full .assistant {
+    animation: none;
+  }
 }
 
 /* D28: the bottom bar holds Help? and the step's main button side by side; on desktop the row is the main button. */

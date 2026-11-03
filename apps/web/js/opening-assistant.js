@@ -19,6 +19,8 @@ const nameLine = aside.querySelector('.assistant__name');
 const body = aside.querySelector('[data-assistant-body]');
 const foot = aside.querySelector('[data-assistant-foot]');
 const selfBtn = aside.querySelector('[data-assistant-self]');
+const bar = aside.querySelector('[data-assistant-bar]');
+const heading = aside.querySelector('.assistant__heading');
 
 /* Desktop is a 1024px viewport: framed, the parent's (where the sheet is 960); on its own, the page's. */
 const WIDE = '(min-width: 1024px)';
@@ -44,12 +46,21 @@ function setInert(on) {
   [...main.children].forEach((el) => { if (el !== aside) el.inert = on; });
 }
 
+/* The sheet hides its own header while the layer is open, so only the layer's X closes anything (phone polish D2). */
+function tellSheet(on) {
+  if (framed) window.parent.postMessage({ type: 'uzbank:sheet-chat', open: on }, window.location.origin);
+}
+
 function applyLayout() {
   wide = wideLayout();
   root.classList.toggle('assistant--wide', wide);
   root.classList.toggle('assistant--full', !wide);
+  /* The title heads the column on desktop and the layer's bar on a phone (phone polish D2). */
+  if (wide) heading.prepend(title);
+  else bar.prepend(title);
+  bar.hidden = wide;
   if (wide) {
-    if (open) { open = false; setInert(false); }
+    if (open) { open = false; setInert(false); tellSheet(false); }
     aside.hidden = false;
     aside.removeAttribute('role');
     aside.removeAttribute('aria-modal');
@@ -72,6 +83,7 @@ function showFull() {
   open = true;
   aside.hidden = false;
   setInert(true);
+  tellSheet(true);
   renderPanel();
   title.focus({ preventScroll: true });
   startHelper();
@@ -83,8 +95,12 @@ function hideFull(returnFocus = true) {
   open = false;
   aside.hidden = true;
   setInert(false);
+  tellSheet(false);
   if (returnFocus && helpBtn.isConnected) helpBtn.focus({ preventScroll: true });
 }
+
+/* The layer's own X closes only the layer (phone polish D2). */
+aside.querySelector('[data-assistant-close]').addEventListener('click', () => hideFull());
 
 /* "I can do it myself": back to the invitation on desktop, closed on the phone (D27, D29). */
 selfBtn.addEventListener('click', () => {
