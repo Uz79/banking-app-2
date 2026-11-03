@@ -131,7 +131,7 @@ When the bookings list is full and the oldest booking is dropped, its amount is 
 
 ## 15. Transfer confirmation copy: "will be executed now"
 
-The transfer confirmation still says the transfer "will be executed now". The copy needs another look. Found at the end of `specs/2026-10-25-all-bookings-real/`.
+The transfer confirmation still says the transfer "will be executed now". The copy needs another look. Found at the end of `specs/2026-10-25-all-bookings-real/`. Spec: `specs/2026-11-03-confirmation-copy/` (branch `feature/confirmation-copy`). Settled in its interview: the payment and trade confirmations too (the same shell, the same problem); the text says what happened, following the schedule (done now, made on a date, starts on a date); "Done" on every button.
 
 ## 16. Open checks
 
