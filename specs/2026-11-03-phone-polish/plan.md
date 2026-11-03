@@ -8,10 +8,10 @@ Each group ends with something to look at in the browser on the agent's server (
 
 What you see: regular sliders on a phone, a strong "Show suitable products", and the result's label above a ring that holds only the amount.
 
-- [ ] Find why "Show suitable products" looks pale and record the cause in D7 before fixing it
-- [ ] `js/fridge-advisor.js`: the compact class only in the floating panel's layout (D1); the result's label outside the ring in the docked layout (D8)
-- [ ] `css/styles.css`: the ring's phone rule (label above, the amount sized to fit CHF 999'999, stepping down for long amounts); the pale button's fix (D7)
-- [ ] Check: every fridge step at 390 without scrolling, Light and Dark; the ring with CHF 0, CHF 29'400 and CHF 999'999 at the default and the largest font size; 960 unchanged
+- [x] Find why "Show suitable products" looks pale and record the cause in D7 before fixing it
+- [x] `js/fridge-advisor.js`: the compact class only in the floating panel's layout (D1); the result's label outside the ring in the docked layout (D8)
+- [x] `css/styles.css`: the ring's phone rule (label above, the amount sized to fit CHF 999'999, stepping down for long amounts); the pale button's fix (D7)
+- [x] Check: every fridge step at 390 without scrolling, Light and Dark; the ring with CHF 0, CHF 29'400 and CHF 999'999 at the default and the largest font size; 960 unchanged
 
 ## 2. Next is never disabled (D4, D5, D6)
 

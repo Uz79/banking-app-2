@@ -194,7 +194,8 @@ function buildField(key, onChange) {
   range.min = '0';
   range.max = String(TRACK);
   range.step = '1';
-  range.className = 'cc-color-slider cc-color-slider--compact';
+  /* The regular slider on a phone, the compact one in the floating panel (phone polish D1, in the CSS). */
+  range.className = 'cc-color-slider';
   track.append(range);
   if (def.mark) {
     const tick = document.createElement('span');
@@ -286,6 +287,13 @@ function buildResult() {
   ring.innerHTML = '<svg viewBox="0 0 120 120" focusable="false"><circle class="fridge__ring-track" cx="60" cy="60" r="52" pathLength="100"/>'
     + '<circle class="fridge__ring-bar" cx="60" cy="60" r="52" pathLength="100" stroke-dasharray="' + (reduced() ? share * 100 : 0) + ' 100"/></svg>'
     + '<div class="fridge__ring-text"><span class="fridge__ring-label">You could invest</span><span class="fridge__ring-amount">' + chf(amount) + '</span></div>';
+  /* The amount's type shrinks with its length so any amount fits inside the ring (phone polish D8). */
+  ring.style.setProperty('--ring-chars', String(chf(amount).length));
+  /* On a phone the label sits above the ring and only the amount is inside (D8); the CSS shows one of the two. */
+  const label = document.createElement('p');
+  label.className = 'fridge__result-label';
+  label.setAttribute('aria-hidden', 'true');
+  label.textContent = 'You could invest';
   if (!reduced()) {
     const bar = ring.querySelector('.fridge__ring-bar');
     requestAnimationFrame(() => requestAnimationFrame(() => bar.setAttribute('stroke-dasharray', share * 100 + ' 100')));
@@ -299,7 +307,7 @@ function buildResult() {
   const note = document.createElement('p');
   note.className = 'fridge__note';
   note.textContent = NOTE;
-  box.append(ring, sr, year, note);
+  box.append(label, ring, sr, year, note);
   return box;
 }
 

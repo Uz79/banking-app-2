@@ -4109,9 +4109,13 @@ button.debit-account:focus-visible {
   border-color: var(--color-btn-primary-bg);
 }
 
-.uz-btn--primary:hover {
-  background-color: var(--color-btn-primary-hover);
-  border-color: var(--color-btn-primary-hover);
+/* Hover only where there is a pointer that hovers: on touch the state sticks after a tap, and a button that
+   replaces the tapped one (the next step's) would start pale (phone polish D7). */
+@media (hover: hover) {
+  .uz-btn--primary:hover {
+    background-color: var(--color-btn-primary-hover);
+    border-color: var(--color-btn-primary-hover);
+  }
 }
 
 .uz-btn--primary:active,
@@ -11544,10 +11548,22 @@ dialog.basic-dialog-payment-exit[data-quiet] :focus-visible {
 
 /* The slider's own focus ring is drawn on the thumb; here the track also holds the recommended-value tick. */
 .fridge__track {
-  --fridge-thumb: 1.25rem; /* the compact slider's thumb width: the thumb's centre runs inset by half of it */
+  --fridge-thumb: 2.625rem; /* the slider's thumb width: the thumb's centre runs inset by half of it */
   position: relative;
   display: flex;
   align-items: center;
+}
+
+/* The floating panel keeps the compact slider; a phone gets the regular one (phone polish D1). */
+html.fridge--wide .fridge__track {
+  --fridge-thumb: 1.25rem;
+}
+
+html.fridge--wide .fridge__track .cc-color-slider {
+  --slider-thumb-w: 1.25rem;
+  --slider-thumb-h: 0.75rem;
+  --slider-track-h: 0.125rem;
+  height: 1rem;
 }
 
 .fridge__tick {
@@ -11657,15 +11673,37 @@ html.fridge--wide .fridge__panel {
   }
 }
 
-@media (max-width: 480px) {
-  .fridge__ring {
-    width: 8.5rem;
-    height: 8.5rem;
-  }
+/* The label above the ring is the phone's (D8); from the floating panel it stays inside the ring. */
+.fridge__result-label {
+  margin: 0 0 calc(var(--space-2) * -1);
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg-secondary);
+}
 
-  .fridge__ring-amount {
-    font-size: var(--fs-h5);
-  }
+html.fridge--wide .fridge__result-label {
+  display: none;
+}
+
+/* Phone: only the amount inside the ring, on one line, its size stepping down with its length so CHF 999'999
+   still fits the inner circle (phone polish D8, roadmap 19). */
+html:not(.fridge--wide) .fridge__ring {
+  width: 8.5rem;
+  height: 8.5rem;
+  container-type: inline-size;
+}
+
+html:not(.fridge--wide) .fridge__ring-text {
+  padding: 0;
+}
+
+html:not(.fridge--wide) .fridge__ring-label {
+  display: none;
+}
+
+html:not(.fridge--wide) .fridge__ring-amount {
+  white-space: nowrap;
+  font-size: min(var(--fs-h5), calc(155cqw / var(--ring-chars, 10)));
 }
 
 /* ── Investment opening ("Open asset management"): follows the fridge in the same sheet ─────────── */
