@@ -14,9 +14,9 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 2. The trade (D6 to D8, D10)
 
-- [ ] `js/trade-flow-overlay.js`: "has been placed", and the limit line by validity or the market line (D6)
-- [ ] `details-of-position.html`: the defaults and Done (D7, D8)
-- [ ] Check: Buy and Sell; limit with Daily, GTC and Execute until; market
+- [x] `js/trade-flow-overlay.js`: "has been placed", and the limit line by validity or the market line (D6); the order button records the order, Done only closes (D10)
+- [x] `details-of-position.html`: the defaults and Done (D7, D8)
+- [x] Check: Buy and Sell; limit with Daily, GTC and Execute until; market
 
 ## 3. Wrap-up
 
