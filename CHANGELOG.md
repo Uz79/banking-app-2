@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 9948426bb6dd9769d1dad9493646b337bcc74881 -->
+<!-- changelog: last-commit 510d855678952a8a0afd2999c571d813448b48fa -->
 
 ### Added
 - **The strategy step as a carousel with the vehicles** (roadmap 9d). The five strategies are cards in a row, one at a time, the neighbours peeking in at the edges. Each card shows the customer's own persona with the strategy's vehicle large at the top, the name with "Recommended" or "Above your risk profile", one line of description, and risk and expected return in the theme's colours. Arrows, swipe, the arrow keys and five labelled markers below (the recommended one marked) move between cards; it starts on the chosen strategy, or on the recommended one. Choosing is explicit: "Choose this strategy" on a card, and Next stays disabled until then and reads "Continue with <name>". Growth and Dynamic above the profile stay in the carousel, dimmed, with a one-line reason, and cannot be chosen. Each card is named for screen readers ("Balanced, 3 of 5, recommended") and announced when it changes; with reduced motion the card swaps at once. One live 3D stage moves with the current card and the others show stills from it; the models load on the risk step, and without 3D the cards keep everything but the picture. The recommendation and the stored answers are unchanged.
