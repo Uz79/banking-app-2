@@ -1,6 +1,7 @@
 /**
  * Internal Account Transfer flow overlay
  * Hash: #iat/recipient | #iat/schedule | #iat/summary | #iat/confirmation
+ *       #iat/fund/<mandateId> opens it prefilled to fund that mandate (roadmap 18, D10)
  *
  * Triggered by [data-action="iat"] buttons.
  * Steps live in #uz-iat-overlay .modal__step[data-iat-step="<name>"].
@@ -46,6 +47,36 @@
   };
 
   window.__UZ_IAT_ACCOUNTS__ = ACCOUNTS;
+
+  /* The accounts a transfer can use. Custody account stays in the catalogue for the details of past bookings, but
+     its balance is fixed, so it is no target (roadmap 18, D11). */
+  var TRANSFER_KEYS = ['household', 'savings'];
+
+  /* Each asset management mandate is a credit account, keyed by its id (roadmap 18, D1 to D3). Read from the state
+     each time, so one opened in the Overview sheet is there without a reload. */
+  function mandateAccounts() {
+    var pay = window.UZBankPayState;
+    if (!pay || typeof pay.getState !== 'function') return [];
+    return (pay.getState().mandates || []).map(function (m) {
+      return {
+        key: m.id,
+        name: 'Asset management',
+        iban: m.strategyName || m.strategy,
+        balance: pay.formatMoney(m.funded || 0),
+        currency: 'CHF',
+        icon: '#i-trending-up',
+        mandate: true,
+        suggestedAmount: m.amount
+      };
+    });
+  }
+
+  function accountFor(key) {
+    if (ACCOUNTS[key]) return ACCOUNTS[key];
+    return mandateAccounts().find(function (a) { return a.key === key; }) || null;
+  }
+
+  window.__UZ_IAT_ACCOUNT_FOR__ = accountFor;
 
   /* ── Step order ────────────────────────────────────────────────── */
 
@@ -150,7 +181,7 @@
   }
 
   function pickOtherKey(exclude) {
-    return Object.keys(ACCOUNTS).find(function (k) { return k !== exclude; }) || exclude;
+    return TRANSFER_KEYS.find(function (k) { return k !== exclude; }) || exclude;
   }
 
   function accountToSheet(acc) {
@@ -166,9 +197,10 @@
 
   function openAccountPicker(role, triggerEl) {
     if (!window.UZBankFormSheet || !window.UZBankFormSheet.openAccountPickerSheet || !triggerEl) return;
-    var sheetAccounts = Object.keys(ACCOUNTS).map(function (k) {
-      return accountToSheet(ACCOUNTS[k]);
-    });
+    /* Mandates are credit accounts only (D1), listed after Household and Savings in the order opened (D2) */
+    var list = TRANSFER_KEYS.map(function (k) { return ACCOUNTS[k]; });
+    if (role === 'to') list = list.concat(mandateAccounts());
+    var sheetAccounts = list.map(accountToSheet);
     window.UZBankFormSheet.openAccountPickerSheet(triggerEl, {
       title: role === 'from' ? 'Debit account' : 'Credit account',
       accounts: sheetAccounts,
@@ -179,7 +211,10 @@
           live.fromKey = acc.key;
           if (live.fromKey === live.toKey) live.toKey = pickOtherKey(live.fromKey);
         } else {
+          var wasMandate = !!(accountFor(live.toKey) || {}).mandate;
           live.toKey = acc.key;
+          /* Funding a mandate starts from Household; Savings can be picked after (D4) */
+          if ((accountFor(live.toKey) || {}).mandate && !wasMandate) live.fromKey = 'household';
           if (live.toKey === live.fromKey) live.fromKey = pickOtherKey(live.toKey);
         }
         paintRecipientStep();
@@ -198,8 +233,8 @@
   function commitTransfer() {
     collectRecipientStep();
     if (live.fromKey === live.toKey || live.amount <= 0) return;
-    var from = ACCOUNTS[live.fromKey];
-    var to = ACCOUNTS[live.toKey];
+    var from = accountFor(live.fromKey);
+    var to = accountFor(live.toKey);
     if (!from || !to || !window.UZBankPayState || !window.UZBankPayState.commitInternalTransfer) return;
     window.UZBankPayState.commitInternalTransfer({
       fromKey: live.fromKey,
@@ -241,8 +276,8 @@
   }
 
   function paintRecipientStep() {
-    var from = ACCOUNTS[live.fromKey] || ACCOUNTS.savings;
-    var to   = ACCOUNTS[live.toKey]   || ACCOUNTS.household;
+    var from = accountFor(live.fromKey) || ACCOUNTS.savings;
+    var to   = accountFor(live.toKey)   || ACCOUNTS.household;
 
     if (amountInput) amountInput.value = formatAmount(live.amount);
     if (currencyLabel) currencyLabel.textContent = live.currency;
@@ -267,8 +302,8 @@
   }
 
   function paintSummaryStep() {
-    var from = ACCOUNTS[live.fromKey] || ACCOUNTS.savings;
-    var to   = ACCOUNTS[live.toKey]   || ACCOUNTS.household;
+    var from = accountFor(live.fromKey) || ACCOUNTS.savings;
+    var to   = accountFor(live.toKey)   || ACCOUNTS.household;
 
     if (summaryAmount) summaryAmount.textContent = live.currency + '  ' + formatAmount(live.amount);
     if (summaryDate)   summaryDate.textContent    = live.dateLabel || formatTodayDate();
@@ -278,7 +313,7 @@
   }
 
   function paintConfirmationDialog() {
-    var to = ACCOUNTS[live.toKey] || ACCOUNTS.household;
+    var to = accountFor(live.toKey) || ACCOUNTS.household;
     if (confCurrency)  confCurrency.textContent  = live.currency;
     if (confAmount)    confAmount.textContent     = formatAmount(live.amount);
     if (confRecipient) confRecipient.textContent  = to.name;
@@ -367,14 +402,22 @@
 
   /* ── Open / close ──────────────────────────────────────────────── */
 
-  function openOverlay() {
+  /* prefill (optional): { toKey, fromKey, amount }, e.g. to fund a mandate (roadmap 18, D9, D10). An unknown account
+     is ignored, so the transfer opens as usual. */
+  function openOverlay(prefill) {
+    if (!prefill || typeof prefill !== 'object' || prefill instanceof Event) prefill = null;
     /* Default debit account = currently active carousel account */
     var activeAccount = window.__UZ_ACTIVE_ACCOUNT__ || 'savings';
     /* Can't transfer to yourself — pick the next account as credit */
-    var allKeys = Object.keys(ACCOUNTS);
-    live.fromKey = allKeys.indexOf(activeAccount) >= 0 ? activeAccount : 'savings';
-    live.toKey = allKeys.find(function (k) { return k !== live.fromKey; }) || 'household';
+    live.fromKey = TRANSFER_KEYS.indexOf(activeAccount) >= 0 ? activeAccount : 'savings';
+    live.toKey = pickOtherKey(live.fromKey);
     live.amount = 500.00;
+    if (prefill && prefill.toKey && accountFor(prefill.toKey)) {
+      live.toKey = prefill.toKey;
+      live.fromKey = TRANSFER_KEYS.indexOf(prefill.fromKey) >= 0 ? prefill.fromKey : 'household';
+      if (live.fromKey === live.toKey) live.fromKey = pickOtherKey(live.toKey);
+      if (typeof prefill.amount === 'number' && prefill.amount > 0) live.amount = prefill.amount;
+    }
     live.immediately = true;
     live.dateLabel = formatTodayDate();
     if (execTypeGroup) {
@@ -383,7 +426,8 @@
       });
     }
 
-    /* Reset to first step */
+    /* Reset to first step; goToStep reads the amount back from the field, so the field shows it first */
+    if (amountInput) amountInput.value = formatAmount(live.amount);
     goToStep('recipient', false);
 
     /* Slide in */
@@ -558,6 +602,17 @@
   /* Hash on page load (deep link) — after payment overlay init so step active state is not cleared */
   function tryOpenFromHash() {
     var hash = location.hash;
+    /* #iat/fund/<mandateId>: from Household to that mandate, its amount (D10); the hash is replaced, so back does
+       not open it again */
+    var fund = hash.match(/^#iat\/fund\/([\w-]+)$/);
+    if (fund) {
+      history.replaceState(null, '', location.pathname + location.search);
+      var mandate = accountFor(fund[1]);
+      openOverlay(mandate && mandate.mandate
+        ? { toKey: mandate.key, fromKey: 'household', amount: mandate.suggestedAmount }
+        : null);
+      return;
+    }
     var m = hash.match(/^#iat\/(\w+)$/);
     if (m && STEPS.indexOf(m[1]) >= 0) {
       openOverlay();
@@ -568,5 +623,10 @@
   (window.onDocumentReady || function (fn) {
     document.addEventListener('DOMContentLoaded', fn);
   })(tryOpenFromHash);
+
+  /* The fund link can also arrive on a page already open */
+  window.addEventListener('hashchange', function () {
+    if (/^#iat\/fund\//.test(location.hash)) tryOpenFromHash();
+  });
 
 })();

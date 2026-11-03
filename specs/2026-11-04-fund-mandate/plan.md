@@ -12,9 +12,10 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 2. The transfer (D1 to D4, D11)
 
-- [ ] `js/iat-overlay.js`: Custody account out (D11); mandates from the state as credit accounts only, after Household and Savings (D1 to D3); Household as the debit default for a mandate (D4); `__UZ_IAT_OPEN` takes a prefill (from, to, amount); the `#iat/fund/{id}` route (D10)
-- [ ] `js/form-field-sheet.js` only if the picker needs a second line for the strategy
-- [ ] Check: the credit list on Overview, Account details and Payments with none, one and two mandates; a real transfer to a mandate from Household and from Savings; the confirmation names "Asset management"
+- [x] `js/iat-overlay.js`: Custody account out (D11); mandates from the state as credit accounts only, after Household and Savings (D1 to D3); Household as the debit default for a mandate (D4); `__UZ_IAT_OPEN` takes a prefill (from, to, amount); the `#iat/fund/{id}` route (D10)
+- [x] `js/form-field-sheet.js` only if the picker needs a second line for the strategy (not needed: the strategy goes in the IBAN line)
+- [x] `js/payment-details.js`: a mandate transfer's details resolve the mandate through the transfer's lookup; Custody account stays in the catalogue, so past transfers to it still show their details
+- [x] Check: the credit list on Overview, Account details and Payments with none, one and two mandates; a real transfer to a mandate from Household and from Savings; the confirmation names "Asset management"
 
 ## 3. Completion (D9, D10)
 
