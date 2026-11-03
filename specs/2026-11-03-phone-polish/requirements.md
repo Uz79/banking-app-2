@@ -19,7 +19,7 @@ Roadmap item 21 (`specs/roadmap.md`), which takes in item 19 (the fridge's resul
 **Out (not in this branch):**
 
 - Other phone issues outside the fridge and the opening (Profile's character over the sliders at 390, the trade flow's "Continue payment" prompt, Hans Meyer on the Pay schedule)
-- Disabled buttons elsewhere in the app: the rule is recorded now and applies to new work; existing disabled call-to-actions outside the two flows are listed in the build (D6) and fixed in their own items
+- Disabled buttons elsewhere in the app: the rule is recorded now and applies to new work; existing disabled call-to-actions outside the two flows are listed in the build (D6) and fixed in their own items (found: Profile's "Reset demo data", roadmap 22)
 - The fridge's 3D scene, camera poses and the persona's walk (8d, 8e), apart from what the ring's new layout needs
 - The assistant's content, its desktop column and its behaviour by User Type (9f)
 - The strategy carousel itself (9d D16 to D20), apart from Next (D5)

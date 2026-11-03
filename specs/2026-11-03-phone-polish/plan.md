@@ -46,8 +46,8 @@ What you see: X asks "Leave for now?" on every step; Investment reopens on the s
 
 ## 5. Wrap-up
 
-- [ ] `npm run build` in `apps/web`
-- [ ] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line; the VoiceOver items left for Klaudiusz (D14)
-- [ ] Docs: `specs/roadmap.md` item 21 (and 19) marked done, the follow-up for D6 added; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the no-disabled-buttons rule in Decisions, the fridge row's "Nothing is remembered", the draft's shape, the assistant's phone layer); `apps/web/README.md` (the draft's new shape)
+- [x] `npm run build` in `apps/web`
+- [x] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line; the VoiceOver items left for Klaudiusz (D14)
+- [x] Docs: `specs/roadmap.md` item 21 (and 19) marked done, the follow-up for D6 added; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the no-disabled-buttons rule in Decisions, the fridge row's "Nothing is remembered", the draft's shape, the assistant's phone layer); `apps/web/README.md` (the draft's new shape)
 
 The earlier specs (fridge D8, 9a D3 and D6, 9b D29, 9d D18) stay as they were; this spec's decisions say what they supersede.

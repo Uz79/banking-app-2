@@ -66,7 +66,7 @@ Persisted in `sessionStorage` (this tab only):
 
 | Key | Purpose |
 |-----|---------|
-| `uzBankWebOpeningDraft` | Investment opening draft: JSON `{ step, answers, fridgeAmount, from }`, written by the fridge's "Show suitable products" and on every change in the opening; cleared on completion and by the demo data reset. Unreadable means a fresh start |
+| `uzBankWebOpeningDraft` | The session draft of the fridge and the investment opening: JSON `{ page, fridge: { step, values, prefilled }, step, answers, fridgeAmount, from }`, `page` being `fridge` or `opening` (where Investment reopens). Written on every change and step in the fridge and the opening; cleared on completion, by the opening's Start over and by the demo data reset. A draft without `page` resumes the opening past its intro. Unreadable means a fresh start |
 
 ## Source layout
 
