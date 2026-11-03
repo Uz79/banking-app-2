@@ -374,7 +374,7 @@ export function setScreen(id) {
   renderPanel();
 }
 
-/* The customer's own numbers for answers that use them ({amount}, {after20}). */
+/* The customer's own numbers for answers that use them ({amount}). */
 export function setValues(fn) { values = fn; }
 
 /* The phone's conversation is open (it takes the first Escape). */
