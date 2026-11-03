@@ -989,7 +989,11 @@ const BUILD = {
     [['Strategy', s ? s.name : ''], ['Amount', chf(answers.amount || 0)]].forEach(([k, v]) => {
       card.append(el('dt', null, k), el('dd', null, v));
     });
-    return { nodes: [card, el('p', 'opening__text', fill(COMPLETE.next, { amount: chf(answers.amount || 0) }))] };
+    /* Transfer now funds the mandate; Done closes as before, now secondary (roadmap 18, D9) */
+    return {
+      nodes: [card, el('p', 'opening__text', fill(COMPLETE.next, { amount: chf(answers.amount || 0) }))],
+      actions: [button(COMPLETE.transfer, 'primary', fundNow), button(SCREENS[indexOf('complete')].next, 'secondary', done)],
+    };
   },
 };
 
@@ -1066,13 +1070,25 @@ function forward() {
   go(index + 1);
 }
 
-/* Completing writes the mandate into the payment state, where Overview shows it as pending (D21). */
+/* Completing writes the mandate into the payment state, where Overview shows it as pending (D21). Its id is kept for
+   Transfer now (roadmap 18). */
+let mandateId = null;
+
 function openMandate() {
   const s = STRATEGIES[rankOf(answers.strategy)];
   if (window.UZBankPayState && typeof window.UZBankPayState.commitMandate === 'function') {
-    window.UZBankPayState.commitMandate({ strategy: s.id, strategyName: s.name, amount: answers.amount });
+    mandateId = window.UZBankPayState.commitMandate({ strategy: s.id, strategyName: s.name, amount: answers.amount }) || null;
   }
   go(indexOf('complete'));
+}
+
+/* Transfer now (roadmap 18, D9, D10): in the sheet, the sheet closes without asking and opens the transfer; on its own,
+   the page goes to Overview with the transfer open. Without an id, the transfer opens as usual. */
+function fundNow() {
+  clearDraft();
+  assistant.close(false);
+  if (framed) send({ type: 'uzbank:fund-mandate', mandateId, amount: answers.amount, keyboard: byKeyboard });
+  else window.location.href = 'overview.html#iat/fund/' + encodeURIComponent(mandateId || '');
 }
 
 function changed() {

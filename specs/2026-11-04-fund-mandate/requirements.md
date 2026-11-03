@@ -57,4 +57,4 @@ The interview settled:
 
 ## Open questions
 
-1. Whether the completion's mandate id is known to the page when "Transfer now" is pressed: `commitMandate` doesn't return it today. The build settles it (return the id, or take the last mandate).
+1. ~~Whether the completion's mandate id is known to the page when "Transfer now" is pressed.~~ Settled in the build: `commitMandate` returns the id and the opening keeps it.

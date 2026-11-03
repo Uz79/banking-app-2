@@ -137,7 +137,11 @@
     setTitle(FRIDGE.title);
     if (app) app.inert = false;
     focusOpener();
+    if (afterClose) { var next = afterClose; afterClose = null; next(); }
   }
+
+  /* Run once the sheet has closed (Transfer now, roadmap 18). */
+  var afterClose = null;
 
   function close() {
     if (!isOpen() || closing) return;
@@ -223,6 +227,19 @@
       requestClose();
     } else if (data.type === 'uzbank:fridge-close') {
       byKeyboard = !!data.keyboard;
+      close();
+    } else if (data.type === 'uzbank:fund-mandate' && isOpen() && !closing) {
+      /* Transfer now on the opening's completion: close without asking, as Done does, then open the transfer to fund
+         the mandate, from Household, the opening's amount (roadmap 18, D9) */
+      byKeyboard = !!data.keyboard;
+      var mandateId = typeof data.mandateId === 'string' ? data.mandateId : null;
+      var amount = typeof data.amount === 'number' ? data.amount : null;
+      afterClose = function () {
+        if (typeof window.__UZ_IAT_OPEN !== 'function') return;
+        window.__UZ_IAT_OPEN(mandateId ? { toKey: mandateId, fromKey: 'household', amount: amount } : null);
+        var field = byKeyboard && document.getElementById('uz-iat-amount-input');
+        if (field) field.focus();
+      };
       close();
     } else if (data.type === 'uzbank:sheet-chat') {
       setChat(!!data.open);
