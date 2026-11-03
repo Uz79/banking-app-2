@@ -167,3 +167,12 @@ Found during 21 (2026-11-03). The design-system rule from 21 says a call-to-acti
 ## 23. Editing a pending payment turns it executed
 
 Found during 14 (2026-11-03). Editing a booking from its detail (`payment-overlay.js` with `editingBookingId`) calls `UZBankPayState.updatePayment`, which rebuilds the booking from `id`, `recipientName`, `currency`, `amount` and `dateISO` only. The booking loses its `status`, `executeOn`, `accountKey`, `icon` and `direction`, so a pending payment becomes executed and its money leaves Household, and the schedule chosen in the edit is ignored. To settle in its spec: keep every field the edit does not change, and apply the edit's schedule (a pending payment edited to "now" executes, as a new payment would).
+
+## 24. All bookings: month separators
+
+Added 2026-11-03. The list on All bookings runs day group after day group with nothing marking where a month starts, and the month chips above it have no visible counterpart in the list.
+
+- **Separator:** at the start of each month, a row between the day groups with the month in capital letters ("MAY"; with the year only when the list crosses a year, "DECEMBER 2025"), full width, on the separator background token, no amount.
+- **Linked to the month chips:** tapping a chip scrolls to its separator; while scrolling, the chip of the month in view becomes active.
+- **Sticky (optional):** the current month's separator sticks below the header until the next one pushes it away. To decide in its spec.
+- **Everywhere:** in all three tabs (Executed, Pending, Recurring) and with the search field (a month with no matches shows no separator). Screen readers read it as a heading.
