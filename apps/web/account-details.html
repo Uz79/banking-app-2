@@ -2881,8 +2881,8 @@
         <span>to</span>
         <span class="confirmation-dialog__recipient-name">Hans Meyer</span>
       </div>
-      <span class="confirmation-dialog__footer">will be executed with sufficient credit on</span>
-      <span class="confirmation-dialog__date">31.05.2026</span>
+      <span class="confirmation-dialog__footer">is done.</span>
+      <span class="confirmation-dialog__date" hidden>31.05.2026</span>
       <button class="uz-btn uz-btn--primary uz-btn--md uz-btn--block" type="button" data-action="done">Done</button>
     </div>
   </div>
@@ -3069,7 +3069,7 @@
           <path d="M15 24L21 30L33 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-      <span class="confirmation-dialog__text">Your payment of</span>
+      <span class="confirmation-dialog__text" id="uz-iat-conf-lead">Your transfer of</span>
       <div class="confirmation-dialog__amount">
         <span class="confirmation-dialog__currency" id="uz-iat-conf-currency">CHF</span>
         <span class="confirmation-dialog__sum" id="uz-iat-conf-amount">500.00</span>
@@ -3078,8 +3078,9 @@
         <span>to</span>
         <span class="confirmation-dialog__recipient-name" id="uz-iat-conf-recipient">Household</span>
       </div>
-      <span class="confirmation-dialog__footer">will be executed now</span>
-      <button class="uz-btn uz-btn--primary uz-btn--md uz-btn--block" type="button" id="uz-iat-conf-btn">Confirm</button>
+      <span class="confirmation-dialog__footer" id="uz-iat-conf-footer">is done.</span>
+      <span class="confirmation-dialog__date" id="uz-iat-conf-date" hidden></span>
+      <button class="uz-btn uz-btn--primary uz-btn--md uz-btn--block" type="button" id="uz-iat-conf-btn">Done</button>
     </div>
   </div>
 </div>

@@ -4501,24 +4501,19 @@ button.debit-account:focus-visible {
   z-index: 10;
 }
 
-/* IAT: immediate execution copy (no date line) — match payment footer spacing above CTA */
-#uz-iat-overlay .confirmation-dialog .confirmation-dialog__footer {
-  margin-bottom: var(--space-3);
-  font-size: var(--fs-text-md);
-}
-
 #uz-trade-overlay > .confirmation-overlay {
   z-index: 10;
 }
 
-#uz-trade-overlay .confirmation-dialog .confirmation-dialog__footer {
+/* A footer that ends the text (no date or limit line under it) takes the date line's
+   size and its spacing above the button (roadmap 15, D3). */
+.confirmation-dialog__footer:not(:has(+ .confirmation-dialog__date:not([hidden]))) {
   margin-bottom: var(--space-3);
   font-size: var(--fs-text-md);
 }
 
 @media (min-width: 1280px) {
-  #uz-iat-overlay .confirmation-dialog .confirmation-dialog__footer,
-  #uz-trade-overlay .confirmation-dialog .confirmation-dialog__footer {
+  .confirmation-dialog__footer:not(:has(+ .confirmation-dialog__date:not([hidden]))) {
     margin-bottom: var(--space-4);
   }
 }

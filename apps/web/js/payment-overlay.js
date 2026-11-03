@@ -242,10 +242,26 @@
     var cur = dlg.querySelector('.confirmation-dialog__currency');
     var rec = dlg.querySelector('.confirmation-dialog__recipient-name');
     var date = dlg.querySelector('.confirmation-dialog__date');
+    var lead = dlg.querySelector('.confirmation-dialog__text');
+    var footer = dlg.querySelector('.confirmation-dialog__footer');
     if (sum) sum.textContent = fmt(live.amount);
     if (cur) cur.textContent = live.currency;
     if (rec && live.recipient) rec.textContent = live.recipient.name;
-    if (date) date.textContent = live.dateLabel;
+    /* Say what happened: done now, made on a later date, or recurring from a date (roadmap 15).
+     * The schedule step names Recurring and Standing order apart, so the lead does too. */
+    var status = scheduleStatus();
+    var step = $step('schedule');
+    var active = step && step.querySelector('.segmented__option--active');
+    var mode = active ? active.textContent.trim() : 'Single';
+    if (lead) {
+      lead.textContent = status !== 'recurring' ? 'Your payment of'
+        : (mode === 'Standing order' ? 'Your standing order of' : 'Your recurring payment of');
+    }
+    if (footer) footer.textContent = status === 'executed' ? 'is done.' : (status === 'recurring' ? 'starts on' : 'will be made on');
+    if (date) {
+      date.textContent = live.dateLabel;
+      date.hidden = status === 'executed';
+    }
   }
 
   function pickRecipientForNewFlow() {

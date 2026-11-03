@@ -27,7 +27,7 @@ The interview settled:
 
 **Out (not in this branch):**
 
-- What the flows book, when, or with which status: only the words change
+- What the flows book or with which status: only the words change (when the transfer and the trade record moved to Execute, D10)
 - The flows' other steps and their summaries
 - How a screen reader announces the dialog (not in the interview's merge gate; a check of it, if wanted, is its own item)
 - `spa-source.html`, the old reference that the tech-spec says not to extend
@@ -46,6 +46,8 @@ The interview settled:
 | D7 | **The button says "Done"** in all three dialogs; it still only closes the dialog and the flow | Interview. The action is complete when the dialog shows |
 | D8 | **The words are set by script** in each flow's `paintConfirmationDialog()`; the markup in `overview.html`, `account-details.html`, `payments.html` and `details-of-position.html` gets the same defaults (the executed case) so the copies stay identical | The text depends on the schedule, so it has to be painted; the static defaults keep the copies honest if a script fails |
 | D9 | **Copy:** English, short, no em dashes; dates as the flows already format them (`dd.mm.yyyy`); amounts as now | AGENTS.md |
+| D10 | **The transfer and the trade record on Execute** (found in the build, amends D7 and the "Out" list): they recorded only when the dialog's Confirm was pressed, so the dialog was the last step rather than a confirmation. Now Execute (transfer) and the order button (trade) record, as the payment's Execute already does, and the dialog's Done only closes | A dialog that says "is done" or "has been placed" must come after the booking, or the words are false whenever the dialog is left another way. The booking itself (amounts, status, accounts) is unchanged |
+| D11 | **A footer that ends the text** takes the date line's size and spacing above the button; a footer with a date or limit line under it stays small, as the payment's did. One rule on `.confirmation-dialog__footer` replaces the transfer's and trade's own | The footer is now sometimes last and sometimes not, in all three dialogs |
 
 ## Context
 
