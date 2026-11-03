@@ -36,9 +36,9 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 ## 5. VoiceOver and touch (Klaudiusz on an iPhone, preview URL)
 
-- [ ] The chart itself is skipped; the line above it, the end values and the footnote are read
-- [ ] Each question is read with its options in francs
-- [ ] Touch: choosing, Change and Next work; nothing scrolls
+- [x] The chart itself is skipped; the line above it, the end values and the footnote are read
+- [x] Each question is read with its options in francs
+- [x] Touch: choosing, Change and Next work; nothing scrolls
 
 ## 6. Baseline smoke test
 
@@ -81,4 +81,4 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 - [x] Tab through Overview: focus is always visible
 - [ ] With reduced motion on, page transitions and the character are still, and nothing is stuck mid-animation. Not checked: the system setting was not switched
 
-Checked on 2026-11-03 against `feature/risk-experience`, Chrome on the agent's server (port 5199): the phone as a 390×823 frame of Overview, desktop in the 1440×823 window and a 1440×823 frame (a 677 sheet, 621px panel); Light, Dark and Custom 06; real keys for the risk options and Overview's focus, scripted clicks elsewhere; heights measured in the page. Not checked: the system reduced-motion setting, VoiceOver and touch (section 5, for Klaudiusz on the preview), the starred baseline items at 390 except Overview, the status message's dismissal, the Pay flow at 390. Known and not from this branch: the Pay schedule step names Hans Meyer, the oldest booking's refund (roadmap 14).
+Checked on 2026-11-03 against `feature/risk-experience`, Chrome on the agent's server (port 5199): the phone as a 390×823 frame of Overview, desktop in the 1440×823 window and a 1440×823 frame (a 677 sheet, 621px panel); Light, Dark and Custom 06; real keys for the risk options and Overview's focus, scripted clicks elsewhere; heights measured in the page. Section 5 (VoiceOver and touch) checked by Klaudiusz on an iPhone on the Vercel preview, 2026-11-03. Not checked: the system reduced-motion setting, the starred baseline items at 390 except Overview, the status message's dismissal, the Pay flow at 390. Known and not from this branch: the Pay schedule step names Hans Meyer, the oldest booking's refund (roadmap 14).
