@@ -46,3 +46,12 @@ What you see: one strategy card at a time with the persona and its vehicle large
 - [ ] `css/styles.css`: the carousel, the cards, the markers, the credits in the carousel's place; the stage and column-heading rules of D1 and D15 removed
 - [ ] Check: desktop (677 and 800) and 390 without scrolling; Light, Dark, Custom 06; keyboard; the names and announcements; reduced motion (forced in the browser); without 3D; the summary edit and a resumed draft
 - [ ] Docs: CHANGELOG, tech-spec, roadmap 9d's line
+
+## 6. The vehicle on the summary (review, D20)
+
+What you see: the summary's Strategy section with the persona and the chosen vehicle on the left; after an edit, the new one.
+
+- [x] `js/investment-opening.js`: the stage's host is the carousel or the summary's Strategy section; loaded and drawn on the summary too
+- [x] `css/styles.css`: the summary's strategy row and its figure (desktop 9.5 by 8.5rem, phone 6rem)
+- [x] Check: desktop 677 and 390 without scrolling; Light and Dark; Edit > Conservative > Back to summary shows the tricycle; no console errors
+

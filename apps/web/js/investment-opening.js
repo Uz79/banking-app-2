@@ -230,9 +230,10 @@ function reconcile() {
 
 /* ── The vehicles (9d) ──────────────────────────────────────────────────
    The module and the models load on the risk screen (or on arrival, D3) into a holder that is never shown, so they
-   stay for the session. The strategy carousel takes the canvas into its current card and shows the other cards as
-   stills from the same renderer (D19). Without 3D the cards keep everything but the figure (D4). */
-const vehicles = { holder: document.createElement('div'), stage: null, failed: false, loading: false, on: false, shots: {}, shotsKey: '', carousel: null };
+   stay for the session. The screen on show hosts the canvas: the strategy carousel in its current card, with the
+   other cards as stills from the same renderer (D19), and the summary in its Strategy section (9d D20). Without 3D the
+   host drops its figures (D4). */
+const vehicles = { holder: document.createElement('div'), stage: null, failed: false, loading: false, on: false, shots: {}, shotsKey: '', host: null };
 const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function loadVehicles() {
@@ -257,34 +258,37 @@ function loadVehicles() {
     })
     .catch((err) => {
       vehicles.failed = true;
-      if (vehicles.carousel) vehicles.carousel.root.classList.add('is-flat');
+      if (vehicles.host) vehicles.host.root.classList.add('is-flat');
       console.warn('[opening] the vehicles did not load', err);
     });
 }
 
-/* The canvas goes into the current card's figure; the stills are taken again when the figure's size changes. */
+/* The canvas goes into the host's figure. A host with stills (the carousel) gets them again when its figure's size
+   changes. */
 function placeVehicles() {
-  const c = vehicles.carousel;
+  const c = vehicles.host;
   if (!vehicles.stage || !c || !c.root.isConnected) return;
   const figure = c.figure();
   if (!figure.clientWidth || !figure.clientHeight) return;
   const id = c.id();
-  const key = figure.clientWidth + 'x' + figure.clientHeight;
-  if (key !== vehicles.shotsKey) {
-    vehicles.stage.attach(figure, id);
-    STRATEGIES.forEach((s) => { vehicles.shots[s.id] = vehicles.stage.snapshot(s.id); });
-    vehicles.shotsKey = key;
+  if (c.stills) {
+    const key = figure.clientWidth + 'x' + figure.clientHeight;
+    if (key !== vehicles.shotsKey) {
+      vehicles.stage.attach(figure, id);
+      STRATEGIES.forEach((s) => { vehicles.shots[s.id] = vehicles.stage.snapshot(s.id); });
+      vehicles.shotsKey = key;
+    }
+    c.stills(vehicles.shots);
   }
-  c.stills(vehicles.shots);
   vehicles.stage.attach(figure, id);
   c.root.classList.add('is-ready');
   if (vehicles.on) vehicles.stage.wake();
 }
 
-/* Drawing only while the strategy screen is on show and the page is visible (D11). */
+/* Drawing only while the strategy screen or the summary is on show and the page is visible (9d D11, D20). */
 function vehiclesOn(on) {
   vehicles.on = on;
-  if (!on) vehicles.carousel = null;
+  vehicles.host = null;
   if (on && vehicles.stage) vehicles.stage.wake();
 }
 document.addEventListener('visibilitychange', () => { if (vehicles.on && !document.hidden && vehicles.stage) vehicles.stage.wake(); });
@@ -724,7 +728,7 @@ const BUILD = {
     }
     /* One card at a time, chosen explicitly (D16 to D18): nothing is chosen on arrival. */
     const carousel = strategyCarousel(rec);
-    vehicles.carousel = carousel;
+    vehicles.host = carousel;
     nodes.push(carousel.root);
     const chosen = () => STRATEGIES[rankOf(answers.strategy)];
     return {
@@ -847,19 +851,26 @@ const BUILD = {
       head.append(edit);
       box.append(head);
       if (section.id === 'strategy' && s) {
-        const card = el('div', 'opening-summary__strategy');
+        /* A small carousel card (9d D20): the persona with the chosen vehicle on the left, decorative, since the name
+           says it; the live stage moves here and only idles. */
+        const card = el('div', 'opening-summary__strategy' + (vehicles.failed ? ' is-flat' : ''));
+        const figure = el('div', 'opening-summary__figure');
+        figure.setAttribute('aria-hidden', 'true');
+        const text = el('div', 'opening-summary__strategy-text');
         const name = el('p', 'opening-summary__name');
         name.append(el('span', 'opening-option__label', s.name));
         if (s.id === rec) name.append(el('span', 'opening-option__tag', STRATEGY.recommended));
         const meters = el('div', 'opening-option__meters');
         meters.append(meter(STRATEGY.riskLabel, s.risk, 'bar'), meter(STRATEGY.returnLabel, s.ret, 'dots'));
-        card.append(name, el('p', 'opening__note', s.line), meters);
+        text.append(name, el('p', 'opening__note', s.line), meters);
+        card.append(figure, text);
         box.append(card);
+        vehicles.host = { root: card, id: () => s.id, figure: () => figure };
       }
       if (section.id === 'answers') box.append(answerList(rec));
       nodes.push(box);
     });
-    return { nodes };
+    return { nodes, mounted: placeVehicles };
   },
 
   /* Completion (D20): the strategy, the amount and the next step in words; the mandate is already stored. */
@@ -966,9 +977,9 @@ function changed() {
 function render(moveFocus, animate, back) {
   const screen = SCREENS[index];
   panel.innerHTML = '';
-  /* The vehicles load one screen ahead and draw on the strategy screen only (9d D3, D11). */
-  if (screen.id === 'risk' || screen.id === 'strategy') loadVehicles();
-  vehiclesOn(screen.id === 'strategy');
+  /* The vehicles load one screen ahead and draw on the strategy screen and the summary only (9d D3, D11, D20). */
+  if (['risk', 'strategy', 'summary'].includes(screen.id)) loadVehicles();
+  vehiclesOn(screen.id === 'strategy' || screen.id === 'summary');
   const heading = el('h2', 'opening__heading', screen.title);
   heading.id = 'opening-heading';
   heading.tabIndex = -1;

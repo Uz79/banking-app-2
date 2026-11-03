@@ -64,6 +64,14 @@ Supersedes the layout checks of section 2 (the stage beside or above the cards) 
 - [ ] Without 3D: the cards without figures, the rest works
 - [ ] "Model credits" shows the credits in the carousel's place and returns
 
+## 7b. The vehicle on the summary (D20)
+
+- [x] The Strategy section shows the persona with the chosen vehicle left of the name, line and meters: 152 by 136 at a 677 sheet, 96 by 112 at 390; the summary does not scroll at either
+- [x] Edit > another strategy > Back to summary: the new vehicle (Balanced to Conservative, the tricycle)
+- [x] Light and Dark: the stage card and the vehicle in the theme
+- [x] A resumed draft on the summary loads and shows it; the figure is `aria-hidden`
+- [ ] Reduced motion: the figure still (the module's reduced path; not checked with the system setting)
+
 ## 8. Baseline smoke test
 
 Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, then repeat the starred (★) items in Dark and at phone width (390px).
