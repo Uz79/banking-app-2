@@ -16,6 +16,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [ ] A transfer of CHF 1'000 Household to Savings, then enough payments to drop both of its legs: Household and Savings still include it
 - [ ] A pending payment and a recurring payment dropped by the limit: no balance changes
 - [ ] A trade (Buy) dropped by the limit keeps its debit
+- [ ] All bookings' Today header (Household and Savings) moves only by a new booking, not by one dropped (D10)
 - [ ] After a reload, every balance is the same as before it
 - [ ] A stored state without `carried` (an older one) loads with nothing carried and the same balances as before this branch
 - [ ] A broken `carried` (a field not a number) loads as zeros

@@ -34,6 +34,7 @@ The interview settled: the money of a dropped booking is carried per account in 
 | D7 | **No new storage key:** `carried` lives in `uzBankWebPaymentState`. Its line in `apps/web/README.md` and the comment block in `js/payment-state.js` describe it | AGENTS.md: storage keys are listed in the README |
 | D8 | **What is lost, accepted:** a dropped pending or recurring booking disappears from the Pending tab with nothing to show it; a state already trimmed before this fix has lost its money for good, until the demo reset | Pending bookings past 100 are a very long session; the reset fixes old states |
 | D9 | **The merge gate:** `npm run build`; this branch's `validation.md` in a real browser (past the limit by script through `UZBankPayState`, then a real payment and a real transfer through their sheets); Light and Dark, desktop and 390; the baseline smoke test. No VoiceOver pass: nothing visible changes | Chosen in the interview |
+| D10 | **All bookings' Today header too** (found in the build): it shows a static figure plus the listed executed bookings of its account (`js/all-bookings.js`, `renderBookings`), so it also jumped back when a booking was dropped. `getState()` now returns `carried`, and the header adds `carried[accountKey]` | The same bug on one more reader; the Context above had missed it |
 
 ## Context
 
@@ -44,7 +45,7 @@ The interview settled: the money of a dropped booking is carried per account in 
   - `accountRunningBalance` (297) and `getState().todayBalance` (324 to 330) sum the listed executed bookings.
   - `saveState` (253) writes `{ schemaVersion, bookings, positions, mandates }`.
 - `todayBalance` subtracts only Household outflows. A transfer into Household does not raise the Today header, though it does raise the running balance. That predates this branch and stays as it is (D3).
-- Readers of the balances: `js/data-render.js` (Overview, Account details, the day headers), `js/all-bookings.js` (the account header), `js/iat-overlay.js` and `js/trade-flow-overlay.js` (available balance), `js/fridge-advisor.js` (the prefill). None of them change; they read `getState()`.
+- Readers of the balances: `js/data-render.js` (Overview, Account details, the day headers), `js/all-bookings.js` (the account header, and its own Today header from the listed bookings, D10), `js/iat-overlay.js` and `js/trade-flow-overlay.js` (available balance), `js/fridge-advisor.js` (the prefill). None of them change; they read `getState()`.
 
 ## Open questions
 

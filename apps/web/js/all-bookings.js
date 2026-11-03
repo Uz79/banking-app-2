@@ -431,7 +431,9 @@
       var value = today.querySelector('.booking-group__balance-value');
       if (value) {
         if (!value.hasAttribute('data-base')) value.setAttribute('data-base', value.textContent.replace(/'/g, ''));
-        var net = executed.reduce(function (sum, b) { return sum + (b.direction === 'in' ? b.amount : -b.amount); }, 0);
+        /* Plus what the bookings dropped by the limit had moved (roadmap 14 D10). */
+        var carried = (pay.getState().carried || {})[accountKey] || 0;
+        var net = executed.reduce(function (sum, b) { return sum + (b.direction === 'in' ? b.amount : -b.amount); }, carried);
         value.textContent = pay.formatMoney(Math.round((parseFloat(value.getAttribute('data-base')) + net) * 100) / 100);
       }
     }
