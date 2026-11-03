@@ -273,5 +273,7 @@ export const SUMMARY = {
 
 /* ── Completion (D20) ── */
 export const COMPLETE = {
-  next: 'Next: transfer {amount} to your custody account. We invest it within about three working days.',
+  next: 'Next: transfer {amount} to your asset management. We invest it within about three working days.',
+  /* Opens the transfer prefilled to fund the mandate (roadmap 18, D9) */
+  transfer: 'Transfer now',
 };

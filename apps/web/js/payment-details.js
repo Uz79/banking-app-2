@@ -365,8 +365,11 @@
 
   function iatAccountSnapshot(key) {
     var accounts = window.__UZ_IAT_ACCOUNTS__;
-    if (!accounts || !key || !accounts[key]) return null;
-    var acc = accounts[key];
+    /* A mandate's id resolves through the transfer's lookup (roadmap 18) */
+    var acc = accounts && key && accounts[key]
+      ? accounts[key]
+      : (key && typeof window.__UZ_IAT_ACCOUNT_FOR__ === 'function' ? window.__UZ_IAT_ACCOUNT_FOR__(key) : null);
+    if (!acc) return null;
     return {
       name: acc.name,
       iban: acc.iban,
