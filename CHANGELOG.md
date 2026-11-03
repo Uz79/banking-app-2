@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 510d855678952a8a0afd2999c571d813448b48fa -->
+<!-- changelog: last-commit 2e44ec633a984506fdfa24825e0dd2717e2fd1f0 -->
 
 ### Added
 - **The fridge and the opening keep their progress for the session** (roadmap 21). Closing asks "Leave for now?" on every step of both, the first ones included ("Your progress is kept for this session, so you can continue where you left off.", Keep going or Leave), and Investment then reopens on the same step: the fridge with its slider values and its scene already in that step's pose, or the opening on its screen. Completing the opening or Start over forgets everything; the completion screen and the booked appointment close without asking. The opening's session draft (`uzBankWebOpeningDraft`) now also holds the page and the fridge's step and values.
