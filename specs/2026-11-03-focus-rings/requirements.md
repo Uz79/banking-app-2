@@ -28,7 +28,8 @@ The interview settled:
 - The fields' inset focus stroke (`--color-input-stroke-focus`), which stays as it is (interview)
 - Points 1 to 6 of the brief (done in 21)
 - The month separators on All bookings (item 24)
-- Any change to focus order, to where focus moves, or to accessible names, other than recording what the audit finds
+- Any change to focus order, to where focus moves, or to accessible names, other than recording what the audit finds (D13 is the one exception: a hidden bar that was a Tab stop)
+- Found in the audit, on the roadmap: focus after a month chip docks the bar (with 24); the fridge result's amount over its ring on desktop with Large type (26); Tab leaving the Pay and Buy sheets for the page behind (27)
 
 ## Decisions
 

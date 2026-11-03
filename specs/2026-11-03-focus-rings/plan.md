@@ -21,6 +21,6 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 3. Wrap-up
 
-- [ ] `npm run build` in `apps/web`
-- [ ] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
-- [ ] Docs: `specs/tech-spec.md` (the rule in the Decisions, D8); `specs/roadmap.md` 25 marked done; `CHANGELOG.md` under `Unreleased`; the Components page only if it shows focus states
+- [x] `npm run build` in `apps/web`
+- [x] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
+- [x] Docs: `specs/tech-spec.md` (the rule in the Decisions, D8); `specs/roadmap.md` 25 marked done; `CHANGELOG.md` under `Unreleased`; the Components page only if it shows focus states (it doesn't, so unchanged)
