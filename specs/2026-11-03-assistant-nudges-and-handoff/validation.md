@@ -29,7 +29,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [x] The bubble covers nothing needed at 390: its top is at 604px; the risk step's lowest option ends at 481 (question 1 open) and 503 (question 3 open), the documents' checkbox at 392, the summary's last section at 471; the summary does not scroll. Measured with Legibility on Large, as it was set
 - [x] Keyboard (real keys, phone frame): Tab from the last option reaches the bubble's question, then its X with a visible ring; Enter dismisses and focus goes to Help?. The bubble comes before Help? in the Tab order (fixed in the build). Desktop's "Show me" and "No, thanks" are plain buttons, used by script
 - [x] Light, Dark (desktop invitation and phone bubble) and Custom 06 ("Show me" in its orange accent): tokens only, readable; the UZ Bank theme restored after
-- [ ] Reduced motion: the bubble and the invitation change appear at once, the helper does not wave. Not checked: the system setting was not switched; the CSS has the rule and the wave already checks reduced motion
+- [ ] Reduced motion: the bubble and the invitation change appear at once, the helper does not wave. On the iPhone with the system setting (preview at `b4b1e1c`) the layer opened and closed at once; the bubble, the invitation and the wave were not reported
 - [x] An old draft without `nudged` or `handoff` resumes normally (the Newbie walk started from one)
 
 ## 4. The handoff (D12 to D16)
@@ -57,9 +57,9 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 ## 6. VoiceOver and touch (Klaudiusz on an iPhone, preview URL)
 
-- [ ] The nudge is announced once and the bubble's question and X are read
-- [ ] The handoff's choices and times are read as buttons; the confirmation is read
-- [ ] Touch: the bubble, its X and the time chips work; nothing scrolls on the steps
+- [x] The nudge is announced once and the bubble's question and X are read (Klaudiusz, iPhone, VoiceOver, preview at `b4b1e1c`)
+- [x] The handoff's choices and times are read as buttons; the confirmation is read (Klaudiusz, iPhone, VoiceOver, preview at `b4b1e1c`)
+- [ ] Touch: the bubble, its X and the time chips work; nothing scrolls on the steps. Not reported
 
 ## 7. Baseline smoke test
 
@@ -105,3 +105,5 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 Checked on 2026-11-03 against `feature/assistant-nudges-and-handoff`, Chrome on the agent's server (port 5199): desktop in the 1440×823 window (the sheet at 960, and the opening on its own), the phone as a 390×823 frame of Overview; Light, Dark and Custom 06; Legibility on Large as found (restored after the preset test); each User Type through `uzBankWebPersonaProfile`, `?nudge=fast` for the walks and one step at full speed; real keys for the bubble, the Overview focus and the slider, scripted clicks and storage elsewhere; the times also in Node. Not checked: the system reduced-motion setting, VoiceOver and touch (section 6, for Klaudiusz on the preview), the documents' look-up signal, a step whose question was already asked, Start over, no stored User Type, the starred baseline items at 390 except Overview and the opening, the month chips, Typeface, Font and Paddings. The test payment, transfer and mandate were undone with the demo reset.
 
 D21 checked on 2026-11-03 against `feature/assistant-nudges-and-handoff`, Chrome on port 5199: the phone as a 390×823 frame of Overview > Investment, Light and Dark; desktop as a 1440 frame of the opening. Closes, timing and focus by script (clicks and a dispatched Escape), the look from two paused screenshots. Not checked: the system reduced-motion setting itself, a real phone or VoiceOver (for the preview).
+
+iPhone checks by Klaudiusz on 2026-11-03, on the preview at `b4b1e1c`, before D21: VoiceOver (section 6) and the system reduced-motion setting on the layer. D21 (`88a53ea`) was not on that preview.
