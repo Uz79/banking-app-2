@@ -34,19 +34,18 @@ button, input, select, textarea {
 }
 
 /* ── Global focus ring (roadmap 25) ──────────────────────────────────────────
-   No browser outlines anywhere: every focusable element shows the app's ring in
-   --color-fg-interactive, for keyboard focus only (D1, D2). :where() keeps it at
-   (0,0,0), so every component's own ring or stroke still wins (D3). Focus targets
-   with tabindex="-1" (step headings, titles) are not controls and get no ring (D4). */
-:where(a[href], button, input, select, textarea, summary, [role="button"], [role="tab"], [role="option"],
-  [role="slider"], [tabindex]:not([tabindex="-1"]), [contenteditable]):focus-visible {
+   No browser outlines anywhere: whatever takes keyboard focus shows the app's ring
+   in --color-fg-interactive, and nothing shows one after a click or tap (D1, D2, D12).
+   :where() keeps it at (0,0,0), so every component's own ring or stroke still wins
+   (D3). Focus targets with tabindex="-1" (step headings, titles) are not controls
+   and get no ring (D4); that rule comes last so it wins at the same specificity. */
+:where(:focus-visible) {
   outline: 0.125rem solid var(--color-fg-interactive);
   outline-offset: 0.125rem;
 }
 
-:where(a[href], button, input, select, textarea, summary, [role="button"], [role="tab"], [role="option"],
-  [role="slider"], [tabindex]:not([tabindex="-1"]), [contenteditable]):focus:not(:focus-visible),
-:where([tabindex="-1"]):focus {
+:where(:focus:not(:focus-visible)),
+:where([tabindex="-1"]:focus) {
   outline: none;
 }
 
@@ -3624,7 +3623,7 @@ a.show-all-btn {
 }
 
 .amount-input__currency:focus-visible {
-  outline: 2px solid var(--color-input-stroke-focus);
+  outline: 2px solid var(--color-fg-interactive);
   outline-offset: 2px;
   border-radius: var(--radius-small);
 }
@@ -7155,7 +7154,7 @@ dialog.form-sheet.form-sheet--closing[open] .form-sheet__panel {
 }
 
 .form-sheet__row:focus-visible {
-  outline: 2px solid var(--color-input-stroke-focus);
+  outline: 2px solid var(--color-fg-interactive);
   outline-offset: -2px;
 }
 

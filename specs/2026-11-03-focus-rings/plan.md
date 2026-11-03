@@ -1,6 +1,6 @@
 # Focus rings app-wide (25): plan
 
-Branch: `feature/focus-rings`. Decisions are cited as D1 to D10 from `requirements.md`.
+Branch: `feature/focus-rings`. Decisions are cited as D1 to D13 from `requirements.md`.
 
 Each group ends with something to check in the browser on the agent's server (`cd apps/web && npx vite --port 5199 --strictPort --no-open`).
 
@@ -14,10 +14,10 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 2. The tokens and the audit (D6, D7)
 
-- [ ] `css/styles.css`: the outline rules in `--color-input-stroke-focus` move to `--color-fg-interactive` (D6)
-- [ ] The audit: every page in `vite.config.js` and every flow and dialog, Tab with real keys, a script records each focused element's ring; then a click on each kind of control (D7)
-- [ ] Fix what the audit finds, or list it in `validation.md` with the reason
-- [ ] Check: a Multi-color theme colours every ring, including the payment rows; Dark keeps them readable
+- [x] `css/styles.css`: the outline rules in `--color-input-stroke-focus` move to `--color-fg-interactive` (D6)
+- [x] The audit: every page in `vite.config.js` and every flow and dialog, Tab with real keys, a script records each focused element's ring; then a click on each kind of control (D7)
+- [x] Fix what the audit finds, or list it in `validation.md` with the reason: the base rule matches any keyboard focus (D12); the month bars leave the Tab order (D13)
+- [x] Check: a Multi-color theme colours every ring, including the payment rows; Dark keeps them readable
 
 ## 3. Wrap-up
 
