@@ -453,14 +453,14 @@
     if (window.UZBankSheetFocus) window.UZBankSheetFocus.close(overlay);
     overlay.classList.add('modal-overlay--closing');
     shell.classList.add('modal-shell--closing');
-    shell.addEventListener('transitionend', function onEnd() {
-      shell.removeEventListener('transitionend', onEnd);
+    /* Ends on the slide, a fallback timer, or at once with reduced motion (roadmap 35) */
+    window.UZBankAfterSheetClose(shell, function () {
       shell.classList.remove('modal-shell--closing');
       shell.classList.add('modal-shell--offscreen', 'modal-shell--no-transition');
       overlay.setAttribute('aria-hidden', 'true');
       overlay.classList.remove('modal-overlay--active', 'modal-overlay--closing');
       document.body.classList.remove('body--iat-open');
-    }, { once: true });
+    });
 
     if (replaceState !== false) {
       history.replaceState(null, '', location.pathname + location.search);

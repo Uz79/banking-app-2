@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 03c55a931f06dd4e819d2c31a16d32bf8f4612c6 -->
+<!-- changelog: last-commit 77d45dac28072030252d2326463032921738b40a -->
 
 ### Changed
 - **All bookings: month separators** (roadmap 24). Each month in the list starts with a band naming it ("JUNE"; with the year when a tab crosses one, "JANUARY 2027"), in all three tabs and for payments made in the app too. Each band is a heading, so a screen reader can jump month to month. A month chip scrolls to its band, just under the docked chips, and while scrolling the chip of the month in view becomes active; a chip's own scroll doesn't flick through the months on the way. Search hides the band of a month with no match. With reduced motion the chip jumps instead of scrolling.
@@ -14,6 +14,8 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **Sheets close with reduced motion** (roadmap 35). With reduced motion on, closing the internal transfer left an invisible layer over the page that took every click until a reload. Every sheet's close (Pay, the transfer, Buy and Sell, a booking's sheet, Account and Share information, the fridge and the Playground) now ends in one shared place: at once with reduced motion, otherwise when the slide ends or after 300 ms at the latest. Without reduced motion the sheets slide out as before. Shared code in `js/dialog-focus.js`.
+- Spec: `specs/2026-11-04-sheet-close/`.
 - **Sheets keep focus** (roadmap 27). While Pay, the transfer, Buy or Sell, a booking's sheet, Account information or Share information is open, Tab and Shift+Tab stay in it and a screen reader no longer reaches the page behind. Opening a sheet moves focus into it; closing puts focus back on the button that opened it, with the ring only after a keyboard close. Share information over Account information keeps focus in Share and gives Account information back when it closes. The Discard prompts and the picker sheets work over a sheet as before. Shared code in `js/dialog-focus.js`.
 - Spec: `specs/2026-11-04-sheet-focus/`.
 - **The fridge's result fits its ring on desktop** (roadmap 26). On the floating panel a six-digit amount wrapped onto two lines and touched the ring's edge. The amount now stays on one line below "You could invest" and gets smaller as it gets longer, as on a phone, so any amount the fridge can show fits inside the ring.
