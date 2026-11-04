@@ -164,6 +164,8 @@ Planned and built 2026-11-03. The fridge and the opening as a customer meets the
 
 Found during 21 (2026-11-03). The design-system rule from 21 says a call-to-action is never disabled; Profile's "Reset demo data" (`js/app-mp.js`) disables itself for 1.2 s while it shows "Reset ✓". To settle in its spec: a confirmation that does not disable the button (a status line or a toast), and whether the button should ask first.
 
+Spec: `specs/2026-11-04-reset-demo-confirm/` (branch `feature/reset-demo-confirm`). Settled in its interview: a status line under the button (no toast), the shared confirm dialog asks first, and the subtitle is corrected to say what the reset clears.
+
 ## 23. Editing a pending payment turns it executed
 
 Found during 14 (2026-11-03). Editing a booking from its detail (`payment-overlay.js` with `editingBookingId`) calls `UZBankPayState.updatePayment`, which rebuilds the booking from `id`, `recipientName`, `currency`, `amount` and `dateISO` only. The booking loses its `status`, `executeOn`, `accountKey`, `icon` and `direction`, so a pending payment becomes executed and its money leaves Household, and the schedule chosen in the edit is ignored. To settle in its spec: keep every field the edit does not change, and apply the edit's schedule (a pending payment edited to "now" executes, as a new payment would).
