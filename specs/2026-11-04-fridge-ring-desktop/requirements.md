@@ -15,7 +15,7 @@ The roadmap entry says "with Legibility set to Large". Reading the code, Legibil
 **Out (not in this branch):**
 
 - The phone layout (phone polish D8), unchanged
-- Legibility reaching the fridge and the opening: a new roadmap item (D5)
+- Legibility reaching the fridge and the opening: roadmap 34 (D5)
 - The ring's size, the bar's animation, the screen-reader text, "Left each year" and the note
 - Other open roadmap items (27 and on)
 
