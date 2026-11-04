@@ -221,6 +221,23 @@
     if (thumb && !thumb.classList.contains('toggle__thumb--active')) thumb.classList.add('toggle__thumb--active');
   }
 
+  /** Set the schedule step to an edited booking's schedule (roadmap 23, D3, D4): pending opens on Single with
+   *  "as soon as possible" off and its date, recurring on Recurring (the booking doesn't store Standing order);
+   *  anything else on the defaults. */
+  function seedScheduleFromBooking(status, executeOn) {
+    var step = $step('schedule'); if (!step) return;
+    var later = status === 'pending' || status === 'recurring';
+    var modeIdx = status === 'recurring' ? 1 : 0;
+    step.querySelectorAll('.segmented__option').forEach(function (b, i) {
+      b.classList.toggle('segmented__option--active', i === modeIdx);
+    });
+    var toggle = step.querySelector('.toggle');
+    var thumb = step.querySelector('.toggle__thumb');
+    if (toggle) toggle.classList.toggle('toggle--active', !later);
+    if (thumb) thumb.classList.toggle('toggle__thumb--active', !later);
+    live.dateLabel = later && executeOn ? executeOn : formatTodayDate();
+  }
+
   /** Summary step — amount, date, recipient (debit account is rendered
    *  separately by data-render.js with the Household balance) */
   function paintSummaryStep() {
@@ -894,6 +911,8 @@
         editingStaticRow = editCtx.staticRow  || null;
 
         // Amount — parse just in case it was stored as a string
+        seedScheduleFromBooking(editCtx.status, editCtx.executeOn);
+
         var ctxAmount = typeof editCtx.amount === 'number'
           ? editCtx.amount
           : parseFloat(String(editCtx.amount).replace(/[^0-9.]/g, '')) || DEFAULT_AMOUNT;

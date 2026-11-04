@@ -166,9 +166,11 @@ Found during 21 (2026-11-03). The design-system rule from 21 says a call-to-acti
 
 Spec: `specs/2026-11-04-reset-demo-confirm/` (branch `feature/reset-demo-confirm`). Settled in its interview: a status line under the button (no toast), the shared confirm dialog asks first, and the subtitle is corrected to say what the reset clears.
 
-## 23. Editing a pending payment turns it executed
+## 23. Editing a pending payment turns it executed (done)
 
 Found during 14 (2026-11-03). Editing a booking from its detail (`payment-overlay.js` with `editingBookingId`) calls `UZBankPayState.updatePayment`, which rebuilds the booking from `id`, `recipientName`, `currency`, `amount` and `dateISO` only. The booking loses its `status`, `executeOn`, `accountKey`, `icon` and `direction`, so a pending payment becomes executed and its money leaves Household, and the schedule chosen in the edit is ignored. To settle in its spec: keep every field the edit does not change, and apply the edit's schedule (a pending payment edited to "now" executes, as a new payment would).
+
+Spec: `specs/2026-11-04-edit-pending-payment/` (branch `feature/edit-pending-payment`). Settled in its interview: the edit opens with the booking's schedule on the schedule step; the booking sheet shows a stored payment's real status (it showed every one as "Pending"), with Edit only on pending and recurring; All bookings' dead Edit buttons are item 31. Found in the build: Account details lists only executed bookings, so no button reaches a stored pending payment's edit until 31. Built 2026-11-04.
 
 ## 24. All bookings: month separators
 
@@ -203,3 +205,15 @@ Found during 22 (2026-11-04). The Pay flow's Time Schedule step shows "Hans Meye
 ## 30. Buy and Sell: "Discard order?" offers "Continue payment"
 
 Found during 22 (2026-11-04). Closing the trade sheet asks "Discard order?", but its stay button reads "Continue payment": `promptExit` in `js/trade-flow-overlay.js` sets the title, message and Discard label, not `stayLabel`, so the shared dialog's default shows. To settle in its spec: the label ("Continue order"), and whether the other callers of `UZBankPaymentExitPrompt` (the playground, the fridge) set theirs.
+
+## 31. All bookings: the sheet's Edit buttons do nothing
+
+Found during 23 (2026-11-04). A pending payment's sheet on All bookings shows "Edit amount" and "Edit payment", but the page doesn't load the Pay sheet (`payment-overlay.js` and its markup), so the `#pay/amount` route the buttons set goes nowhere: the sheet closes and nothing opens. Editing works on Account details. To settle in its spec: give All bookings the Pay sheet, or hide Edit there.
+
+## 32. Booking sheet: a pending transfer shows "Executed"
+
+Found during 23 (2026-11-04). `buildDataFromStateBooking` in `js/payment-details.js` gives every stored transfer (and trade) the status "executed", so a transfer made with "Immediately" off or as a standing order reads "Executed" in its sheet. To settle in its spec: read the booking's status as payments do since 23, and what the sheet shows for a recurring transfer.
+
+## 33. Booking rows can't be reached by keyboard
+
+Found during 23 (2026-11-04). The booking rows on Account details (and the other bookings lists) are `div`s with no `tabindex` or role, so Tab skips them and a keyboard user can't open a booking's sheet, nor edit a pending payment from it. The sheet itself works by keyboard once open. To settle in its spec: rows as buttons or links (and what they announce), on every page that lists bookings.

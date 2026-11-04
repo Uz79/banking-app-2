@@ -3,13 +3,15 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 0a9f22ab1f98246fcded97d8fa8bd96342d92fd4 -->
+<!-- changelog: last-commit cf14453cf4bccff8f4f6faefd0b5f88d3a6e6f5c -->
 
 ### Changed
 - **"Reset demo data" asks first and is never disabled** (roadmap 22). Profile's button opens "Reset demo data?" (Cancel or Reset; Escape keeps the data) and, after a reset, a line under it says "Demo data reset." for as long as the page is open, read out by screen readers. The button no longer greys out for a moment or swaps its label. The section's text now says what a reset clears: payments, trades and investments, with the starting balances restored.
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **Editing a pending payment keeps it pending** (roadmap 23). Editing a payment kept only its recipient, amount and date, so a pending or recurring payment turned executed and its money left Household. Now the edit keeps the rest of the booking and opens with its own schedule ("As soon as possible" off and its date, or Recurring); the schedule step decides what happens, so switching to "as soon as possible" executes it. The booking sheet also shows a payment made in the app with its real status: before, every one read "Pending" with Edit, executed ones too; now Edit shows only on pending and recurring payments.
+- Spec: `specs/2026-11-04-edit-pending-payment/`.
 - **3D stages pause and resume correctly after a fast scroll** (roadmap 20). The helper specimen on the Character kit and the persona stage (the kit's live specimen, Profile and the figure on the main screens) now follow the latest visibility change, as the Vehicles stage already did. Before, a fast scroll could leave a figure frozen on screen or drawing while off it.
 - Spec: `specs/2026-11-04-observer-latest-entry/`.
 
