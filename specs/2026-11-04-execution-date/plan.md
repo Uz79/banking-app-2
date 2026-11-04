@@ -6,11 +6,11 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 1. The calendar (D1, D2, D3, D8, D9, D10)
 
-- [ ] `apps/web/js/date-picker.js`: `UZBankDatePicker` builds the month grid for a range and a selected date, with the keyboard rules (D8)
-- [ ] `apps/web/js/form-field-sheet.js`: `openDateSheet(anchor, options)` on `UZBankFormSheet`, sheet type `date`
-- [ ] `apps/web/css/styles.css`: the calendar's layout, selected, today and disabled states, with tokens only
-- [ ] Script tags on Overview, Payments and Account details (D11)
-- [ ] Check: on Overview, calling the sheet from the console opens it anchored on desktop and as a bottom sheet at 390; weekends and dates out of range can't be picked; the keyboard works
+- [x] `apps/web/js/date-picker.js`: `UZBankDatePicker` builds the month grid for a range and a selected date, with the keyboard rules (D8)
+- [x] `apps/web/js/form-field-sheet.js`: `openDateSheet(anchor, options)` on `UZBankFormSheet`, sheet type `date`
+- [x] `apps/web/css/styles.css`: the calendar's layout, selected, today and disabled states, with tokens only
+- [x] Script tags on Overview, Payments and Account details (D11)
+- [x] Check: on Overview, calling the sheet from the console opens it anchored on desktop and as a bottom sheet at 390; weekends and dates out of range can't be picked; the keyboard works
 
 ## 2. Pay and the transfer use it (D4, D5, D6)
 
