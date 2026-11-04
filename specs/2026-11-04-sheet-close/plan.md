@@ -6,9 +6,9 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 1. The helper and the transfer (D1, D2, D6)
 
-- [ ] `apps/web/js/dialog-focus.js`: `UZBankAfterSheetClose(shell, done)`
-- [ ] `apps/web/js/iat-overlay.js`: `closeOverlay` ends through the helper
-- [ ] Check (emulated reduced motion): on Overview, close the transfer, then click Pay: Pay opens. Without reduced motion the transfer still slides out
+- [x] `apps/web/js/dialog-focus.js`: `UZBankAfterSheetClose(shell, done)`
+- [x] `apps/web/js/iat-overlay.js`: `closeOverlay` ends through the helper
+- [x] Check (emulated reduced motion): on Overview, close the transfer, then click Pay: Pay opens. Without reduced motion the transfer still slides out
 
 ## 2. The other seven sheets (D3, D5)
 

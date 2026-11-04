@@ -140,4 +140,26 @@
   }
 
   window.UZBankSheetFocus = { open: openSheet, close: closeSheet };
+
+  /* ── A sheet's close ends without waiting on an event, roadmap 35 ───────
+   * `done` runs once: at once with reduced motion (no slide runs, D2); else on
+   * the shell's own transform transitionend or after 300 ms (the slide is
+   * 0.28 s), whichever comes first (D1). */
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function afterSheetClose(shell, done) {
+    var finished = false;
+    function end(e) {
+      if (e && (e.target !== shell || e.propertyName !== 'transform')) return;
+      if (finished) return;
+      finished = true;
+      if (shell) shell.removeEventListener('transitionend', end);
+      done();
+    }
+    if (!shell || reduceMotion.matches) { end(); return; }
+    shell.addEventListener('transitionend', end);
+    window.setTimeout(end, 300);
+  }
+
+  window.UZBankAfterSheetClose = afterSheetClose;
 })();
