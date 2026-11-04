@@ -238,7 +238,10 @@
       clearAnchoredSheetLayout();
       sheetAnchor = null;
       uninstallFormSheetOverflowListeners();
-      if (listEl) listEl.innerHTML = '';
+      if (listEl) {
+        listEl.innerHTML = '';
+        listEl.setAttribute('role', 'listbox'); /* the calendar takes the role away (openDateSheet) */
+      }
       clearPreview();
       document.querySelectorAll('[data-more-functions-trigger][aria-expanded="true"]').forEach(function (el) {
         el.setAttribute('aria-expanded', 'false');
@@ -408,12 +411,33 @@
         window.requestAnimationFrame(function () {
           syncFormSheetListOverflow();
           if (window.UZBankDialogFocus && window.UZBankDialogFocus.prefersKeyboardFocus()) {
+            if (typeof sheetFlags.focus === 'function') { sheetFlags.focus(); return; }
             var first = listEl.querySelector('button');
             if (first) first.focus();
           }
         });
       });
     });
+  }
+
+  /** "Execute on" (roadmap 28, D1): the calendar from js/date-picker.js in this sheet, anchored under the field
+   *  from 1280 px, a bottom sheet below. options: { title, selected: Date, onPick(date) }. Picking closes the sheet;
+   *  focus goes back to the field when it closes. */
+  function openDateSheet(anchorEl, options) {
+    if (!customMenusEnabled() || !window.UZBankDatePicker) return;
+    options = options || {};
+    ensureDialog();
+    listEl.innerHTML = '';
+    listEl.removeAttribute('role'); /* the grid is not a listbox */
+    var picker = window.UZBankDatePicker.render(listEl, {
+      selected: options.selected,
+      range: window.UZBankDatePicker.executionRange(),
+      onPick: function (date) {
+        if (typeof options.onPick === 'function') options.onPick(date);
+        closeSheet();
+      }
+    });
+    openDialog(options.title || 'Execute on', anchorEl, { sheetType: 'date', focus: picker.focusDay });
   }
 
   function getTitleForSelect(sel) {
@@ -835,7 +859,8 @@
   bindMoreFunctionsSheet();
 
   window.UZBankFormSheet = {
-    openAccountPickerSheet: openAccountPickerSheet
+    openAccountPickerSheet: openAccountPickerSheet,
+    openDateSheet: openDateSheet
   };
 
   if (document.readyState === 'loading') {

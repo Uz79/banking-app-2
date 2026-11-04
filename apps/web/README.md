@@ -75,6 +75,7 @@ Persisted in `sessionStorage` (this tab only):
 - `character-kit.html` — design system: the 3D persona character, with a live specimen
 - `fridge-advisor.html` — "How much should I invest?": the 3D fridge advisor (opened as a sheet from Overview > Offers > Investment)
 - `playground.html` — design system: "Payday run", a small 3D game (full screen, opened as a sheet from the Design system page)
+- `js/date-picker.js` — the execution-date calendar (`UZBankDatePicker`) that Pay and the transfer open from "Execute on" in the form sheet
 - `css/tokens.css` — generated from `designs/tokens/`
 - `css/typography.css` — generated responsive type scale
 - `css/styles.css` — components and page layout

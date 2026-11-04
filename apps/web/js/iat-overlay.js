@@ -288,8 +288,12 @@
   }
 
   function paintScheduleStep() {
+    var picker = window.UZBankDatePicker;
+    /* A later transfer runs on the next working day unless another was picked (roadmap 28, D4) */
     if (live.immediately) live.dateLabel = formatTodayDate();
+    else if (picker) live.dateLabel = picker.laterLabel(live.dateLabel);
     if (dateValue) dateValue.textContent = live.dateLabel;
+    if (picker) picker.syncField(executeOnField && executeOnField.querySelector('[data-execute-on]'), live.dateLabel, !live.immediately);
     /* Sync toggle visual */
     if (immediatelyToggle) {
       immediatelyToggle.classList.toggle('toggle--active', live.immediately);
@@ -541,7 +545,24 @@
   if (immediatelyToggle) {
     immediatelyToggle.addEventListener('click', function () {
       live.immediately = !live.immediately;
-      paintScheduleStep();
+      /* After the app-wide toggle handler (app-mp.js) has flipped the class, so the paint has the last word and
+         the switch shows what it is (found in roadmap 28) */
+      setTimeout(paintScheduleStep, 0);
+    });
+  }
+
+  /* "Execute on" opens the calendar (roadmap 28, D1) */
+  var executeOnBtn = executeOnField && executeOnField.querySelector('[data-execute-on]');
+  if (executeOnBtn) {
+    executeOnBtn.addEventListener('click', function () {
+      if (executeOnBtn.disabled || !window.UZBankFormSheet || !window.UZBankFormSheet.openDateSheet) return;
+      window.UZBankFormSheet.openDateSheet(executeOnBtn, {
+        selected: window.UZBankDatePicker.parseLabel(live.dateLabel),
+        onPick: function (date) {
+          live.dateLabel = window.UZBankDatePicker.formatLabel(date);
+          paintScheduleStep();
+        }
+      });
     });
   }
 

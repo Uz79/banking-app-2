@@ -3288,6 +3288,24 @@ a.show-all-btn {
   color: var(--color-fg);
 }
 
+/* "Execute on" is a button that opens the calendar (roadmap 28); with "as soon as possible" on it shows today and opens nothing */
+button.form-field__date-wrap {
+  width: 100%;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+}
+
+button.form-field__date-wrap:disabled {
+  cursor: default;
+}
+
+button.form-field__date-wrap:disabled:hover,
+button.form-field__date-wrap:disabled:active {
+  background-color: var(--color-input-surface);
+}
+
 .form-field__value {
   flex: 1;
   font-size: var(--fs-text-md);
@@ -7196,6 +7214,157 @@ dialog.form-sheet.form-sheet--closing[open] .form-sheet__panel {
 .form-sheet__row:focus-visible {
   outline: 2px solid var(--color-fg-interactive);
   outline-offset: -2px;
+}
+
+/* ── The execution-date calendar (roadmap 28, js/date-picker.js) ───────────── */
+
+@media (min-width: 1280px) {
+  dialog.form-sheet[data-form-sheet-type="date"][data-form-sheet-anchored="true"] .form-sheet__panel {
+    width: min(max(var(--form-sheet-panel-width), 20rem), 24rem);
+  }
+
+  /* The field's own label says what the calendar is for; the heading stays for screen readers */
+  dialog.form-sheet[data-form-sheet-type="date"] .form-sheet__masthead-desktop {
+    display: none;
+  }
+
+  dialog.form-sheet .date-picker {
+    padding-top: var(--space-2);
+  }
+}
+
+.date-picker {
+  padding: var(--space-1) var(--space-3) var(--space-2);
+}
+
+.date-picker__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1);
+}
+
+.date-picker__month {
+  margin: 0;
+  font-size: var(--fs-text-md);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+}
+
+.date-picker__nav {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--color-fg);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.date-picker__nav:hover {
+  background-color: var(--color-surface-state-hover);
+}
+
+.date-picker__nav:active {
+  background-color: var(--color-surface-state-pressed);
+}
+
+.date-picker__nav[aria-disabled="true"] {
+  color: var(--color-fg-disabled);
+  background: none;
+  cursor: default;
+}
+
+.date-picker__nav-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: none;
+}
+
+.date-picker__grid {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.date-picker__weekday {
+  padding: 0 0 var(--space-1);
+  font-size: var(--fs-text-xs);
+  font-weight: var(--fw-regular);
+  color: var(--color-fg-label);
+  text-align: center;
+}
+
+.date-picker__grid td {
+  padding: 0;
+  text-align: center;
+}
+
+.date-picker__day {
+  display: inline-grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: none;
+  font-family: var(--font-family);
+  font-size: var(--fs-text-sm);
+  color: var(--color-fg);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.date-picker__day:hover {
+  background-color: var(--color-surface-state-hover);
+}
+
+.date-picker__day:active {
+  background-color: var(--color-surface-state-pressed);
+}
+
+.date-picker__day[aria-disabled="true"] {
+  color: var(--color-fg-disabled);
+  background: none;
+  cursor: default;
+}
+
+/* Today is "as soon as possible": a ring, not a pick */
+.date-picker__day--today {
+  box-shadow: inset 0 0 0 0.0625rem var(--color-fg-secondary);
+}
+
+.date-picker__day--selected,
+.date-picker__day--selected:hover {
+  background-color: var(--color-fg-interactive);
+  color: var(--color-bg);
+  font-weight: var(--fw-bold);
+}
+
+.date-picker__nav:focus,
+.date-picker__day:focus {
+  outline: none;
+}
+
+.date-picker__nav:focus-visible,
+.date-picker__day:focus-visible {
+  outline: 0.125rem solid var(--color-fg-interactive);
+  outline-offset: 0.125rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .date-picker__nav,
+  .date-picker__day {
+    transition: none;
+  }
 }
 
 @media (hover: none) and (pointer: coarse) {
