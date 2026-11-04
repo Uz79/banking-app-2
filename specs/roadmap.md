@@ -182,6 +182,8 @@ Added 2026-11-03. The list on All bookings runs day group after day group with n
 - **Everywhere:** in all three tabs (Executed, Pending, Recurring) and with the search field (a month with no matches shows no separator). Screen readers read it as a heading.
 - **Focus after a chip (found during 25, 2026-11-03):** a click on a chip in the list, or Enter on it, docks the bar and hides the list's bar, so focus drops to the page body and the next Tab starts from the top. To settle with the chip linking above: focus moves to the same chip in the docked bar, or to the month's separator.
 
+Spec: `specs/2026-11-04-month-separators/` (branch `feature/month-separators`). Settled in its interview: no sticky separator (the docked chips with their active chip name the month); focus moves to the same chip in the docked bar; the band in `--color-bg-secondary` (the "separator background token" doesn't exist).
+
 ## 25. Focus rings app-wide (done)
 
 Added 2026-11-03, point 7 of the phone polish brief (points 1 to 6 were built in 21). No browser-default outlines anywhere: every interactive element shows the app's ring in `--color-fg-interactive`, only for keyboard focus (`:focus-visible`), never after a click or tap. First known case: the selected month chip on All bookings shows a blue browser ring after a click. Spec: `specs/2026-11-03-focus-rings/` (branch `feature/focus-rings`). Settled in its interview: one global base rule at zero specificity, so the component rings keep winning; text fields keep their focused stroke on a click; outlines in other tokens move to `--color-fg-interactive`, the fields' inset stroke stays; a scripted audit of every page and flow.
