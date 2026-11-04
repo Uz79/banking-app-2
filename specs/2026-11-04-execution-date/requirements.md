@@ -20,6 +20,7 @@ Roadmap item 28 (`specs/roadmap.md`): in Pay and the internal transfer, turning 
 - The booking sheet's own dates, Buy and Sell (no execution date), the opening's appointment booking
 - `js/app.js` and `spa-source.html`
 - Other open roadmap items (29 and on)
+- Pay's schedule step naming the wrong recipient, found in the build: roadmap 38
 
 ## Decisions
 

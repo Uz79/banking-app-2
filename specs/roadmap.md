@@ -243,3 +243,7 @@ Found during 35 (2026-11-04). With the macOS Reduce motion setting on, the forwa
 ## 37. Pending payments and transfers execute on their date
 
 Split from 28 (2026-11-04). A payment or transfer set for a later date stays pending forever: nothing executes it when its date arrives, so its money never moves, and a recurring one never repeats. To settle in its spec: when it runs (on load, against the device date), what an executed one looks like in the bookings and balances, how a recurring or standing order repeats, and what the status message says.
+
+## 38. Pay: the schedule step always names Hans Meyer
+
+Found during 28 (2026-11-04). Pay's schedule step shows "Recipient: Hans Meyer" whoever was picked: `paintScheduleStep` in `js/payment-overlay.js` never writes the recipient's name, so the markup's placeholder stays (the amount step and the summary are right). Also on `main`. To settle in its spec: the schedule step names `live.recipient`, and a look at the other steps' placeholders on Overview, Payments and Account details.
