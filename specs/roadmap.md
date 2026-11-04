@@ -213,3 +213,7 @@ Found during 23 (2026-11-04). A pending payment's sheet on All bookings shows "E
 ## 32. Booking sheet: a pending transfer shows "Executed"
 
 Found during 23 (2026-11-04). `buildDataFromStateBooking` in `js/payment-details.js` gives every stored transfer (and trade) the status "executed", so a transfer made with "Immediately" off or as a standing order reads "Executed" in its sheet. To settle in its spec: read the booking's status as payments do since 23, and what the sheet shows for a recurring transfer.
+
+## 33. Booking rows can't be reached by keyboard
+
+Found during 23 (2026-11-04). The booking rows on Account details (and the other bookings lists) are `div`s with no `tabindex` or role, so Tab skips them and a keyboard user can't open a booking's sheet, nor edit a pending payment from it. The sheet itself works by keyboard once open. To settle in its spec: rows as buttons or links (and what they announce), on every page that lists bookings.
