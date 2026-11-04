@@ -677,6 +677,7 @@
     overlay.classList.add('modal-overlay--active');
     overlay.setAttribute('aria-hidden', 'false');
     document.body.classList.add('body--payment-open');
+    if (window.UZBankSheetFocus) window.UZBankSheetFocus.open(overlay);
 
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
@@ -747,6 +748,8 @@
       shell.classList.remove('modal-shell--closing');
       shell.classList.add('modal-shell--offscreen', 'modal-shell--no-transition');
     }
+    /* Before the edit opens Pay, which takes this sheet's opener on (sheet focus D6) */
+    if (window.UZBankSheetFocus) window.UZBankSheetFocus.close(overlay);
     // If an edit button triggered the close, write edit context then open
     // the payment flow at the correct step.
     if (pendingEditStep) {

@@ -194,9 +194,11 @@ Found during 25 (2026-11-03). With Legibility set to Large, the fridge's result 
 
 Spec: `specs/2026-11-04-fridge-ring-desktop/` (branch `feature/fridge-ring-desktop`). Found while writing it: Legibility doesn't reach the fridge page, so Large type is not the cause; a six-digit amount wraps onto two lines whatever the type size. Settled in its interview: the phone's rule on the floating panel (one line, sized by length), "You could invest" staying inside the ring; Legibility in the fridge and the opening becomes its own roadmap item (34). Built 2026-11-04.
 
-## 27. Sheets: Tab leaves them for the page behind
+## 27. Sheets: Tab leaves them for the page behind (done)
 
 Found during 25 (2026-11-03). In the Pay sheet and the Buy sheet on desktop, Tab past the last control moves focus to the page behind the scrim (Overview's Scan and Pay, the position's Sell), which can't be seen or used while the sheet is open. The "Discard" dialogs and the opening's phone layer were not affected. To settle in its spec: make the page behind inert while a sheet is open (or keep focus in the sheet), and which sheets share the code.
+
+Spec: `specs/2026-11-04-sheet-focus/` (branch `feature/sheet-focus`). Found while writing it: six sheets are affected (Pay, the transfer, Buy and Sell, the booking sheet, Account information, Share information); the Discard dialogs and the picker sheets are native dialogs and the fridge and playground already make the page inert. Settled in its interview: a shared stack helper in `js/dialog-focus.js` (Share opens over Account information); focus moves into the sheet and back to its opener; the fridge and playground stay as they are. Found in the build: dialogs around a sheet (Discard, More functions) need the helper to wait for them; with reduced motion the transfer never finishes closing (35). Built 2026-11-04.
 
 ## 28. Payments and transfers: the execution date can't be picked
 
@@ -225,3 +227,7 @@ Found during 23 (2026-11-04). The booking rows on Account details (and the other
 ## 34. Legibility doesn't reach the fridge and the opening
 
 Found during 26 (2026-11-04). The fridge (`fridge-advisor.html`) and the investment opening load no `app-mp.js`, so Legibility's type and spacing scale, Typeface and Font don't apply inside them: a reader on Large gets default type there, in the Overview sheet and on their own pages. To settle in its spec: how the pages pick up the appearance settings (the shared code or a small boot), and a check of every fridge and opening layout at Small and Large, the result ring and the floating panel included.
+
+## 35. Transfer sheet: with reduced motion, closing leaves an invisible layer over the page
+
+Found during 27 (2026-11-04). `closeOverlay()` in `js/iat-overlay.js` finishes only on the sheet's `transitionend`, with no fallback timer (Pay, the trade and the booking sheet have one). With reduced motion the sheet has no transition, so the overlay keeps `modal-overlay--active modal-overlay--closing`: the scrim fades to nothing but the overlay stays over the page and takes every click until a reload. Checked by injecting the reduced-motion rules on Overview (the system setting itself was not switched). To settle in its spec: a fallback timer as the other sheets have, and a pass over every sheet's close with reduced motion.

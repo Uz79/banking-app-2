@@ -2575,6 +2575,11 @@ a.show-all-btn {
   box-shadow: 0 0.5rem 2rem var(--color-modal-elevated-shadow);
 }
 
+/* A sheet focused as a whole on opening shows no ring; its controls keep theirs (sheet focus D5) */
+.modal[tabindex="-1"]:focus {
+  outline: none;
+}
+
 /* Payment overlay: fixed sheet height so .modal__body can flex-grow; avoids empty
    strip + clipped list when the footer is display:none on recipient-search. */
 .modal-overlay .modal {

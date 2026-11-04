@@ -399,6 +399,7 @@
     overlay.classList.add('modal-overlay--active');
     overlay.setAttribute('aria-hidden', 'false');
     document.body.classList.add('body--trade-open');
+    if (window.UZBankSheetFocus) window.UZBankSheetFocus.open(overlay);
 
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
@@ -436,6 +437,7 @@
       shell.classList.remove('modal-shell--closing');
       shell.classList.add('modal-shell--offscreen', 'modal-shell--no-transition');
     }
+    if (window.UZBankSheetFocus) window.UZBankSheetFocus.close(overlay);
     if (!fromRoute) {
       try {
         history.replaceState(history.state || null, '', location.pathname + location.search);
