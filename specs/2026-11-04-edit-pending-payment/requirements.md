@@ -20,6 +20,7 @@ Roadmap item 23 (`specs/roadmap.md`), found during 14. Editing a payment from it
 - The schedule step's fixed "Hans Meyer" (roadmap 29)
 - A date picker for "Execute on" (roadmap 28)
 - Storing whether a recurring payment was "Recurring" or "Standing order" (D4)
+- Found during the checks, added to the roadmap: booking rows can't be reached by keyboard (33)
 
 ## Decisions
 
@@ -41,6 +42,7 @@ Roadmap item 23 (`specs/roadmap.md`), found during 14. Editing a payment from it
 - `apps/web/js/payment-overlay.js`: `STEPS` (line 51) runs recipient search, recipient, amount, schedule, summary. `scheduleStatus()` (line 143) reads the segmented control and the toggle; `resetPaymentDefaults()` (line 153) runs only from the Pay button; `paintScheduleStep()` (line 202) snaps the date to today while the toggle is on. The edit context is read at line 890; Execute (line 967) sends `status` and `executeOn` to `updatePayment` or `commitPayment`.
 - `apps/web/js/payment-details.js`: the edit context is written in `finishClose` (line 769) with the booking id, recipient, amount and currency only. A stored payment's row falls through to the fallback at line 860 with `status: 'pending'`. `buildDataFromStateBooking` (line 420) covers transfers and trades only, both as executed. The chip and `pd--pending` (which shows the Edit buttons, `css/styles.css` line 7476) are set at line 656.
 - Edit buttons (`data-pd-edit="amount"`) are in `account-details.html` (lines 3357 and 3403) and `all-bookings-and-payments.html`. Only Account details loads `payment-overlay.js`, so editing works there alone (roadmap 31).
+- Found in the build: Account details lists only executed bookings made in the app (`data-render.js` line 127); pending and recurring ones are listed on All bookings alone. So until 31, the stored-booking edit (D1 to D3) has no button that reaches it: the bug was reachable only through an executed payment shown as "Pending", which D5 removes. The edit path was checked by handing the Pay sheet the same edit context the booking sheet writes; the Apple sample's edit runs through the real buttons.
 - `apps/web/js/payment-details 2.js` is a tracked copy of an older `payment-details.js` that no page loads. Left alone.
 
 ## Open questions
