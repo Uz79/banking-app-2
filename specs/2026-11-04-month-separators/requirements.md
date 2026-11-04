@@ -36,6 +36,7 @@ Roadmap item 24 (`specs/roadmap.md`). The list on All bookings runs day group af
 | D8 | **Focus after a chip** (interview): when the chip bars swap (the flow bar is hidden and the docked one shown, or back), and focus is on a chip in the bar being hidden, focus moves to the same month's chip in the bar being shown, without scrolling | Found during 25 (roadmap 24's last point): today focus drops to the page body and the next Tab starts from the top. Covers both directions, so scrolling back up with focus in the dock doesn't lose it either |
 | D9 | **No sticky separator** (interview) | The docked chip bar with its active chip (D6) already names the month in view; a third sticky layer would repeat it |
 | D10 | **The chip's scroll is instant under reduced motion** (`behavior: 'auto'` when `prefers-reduced-motion: reduce` matches), smooth otherwise | The standing rule: every animation has a reduced-motion path. The smooth scroll had none |
+| D12 | **Pending and Recurring stay in date order**: an in-app group goes in among the static groups at its date, not above them all | Found in the build: `renderBookings` put every in-app group at the top, so a pending payment for 04.11.2026 stood above the static 30.10.2026 and the list read November, October, November, which would show NOVEMBER twice |
 | D11 | **The merge gate** (interview): `npm run build`; this branch's `validation.md` in a real browser (Light and Dark, a Multi-color theme, desktop and 390, keyboard, search, all three tabs); the baseline smoke test | Standard gate |
 
 ## Context

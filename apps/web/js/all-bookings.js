@@ -289,6 +289,7 @@
     var panel = null;
     var groups = [];
     var rows = [];
+    var separators = {};
 
     function setHidden(el, hide) {
       el.classList.toggle('is-search-hidden', hide);
@@ -299,11 +300,13 @@
       if (nextPanel) panel = nextPanel;
       groups = [];
       rows = [];
+      separators = {};
       if (!panel) return;
-      var month = null;
       Array.prototype.forEach.call(panel.querySelectorAll('.booking-group'), function (g) {
-        month = g.getAttribute('data-bookings-month-start') || month;
-        groups.push({ el: g, month: month });
+        groups.push({ el: g, month: g.getAttribute('data-month-key') });
+      });
+      Array.prototype.forEach.call(panel.querySelectorAll('[data-month-separator]'), function (s) {
+        separators[s.getAttribute('data-month-key')] = s;
       });
       Array.prototype.forEach.call(panel.querySelectorAll('.booking-row'), function (row) {
         var name = (row.querySelector('.booking-row__name') || {}).textContent || '';
@@ -333,9 +336,20 @@
           shown.push(g.el);
           if (g.month && !seen[g.month]) {
             seen[g.month] = true;
-            monthAnchors[g.month] = g.el;
+            /* A chip scrolls to its month's separator (D5) */
+            monthAnchors[g.month] = separators[g.month] || g.el;
           }
         }
+      });
+      /* A month with no match loses its separator (D7) */
+      Object.keys(separators).forEach(function (key) {
+        var sep = separators[key];
+        setHidden(sep, !!query && !seen[key]);
+        /* ...and no divider stands right above a separator once the groups between are hidden */
+        if (!query || !seen[key]) return;
+        var prev = sep.previousElementSibling;
+        while (prev && prev.classList.contains('is-search-hidden')) prev = prev.previousElementSibling;
+        if (prev && prev.classList.contains('divider')) setHidden(prev, true);
       });
       /* No divider under the last visible group. */
       if (query) {
@@ -408,6 +422,49 @@
     return m ? m[3] + m[2] + m[1] : '';
   }
 
+  /* The yyyymmdd of a Pending or Recurring group, read from its label ("Execute on 03.11.2026"). */
+  function groupDateKey(group) {
+    var label = group.querySelector('.booking-group__label');
+    var m = /(\d{2})\.(\d{2})\.(\d{4})/.exec(label ? label.textContent : '');
+    return m ? m[3] + m[2] + m[1] : '';
+  }
+
+  /* Month separators (roadmap 24, D1 to D4): an h2 before each month's first group, in every tab. Executed groups
+     take their month from data-bookings-month-start, carried down; Pending and Recurring ones from their date.
+     The divider before a separator is hidden (is-month-break); the year shows when a tab crosses one. */
+  var MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+  function renderMonthSeparators(root) {
+    root.querySelectorAll('[data-all-bookings-panel]').forEach(function (panel) {
+      panel.querySelectorAll('[data-month-separator]').forEach(function (n) { n.remove(); });
+      panel.querySelectorAll('.is-month-break').forEach(function (n) { n.classList.remove('is-month-break'); });
+      var executed = panel.getAttribute('data-all-bookings-panel') === 'executed';
+      var month = null;
+      var starts = [];
+      panel.querySelectorAll('.booking-group').forEach(function (g) {
+        var key = executed ? g.getAttribute('data-bookings-month-start') || month : groupDateKey(g).slice(0, 6).replace(/^(\d{4})(\d{2})$/, '$1-$2');
+        if (!key) return;
+        g.setAttribute('data-month-key', key);
+        if (key !== month) starts.push(g);
+        month = key;
+      });
+      var years = {};
+      starts.forEach(function (g) { years[g.getAttribute('data-month-key').slice(0, 4)] = true; });
+      var crossesYear = Object.keys(years).length > 1;
+      starts.forEach(function (g) {
+        var key = g.getAttribute('data-month-key');
+        var sep = document.createElement('h2');
+        sep.className = 'all-bookings__month';
+        sep.setAttribute('data-month-separator', '');
+        sep.setAttribute('data-month-key', key);
+        sep.textContent = MONTH_NAMES[parseInt(key.slice(5, 7), 10) - 1] + (crossesYear ? ' ' + key.slice(0, 4) : '');
+        var prev = g.previousElementSibling;
+        if (prev && prev.classList.contains('divider')) prev.classList.add('is-month-break');
+        g.parentNode.insertBefore(sep, g);
+      });
+    });
+  }
+
   function renderBookings(root, accountKey) {
     var pay = window.UZBankPayState;
     if (!pay || typeof pay.getState !== 'function') return;
@@ -445,8 +502,13 @@
       var dates = [];
       list.forEach(function (b) { if (dates.indexOf(b.executeOn) === -1) dates.push(b.executeOn); });
       dates.sort(function (a, b) { return dateSortKey(a) < dateSortKey(b) ? -1 : 1; });
-      var anchor = panel.firstChild;
       dates.forEach(function (date) {
+        /* In date order among the static groups (roadmap 24, D12) */
+        var anchor = null;
+        Array.prototype.some.call(panel.querySelectorAll('.booking-group'), function (g) {
+          if (groupDateKey(g) > dateSortKey(date)) { anchor = g; return true; }
+          return false;
+        });
         var group = document.createElement('div');
         group.className = 'booking-group';
         group.setAttribute('data-source', 'state');
@@ -457,8 +519,14 @@
         var divider = document.createElement('div');
         divider.className = 'divider';
         divider.setAttribute('data-source', 'state');
-        panel.insertBefore(group, anchor);
-        panel.insertBefore(divider, anchor);
+        if (anchor) {
+          panel.insertBefore(group, anchor);
+          panel.insertBefore(divider, anchor);
+        } else {
+          /* Last in the list: the divider goes above it, as the last group has none below */
+          if (panel.querySelector('.booking-group')) panel.appendChild(divider);
+          panel.appendChild(group);
+        }
       });
     });
   }
@@ -476,6 +544,7 @@
     bindTabs(root, search);
     function refreshBookings() {
       renderBookings(root, key);
+      renderMonthSeparators(root);
       if (search) {
         search.index();
         search.filter();

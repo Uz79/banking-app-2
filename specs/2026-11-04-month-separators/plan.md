@@ -7,6 +7,7 @@ Each group ends with something to check in the browser on the agent's server (`c
 ## 1. The separators (D1 to D4, D7)
 
 - [ ] `apps/web/js/all-bookings.js`: after each render, add an `h2.all-bookings__month` before each month's first group in all three tabs, replacing the divider before it; the year when a tab crosses a year; search indexes the separators and hides one with its month
+- [ ] `apps/web/js/all-bookings.js`: in-app Pending and Recurring groups go in at their date among the static ones (D12)
 - [ ] `apps/web/css/styles.css`: `.all-bookings__month`, tokens only
 - [ ] Check: Executed shows JUNE, MAY, APRIL, MARCH, FEBRUARY above their first day; Pending and Recurring show OCTOBER and NOVEMBER; an in-app pending payment's month gets one; "Rent" leaves only the months with a match; Light and Dark
 

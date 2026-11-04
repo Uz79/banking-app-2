@@ -2279,6 +2279,28 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
   display: none;
 }
 
+/* Month separators (roadmap 24): a full-width band before each month's first day, built in js/all-bookings.js.
+   The divider above one is hidden. Capitals by CSS, so screen readers read the month as a word. */
+.all-bookings__month {
+  margin: var(--space-2) 0 0;
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--color-bg-secondary);
+  color: var(--color-fg-secondary);
+  font-size: var(--fs-text-sm);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-text);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.all-bookings__list > .all-bookings__month:first-child {
+  margin-top: 0;
+}
+
+.all-bookings__list .divider.is-month-break {
+  display: none;
+}
+
 .all-bookings--no-months .all-bookings__month-bar,
 .all-bookings--no-months .all-bookings__month-dock {
   display: none;
