@@ -210,6 +210,8 @@ Spec: `specs/2026-11-04-execution-date/` (branch `feature/execution-date`). Sett
 
 Found during 22 (2026-11-04). The Pay flow's Time Schedule step shows "Hans Meyer" as the recipient whoever was picked: the name is fixed in `overview.html` (the `data-step="schedule"` field) and nothing fills it. The summary, the confirmation and the booking use the right name. To settle in its spec: fill it from the chosen recipient like the amount step does, and check the same fixed name on the other pages that carry the Pay sheet.
 
+Found again during 28 as item 38 (the cause: `paintScheduleStep` in `js/payment-overlay.js` never writes the name), closed as its duplicate. Spec: `specs/2026-11-04-schedule-recipient/` (branch `feature/schedule-recipient`). Settled in its interview: the schedule step only, with a check of every other placeholder in the Pay sheet on Overview, Payments and Account details; typed recipient fields not being read back is item 39.
+
 ## 30. Buy and Sell: "Discard order?" offers "Continue payment"
 
 Found during 22 (2026-11-04). Closing the trade sheet asks "Discard order?", but its stay button reads "Continue payment": `promptExit` in `js/trade-flow-overlay.js` sets the title, message and Discard label, not `stayLabel`, so the shared dialog's default shows. To settle in its spec: the label ("Continue order"), and whether the other callers of `UZBankPaymentExitPrompt` (the playground, the fridge) set theirs.
@@ -244,6 +246,6 @@ Found during 35 (2026-11-04). With the macOS Reduce motion setting on, the forwa
 
 Split from 28 (2026-11-04). A payment or transfer set for a later date stays pending forever: nothing executes it when its date arrives, so its money never moves, and a recurring one never repeats. To settle in its spec: when it runs (on load, against the device date), what an executed one looks like in the bookings and balances, how a recurring or standing order repeats, and what the status message says.
 
-## 38. Pay: the schedule step always names Hans Meyer
+## 38. Pay: the schedule step always names Hans Meyer (duplicate of 29)
 
-Found during 28 (2026-11-04). Pay's schedule step shows "Recipient: Hans Meyer" whoever was picked: `paintScheduleStep` in `js/payment-overlay.js` never writes the recipient's name, so the markup's placeholder stays (the amount step and the summary are right). Also on `main`. To settle in its spec: the schedule step names `live.recipient`, and a look at the other steps' placeholders on Overview, Payments and Account details.
+Found during 28 (2026-11-04). Pay's schedule step shows "Recipient: Hans Meyer" whoever was picked: `paintScheduleStep` in `js/payment-overlay.js` never writes the recipient's name, so the markup's placeholder stays (the amount step and the summary are right). Also on `main`. The same bug as 29, closed on 2026-11-04 and built there; its look at the other steps' placeholders is 29's D3.
