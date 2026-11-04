@@ -6,6 +6,10 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 <!-- changelog: last-commit cf14453cf4bccff8f4f6faefd0b5f88d3a6e6f5c -->
 
 ### Changed
+- **All bookings: month separators** (roadmap 24). Each month in the list starts with a band naming it ("JUNE"; with the year when a tab crosses one, "JANUARY 2027"), in all three tabs and for payments made in the app too. Each band is a heading, so a screen reader can jump month to month. A month chip scrolls to its band, just under the docked chips, and while scrolling the chip of the month in view becomes active; a chip's own scroll doesn't flick through the months on the way. Search hides the band of a month with no match. With reduced motion the chip jumps instead of scrolling.
+- **Focus stays on the month chip.** Enter or a click on a chip used to drop focus to the page when the chips docked; now it moves to the same month's chip in the docked bar, and back when the bar undocks.
+- **Pending and Recurring stay in date order.** A payment made in the app now goes in at its date among the others, not above them all.
+- Spec: `specs/2026-11-04-month-separators/`.
 - **"Reset demo data" asks first and is never disabled** (roadmap 22). Profile's button opens "Reset demo data?" (Cancel or Reset; Escape keeps the data) and, after a reset, a line under it says "Demo data reset." for as long as the page is open, read out by screen readers. The button no longer greys out for a moment or swaps its label. The section's text now says what a reset clears: payments, trades and investments, with the starting balances restored.
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 

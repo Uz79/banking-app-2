@@ -172,7 +172,7 @@ Found during 14 (2026-11-03). Editing a booking from its detail (`payment-overla
 
 Spec: `specs/2026-11-04-edit-pending-payment/` (branch `feature/edit-pending-payment`). Settled in its interview: the edit opens with the booking's schedule on the schedule step; the booking sheet shows a stored payment's real status (it showed every one as "Pending"), with Edit only on pending and recurring; All bookings' dead Edit buttons are item 31. Found in the build: Account details lists only executed bookings, so no button reaches a stored pending payment's edit until 31. Built 2026-11-04.
 
-## 24. All bookings: month separators
+## 24. All bookings: month separators (done)
 
 Added 2026-11-03. The list on All bookings runs day group after day group with nothing marking where a month starts, and the month chips above it have no visible counterpart in the list.
 
@@ -182,7 +182,7 @@ Added 2026-11-03. The list on All bookings runs day group after day group with n
 - **Everywhere:** in all three tabs (Executed, Pending, Recurring) and with the search field (a month with no matches shows no separator). Screen readers read it as a heading.
 - **Focus after a chip (found during 25, 2026-11-03):** a click on a chip in the list, or Enter on it, docks the bar and hides the list's bar, so focus drops to the page body and the next Tab starts from the top. To settle with the chip linking above: focus moves to the same chip in the docked bar, or to the month's separator.
 
-Spec: `specs/2026-11-04-month-separators/` (branch `feature/month-separators`). Settled in its interview: no sticky separator (the docked chips with their active chip name the month); focus moves to the same chip in the docked bar; the band in `--color-bg-secondary` (the "separator background token" doesn't exist).
+Spec: `specs/2026-11-04-month-separators/` (branch `feature/month-separators`). Settled in its interview: no sticky separator (the docked chips with their active chip name the month); focus moves to the same chip in the docked bar; the band in `--color-bg-secondary` (the "separator background token" doesn't exist). Found in the build: in-app pending and recurring groups went above all the static ones, out of date order (D12). Built 2026-11-04.
 
 ## 25. Focus rings app-wide (done)
 
