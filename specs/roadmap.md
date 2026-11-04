@@ -170,6 +170,8 @@ Spec: `specs/2026-11-04-reset-demo-confirm/` (branch `feature/reset-demo-confirm
 
 Found during 14 (2026-11-03). Editing a booking from its detail (`payment-overlay.js` with `editingBookingId`) calls `UZBankPayState.updatePayment`, which rebuilds the booking from `id`, `recipientName`, `currency`, `amount` and `dateISO` only. The booking loses its `status`, `executeOn`, `accountKey`, `icon` and `direction`, so a pending payment becomes executed and its money leaves Household, and the schedule chosen in the edit is ignored. To settle in its spec: keep every field the edit does not change, and apply the edit's schedule (a pending payment edited to "now" executes, as a new payment would).
 
+Spec: `specs/2026-11-04-edit-pending-payment/` (branch `feature/edit-pending-payment`). Settled in its interview: the edit opens with the booking's schedule on the schedule step; the booking sheet shows a stored payment's real status (it showed every one as "Pending"), with Edit only on pending and recurring; All bookings' dead Edit buttons are item 31.
+
 ## 24. All bookings: month separators
 
 Added 2026-11-03. The list on All bookings runs day group after day group with nothing marking where a month starts, and the month chips above it have no visible counterpart in the list.
