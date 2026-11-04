@@ -17,6 +17,7 @@ Roadmap item 22 (`specs/roadmap.md`), found during 21. The design-system rule fr
 - A shared toast component (D3)
 - What the reset clears (`UZBankPayState.reset()` is unchanged)
 - Other open roadmap items (23 and on)
+- Found during the checks, added to the roadmap: the Pay schedule step names a fixed recipient (29); the trade sheet's "Discard order?" offers "Continue payment" (30)
 
 ## Decisions
 

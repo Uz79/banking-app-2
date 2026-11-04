@@ -195,3 +195,11 @@ Found during 25 (2026-11-03). In the Pay sheet and the Buy sheet on desktop, Tab
 ## 28. Payments and transfers: the execution date can't be picked
 
 Found during 15 (2026-11-03). Turning off "As soon as possible" (payment) or "Immediately" (transfer) shows an "Execute on" field, but nothing opens a date picker: the date stays today, so a "later" payment or transfer is pending for today, and a recurring one starts today. The confirmation now says "will be made on" and "starts on" with that date. To settle in its spec: a date picker (the app has none yet), which dates are allowed (working days, not in the past), and when a pending booking becomes executed.
+
+## 29. Pay: the schedule step names the wrong recipient
+
+Found during 22 (2026-11-04). The Pay flow's Time Schedule step shows "Hans Meyer" as the recipient whoever was picked: the name is fixed in `overview.html` (the `data-step="schedule"` field) and nothing fills it. The summary, the confirmation and the booking use the right name. To settle in its spec: fill it from the chosen recipient like the amount step does, and check the same fixed name on the other pages that carry the Pay sheet.
+
+## 30. Buy and Sell: "Discard order?" offers "Continue payment"
+
+Found during 22 (2026-11-04). Closing the trade sheet asks "Discard order?", but its stay button reads "Continue payment": `promptExit` in `js/trade-flow-overlay.js` sets the title, message and Discard label, not `stayLabel`, so the shared dialog's default shows. To settle in its spec: the label ("Continue order"), and whether the other callers of `UZBankPaymentExitPrompt` (the playground, the fridge) set theirs.
