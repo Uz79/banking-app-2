@@ -435,19 +435,39 @@
     });
 
     /* ── Demo data reset (Profile page) ─────────────────────────────
-     * Clears saved bookings + restores the Household balance to its
-     * initial value. Delegated so the handler works even if the button
+     * Asks first, then clears the payment state and says so in the
+     * status line under the button; the button is never disabled
+     * (roadmap 22). Delegated so the handler works even if the button
      * is added/removed dynamically by future iterations of Profile. */
+    function runDemoReset(btn) {
+      window.UZBankPayState.reset();
+      var section = btn.closest('.demo-reset');
+      var status = section && section.querySelector('[data-demo-reset-status]');
+      if (!status) return;
+      /* Empty first so a second reset is announced again */
+      status.textContent = '';
+      setTimeout(function () {
+        status.innerHTML =
+          '<svg class="demo-reset__status-icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>' +
+          '<span>Demo data reset.</span>';
+      }, 100);
+    }
+
     document.addEventListener('click', function (e) {
       var btn = e.target.closest && e.target.closest('#demoResetBtn');
       if (!btn) return;
-      if (window.UZBankPayState && typeof window.UZBankPayState.reset === 'function') {
-        window.UZBankPayState.reset();
-        var prev = btn.textContent;
-        btn.textContent = 'Reset ✓';
-        btn.disabled = true;
-        setTimeout(function () { btn.textContent = prev; btn.disabled = false; }, 1200);
+      if (!window.UZBankPayState || typeof window.UZBankPayState.reset !== 'function') return;
+      if (typeof window.UZBankPaymentExitPrompt !== 'function') {
+        runDemoReset(btn);
+        return;
       }
+      window.UZBankPaymentExitPrompt(function () { runDemoReset(btn); }, {
+        title: 'Reset demo data?',
+        message: 'This clears your payments, trades and investments and restores the starting balances. You can’t undo it.',
+        leaveLabel: 'Reset',
+        stayLabel: 'Cancel',
+        escapeStays: true
+      });
     });
 
     document.addEventListener('click', function (e) {

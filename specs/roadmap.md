@@ -160,9 +160,11 @@ Found during 9c (2026-11-02). The helper specimen's IntersectionObserver in `cha
 
 Planned and built 2026-11-03. The fridge and the opening as a customer meets them on a phone, plus two rules for every width. Regular sliders on a phone; the assistant on a phone as its own layer over the flow ("Questions about this step", its own X); no disabled call-to-action buttons (a design-system rule: Next always enabled, a tap with something missing says what under the field and moves focus there; replaces 9d D18's disabled Next); why "Show suitable products" looks pale; the fridge's result ring (item 19); a focus ring on Investment after a close only when closed by keyboard; closing asks "Leave for now?" on every step, and the progress is really kept: the fridge keeps its step and values for the session (revises fridge D8) and Investment reopens where the customer left. Spec: `specs/2026-11-03-phone-polish/` (branch `feature/phone-polish`). Settled in its interview: one session key (`uzBankWebOpeningDraft`, extended with the page and the fridge's values); completion clears everything; completion and the booked appointment close without asking; Klaudiusz checks VoiceOver on an iPhone.
 
-## 22. Profile: "Reset demo data" is disabled while it confirms
+## 22. Profile: "Reset demo data" is disabled while it confirms (done)
 
 Found during 21 (2026-11-03). The design-system rule from 21 says a call-to-action is never disabled; Profile's "Reset demo data" (`js/app-mp.js`) disables itself for 1.2 s while it shows "Reset ✓". To settle in its spec: a confirmation that does not disable the button (a status line or a toast), and whether the button should ask first.
+
+Spec: `specs/2026-11-04-reset-demo-confirm/` (branch `feature/reset-demo-confirm`). Settled in its interview: a status line under the button (no toast), the shared confirm dialog asks first, and the subtitle is corrected to say what the reset clears.
 
 ## 23. Editing a pending payment turns it executed
 
@@ -193,3 +195,11 @@ Found during 25 (2026-11-03). In the Pay sheet and the Buy sheet on desktop, Tab
 ## 28. Payments and transfers: the execution date can't be picked
 
 Found during 15 (2026-11-03). Turning off "As soon as possible" (payment) or "Immediately" (transfer) shows an "Execute on" field, but nothing opens a date picker: the date stays today, so a "later" payment or transfer is pending for today, and a recurring one starts today. The confirmation now says "will be made on" and "starts on" with that date. To settle in its spec: a date picker (the app has none yet), which dates are allowed (working days, not in the past), and when a pending booking becomes executed.
+
+## 29. Pay: the schedule step names the wrong recipient
+
+Found during 22 (2026-11-04). The Pay flow's Time Schedule step shows "Hans Meyer" as the recipient whoever was picked: the name is fixed in `overview.html` (the `data-step="schedule"` field) and nothing fills it. The summary, the confirmation and the booking use the right name. To settle in its spec: fill it from the chosen recipient like the amount step does, and check the same fixed name on the other pages that carry the Pay sheet.
+
+## 30. Buy and Sell: "Discard order?" offers "Continue payment"
+
+Found during 22 (2026-11-04). Closing the trade sheet asks "Discard order?", but its stay button reads "Continue payment": `promptExit` in `js/trade-flow-overlay.js` sets the title, message and Discard label, not `stayLabel`, so the shared dialog's default shows. To settle in its spec: the label ("Continue order"), and whether the other callers of `UZBankPaymentExitPrompt` (the playground, the fridge) set theirs.
