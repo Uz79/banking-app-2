@@ -228,11 +228,11 @@ Found during 23 (2026-11-04). The booking rows on Account details (and the other
 
 Found during 26 (2026-11-04). The fridge (`fridge-advisor.html`) and the investment opening load no `app-mp.js`, so Legibility's type and spacing scale, Typeface and Font don't apply inside them: a reader on Large gets default type there, in the Overview sheet and on their own pages. To settle in its spec: how the pages pick up the appearance settings (the shared code or a small boot), and a check of every fridge and opening layout at Small and Large, the result ring and the floating panel included.
 
-## 35. Transfer sheet: with reduced motion, closing leaves an invisible layer over the page
+## 35. Transfer sheet: with reduced motion, closing leaves an invisible layer over the page (done)
 
 Found during 27 (2026-11-04). `closeOverlay()` in `js/iat-overlay.js` finishes only on the sheet's `transitionend`, with no fallback timer (Pay, the trade and the booking sheet have one). With reduced motion the sheet has no transition, so the overlay keeps `modal-overlay--active modal-overlay--closing`: the scrim fades to nothing but the overlay stays over the page and takes every click until a reload. Checked by injecting the reduced-motion rules on Overview (the system setting itself was not switched). To settle in its spec: a fallback timer as the other sheets have, and a pass over every sheet's close with reduced motion.
 
-Taken before 28 (Klaudiusz, 2026-11-04). Spec: `specs/2026-11-04-sheet-close/` (branch `feature/sheet-close`). Root cause confirmed: only the transfer lacks a fallback; the other seven sheets each carry their own copy of one. Settled in its interview: one shared helper that ends every sheet's close on the slide's end, a 300 ms fallback, or at once with reduced motion; a sweep of every sheet and overlay with the real macOS setting, which Klaudiusz switches when asked.
+Taken before 28 (Klaudiusz, 2026-11-04). Spec: `specs/2026-11-04-sheet-close/` (branch `feature/sheet-close`). Root cause confirmed: only the transfer lacks a fallback; the other seven sheets each carry their own copy of one. Settled in its interview: one shared helper that ends every sheet's close on the slide's end, a 300 ms fallback, or at once with reduced motion; a sweep of every sheet and overlay with the real macOS setting, which Klaudiusz switches when asked. Found in the sweep: the forward arrows keep their nudge with reduced motion (36). Built 2026-11-04.
 
 ## 36. Arrow nudge: forward arrows keep moving with reduced motion
 

@@ -14,6 +14,8 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **Sheets close with reduced motion** (roadmap 35). With reduced motion on, closing the internal transfer left an invisible layer over the page that took every click until a reload. Every sheet's close (Pay, the transfer, Buy and Sell, a booking's sheet, Account and Share information, the fridge and the Playground) now ends in one shared place: at once with reduced motion, otherwise when the slide ends or after 300 ms at the latest. Without reduced motion the sheets slide out as before. Shared code in `js/dialog-focus.js`.
+- Spec: `specs/2026-11-04-sheet-close/`.
 - **Sheets keep focus** (roadmap 27). While Pay, the transfer, Buy or Sell, a booking's sheet, Account information or Share information is open, Tab and Shift+Tab stay in it and a screen reader no longer reaches the page behind. Opening a sheet moves focus into it; closing puts focus back on the button that opened it, with the ring only after a keyboard close. Share information over Account information keeps focus in Share and gives Account information back when it closes. The Discard prompts and the picker sheets work over a sheet as before. Shared code in `js/dialog-focus.js`.
 - Spec: `specs/2026-11-04-sheet-focus/`.
 - **The fridge's result fits its ring on desktop** (roadmap 26). On the floating panel a six-digit amount wrapped onto two lines and touched the ring's edge. The amount now stays on one line below "You could invest" and gets smaller as it gets longer, as on a phone, so any amount the fridge can show fits inside the ring.

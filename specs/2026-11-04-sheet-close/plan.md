@@ -18,6 +18,6 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 3. Wrap-up
 
-- [ ] `npm run build` in `apps/web`
-- [ ] The sweep (D7) with the real macOS setting, switched by Klaudiusz; the validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
-- [ ] Docs: `specs/roadmap.md` 35 marked done; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the Sheet focus row gains the close); `apps/web/README.md` unchanged (no new key or file)
+- [x] `npm run build` in `apps/web`
+- [x] The sweep (D7) with the real macOS setting, switched by Klaudiusz; the validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
+- [x] Docs: `specs/roadmap.md` 35 marked done; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the Sheet focus row gains the close); `apps/web/README.md` unchanged (no new key or file)

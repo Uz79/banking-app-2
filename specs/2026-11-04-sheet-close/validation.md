@@ -8,37 +8,37 @@ Reduced motion here means the macOS setting (System Settings > Accessibility > D
 
 ## 1. Build
 
-- [ ] `npm run build` in `apps/web` succeeds with no new warnings
-- [ ] The browser console shows no errors on the pages visited (the browser extension's entries aside)
+- [x] `npm run build` in `apps/web` succeeds with no new warnings
+- [x] The browser console shows no errors on the pages visited (the browser extension's entries aside)
 
 ## 2. The sweep, reduced motion ON (D7)
 
 Desktop:
 
-- [ ] Pay (Overview): open, close, click behind
-- [ ] The internal transfer (Overview): open, close, click behind; and closed through "Discard transfer?"
-- [ ] Buy and Sell (a position's page): open, close through "Discard order?", click behind
-- [ ] The booking sheet (Account details, All bookings): open, close, click behind
-- [ ] Account information, then Share information over it (Account details): close Share, click in Account information; close it, click behind
-- [ ] The fridge (Overview > Investment): open, close through "Leave for now?", click behind
-- [ ] The opening in the fridge's sheet ("Show suitable products"): close, click behind
-- [ ] The Playground sheet (Design system, admin): open, close, click behind
+- [x] Pay (Overview): open, close, click behind
+- [x] The internal transfer (Overview): open, close, click behind; and closed through "Discard transfer?" (with real mouse clicks: X, Discard, then Pay opens)
+- [x] Buy and Sell (a position's page): open, close through "Discard order?", click behind
+- [x] The booking sheet (Account details, All bookings): open, close, click behind
+- [x] Account information, then Share information over it (Account details): close Share, click in Account information; close it, click behind
+- [x] The fridge (Overview > Investment): open, close through "Leave for now?", click behind
+- [x] The opening in the fridge's sheet ("Show suitable products"): close, click behind
+- [x] The Playground sheet (Design system, admin): open, close, click behind
 
 Phone (390):
 
-- [ ] Pay, the transfer, the booking sheet: open, close, tap behind
-- [ ] The opening's assistant layer (Help?): open, close with its X, tap in the step; then close the sheet and tap behind
+- [x] Pay, the transfer, the booking sheet: open, close, tap behind
+- [x] The opening's assistant layer (Help?): open, close with its X, tap in the step; then close the sheet and tap behind
 
 ## 3. The sweep, reduced motion OFF (D2)
 
-- [ ] Each sheet above still slides out as before and the page behind takes a click after it
-- [ ] Closing a sheet and opening another straight after (Pay, then the transfer) works
+- [x] Each sheet above still slides out as before and the page behind takes a click after it
+- [x] Closing a sheet and opening another straight after (Pay, then the transfer) works
 
 ## 4. Unchanged
 
-- [ ] Sheet focus (27): after a keyboard close, focus is back on the opener with the ring; nothing is left `inert`
-- [ ] The Discard prompts, the picker sheets and the Playground settings dialog open and close with reduced motion on and off
-- [ ] Light and Dark, and a Multi-color theme: no change in how the sheets look
+- [x] Sheet focus (27): after a keyboard close, focus is back on the opener with the ring; nothing is left `inert`
+- [x] The Discard prompts, the picker sheets and the Playground settings dialog open and close with reduced motion on and off
+- [x] Light and Dark, and a Multi-color theme: no change in how the sheets look
 
 ## 5. Baseline smoke test
 
@@ -46,39 +46,51 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 
 ### 1. Build
 
-- [ ] `npm run build` succeeds with no new warnings
-- [ ] The browser console shows no errors on any page visited below
+- [x] `npm run build` succeeds with no new warnings
+- [x] The browser console shows no errors on any page visited below
 
 ### 2. Shell
 
-- [ ] ★ Overview loads with sidebar (desktop) or tab bar (phone); the 3D character appears in the lower right on desktop
-- [ ] ★ Light/Dark toggle switches instantly and survives a reload
-- [ ] Navigating Overview → Account details → All bookings and back plays the page transitions in the right directions
-- [ ] The "Open payment!" status message appears after about 12 s on a main view; tapping it dismisses it
+- [x] ★ Overview loads with sidebar (desktop) or tab bar (phone); the 3D character appears in the lower right on desktop
+- [x] ★ Light/Dark toggle switches instantly and survives a reload
+- [x] Navigating Overview → Account details → All bookings and back plays the page transitions in the right directions
+- [x] The "Open payment!" status message appears after about 12 s on a main view; tapping it dismisses it
 
 ### 3. Banking flows
 
-- [ ] ★ Pay: recipient search → recipient → amount → schedule → summary → confirm; the balance and bookings update
-- [ ] Internal transfer completes
-- [ ] Custody account → a position → Buy opens the trade flow and can be dismissed
-- [ ] All bookings: tabs, month chips and search work
+- [x] ★ Pay: recipient search → recipient → amount → schedule → summary → confirm; the balance and bookings update
+- [x] Internal transfer completes
+- [x] Custody account → a position → Buy opens the trade flow and can be dismissed
+- [x] All bookings: tabs, month chips and search work
 
 ### 4. Profile
 
-- [ ] ★ User Type: moving a slider snaps to an anchor and changes the character, title and preview
-- [ ] Legibility: a preset changes type and spacing app-wide; Typeface, Font and Paddings work
-- [ ] ★ Theme: picking a Multi-color theme recolours every page (focus rings and primary buttons take the accent); the UZ Bank card restores the default look exactly
-- [ ] Demo data reset restores the Household balance
+- [x] ★ User Type: moving a slider snaps to an anchor and changes the character, title and preview
+- [x] Legibility: a preset changes type and spacing app-wide; Typeface, Font and Paddings work
+- [x] ★ Theme: picking a Multi-color theme recolours every page (focus rings and primary buttons take the accent); the UZ Bank card restores the default look exactly
+- [x] Demo data reset restores the Household balance
 
 ### 5. Design system (signed in as admin)
 
-- [ ] The Design system hub shows Motion, Components and Character kit; only the trailing arrows move
-- [ ] Motion specimens, Components and Character kit open, and back returns to the hub
-- [ ] The Character kit specimen loads and the profile buttons change the figure
+- [x] The Design system hub shows Motion, Components and Character kit; only the trailing arrows move
+- [ ] Motion specimens, Components and Character kit open, and back returns to the hub (Motion and Character kit checked, back returns to the hub; Components not opened this run)
+- [x] The Character kit specimen loads and the profile buttons change the figure
 
 ### 6. Accessibility
 
-- [ ] Tab through Overview: focus is always visible
-- [ ] With reduced motion on (System Settings → Accessibility → Display), page transitions and the character are still, and nothing is stuck mid-animation
+- [x] Tab through Overview: focus is always visible
+- [x] With reduced motion on (System Settings → Accessibility → Display), page transitions and the character are still, and nothing is stuck mid-animation. One exception, not from this branch: the forward arrows (Show all bookings) keep their nudge; logged as roadmap 36
 
-Checked on: not yet run.
+## Notes
+
+- **During the build** (groups 1 and 2), reduced motion was emulated: the reduced-motion sheet rules injected and `MediaQueryList.matches` stubbed for the reduce query. With it every sheet's close cleared the overlay and the page took the click; the booking sheet's Edit still opened Pay with the close now finishing at once.
+- **The sweep with the real setting** (Klaudiusz switched it on, then off): `matchMedia('(prefers-reduced-motion: reduce)')` read `true`, then `false`. The transfer was closed with real mouse clicks (X, Discard) and a real click on Pay opened Pay. Most other opens, closes and "click behind" checks were scripted clicks plus `elementFromPoint` on the control behind, to confirm no layer covers it; the Playground (settings, X, then the Motion card) used real clicks.
+- **Phone width** was a 390 × 760 frame inside the desktop tab, so the real setting applied; taps were clicks, not touch.
+- **Off:** a mid-close read of each shell's transform (around 100 to 320 px down, 100 ms in) confirmed the slide still runs; overlays clear after it. The Discard dialogs keep their own close animation as before.
+- **Page transitions:** the back step's animation (`uz-back-step`, `section-build-leaving`) was seen running when leaving All bookings; the forward direction was seen only as the navigation completing, since screenshots time out while the transition runs.
+- **Status message:** in a fresh tab it appeared after 12.2 s; in a tab that had seen it before, the session keeps it showing at once, as designed.
+- Console: only the browser extension's "message channel closed" entries; no errors from the app.
+- **Found:** roadmap 36 (forward arrows keep their nudge with reduced motion), committed on this branch on its own.
+- State after testing: demo data reset, `uzBankWebAppearance` restored exactly, persona sliders back at 0, UZ Bank theme (no colour override), Light.
+
+Checked on 2026-11-04 against `feature/sheet-close`, Chrome (Claude in Chrome) on macOS, desktop (1605 px wide window) and 390 × 760, Light and Dark, the UZ Bank theme and one Multi-color theme, with the macOS Reduce motion setting on and off (switched by Klaudiusz). Not checked: Safari and Firefox; a real phone or touch input; a screen reader; the Components specimen page (not opened this run).
