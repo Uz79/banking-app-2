@@ -436,6 +436,7 @@
     shell.classList.remove('modal-shell--closing');
     shell.classList.add('modal-shell--offscreen', 'modal-shell--no-transition');
     document.body.classList.add('body--iat-open');
+    if (window.UZBankSheetFocus) window.UZBankSheetFocus.open(overlay);
 
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
@@ -448,6 +449,8 @@
   }
 
   function closeOverlay(replaceState) {
+    /* At the start of the slide: the end waits for a transition that reduced motion may not run */
+    if (window.UZBankSheetFocus) window.UZBankSheetFocus.close(overlay);
     overlay.classList.add('modal-overlay--closing');
     shell.classList.add('modal-shell--closing');
     shell.addEventListener('transitionend', function onEnd() {

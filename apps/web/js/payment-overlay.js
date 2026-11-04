@@ -701,6 +701,7 @@
       }
       modalOverlay.classList.add('modal-overlay--active');
       document.body.classList.add('body--payment-open');
+      if (window.UZBankSheetFocus) window.UZBankSheetFocus.open(modalOverlay);
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
           if (!modalShell) return;
@@ -728,6 +729,7 @@
       modalShell.classList.remove('modal-shell--closing');
       modalShell.classList.add('modal-shell--offscreen', 'modal-shell--no-transition');
     }
+    if (window.UZBankSheetFocus) window.UZBankSheetFocus.close(modalOverlay);
     notifyScreen();
   }
 

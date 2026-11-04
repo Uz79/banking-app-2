@@ -25,4 +25,101 @@
     suppressInitialFocus: suppressInitialFocus,
     prefersKeyboardFocus: prefersKeyboardFocus
   };
+
+  /* ── Sheets (div overlays) keep focus, roadmap 27 ───────────────────────
+   * While a sheet is open the page (.app) and every other sheet are inert, a
+   * sheet beneath it included (D1 to D3). Focus moves into the sheet and back
+   * to its opener (D5, D6). */
+  var stack = [];
+  var ours = new Set(); /* elements this helper made inert, so others' inert stays theirs */
+  var openers = new Map(); /* overlay → the element focused when it opened */
+  var byKeyboard = false;
+
+  document.addEventListener('keydown', function () { byKeyboard = true; }, true);
+  document.addEventListener('pointerdown', function () { byKeyboard = false; }, true);
+
+  /* Only the app's own layers: the page and the other sheets. Native dialogs, scripts and anything a browser
+     extension adds to <body> are left alone. */
+  function isLayer(el) {
+    return el.classList.contains('app') || el.classList.contains('modal-overlay');
+  }
+
+  /* Recomputed from the stack, so sheets can close in any order */
+  function apply() {
+    var top = stack[stack.length - 1] || null;
+    Array.prototype.forEach.call(document.body.children, function (el) {
+      var want = !!top && el !== top && isLayer(el);
+      if (want && !el.inert) {
+        el.inert = true;
+        ours.add(el);
+      } else if (!want && ours.has(el)) {
+        el.inert = false;
+        ours.delete(el);
+      }
+    });
+  }
+
+  function canTakeFocus(el) {
+    if (!el || !el.isConnected || el === document.body || el.closest('[inert]')) return false;
+    if (el.disabled || el.getClientRects().length === 0) return false;
+    return el.tabIndex >= 0 || el.hasAttribute('tabindex');
+  }
+
+  /* An opener inside a sheet that has since closed hands on that sheet's own opener (the booking sheet's Edit opening Pay) */
+  function resolveOpener(el) {
+    var seen = 0;
+    while (el && seen++ < 5) {
+      var host = el.closest && el.closest('.modal-overlay');
+      if (!host || stack.indexOf(host) !== -1 || !openers.has(host)) return el;
+      el = openers.get(host);
+    }
+    return el;
+  }
+
+  function openSheet(overlay) {
+    if (!overlay || stack.indexOf(overlay) !== -1) return;
+    var active = document.activeElement;
+    openers.set(overlay, active && !overlay.contains(active) ? active : null);
+    stack.push(overlay);
+    apply();
+    /* After the sheet's own code has had its turn: Pay and the transfer focus a field themselves */
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        if (stack[stack.length - 1] !== overlay || overlay.contains(document.activeElement)) return;
+        var modal = overlay.querySelector('.modal') || overlay;
+        if (!modal.hasAttribute('tabindex')) modal.setAttribute('tabindex', '-1');
+        try { modal.focus({ preventScroll: true }); } catch (err) { /* ignore */ }
+      });
+    });
+  }
+
+  function closeSheet(overlay) {
+    var i = stack.indexOf(overlay);
+    if (i === -1) return;
+    var wasTop = i === stack.length - 1;
+    var active = document.activeElement;
+    var hadFocus = overlay.contains(active);
+    stack.splice(i, 1);
+    apply();
+    if (!wasTop && !hadFocus) return;
+    /* Closed from a dialog over the sheet (Discard): that dialog gives focus back to the sheet when it shuts,
+       so the opener is focused after it */
+    var dlg = active && active.closest && active.closest('dialog[open]');
+    if (dlg) {
+      dlg.addEventListener('close', function () { focusOpener(overlay); }, { once: true });
+      return;
+    }
+    focusOpener(overlay);
+  }
+
+  function focusOpener(overlay) {
+    if (stack.indexOf(overlay) !== -1) return; /* opened again meanwhile */
+    var opener = resolveOpener(openers.get(overlay));
+    if (!canTakeFocus(opener)) return;
+    try {
+      opener.focus(byKeyboard ? { preventScroll: true } : { preventScroll: true, focusVisible: false });
+    } catch (err) { /* ignore */ }
+  }
+
+  window.UZBankSheetFocus = { open: openSheet, close: closeSheet };
 })();
