@@ -25,7 +25,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 - [ ] "As soon as possible" off: "Execute on" shows the next working day (a Friday afternoon gives Monday) and opens the calendar
 - [ ] Toggle back on: today, and the field opens nothing
-- [ ] A picked date shows in the summary and the confirmation ("will be made on <date>"); the booking is pending on that date in Account details and All bookings (Pending tab, in date order); Household does not change
+- [ ] A picked date shows in the summary and the confirmation ("will be made on <date>"); the booking is pending on that date in All bookings (Pending tab, in date order; Account details lists only executed bookings, as since 23); Household does not change
 - [ ] Recurring and Standing order: the picked date is the start ("starts on <date>")
 - [ ] Editing a pending payment (roadmap 23) opens on its own date; one whose date is now past opens on the next working day
 - [ ] As soon as possible on: the payment executes today as before

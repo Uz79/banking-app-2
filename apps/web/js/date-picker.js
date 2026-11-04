@@ -66,6 +66,23 @@
     return DAYS[weekdayIndex(d)] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
   }
 
+  /* The date a later payment or transfer runs on: the one it has while that is allowed, else the next working
+     day (D4), so turning "as soon as possible" off never leaves today */
+  function laterLabel(label) {
+    var range = executionRange();
+    var d = parseLabel(label);
+    return formatLabel(range.allows(d) ? d : range.min);
+  }
+
+  /* "Execute on" opens the calendar only for a later date; with "as soon as possible" on it shows today (D4, D8) */
+  function syncField(btn, label, later) {
+    if (!btn) return;
+    btn.disabled = !later;
+    var d = parseLabel(label);
+    var spoken = d ? d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear() : label;
+    btn.setAttribute('aria-label', 'Execute on, ' + spoken + (later ? ', change date' : ''));
+  }
+
   function icon(id) {
     return '<svg class="date-picker__nav-icon" aria-hidden="true" focusable="false"><use href="#' + id + '"/></svg>';
   }
@@ -205,6 +222,8 @@
     nextWorkingDay: nextWorkingDay,
     formatLabel: formatLabel,
     parseLabel: parseLabel,
-    longLabel: longLabel
+    longLabel: longLabel,
+    laterLabel: laterLabel,
+    syncField: syncField
   };
 })();

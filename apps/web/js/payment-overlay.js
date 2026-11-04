@@ -193,21 +193,22 @@
   }
 
   /** Schedule step — when "as soon as possible" toggle is ON, the
-   *  Execute on field shows today's date. When OFF, it keeps whatever
-   *  date was last shown (the user can't currently pick a date inline,
-   *  but flipping the toggle back ON re-snaps to today). The displayed
+   *  Execute on field shows today's date and opens nothing. When OFF, it
+   *  shows the later date (the next working day unless one was picked or
+   *  carried in) and opens the calendar (roadmap 28, D4). The displayed
    *  date is also propagated into live.dateLabel so summary + confirmation
-   *  pick it up.
-   *  The Execute on field is the LAST .form-field in the schedule step. */
+   *  pick it up. */
   function paintScheduleStep() {
     var step = $step('schedule'); if (!step) return;
     var toggle = step.querySelector('.toggle');
     var isAsap = toggle ? toggle.classList.contains('toggle--active') : true;
+    var picker = window.UZBankDatePicker;
     if (isAsap) live.dateLabel = formatTodayDate();
-    var fields = step.querySelectorAll('.form-field');
-    var executeOn = fields[fields.length - 1];
-    var dateValue = executeOn && executeOn.querySelector('.form-field__value');
+    else if (picker) live.dateLabel = picker.laterLabel(live.dateLabel);
+    var dateBtn = step.querySelector('[data-execute-on]');
+    var dateValue = dateBtn && dateBtn.querySelector('.form-field__value');
     if (dateValue) dateValue.textContent = live.dateLabel;
+    if (picker) picker.syncField(dateBtn, live.dateLabel, !isAsap);
   }
 
   /** Force the schedule step's "as soon as possible" toggle into the ON
@@ -595,6 +596,19 @@
     setTimeout(paintScheduleStep, 0);
   });
 
+  /** "Execute on" opens the calendar for a later payment (roadmap 28, D1, D4). */
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('.modal__step[data-step="schedule"] [data-execute-on]');
+    if (!btn || btn.disabled || !window.UZBankFormSheet || !window.UZBankFormSheet.openDateSheet) return;
+    window.UZBankFormSheet.openDateSheet(btn, {
+      selected: window.UZBankDatePicker.parseLabel(live.dateLabel),
+      onPick: function (date) {
+        live.dateLabel = window.UZBankDatePicker.formatLabel(date);
+        paintScheduleStep();
+      }
+    });
+  });
+
   /** Explicit payment navigation from edit buttons. */
   document.addEventListener('click', function (e) {
     var btn = e.target.closest && e.target.closest('.form-field__edit[data-payment-nav]');
@@ -657,11 +671,10 @@
           if (amt.select) amt.select();
         }
       } else if (targetSeg === 'schedule') {
-        var dateRow = stepEl.querySelector('.form-field__date-wrap');
-        if (dateRow && dateRow.focus) {
-          if (!dateRow.getAttribute('tabindex')) dateRow.setAttribute('tabindex', '-1');
-          dateRow.focus();
-        }
+        /* "Execute on" while it opens the calendar, else the toggle that makes it (roadmap 28) */
+        var dateRow = stepEl.querySelector('[data-execute-on]');
+        var target = dateRow && !dateRow.disabled ? dateRow : stepEl.querySelector('.toggle');
+        if (target) target.focus();
       } else if (targetSeg === 'recipient') {
         var nameInp = stepEl.querySelector('.form-field__input');
         if (nameInp) nameInp.focus();

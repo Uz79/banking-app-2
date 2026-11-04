@@ -14,10 +14,10 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 2. Pay and the transfer use it (D4, D5, D6)
 
-- [ ] `apps/web/js/payment-overlay.js`: the toggle off picks the next working day; "Execute on" opens the calendar while the toggle is off; on goes back to today; an edited booking's date that isn't allowed moves to the next working day
-- [ ] `apps/web/js/iat-overlay.js`: the same for Immediately and the transfer's field
-- [ ] The field's markup in `overview.html`, `payments.html`, `account-details.html`: "Execute on" can be a button (D8 label)
-- [ ] Check: a later payment and a later transfer on a picked date show it in the summary and the confirmation, and as pending on that date in the bookings; Recurring starts on the picked date
+- [x] `apps/web/js/payment-overlay.js`: the toggle off picks the next working day; "Execute on" opens the calendar while the toggle is off; on goes back to today; an edited booking's date that isn't allowed moves to the next working day
+- [x] `apps/web/js/iat-overlay.js`: the same for Immediately and the transfer's field
+- [x] The field's markup in `overview.html`, `payments.html`, `account-details.html`: "Execute on" is a button (D8 label; committed with group 1)
+- [x] Check: a later payment and a later transfer on a picked date show it in the summary and the confirmation, and as pending on that date in the bookings; Recurring starts on the picked date
 
 ## 3. Wrap-up
 
