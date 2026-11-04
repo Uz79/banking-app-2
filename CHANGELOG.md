@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 5ac46ff8048bcb91d64a6e18dcb4830da7a24b0b -->
+<!-- changelog: last-commit d849a5405983a22652d4e8d068a823e29d81d85c -->
 
 ### Fixed
 - **3D stages pause and resume correctly after a fast scroll** (roadmap 20). The helper specimen on the Character kit and the persona stage (the kit's live specimen, Profile and the figure on the main screens) now follow the latest visibility change, as the Vehicles stage already did. Before, a fast scroll could leave a figure frozen on screen or drawing while off it.
