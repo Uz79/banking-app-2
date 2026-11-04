@@ -37,6 +37,7 @@ Roadmap item 28 (`specs/roadmap.md`): in Pay and the internal transfer, turning 
 | D10 | **Copy:** the sheet title is "Execute on"; buttons "Previous month", "Next month". English, no em dashes | Matches the field |
 | D11 | **Pages:** `js/date-picker.js` loads before `js/form-field-sheet.js` on the pages with Pay or the transfer: Overview, Payments, Account details. Not registered elsewhere (no new page) | Only those pages have the flows |
 | D12 | **The merge gate** (interview): `npm run build`; this branch's `validation.md` in a real browser (Light and Dark, a Multi-color theme, desktop and 390, keyboard, reduced motion); the baseline smoke test | Standard gate |
+| D13 | **The transfer's Immediately switch paints last** (found in the build, also on `main`): its click defers `paintScheduleStep` with `setTimeout(…, 0)`, as Pay's toggle already does, so the paint runs after `app-mp.js`'s app-wide toggle handler has flipped the class. Before, the switch showed the opposite of its state (off while immediate) | The field this branch adds shows and hides with the switch, so a switch that shows the wrong state breaks it |
 
 ## Context
 

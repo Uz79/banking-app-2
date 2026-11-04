@@ -545,7 +545,9 @@
   if (immediatelyToggle) {
     immediatelyToggle.addEventListener('click', function () {
       live.immediately = !live.immediately;
-      paintScheduleStep();
+      /* After the app-wide toggle handler (app-mp.js) has flipped the class, so the paint has the last word and
+         the switch shows what it is (found in roadmap 28) */
+      setTimeout(paintScheduleStep, 0);
     });
   }
 
