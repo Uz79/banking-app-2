@@ -200,11 +200,11 @@ Found during 25 (2026-11-03). In the Pay sheet and the Buy sheet on desktop, Tab
 
 Spec: `specs/2026-11-04-sheet-focus/` (branch `feature/sheet-focus`). Found while writing it: six sheets are affected (Pay, the transfer, Buy and Sell, the booking sheet, Account information, Share information); the Discard dialogs and the picker sheets are native dialogs and the fridge and playground already make the page inert. Settled in its interview: a shared stack helper in `js/dialog-focus.js` (Share opens over Account information); focus moves into the sheet and back to its opener; the fridge and playground stay as they are. Found in the build: dialogs around a sheet (Discard, More functions) need the helper to wait for them; with reduced motion the transfer never finishes closing (35). Built 2026-11-04.
 
-## 28. Payments and transfers: the execution date can't be picked
+## 28. Payments and transfers: the execution date can't be picked (done)
 
 Found during 15 (2026-11-03). Turning off "As soon as possible" (payment) or "Immediately" (transfer) shows an "Execute on" field, but nothing opens a date picker: the date stays today, so a "later" payment or transfer is pending for today, and a recurring one starts today. The confirmation now says "will be made on" and "starts on" with that date. To settle in its spec: a date picker (the app has none yet), which dates are allowed (working days, not in the past), and when a pending booking becomes executed.
 
-Spec: `specs/2026-11-04-execution-date/` (branch `feature/execution-date`). Settled in its interview: the app's own calendar in the form sheet (pop-up on desktop, bottom sheet on a phone); working days from the next working day to twelve months ahead, no holidays; what happens when the date arrives moves to 37.
+Spec: `specs/2026-11-04-execution-date/` (branch `feature/execution-date`). Settled in its interview: the app's own calendar in the form sheet (pop-up on desktop, bottom sheet on a phone); working days from the next working day to twelve months ahead, no holidays; what happens when the date arrives moves to 37. Found in the build: the transfer's Immediately switch showed the opposite state (fixed here, D13) and Pay's schedule step always names Hans Meyer (38). Built 2026-11-04.
 
 ## 29. Pay: the schedule step names the wrong recipient
 

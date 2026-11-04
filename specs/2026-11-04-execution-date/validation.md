@@ -6,41 +6,41 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 
 ## 1. Build
 
-- [ ] `npm run build` in `apps/web` succeeds with no new warnings
-- [ ] The browser console shows no errors on the pages visited (the browser extension's entries aside)
+- [x] `npm run build` in `apps/web` succeeds with no new warnings
+- [x] The browser console shows no errors on the pages visited (the browser extension's entries aside)
 
 ## 2. The calendar
 
-- [ ] Desktop (1440): it opens as a pop-up anchored under "Execute on"; at 390 as a bottom sheet
-- [ ] It opens on the selected date's month, with that day selected and today ringed
-- [ ] Weekends, today, past days and days past twelve months ahead can't be picked; Previous month disables on the first allowed month, Next month on the last
-- [ ] Picking a day closes the sheet and the field shows the date
-- [ ] Escape and a click outside close it without changing the date
-- [ ] Keyboard: focus opens on the selected day; arrows, Page Up / Page Down, Home / End move as D8 says and skip nothing; Enter picks; focus goes back to "Execute on" with its ring
-- [ ] Labels (by inspection): each day reads its full date, the month header is a live region, the field reads "Execute on, …, change date"
-- [ ] Light and Dark, and a Multi-color theme: the selected day takes the accent, the dimmed days stay readable
-- [ ] Reduced motion: the sheet opens and closes at once; changing month never animates
+- [x] Desktop (1440): it opens as a pop-up anchored under "Execute on"; at 390 as a bottom sheet (desktop window 1605 px wide; 390 in an iframe, Pay and the transfer)
+- [x] It opens on the selected date's month, with that day selected and today ringed
+- [x] Weekends, today, past days and days past twelve months ahead can't be picked; Previous month disables on the first allowed month, Next month on the last (on Wed 4 Nov 2026: first day Thu 5 Nov 2026, last Thu 4 Nov 2027)
+- [x] Picking a day closes the sheet and the field shows the date
+- [x] Escape and a click outside close it without changing the date
+- [x] Keyboard: focus opens on the selected day; arrows, Page Up / Page Down, Home / End move as D8 says and skip nothing; Enter picks; focus goes back to "Execute on" with its ring
+- [x] Labels (by inspection): each day reads its full date, the month header is a live region, the field reads "Execute on, …, change date"
+- [x] Light and Dark, and a Multi-color theme: the selected day takes the accent, the dimmed days stay readable (Multi-color: Custom 10)
+- [x] Reduced motion: the sheet opens and closes at once; changing month never animates (emulated by stubbing `matchMedia` for `reduce`, which drives the sheet's close; the macOS setting itself was not switched)
 
 ## 3. Pay
 
-- [ ] "As soon as possible" off: "Execute on" shows the next working day (a Friday afternoon gives Monday) and opens the calendar
-- [ ] Toggle back on: today, and the field opens nothing
-- [ ] A picked date shows in the summary and the confirmation ("will be made on <date>"); the booking is pending on that date in All bookings (Pending tab, in date order; Account details lists only executed bookings, as since 23); Household does not change
-- [ ] Recurring and Standing order: the picked date is the start ("starts on <date>")
-- [ ] Editing a pending payment (roadmap 23) opens on its own date; one whose date is now past opens on the next working day
-- [ ] As soon as possible on: the payment executes today as before
+- [x] "As soon as possible" off: "Execute on" shows the next working day (a Friday afternoon gives Monday) and opens the calendar (checked on a Wednesday, giving Thursday; the weekend skip is checked through the grid and `nextWorkingDay`, not on a real Friday)
+- [x] Toggle back on: today, and the field opens nothing
+- [x] A picked date shows in the summary and the confirmation ("will be made on <date>"); the booking is pending on that date in All bookings (Pending tab, in date order; Account details lists only executed bookings, as since 23); Household does not change
+- [x] Recurring and Standing order: the picked date is the start ("starts on <date>")
+- [x] Editing a pending payment (roadmap 23) opens on its own date; one whose date is now past opens on the next working day (Edit on All bookings does nothing, roadmap 31, so checked through the edit context on Account details: 18.11 kept, a past date gave 05.11)
+- [x] As soon as possible on: the payment executes today as before
 
 ## 4. The transfer
 
-- [ ] "Immediately" off: the field appears with the next working day and opens the calendar; on hides it again
-- [ ] A picked date shows in the summary and the confirmation; the transfer is pending on that date; no balance changes
-- [ ] Recurring execution starts on the picked date
-- [ ] Immediately on: the transfer executes today as before
+- [x] "Immediately" off: the field appears with the next working day and opens the calendar; on hides it again (the switch showed the opposite state, also on `main`; fixed, D13)
+- [x] A picked date shows in the summary and the confirmation; the transfer is pending on that date; no balance changes
+- [x] Recurring execution starts on the picked date
+- [x] Immediately on: the transfer executes today as before
 
 ## 5. Unchanged
 
-- [ ] The other pickers (debit account, currency, country, More functions) open and close as before
-- [ ] Sheet focus (27) and sheet close (35): after the calendar closes, Tab stays in Pay or the transfer; closing the flow returns focus to its opener
+- [x] The other pickers (debit account, currency, country, More functions) open and close as before
+- [x] Sheet focus (27) and sheet close (35): after the calendar closes, Tab stays in Pay or the transfer; closing the flow returns focus to its opener
 
 ## 6. Baseline smoke test
 
@@ -48,39 +48,39 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 
 ### 1. Build
 
-- [ ] `npm run build` succeeds with no new warnings
-- [ ] The browser console shows no errors on any page visited below
+- [x] `npm run build` succeeds with no new warnings
+- [x] The browser console shows no errors on any page visited below
 
 ### 2. Shell
 
-- [ ] ★ Overview loads with sidebar (desktop) or tab bar (phone); the 3D character appears in the lower right on desktop
-- [ ] ★ Light/Dark toggle switches instantly and survives a reload
-- [ ] Navigating Overview → Account details → All bookings and back plays the page transitions in the right directions
-- [ ] The "Open payment!" status message appears after about 12 s on a main view; tapping it dismisses it
+- [x] ★ Overview loads with sidebar (desktop) or tab bar (phone); the 3D character appears in the lower right on desktop
+- [x] ★ Light/Dark toggle switches instantly and survives a reload
+- [x] Navigating Overview → Account details → All bookings and back plays the page transitions in the right directions
+- [ ] The "Open payment!" status message appears after about 12 s on a main view; tapping it dismisses it (seen on Overview, a tap dismissed it and it came back about 8 s later as designed; the first 12 s were not timed, it was already showing from earlier in the session)
 
 ### 3. Banking flows
 
-- [ ] ★ Pay: recipient search → recipient → amount → schedule → summary → confirm; the balance and bookings update
-- [ ] Internal transfer completes
-- [ ] Custody account → a position → Buy opens the trade flow and can be dismissed
-- [ ] All bookings: tabs, month chips and search work
+- [x] ★ Pay: recipient search → recipient → amount → schedule → summary → confirm; the balance and bookings update (Light desktop and Dark 390; the schedule step names Hans Meyer whoever is picked, also on `main`: roadmap 38)
+- [x] Internal transfer completes
+- [x] Custody account → a position → Buy opens the trade flow and can be dismissed
+- [x] All bookings: tabs, month chips and search work
 
 ### 4. Profile
 
-- [ ] ★ User Type: moving a slider snaps to an anchor and changes the character, title and preview
-- [ ] Legibility: a preset changes type and spacing app-wide; Typeface, Font and Paddings work
-- [ ] ★ Theme: picking a Multi-color theme recolours every page (focus rings and primary buttons take the accent); the UZ Bank card restores the default look exactly
-- [ ] Demo data reset restores the Household balance
+- [x] ★ User Type: moving a slider snaps to an anchor and changes the character, title and preview
+- [x] Legibility: a preset changes type and spacing app-wide; Typeface, Font and Paddings work
+- [x] ★ Theme: picking a Multi-color theme recolours every page (focus rings and primary buttons take the accent); the UZ Bank card restores the default look exactly
+- [x] Demo data reset restores the Household balance
 
 ### 5. Design system (signed in as admin)
 
-- [ ] The Design system hub shows Motion, Components and Character kit; only the trailing arrows move
-- [ ] Motion specimens, Components and Character kit open, and back returns to the hub
-- [ ] The Character kit specimen loads and the profile buttons change the figure
+- [x] The Design system hub shows Motion, Components and Character kit; only the trailing arrows move
+- [x] Motion specimens, Components and Character kit open, and back returns to the hub
+- [x] The Character kit specimen loads and the profile buttons change the figure
 
 ### 6. Accessibility
 
-- [ ] Tab through Overview: focus is always visible
-- [ ] With reduced motion on (System Settings → Accessibility → Display), page transitions and the character are still, and nothing is stuck mid-animation
+- [x] Tab through Overview: focus is always visible
+- [ ] With reduced motion on (System Settings → Accessibility → Display), page transitions and the character are still, and nothing is stuck mid-animation (not run: the setting wasn't switched in this pass)
 
-Checked on: not yet run.
+Checked on 2026-11-04 against `feature/execution-date`, Chrome on macOS through Claude in Chrome on the test server (port 5199): desktop (1605 px window) in Light, Dark and a Multi-color theme (Custom 10); 390 px in an iframe in Light and Dark; keyboard. Not checked: the real macOS Reduce motion setting (emulated in JS for the calendar only), a real Friday for the next working day, the status message's first 12 s, Safari and Firefox.
