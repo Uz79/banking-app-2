@@ -192,7 +192,7 @@
     syncAmountInputClearVisibility();
   }
 
-  /** Schedule step — when "as soon as possible" toggle is ON, the
+  /** Schedule step — the chosen recipient's name (roadmap 29). When the "as soon as possible" toggle is ON, the
    *  Execute on field shows today's date and opens nothing. When OFF, it
    *  shows the later date (the next working day unless one was picked or
    *  carried in) and opens the calendar (roadmap 28, D4). The displayed
@@ -200,6 +200,8 @@
    *  pick it up. */
   function paintScheduleStep() {
     var step = $step('schedule'); if (!step) return;
+    var recipName = step.querySelector('.form-field .form-field__value');
+    if (recipName && live.recipient) recipName.textContent = live.recipient.name;
     var toggle = step.querySelector('.toggle');
     var isAsap = toggle ? toggle.classList.contains('toggle--active') : true;
     var picker = window.UZBankDatePicker;
