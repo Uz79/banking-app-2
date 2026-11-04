@@ -249,3 +249,7 @@ Split from 28 (2026-11-04). A payment or transfer set for a later date stays pen
 ## 38. Pay: the schedule step always names Hans Meyer (duplicate of 29)
 
 Found during 28 (2026-11-04). Pay's schedule step shows "Recipient: Hans Meyer" whoever was picked: `paintScheduleStep` in `js/payment-overlay.js` never writes the recipient's name, so the markup's placeholder stays (the amount step and the summary are right). Also on `main`. The same bug as 29, closed on 2026-11-04 and built there; its look at the other steps' placeholders is 29's D3.
+
+## 39. Pay: a recipient's details typed on the recipient step are lost
+
+Found while writing 29's spec (2026-11-04). The recipient step fills Recipient name, Street and City from the chosen recipient, but nothing reads the inputs back (`js/payment-overlay.js`, the `input` handler only syncs the clear buttons). A name changed there is ignored: the schedule step, the summary, the confirmation and the stored booking keep the name picked from the list. To settle in its spec: whether the typed details update the flow's recipient (and the stored booking), whether a changed name makes a new recipient or edits the saved one, and what an emptied name does on Next.
