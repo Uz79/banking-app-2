@@ -198,6 +198,8 @@ Spec: `specs/2026-11-04-fridge-ring-desktop/` (branch `feature/fridge-ring-deskt
 
 Found during 25 (2026-11-03). In the Pay sheet and the Buy sheet on desktop, Tab past the last control moves focus to the page behind the scrim (Overview's Scan and Pay, the position's Sell), which can't be seen or used while the sheet is open. The "Discard" dialogs and the opening's phone layer were not affected. To settle in its spec: make the page behind inert while a sheet is open (or keep focus in the sheet), and which sheets share the code.
 
+Spec: `specs/2026-11-04-sheet-focus/` (branch `feature/sheet-focus`). Found while writing it: six sheets are affected (Pay, the transfer, Buy and Sell, the booking sheet, Account information, Share information); the Discard dialogs and the picker sheets are native dialogs and the fridge and playground already make the page inert. Settled in its interview: a shared stack helper in `js/dialog-focus.js` (Share opens over Account information); focus moves into the sheet and back to its opener; the fridge and playground stay as they are.
+
 ## 28. Payments and transfers: the execution date can't be picked
 
 Found during 15 (2026-11-03). Turning off "As soon as possible" (payment) or "Immediately" (transfer) shows an "Execute on" field, but nothing opens a date picker: the date stays today, so a "later" payment or transfer is pending for today, and a recurring one starts today. The confirmation now says "will be made on" and "starts on" with that date. To settle in its spec: a date picker (the app has none yet), which dates are allowed (working days, not in the past), and when a pending booking becomes executed.
