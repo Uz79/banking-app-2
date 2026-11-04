@@ -857,14 +857,18 @@
         ? fullRecipient.name + '\n' + fullRecipient.street + '\n' + fullRecipient.city
         : recipientName;
 
+      // A stored payment shows its own status and schedule (roadmap 23, D5)
+      var stored = getStateBooking(currentBookingId);
+
       data = {
-        type:     'domestic',
-        title:    'Domestic Payment',
-        amount:   valEl  ? valEl.textContent.trim()  : '',
-        currency: curEl  ? curEl.textContent.trim()  : 'CHF',
-        to:       toStr,
-        status:   'pending',
-        message:  null
+        type:      'domestic',
+        title:     'Domestic Payment',
+        amount:    valEl  ? valEl.textContent.trim()  : '',
+        currency:  curEl  ? curEl.textContent.trim()  : 'CHF',
+        to:        toStr,
+        status:    stored ? (stored.status || 'executed') : 'pending',
+        executeOn: stored && stored.executeOn ? stored.executeOn : null,
+        message:   null
       };
     }
 
