@@ -11767,6 +11767,17 @@ html:not(.fridge--wide) .fridge__ring-amount {
   font-size: min(var(--fs-h5), calc(155cqw / var(--ring-chars, 10)));
 }
 
+/* Floating panel: the label stays inside, the amount on one line below it, sized the same way so CHF 999'999
+   clears the inner circle (roadmap 26, D1, D2). */
+html.fridge--wide .fridge__ring {
+  container-type: inline-size;
+}
+
+html.fridge--wide .fridge__ring-amount {
+  white-space: nowrap;
+  font-size: min(var(--fs-h4), calc(140cqw / var(--ring-chars, 10)));
+}
+
 /* ── Investment opening ("Open asset management"): follows the fridge in the same sheet ─────────── */
 
 /* The sheet goes from the fridge's 960 to the flows' 640 when the opening loads, and back for "Start over" (9a D2).

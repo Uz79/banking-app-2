@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 852b9abdf293d7fa967c408da1a225299f4c41ac -->
+<!-- changelog: last-commit 86df30b6982306a3e18d7e91d2b0fcba3d416e12 -->
 
 ### Changed
 - **All bookings: month separators** (roadmap 24). Each month in the list starts with a band naming it ("JUNE"; with the year when a tab crosses one, "JANUARY 2027"), in all three tabs and for payments made in the app too. Each band is a heading, so a screen reader can jump month to month. A month chip scrolls to its band, just under the docked chips, and while scrolling the chip of the month in view becomes active; a chip's own scroll doesn't flick through the months on the way. Search hides the band of a month with no match. With reduced motion the chip jumps instead of scrolling.
@@ -14,6 +14,8 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **The fridge's result fits its ring on desktop** (roadmap 26). On the floating panel a six-digit amount wrapped onto two lines and touched the ring's edge. The amount now stays on one line below "You could invest" and gets smaller as it gets longer, as on a phone, so any amount the fridge can show fits inside the ring.
+- Spec: `specs/2026-11-04-fridge-ring-desktop/`.
 - **Editing a pending payment keeps it pending** (roadmap 23). Editing a payment kept only its recipient, amount and date, so a pending or recurring payment turned executed and its money left Household. Now the edit keeps the rest of the booking and opens with its own schedule ("As soon as possible" off and its date, or Recurring); the schedule step decides what happens, so switching to "as soon as possible" executes it. The booking sheet also shows a payment made in the app with its real status: before, every one read "Pending" with Edit, executed ones too; now Edit shows only on pending and recurring payments.
 - Spec: `specs/2026-11-04-edit-pending-payment/`.
 - **3D stages pause and resume correctly after a fast scroll** (roadmap 20). The helper specimen on the Character kit and the persona stage (the kit's live specimen, Profile and the figure on the main screens) now follow the latest visibility change, as the Vehicles stage already did. Before, a fast scroll could leave a figure frozen on screen or drawing while off it.
