@@ -206,11 +206,11 @@ Found during 15 (2026-11-03). Turning off "As soon as possible" (payment) or "Im
 
 Spec: `specs/2026-11-04-execution-date/` (branch `feature/execution-date`). Settled in its interview: the app's own calendar in the form sheet (pop-up on desktop, bottom sheet on a phone); working days from the next working day to twelve months ahead, no holidays; what happens when the date arrives moves to 37. Found in the build: the transfer's Immediately switch showed the opposite state (fixed here, D13) and Pay's schedule step always names Hans Meyer (38). Built 2026-11-04.
 
-## 29. Pay: the schedule step names the wrong recipient
+## 29. Pay: the schedule step names the wrong recipient (done)
 
 Found during 22 (2026-11-04). The Pay flow's Time Schedule step shows "Hans Meyer" as the recipient whoever was picked: the name is fixed in `overview.html` (the `data-step="schedule"` field) and nothing fills it. The summary, the confirmation and the booking use the right name. To settle in its spec: fill it from the chosen recipient like the amount step does, and check the same fixed name on the other pages that carry the Pay sheet.
 
-Found again during 28 as item 38 (the cause: `paintScheduleStep` in `js/payment-overlay.js` never writes the name), closed as its duplicate. Spec: `specs/2026-11-04-schedule-recipient/` (branch `feature/schedule-recipient`). Settled in its interview: the schedule step only, with a check of every other placeholder in the Pay sheet on Overview, Payments and Account details; typed recipient fields not being read back is item 39.
+Found again during 28 as item 38 (the cause: `paintScheduleStep` in `js/payment-overlay.js` never writes the name), closed as its duplicate. Spec: `specs/2026-11-04-schedule-recipient/` (branch `feature/schedule-recipient`). Settled in its interview: the schedule step only, with a check of every other placeholder in the Pay sheet on Overview, Payments and Account details; typed recipient fields not being read back is item 39. Changed at review: the Pay sheet's "Hans Meyer" placeholders leave the markup (D2), and the Lena Fischer case is checked down to the stored booking and the balance (D10). Built 2026-11-04.
 
 ## 30. Buy and Sell: "Discard order?" offers "Continue payment"
 
