@@ -5,6 +5,10 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 ## Unreleased
 <!-- changelog: last-commit d849a5405983a22652d4e8d068a823e29d81d85c -->
 
+### Changed
+- **"Reset demo data" asks first and is never disabled** (roadmap 22). Profile's button opens "Reset demo data?" (Cancel or Reset; Escape keeps the data) and, after a reset, a line under it says "Demo data reset." for as long as the page is open, read out by screen readers. The button no longer greys out for a moment or swaps its label. The section's text now says what a reset clears: payments, trades and investments, with the starting balances restored.
+- Spec: `specs/2026-11-04-reset-demo-confirm/`.
+
 ### Fixed
 - **3D stages pause and resume correctly after a fast scroll** (roadmap 20). The helper specimen on the Character kit and the persona stage (the kit's live specimen, Profile and the figure on the main screens) now follow the latest visibility change, as the Vehicles stage already did. Before, a fast scroll could leave a figure frozen on screen or drawing while off it.
 - Spec: `specs/2026-11-04-observer-latest-entry/`.

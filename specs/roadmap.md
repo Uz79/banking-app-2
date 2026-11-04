@@ -160,7 +160,7 @@ Found during 9c (2026-11-02). The helper specimen's IntersectionObserver in `cha
 
 Planned and built 2026-11-03. The fridge and the opening as a customer meets them on a phone, plus two rules for every width. Regular sliders on a phone; the assistant on a phone as its own layer over the flow ("Questions about this step", its own X); no disabled call-to-action buttons (a design-system rule: Next always enabled, a tap with something missing says what under the field and moves focus there; replaces 9d D18's disabled Next); why "Show suitable products" looks pale; the fridge's result ring (item 19); a focus ring on Investment after a close only when closed by keyboard; closing asks "Leave for now?" on every step, and the progress is really kept: the fridge keeps its step and values for the session (revises fridge D8) and Investment reopens where the customer left. Spec: `specs/2026-11-03-phone-polish/` (branch `feature/phone-polish`). Settled in its interview: one session key (`uzBankWebOpeningDraft`, extended with the page and the fridge's values); completion clears everything; completion and the booked appointment close without asking; Klaudiusz checks VoiceOver on an iPhone.
 
-## 22. Profile: "Reset demo data" is disabled while it confirms
+## 22. Profile: "Reset demo data" is disabled while it confirms (done)
 
 Found during 21 (2026-11-03). The design-system rule from 21 says a call-to-action is never disabled; Profile's "Reset demo data" (`js/app-mp.js`) disables itself for 1.2 s while it shows "Reset ✓". To settle in its spec: a confirmation that does not disable the button (a status line or a toast), and whether the button should ask first.
 
