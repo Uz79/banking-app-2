@@ -24,6 +24,7 @@ Every other sheet already guards its close with a fallback timer next to the sam
 - The native dialogs (Discard, the picker sheets), the assistant layer, the Playground settings dialog, the page transitions and the Pay step animations: each already has a fallback or a reduced-motion path (D4)
 - `js/app.js` (only `spa-source.html`)
 - Other open roadmap items (28 and on)
+- The forward arrows' nudge keeps running with reduced motion: roadmap 36, found in the sweep
 
 ## Decisions
 
