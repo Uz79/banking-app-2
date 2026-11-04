@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 852b9abdf293d7fa967c408da1a225299f4c41ac -->
+<!-- changelog: last-commit 86df30b6982306a3e18d7e91d2b0fcba3d416e12 -->
 
 ### Changed
 - **All bookings: month separators** (roadmap 24). Each month in the list starts with a band naming it ("JUNE"; with the year when a tab crosses one, "JANUARY 2027"), in all three tabs and for payments made in the app too. Each band is a heading, so a screen reader can jump month to month. A month chip scrolls to its band, just under the docked chips, and while scrolling the chip of the month in view becomes active; a chip's own scroll doesn't flick through the months on the way. Search hides the band of a month with no match. With reduced motion the chip jumps instead of scrolling.
