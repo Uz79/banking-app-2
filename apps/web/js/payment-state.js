@@ -557,7 +557,8 @@
   /**
    * Update an existing booking in-place (used by the edit flow so
    * re-submitting a pending payment replaces it rather than duplicating it).
-   * Only the fields provided in `updates` are overwritten.
+   * Keeps every field the edit can't change (roadmap 23, D1); the schedule
+   * the flow sends decides the status, as for a new payment (D2).
    */
   function updatePayment(id, updates) {
     if (!id || !updates) return;
@@ -566,18 +567,23 @@
       if (state.bookings[i].id === id) { idx = i; break; }
     }
     if (idx < 0) return; // booking not found — no-op
-    var existing = state.bookings[idx];
-    state.bookings[idx] = {
-      id:            existing.id,
-      recipientName: (updates.recipient && updates.recipient.name)
-                       ? updates.recipient.name
-                       : existing.recipientName,
-      currency:      updates.currency  || existing.currency,
-      amount:        (typeof updates.amount === 'number' && updates.amount > 0)
-                       ? updates.amount
-                       : existing.amount,
-      dateISO:       updates.dateISO   || existing.dateISO
-    };
+    var booking = Object.assign({}, state.bookings[idx]);
+    if (updates.recipient && updates.recipient.name) booking.recipientName = updates.recipient.name;
+    if (updates.currency) booking.currency = updates.currency;
+    if (typeof updates.amount === 'number' && updates.amount > 0) booking.amount = updates.amount;
+
+    var status = updates.status;
+    if (status === 'pending' || status === 'recurring') {
+      /* Still later: keep its date and place in the list */
+      booking.status = status;
+      if (updates.executeOn) booking.executeOn = updates.executeOn;
+    } else {
+      /* Runs now: dated now, so its money leaves the account from this moment. No status, like a new payment */
+      delete booking.status;
+      delete booking.executeOn;
+      booking.dateISO = updates.dateISO || new Date().toISOString();
+    }
+    state.bookings[idx] = booking;
     dispatchChange();
   }
 

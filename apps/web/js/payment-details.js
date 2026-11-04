@@ -773,6 +773,8 @@
           recipient:     fullRecipient || null,  // full catalog record if found
           amount:        amtNum,
           currency:      d.currency || 'CHF',
+          status:        d.status || 'executed',  // the schedule step opens on it (roadmap 23, D3)
+          executeOn:     d.executeOn || null,
           targetStep:    step
         };
       }
