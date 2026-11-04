@@ -70,6 +70,8 @@
         search.index(panels[status]);
         search.filter();
       }
+      /* Back on Executed at the top: its first month is active again, scroll event or not (D6) */
+      if (status === 'executed' && root.__syncMonthSpy) root.__syncMonthSpy();
     }
 
     tabs.forEach(function (tab) {
@@ -93,21 +95,114 @@
     return navHeader.offsetHeight;
   }
 
+  /* Space between the docked header and a month's separator after a chip's scroll. */
+  var MONTH_SCROLL_GAP_PX = 8;
+  /* A chip's own scroll is running: the scroll doesn't move the active chip meanwhile (D6). */
+  var chipScrolling = false;
+  /* Where a chip's scroll ended; the scroll moves the active chip again once the list leaves it. */
+  var chipHoldTop = null;
+
+  function reducedMotion() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+
   function scrollToMonth(root, monthKey) {
     var anchor = monthAnchors[monthKey] || root.querySelector('[data-bookings-month-start="' + monthKey + '"]');
     var scrollEl = document.querySelector('.main-content');
     if (!anchor || !scrollEl) return;
 
-    var stickyOffset = getStickyOffset(root);
+    /* Before the chips dock, the header is shorter by the dock; the pass at the end corrects the rest. */
+    var navHeader = root.querySelector('[data-all-bookings-sticky-header]');
+    var dockBar = root.querySelector('.all-bookings__month-bar--docked');
+    var merged = document.body.classList.contains('all-bookings--month-merged');
+    var stickyOffset = getStickyOffset(root) + (!merged && dockBar ? dockBar.scrollHeight : 0);
     var scrollRect = scrollEl.getBoundingClientRect();
     var anchorRect = anchor.getBoundingClientRect();
     var targetTop =
-      scrollEl.scrollTop + anchorRect.top - scrollRect.top - stickyOffset;
+      scrollEl.scrollTop + anchorRect.top - scrollRect.top - stickyOffset - MONTH_SCROLL_GAP_PX;
+
+    chipScrolling = true;
+    var done = false;
+    var quiet = null;
+    /* Settles once the scroll has been still for longer than the chips take to dock (MERGE_OUT_MS, then the
+       0.2s grow): the growing header shifts the list after an instant scroll, so scrollend comes too early. */
+    function wait() {
+      clearTimeout(quiet);
+      quiet = window.setTimeout(settle, 350);
+    }
+    function settle() {
+      if (done) return;
+      done = true;
+      clearTimeout(quiet);
+      scrollEl.removeEventListener('scroll', wait);
+      /* Measure against the header as it now sits (docked, with its own top margin) */
+      if (navHeader) {
+        var delta = anchor.getBoundingClientRect().top - navHeader.getBoundingClientRect().bottom - MONTH_SCROLL_GAP_PX;
+        if (Math.abs(delta) > 1) scrollEl.scrollTo({ top: Math.max(0, scrollEl.scrollTop + delta), behavior: 'instant' });
+      }
+      requestAnimationFrame(function () {
+        chipHoldTop = scrollEl.scrollTop;
+        chipScrolling = false;
+      });
+    }
+    scrollEl.addEventListener('scroll', wait, { passive: true });
+    wait();
 
     scrollEl.scrollTo({
       top: Math.max(0, targetTop),
-      behavior: 'smooth',
+      /* Instant under reduced motion (D10) */
+      behavior: reducedMotion() ? 'auto' : 'smooth',
     });
+  }
+
+  /* The active chip follows the scroll on Executed (D6): the last month whose separator has reached the header.
+     The last months may not be able to rise that far before the list ends, so over that last stretch of scrolling
+     the line slides down by as much, and the last month is active at the end of the list. */
+  function bindMonthSpy(root) {
+    var scrollEl = document.querySelector('.main-content');
+    var navHeader = root.querySelector('[data-all-bookings-sticky-header]');
+    var panel = root.querySelector('[data-all-bookings-panel="executed"]');
+    if (!scrollEl || !navHeader || !panel) return;
+    var queued = false;
+
+    function update() {
+      queued = false;
+      if (chipScrolling || panel.hidden) return;
+      /* After a chip's scroll its month holds until the list is scrolled again */
+      if (chipHoldTop !== null) {
+        if (Math.abs(scrollEl.scrollTop - chipHoldTop) < 2) return;
+        chipHoldTop = null;
+      }
+      var seps = Array.prototype.filter.call(panel.querySelectorAll('[data-month-separator]'), function (s) {
+        return !s.classList.contains('is-search-hidden');
+      });
+      if (!seps.length) return;
+      var base = navHeader.getBoundingClientRect().bottom + MONTH_SCROLL_GAP_PX + 4;
+      var remaining = scrollEl.scrollHeight - scrollEl.clientHeight - scrollEl.scrollTop;
+      /* A pixel short of the end (zoom, a growing dock) counts as the end */
+      if (remaining <= 1) remaining = 0;
+      /* How far below the line the last separator still is when the list ends */
+      var overflow = Math.max(0, seps[seps.length - 1].getBoundingClientRect().top - remaining - base);
+      var line = base + (overflow ? overflow * Math.min(1, Math.max(0, 1 - remaining / overflow)) : 0);
+      var key = seps[0].getAttribute('data-month-key');
+      if (scrollEl.scrollTop > 1) {
+        seps.forEach(function (s) {
+          if (s.getBoundingClientRect().top <= line) key = s.getAttribute('data-month-key');
+        });
+      }
+      var current = root.querySelector('.all-bookings__month-chip--active');
+      if (!current || current.getAttribute('data-bookings-month') !== key) setActiveMonth(root, key);
+    }
+
+    scrollEl.addEventListener('scroll', function () {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(update);
+    }, { passive: true });
+    root.__syncMonthSpy = function () {
+      chipHoldTop = null;
+      update();
+    };
   }
 
   function bindMonthChips(root) {
@@ -193,6 +288,12 @@
     var dockBar = dock ? dock.querySelector('.all-bookings__month-bar--docked') : null;
     if (!flowBar || !dock || !dockBar) return;
 
+    /* Focus on a chip in the bar being hidden moves to the same month's chip in the one being shown (D8) */
+    var leaving = merged ? flowBar : dockBar;
+    var showing = merged ? dockBar : flowBar;
+    var focused = document.activeElement;
+    var focusKey = focused && leaving.contains(focused) ? focused.getAttribute('data-bookings-month') : null;
+
     dock.setAttribute('aria-hidden', merged ? 'false' : 'true');
     flowBar.setAttribute('aria-hidden', merged ? 'true' : 'false');
 
@@ -202,6 +303,11 @@
     dockBar.querySelectorAll('[data-bookings-month]').forEach(function (chip) {
       chip.tabIndex = merged ? 0 : -1;
     });
+
+    if (focusKey) {
+      var target = showing.querySelector('[data-bookings-month="' + focusKey + '"]');
+      if (target) target.focus({ preventScroll: true });
+    }
   }
 
   function bindMonthMerge(root) {
@@ -289,6 +395,7 @@
     var panel = null;
     var groups = [];
     var rows = [];
+    var separators = {};
 
     function setHidden(el, hide) {
       el.classList.toggle('is-search-hidden', hide);
@@ -299,11 +406,13 @@
       if (nextPanel) panel = nextPanel;
       groups = [];
       rows = [];
+      separators = {};
       if (!panel) return;
-      var month = null;
       Array.prototype.forEach.call(panel.querySelectorAll('.booking-group'), function (g) {
-        month = g.getAttribute('data-bookings-month-start') || month;
-        groups.push({ el: g, month: month });
+        groups.push({ el: g, month: g.getAttribute('data-month-key') });
+      });
+      Array.prototype.forEach.call(panel.querySelectorAll('[data-month-separator]'), function (s) {
+        separators[s.getAttribute('data-month-key')] = s;
       });
       Array.prototype.forEach.call(panel.querySelectorAll('.booking-row'), function (row) {
         var name = (row.querySelector('.booking-row__name') || {}).textContent || '';
@@ -333,9 +442,20 @@
           shown.push(g.el);
           if (g.month && !seen[g.month]) {
             seen[g.month] = true;
-            monthAnchors[g.month] = g.el;
+            /* A chip scrolls to its month's separator (D5) */
+            monthAnchors[g.month] = separators[g.month] || g.el;
           }
         }
+      });
+      /* A month with no match loses its separator (D7) */
+      Object.keys(separators).forEach(function (key) {
+        var sep = separators[key];
+        setHidden(sep, !!query && !seen[key]);
+        /* ...and no divider stands right above a separator once the groups between are hidden */
+        if (!query || !seen[key]) return;
+        var prev = sep.previousElementSibling;
+        while (prev && prev.classList.contains('is-search-hidden')) prev = prev.previousElementSibling;
+        if (prev && prev.classList.contains('divider')) setHidden(prev, true);
       });
       /* No divider under the last visible group. */
       if (query) {
@@ -408,6 +528,49 @@
     return m ? m[3] + m[2] + m[1] : '';
   }
 
+  /* The yyyymmdd of a Pending or Recurring group, read from its label ("Execute on 03.11.2026"). */
+  function groupDateKey(group) {
+    var label = group.querySelector('.booking-group__label');
+    var m = /(\d{2})\.(\d{2})\.(\d{4})/.exec(label ? label.textContent : '');
+    return m ? m[3] + m[2] + m[1] : '';
+  }
+
+  /* Month separators (roadmap 24, D1 to D4): an h2 before each month's first group, in every tab. Executed groups
+     take their month from data-bookings-month-start, carried down; Pending and Recurring ones from their date.
+     The divider before a separator is hidden (is-month-break); the year shows when a tab crosses one. */
+  var MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+  function renderMonthSeparators(root) {
+    root.querySelectorAll('[data-all-bookings-panel]').forEach(function (panel) {
+      panel.querySelectorAll('[data-month-separator]').forEach(function (n) { n.remove(); });
+      panel.querySelectorAll('.is-month-break').forEach(function (n) { n.classList.remove('is-month-break'); });
+      var executed = panel.getAttribute('data-all-bookings-panel') === 'executed';
+      var month = null;
+      var starts = [];
+      panel.querySelectorAll('.booking-group').forEach(function (g) {
+        var key = executed ? g.getAttribute('data-bookings-month-start') || month : groupDateKey(g).slice(0, 6).replace(/^(\d{4})(\d{2})$/, '$1-$2');
+        if (!key) return;
+        g.setAttribute('data-month-key', key);
+        if (key !== month) starts.push(g);
+        month = key;
+      });
+      var years = {};
+      starts.forEach(function (g) { years[g.getAttribute('data-month-key').slice(0, 4)] = true; });
+      var crossesYear = Object.keys(years).length > 1;
+      starts.forEach(function (g) {
+        var key = g.getAttribute('data-month-key');
+        var sep = document.createElement('h2');
+        sep.className = 'all-bookings__month';
+        sep.setAttribute('data-month-separator', '');
+        sep.setAttribute('data-month-key', key);
+        sep.textContent = MONTH_NAMES[parseInt(key.slice(5, 7), 10) - 1] + (crossesYear ? ' ' + key.slice(0, 4) : '');
+        var prev = g.previousElementSibling;
+        if (prev && prev.classList.contains('divider')) prev.classList.add('is-month-break');
+        g.parentNode.insertBefore(sep, g);
+      });
+    });
+  }
+
   function renderBookings(root, accountKey) {
     var pay = window.UZBankPayState;
     if (!pay || typeof pay.getState !== 'function') return;
@@ -445,8 +608,13 @@
       var dates = [];
       list.forEach(function (b) { if (dates.indexOf(b.executeOn) === -1) dates.push(b.executeOn); });
       dates.sort(function (a, b) { return dateSortKey(a) < dateSortKey(b) ? -1 : 1; });
-      var anchor = panel.firstChild;
       dates.forEach(function (date) {
+        /* In date order among the static groups (roadmap 24, D12) */
+        var anchor = null;
+        Array.prototype.some.call(panel.querySelectorAll('.booking-group'), function (g) {
+          if (groupDateKey(g) > dateSortKey(date)) { anchor = g; return true; }
+          return false;
+        });
         var group = document.createElement('div');
         group.className = 'booking-group';
         group.setAttribute('data-source', 'state');
@@ -457,8 +625,14 @@
         var divider = document.createElement('div');
         divider.className = 'divider';
         divider.setAttribute('data-source', 'state');
-        panel.insertBefore(group, anchor);
-        panel.insertBefore(divider, anchor);
+        if (anchor) {
+          panel.insertBefore(group, anchor);
+          panel.insertBefore(divider, anchor);
+        } else {
+          /* Last in the list: the divider goes above it, as the last group has none below */
+          if (panel.querySelector('.booking-group')) panel.appendChild(divider);
+          panel.appendChild(group);
+        }
       });
     });
   }
@@ -476,6 +650,7 @@
     bindTabs(root, search);
     function refreshBookings() {
       renderBookings(root, key);
+      renderMonthSeparators(root);
       if (search) {
         search.index();
         search.filter();
@@ -485,6 +660,7 @@
     document.addEventListener('uzbank:state-changed', refreshBookings);
     bindStickyHeights(root);
     bindMonthMerge(root);
+    bindMonthSpy(root);
 
     if (window.UZBankScrollEdgeChrome) {
       window.UZBankScrollEdgeChrome.bind(root, {
