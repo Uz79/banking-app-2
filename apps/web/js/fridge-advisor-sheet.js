@@ -151,16 +151,8 @@
     shell.offsetHeight;
     shell.classList.add('modal-shell--closing');
 
-    var done = false;
-    function end(e) {
-      if (e && (e.target !== shell || e.propertyName !== 'transform')) return;
-      if (done) return;
-      done = true;
-      shell.removeEventListener('transitionend', end);
-      finish();
-    }
-    shell.addEventListener('transitionend', end);
-    window.setTimeout(end, 300);
+    /* Ends on the slide, a fallback timer, or at once with reduced motion (roadmap 35) */
+    window.UZBankAfterSheetClose(shell, finish);
   }
 
   /* Close, Escape and the header's X: leave straight away, or ask first once something has been entered. */

@@ -12,9 +12,9 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 2. The other seven sheets (D3, D5)
 
-- [ ] `apps/web/js/payment-overlay.js`, `trade-flow-overlay.js`, `payment-details.js`, `account-information.js`, `share-information.js`, `fridge-advisor-sheet.js`, `playground-sheet.js`: their close ends through the helper
-- [ ] `apps/web/design-system.html`: load `js/dialog-focus.js` before `js/playground-sheet.js`
-- [ ] Check (emulated reduced motion, and without): each sheet closes, its slide unchanged without reduced motion, and the page behind takes a click
+- [x] `apps/web/js/payment-overlay.js`, `trade-flow-overlay.js`, `payment-details.js`, `account-information.js`, `share-information.js`, `fridge-advisor-sheet.js`, `playground-sheet.js`: their close ends through the helper
+- [x] `apps/web/design-system.html`: load `js/dialog-focus.js` before `js/playground-sheet.js`
+- [x] Check (emulated reduced motion, and without): each sheet closes, its slide unchanged without reduced motion, and the page behind takes a click
 
 ## 3. Wrap-up
 

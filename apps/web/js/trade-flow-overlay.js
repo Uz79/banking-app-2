@@ -460,21 +460,8 @@
       shell.offsetHeight;
       shell.classList.add('modal-shell--closing');
 
-      var resolved = false;
-      function onTransitionEnd(e) {
-        if (e.target !== shell || e.propertyName !== 'transform') return;
-        if (resolved) return;
-        resolved = true;
-        shell.removeEventListener('transitionend', onTransitionEnd);
-        finishClose(fromRoute);
-      }
-      shell.addEventListener('transitionend', onTransitionEnd);
-      window.setTimeout(function () {
-        if (resolved) return;
-        resolved = true;
-        shell.removeEventListener('transitionend', onTransitionEnd);
-        finishClose(fromRoute);
-      }, 300);
+      /* Ends on the slide, a fallback timer, or at once with reduced motion (roadmap 35) */
+      window.UZBankAfterSheetClose(shell, function () { finishClose(fromRoute); });
     } else {
       finishClose(fromRoute);
     }

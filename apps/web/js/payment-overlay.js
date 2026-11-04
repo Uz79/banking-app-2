@@ -754,21 +754,8 @@
       modalShell.offsetHeight;
       modalShell.classList.add('modal-shell--closing');
 
-      var resolved = false;
-      function onShellCloseEnd(e) {
-        if (e.target !== modalShell || e.propertyName !== 'transform') return;
-        if (resolved) return;
-        resolved = true;
-        modalShell.removeEventListener('transitionend', onShellCloseEnd);
-        runFinish();
-      }
-      modalShell.addEventListener('transitionend', onShellCloseEnd);
-      window.setTimeout(function () {
-        if (resolved) return;
-        resolved = true;
-        modalShell.removeEventListener('transitionend', onShellCloseEnd);
-        runFinish();
-      }, 300);
+      /* Ends on the slide, a fallback timer, or at once with reduced motion (roadmap 35) */
+      window.UZBankAfterSheetClose(modalShell, runFinish);
     } else {
       paymentFlowClosing = false;
       runFinish();
