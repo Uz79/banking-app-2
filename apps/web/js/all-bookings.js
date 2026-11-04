@@ -70,6 +70,8 @@
         search.index(panels[status]);
         search.filter();
       }
+      /* Back on Executed at the top: its first month is active again, scroll event or not (D6) */
+      if (status === 'executed' && root.__syncMonthSpy) root.__syncMonthSpy();
     }
 
     tabs.forEach(function (tab) {
@@ -195,6 +197,10 @@
       queued = true;
       requestAnimationFrame(update);
     }, { passive: true });
+    root.__syncMonthSpy = function () {
+      chipHoldTop = null;
+      update();
+    };
   }
 
   function bindMonthChips(root) {
