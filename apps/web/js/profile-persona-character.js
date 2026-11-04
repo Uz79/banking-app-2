@@ -549,9 +549,9 @@ async function mountStage(stage, { interactive = true } = {}) {
   readScroll();
   scrollYaw = scrollTarget;
 
-  /* Render only while visible. */
+  /* Render only while visible; one callback can carry several entries, the latest is the current one (roadmap 20). */
   let visible = true;
-  new IntersectionObserver((entries) => { visible = entries[0].isIntersecting; if (visible) clock.getDelta(); })
+  new IntersectionObserver((entries) => { visible = entries[entries.length - 1].isIntersecting; if (visible) clock.getDelta(); })
     .observe(stage);
   const clock = new THREE.Clock();
   function frame() {

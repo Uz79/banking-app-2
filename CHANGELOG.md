@@ -3,7 +3,11 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 5ac46ff8048bcb91d64a6e18dcb4830da7a24b0b -->
+<!-- changelog: last-commit d849a5405983a22652d4e8d068a823e29d81d85c -->
+
+### Fixed
+- **3D stages pause and resume correctly after a fast scroll** (roadmap 20). The helper specimen on the Character kit and the persona stage (the kit's live specimen, Profile and the figure on the main screens) now follow the latest visibility change, as the Vehicles stage already did. Before, a fast scroll could leave a figure frozen on screen or drawing while off it.
+- Spec: `specs/2026-11-04-observer-latest-entry/`.
 
 ### Added
 - **Fund the asset management mandate** (roadmap 18). Each opened mandate is a credit account in the internal transfer, after Household and Savings, with its strategy and balance; picking one puts Household as the debit account, and Savings can be picked instead. An executed transfer turns the Overview row from "Pending: CHF …" into the funded balance, which the Accounts & investment total counts; any amount, any number of times. Pending and recurring transfers fund nothing. The opening's completion says "Next: transfer {amount} to your asset management." and offers "Transfer now" above Done: in the Overview sheet it closes the sheet and opens the transfer prefilled (Household, the mandate, the opening's amount, Immediately), on its own page it goes to `overview.html#iat/fund/<id>`. A mandate transfer's booking details name the mandate.

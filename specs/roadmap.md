@@ -152,9 +152,9 @@ Found during 9a (D22, planned 2026-10-29). Completing the opening adds an "Asset
 
 Found during 8e (2026-11-02). On step 7 at 390px the docked panel's ring is too small for its text: "You could invest" wraps and "CHF 29'400" crosses the ring's lower edge. The ring and its text predate 8e (the fridge's result panel, 8d); desktop is fine. To settle in its spec: a larger ring on a phone, smaller type inside it, or the amount under the ring. Taken into item 21 (D8 there): the label above the ring, only the amount inside.
 
-## 20. Character kit: the helper's stage can stop drawing while on screen
+## 20. Character kit: the helper's stage can stop drawing while on screen (done)
 
-Found during 9c (2026-11-02). The helper specimen's IntersectionObserver in `character-kit.html` reads `entries[0]`, but one callback can carry several entries for the same box (scrolled past quickly), and the first is the stale one. The helper can then stay still while on screen, or draw while off it. The Vehicles stage reads the latest entry (9c). To settle in its spec: the same one-line fix, and whether the specimen's own stage has the same pattern.
+Found during 9c (2026-11-02). The helper specimen's IntersectionObserver in `character-kit.html` reads `entries[0]`, but one callback can carry several entries for the same box (scrolled past quickly), and the first is the stale one. The helper can then stay still while on screen, or draw while off it. The Vehicles stage reads the latest entry (9c). To settle in its spec: the same one-line fix, and whether the specimen's own stage has the same pattern. Spec: `specs/2026-11-04-observer-latest-entry/` (branch `feature/observer-latest-entry`). Settled in its interview: the helper specimen and the shared persona stage (`mountStage` in `js/profile-persona-character.js`, which also draws the kit's live specimen, Profile's persona and the ambient figure on the main screens) both read the latest entry; Motion specimens' one-shot triggers stay; item 20 alone; a forced stale-then-fresh check besides real scrolling. Built 2026-11-04; the forced check showed the bug in both stages before the fix and none after.
 
 ## 21. Phone polish of the fridge and the opening (done)
 
