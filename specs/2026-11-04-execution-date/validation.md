@@ -19,7 +19,7 @@ A check that wasn't run is not a pass. The "Checked on" line at the bottom is fi
 - [x] Keyboard: focus opens on the selected day; arrows, Page Up / Page Down, Home / End move as D8 says and skip nothing; Enter picks; focus goes back to "Execute on" with its ring
 - [x] Labels (by inspection): each day reads its full date, the month header is a live region, the field reads "Execute on, …, change date"
 - [x] Light and Dark, and a Multi-color theme: the selected day takes the accent, the dimmed days stay readable (Multi-color: Custom 10)
-- [x] Reduced motion: the sheet opens and closes at once; changing month never animates (emulated by stubbing `matchMedia` for `reduce`, which drives the sheet's close; the macOS setting itself was not switched)
+- [x] Reduced motion: the sheet opens and closes at once; changing month never animates (emulated by the agent by stubbing `matchMedia`; then checked by Klaudiusz with the real macOS setting on localhost: the calendar opens and closes, the page responds after Done and after Leave)
 
 ## 3. Pay
 
@@ -81,6 +81,6 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 ### 6. Accessibility
 
 - [x] Tab through Overview: focus is always visible
-- [ ] With reduced motion on (System Settings → Accessibility → Display), page transitions and the character are still, and nothing is stuck mid-animation (not run: the setting wasn't switched in this pass)
+- [x] With reduced motion on (System Settings → Accessibility → Display), page transitions and the character are still, and nothing is stuck mid-animation (checked by Klaudiusz with the real setting on localhost, 2026-11-04: the calendar opens and closes, the page responds after Done and after Leave)
 
-Checked on 2026-11-04 against `feature/execution-date`, Chrome on macOS through Claude in Chrome on the test server (port 5199): desktop (1605 px window) in Light, Dark and a Multi-color theme (Custom 10); 390 px in an iframe in Light and Dark; keyboard. Not checked: the real macOS Reduce motion setting (emulated in JS for the calendar only), a real Friday for the next working day, the status message's first 12 s, Safari and Firefox.
+Checked on 2026-11-04 against `feature/execution-date`, Chrome on macOS through Claude in Chrome on the test server (port 5199): desktop (1605 px window) in Light, Dark and a Multi-color theme (Custom 10); 390 px in an iframe in Light and Dark; keyboard. The real macOS Reduce motion setting was checked by Klaudiusz on localhost (the calendar, and the page after Done and Leave). Not checked: a real Friday for the next working day, the status message's first 12 s, Safari and Firefox.
