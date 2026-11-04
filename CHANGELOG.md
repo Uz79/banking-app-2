@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 0a9f22ab1f98246fcded97d8fa8bd96342d92fd4 -->
+<!-- changelog: last-commit cf14453cf4bccff8f4f6faefd0b5f88d3a6e6f5c -->
 
 ### Changed
 - **"Reset demo data" asks first and is never disabled** (roadmap 22). Profile's button opens "Reset demo data?" (Cancel or Reset; Escape keeps the data) and, after a reset, a line under it says "Demo data reset." for as long as the page is open, read out by screen readers. The button no longer greys out for a moment or swaps its label. The section's text now says what a reset clears: payments, trades and investments, with the starting balances restored.
