@@ -2647,12 +2647,13 @@
             </div>
           </section>
 
-          <!-- Demo data reset — clears saved bookings + restores Household balance.
+          <!-- Demo data reset: asks first, then clears the payment state (roadmap 22).
                Lives at the bottom of Profile so it's discoverable but out of the way. -->
           <section class="demo-reset">
             <h2 class="demo-reset__title">Demo data</h2>
-            <p class="demo-reset__subtitle">Clear saved bookings and restore the Household account to <strong>CHF&nbsp;10'000.00</strong>.</p>
+            <p class="demo-reset__subtitle">Clear your payments, trades and investments, and restore the starting balances.</p>
             <button type="button" class="uz-btn uz-btn--secondary uz-btn--md" id="demoResetBtn">Reset demo data</button>
+            <p class="demo-reset__status" role="status" data-demo-reset-status></p>
           </section>
         </div>
       </section>
@@ -2692,6 +2693,8 @@
 </div>
 
 <script src="js/analytics.js"></script>
+<script src="js/dialog-focus.js"></script>
+<script src="js/payment-exit-confirm.js"></script>
 <script src="js/payment-state.js"></script>
 <script src="js/data-render.js"></script>
 <script src="js/scroll-edge-chrome.js"></script>
