@@ -64,6 +64,7 @@
     ov.classList.add('modal-overlay--active');
     ov.removeAttribute('aria-hidden');
     syncDocumentScrollLock();
+    if (window.UZBankSheetFocus) window.UZBankSheetFocus.open(ov);
 
     if (!shell) return;
 
@@ -87,6 +88,7 @@
       ov.setAttribute('aria-hidden', 'true');
       parkShellInstant(shell);
       syncDocumentScrollLock();
+      if (window.UZBankSheetFocus) window.UZBankSheetFocus.close(ov);
       if (onDone) onDone();
     }
 

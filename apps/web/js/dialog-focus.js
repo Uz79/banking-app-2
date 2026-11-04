@@ -35,8 +35,17 @@
   var openers = new Map(); /* overlay → the element focused when it opened */
   var byKeyboard = false;
 
+  var lastOutsideDialog = null; /* what a picker dialog was opened from, for a sheet opened from inside it */
+
   document.addEventListener('keydown', function () { byKeyboard = true; }, true);
   document.addEventListener('pointerdown', function () { byKeyboard = false; }, true);
+  document.addEventListener('focusin', function (e) {
+    if (!e.target.closest || !e.target.closest('dialog')) lastOutsideDialog = e.target;
+  }, true);
+
+  function openDialogOf(el) {
+    return el && el.closest ? el.closest('dialog[open]') : null;
+  }
 
   /* Only the app's own layers: the page and the other sheets. Native dialogs, scripts and anything a browser
      extension adds to <body> are left alone. */
@@ -79,10 +88,19 @@
   function openSheet(overlay) {
     if (!overlay || stack.indexOf(overlay) !== -1) return;
     var active = document.activeElement;
-    openers.set(overlay, active && !overlay.contains(active) ? active : null);
+    /* Opened from a picker dialog (More functions): the opener is what opened the dialog, and focus moves in
+       once the dialog has shut, since closing it hands focus back */
+    var dlg = openDialogOf(active);
+    var opener = dlg || !active || active === document.body ? lastOutsideDialog : active;
+    openers.set(overlay, opener && !overlay.contains(opener) ? opener : null);
     stack.push(overlay);
     apply();
-    /* After the sheet's own code has had its turn: Pay and the transfer focus a field themselves */
+    if (dlg) dlg.addEventListener('close', function () { focusIn(overlay); }, { once: true });
+    else focusIn(overlay);
+  }
+
+  /* After the sheet's own code has had its turn: Pay and the transfer focus a field themselves */
+  function focusIn(overlay) {
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
         if (stack[stack.length - 1] !== overlay || overlay.contains(document.activeElement)) return;
@@ -104,7 +122,7 @@
     if (!wasTop && !hadFocus) return;
     /* Closed from a dialog over the sheet (Discard): that dialog gives focus back to the sheet when it shuts,
        so the opener is focused after it */
-    var dlg = active && active.closest && active.closest('dialog[open]');
+    var dlg = openDialogOf(active);
     if (dlg) {
       dlg.addEventListener('close', function () { focusOpener(overlay); }, { once: true });
       return;
