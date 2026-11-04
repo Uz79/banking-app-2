@@ -21,6 +21,7 @@ The other modal surfaces are fine already: the "Discard" dialogs and the picker 
 - `js/app.js`'s modal (only `spa-source.html`, not a shipped page)
 - Escape on the sheets, roles and `aria-modal` on the overlays
 - Booking rows reachable by keyboard: roadmap 33 (D6)
+- The transfer's close never finishing with reduced motion: roadmap 35 (found in validation)
 - Other open roadmap items (28 and on)
 
 ## Decisions
@@ -36,6 +37,7 @@ The other modal surfaces are fine already: the "Discard" dialogs and the picker 
 | D7 | **The fridge and playground sheets stay as they are** (interview) | Interview. They already work and don't stack with the six |
 | D8 | **`dialog-focus.js` on All bookings:** the page loads `payment-details.js` but not `dialog-focus.js`; it gets the script tag, before `payment-details.js`. No other page changes its scripts | The booking sheet on All bookings needs the helper |
 | D9 | **No animation is added**; the sheets' slides and their reduced-motion paths are unchanged | Nothing new moves |
+| D11 | **Dialogs around a sheet** (found in the build): a sheet closed from a dialog over it (Discard) focuses its opener once that dialog has shut, since closing a `<dialog>` hands focus back to what had it before (the sheet's X); a sheet opened from a picker dialog (More functions → Show account information) takes what opened the picker as its opener and moves focus in once the picker has shut. The transfer releases the page at the start of its close, not on `transitionend` | Without these, focus fell to the page body after Discard and after More functions. The transfer's close waits for a transition that reduced motion doesn't run (roadmap 35) |
 | D10 | **The merge gate** (interview): `npm run build`; this branch's `validation.md` in a real browser (each of the six sheets by real Tab and Shift+Tab, Share over Account information, desktop and 390, Light, Dark, a Multi-color theme, reduced motion); the baseline smoke test | Standard gate |
 
 ## Context
