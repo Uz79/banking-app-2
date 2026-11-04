@@ -179,6 +179,8 @@
       if (!seps.length) return;
       var base = navHeader.getBoundingClientRect().bottom + MONTH_SCROLL_GAP_PX + 4;
       var remaining = scrollEl.scrollHeight - scrollEl.clientHeight - scrollEl.scrollTop;
+      /* A pixel short of the end (zoom, a growing dock) counts as the end */
+      if (remaining <= 1) remaining = 0;
       /* How far below the line the last separator still is when the list ends */
       var overflow = Math.max(0, seps[seps.length - 1].getBoundingClientRect().top - remaining - base);
       var line = base + (overflow ? overflow * Math.min(1, Math.max(0, 1 - remaining / overflow)) : 0);
