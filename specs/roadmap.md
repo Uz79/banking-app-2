@@ -287,3 +287,11 @@ Found while writing 43's spec (2026-11-05). Pay's and the transfer's Recurring a
 ## 46. All bookings: a transfer made in the app opens as a payment
 
 Found during 43 (2026-11-05). On All bookings, the sheet of a transfer made in the app reads "Domestic Payment": `buildDataFromStateBooking` in `js/payment-details.js` takes the accounts from `window.__UZ_IAT_ACCOUNTS__`, which `js/iat-overlay.js` sets, and All bookings doesn't load it, so the transfer falls back to the payment sheet. Account details shows the same booking as an "Internal Account Transfer". To settle in its spec: where the accounts' details come from on a page without the transfer flow (a shared account list, or loading the transfer there too).
+
+## 47. Standing orders: the rule and its payments
+
+Added 2026-11-05. A standing order is a rule; its executions are bookings. Today tapping Rent in Recurring opens a payment sheet with Status "Pending". The rule gets a third variant of the booking sheet, next to Domestic Payment and Internal Account Transfer (not a new page): Status "Active", Frequency, Next execution; its Edit changes all future payments. An instance keeps its Pending or Executed sheet, and Edit on a pending instance changes that payment only (relates to 44). The Pending tab lists each standing order's next instance with the "Pending" chip (Rent, Netflix and Internet & Phone are missing there today). The built-in "Next on" dates are stale (01.11.2026 is past): derive them from today or move them into the future. Later, not in this item: "Skip this payment", pausing or deleting a standing order, a "Recent payments" list in the standing order's sheet.
+
+## 48. Chip: its own tokens, as in Figma
+
+Added 2026-11-05. `.chip--tonal` (43) uses `--color-btn-tonal-*`. Figma's Chip has its own Case=FilledTonal, bound to `chip/filled tonal/*` (background, border, foreground, hover, pressed; Des-Sys-Test, Component Library > Chip, node 769:106445). Those tokens are in `designs/tokens/_NEW/260617_tokens` but not in `designs/tokens/mapped`. Bring them into the token pipeline as `--color-chip-filled-tonal-*`, make the theme engine emit them for Multi-color themes, and point the chip at them. Settle the class name against Figma's "FilledTonal", and document the Secondary case in `designs/components/chip/chip.md` too.
