@@ -1399,6 +1399,13 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
   font-size: var(--fs-text-xs);
 }
 
+/* Tonal: a quiet status label, on the tonal button's colours (roadmap 43, D10) */
+.chip--tonal {
+  border-color: var(--color-btn-tonal-border);
+  background-color: var(--color-btn-tonal-bg);
+  color: var(--color-btn-tonal-fg);
+}
+
 .chip__icon {
   display: block;
   width: 1rem;
@@ -2070,6 +2077,18 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
   font-weight: var(--fw-regular);
   line-height: var(--lh-text);
   color: var(--color-fg);
+}
+
+/* A row with a chip: the name takes only its width and is cut before the chip is (roadmap 43, D13) */
+.booking-row:has(.booking-row__chip) .booking-row__name {
+  flex: 0 1 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.booking-row__chip {
+  flex-shrink: 0;
 }
 
 .booking-row__amount {
@@ -7654,6 +7673,8 @@ dialog.basic-dialog-payment-exit.basic-dialog-payment-exit--closing[open] .basic
 .modal--payment-details.pd--internal .pd-domestic-only { display: none; }
 /* .pd-pending-only items are hidden on non-pending (executed) payments */
 .modal--payment-details:not(.pd--pending) .pd-pending-only { display: none; }
+/* ...and on built-in rows, until 42 makes their edit last (roadmap 43, D3) */
+.modal--payment-details:not(.pd--editable) .pd-pending-only { display: none; }
 
 /* payment-details scroll container */
 .payment-details {
@@ -7688,7 +7709,8 @@ dialog.basic-dialog-payment-exit.basic-dialog-payment-exit--closing[open] .basic
 }
 
 /* Edit buttons are only visible for pending payments */
-.modal--payment-details:not(.pd--pending) .payment-details__edit-btn { display: none; }
+.modal--payment-details:not(.pd--pending) .payment-details__edit-btn,
+.modal--payment-details:not(.pd--editable) .payment-details__edit-btn { display: none; }
 
 /* Recipient is read-only in payment details (Edit/Delete/Copy bar covers pending edits). */
 .payment-details__edit-btn--to { display: none !important; }

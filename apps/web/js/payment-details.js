@@ -205,9 +205,17 @@
     return null;
   }
 
+  /* The row's data says what it is; icons only name the counterparty (roadmap 43, D5) */
   function isInternalTransferRow(row) {
-    var iconUse = row.querySelector('.booking-row__icon use');
-    return !!(iconUse && iconUse.getAttribute('href') === '#i-repeat');
+    return row.getAttribute('data-type') === 'transfer';
+  }
+
+  /* A built-in row's status and date come from its markup (roadmap 43, D1, D2) */
+  function rowSchedule(row) {
+    return {
+      status: row.getAttribute('data-status') || 'executed',
+      executeOn: row.getAttribute('data-execute-on') || null
+    };
   }
 
   function buildAllBookingsRowData(row, displayName) {
@@ -218,7 +226,9 @@
     var accountKey = window.__UZ_ACTIVE_ACCOUNT__ || 'savings';
     var debit = ACCOUNT_SNAPSHOTS[accountKey] || ACCOUNT_SNAPSHOTS.savings;
 
-    if (isInternalTransferRow(row) || /^transfer to /i.test(displayName)) {
+    var schedule = rowSchedule(row);
+
+    if (isInternalTransferRow(row)) {
       var targetLabel = displayName.replace(/^Transfer to /i, '').trim();
       var credit = findAccountSnapshotByLabel(targetLabel) || {
         name: targetLabel,
@@ -234,7 +244,8 @@
         currency: currency,
         debit: debit,
         credit: credit,
-        status: 'executed',
+        status: schedule.status,
+        executeOn: schedule.executeOn,
         message: null
       };
     }
@@ -250,7 +261,8 @@
       amount: amount,
       currency: currency,
       to: toStr,
-      status: 'executed',
+      status: schedule.status,
+      executeOn: schedule.executeOn,
       message: null
     };
   }
@@ -659,6 +671,8 @@
 
     // Show edit buttons only for pending payments
     if (modal) modal.classList.toggle('pd--pending', isPending);
+    // ...from the payment state: a built-in row's edit wouldn't survive a reload until 42 (roadmap 43, D3)
+    if (modal) modal.classList.toggle('pd--editable', isPending && !!currentBookingId);
 
     // Further options / message — always starts collapsed per design
     if (furtherToggle)  furtherToggle.setAttribute('aria-expanded', 'false');
@@ -830,6 +844,10 @@
       data = buildAllBookingsRowData(row, displayName);
     } else {
       data = currentBookingId ? null : getBookingMap()[name];
+      /* Account details' built-in rows: the row's status wins over the map's (roadmap 43, D1) */
+      if (data && row.hasAttribute('data-status')) {
+        data = Object.assign({}, data, rowSchedule(row));
+      }
     }
 
     if (!data && currentBookingId) {

@@ -268,8 +268,30 @@ Added 2026-11-05. After Buy, the "Your order has been placed" dialog lets Tab re
 
 ## 42. Edited example rows come back after a reload
 
-Found while writing 31's spec (2026-11-05). Editing one of a page's built-in example bookings (Swisscom or Tax office Zurich in Pending, for example) stores the edit as a new booking and hides the example row only in the page (`hidden` and `data-replaced` in `js/payment-overlay.js`). After a reload the example row shows again next to the edited copy. Happens on Account details today, and on All bookings once 31 gives it Pay. To settle in its spec: how a replaced example row is remembered (a field in the payment state or a new `uzBankWeb` key), on every page that lists bookings, and that the demo data reset brings the rows back.
+Found while writing 31's spec (2026-11-05). Editing one of a page's built-in example bookings (Swisscom or Tax office Zurich in Pending, for example) stores the edit as a new booking and hides the example row only in the page (`hidden` and `data-replaced` in `js/payment-overlay.js`). After a reload the example row shows again next to the edited copy. Happens on Account details today, and on All bookings once 31 gives it Pay. To settle in its spec: how a replaced example row is remembered (a field in the payment state or a new `uzBankWeb` key), on every page that lists bookings, and that the demo data reset brings the rows back. Once it lands, built-in pending and recurring rows get their Edit (43 keeps it off until then).
 
-## 43. All bookings: built-in pending and recurring rows read "Executed"
+## 43. All bookings: built-in pending and recurring rows read "Executed" (done)
 
 Found during 31 (2026-11-05). On All bookings, every built-in row opens a sheet that says "Executed" with no Edit, also the ones in Pending and Recurring (Swisscom, Helvetia Insurance, Tax office Zurich): `buildAllBookingsRowData` in `js/payment-details.js` sets `status: 'executed'` and ignores the row's `data-status`. Payments made in the app read their real status since 23. To settle in its spec: read the row's status (and a date for "Execute on"), what Edit does on a built-in row once it shows (it runs into 42, and may leave an empty month band), and the same check for built-in transfer rows (32).
+
+Spec: `specs/2026-11-05-booking-chips/` (branch `feature/booking-chips`, from `feature/bookings-edit`). Direction settled before the interview: a row's icon names the counterparty, a tonal chip names "Pending" or the frequency, the booking type is row data, not the icon (which also made Rent and Account details' Pizza open as transfers). Settled in its interview: Edit stays off on built-in rows until 42; All bookings and Account details adopt it now; recurring bookings made in the app store Monthly, and a frequency choice in Pay is item 45. An executed instance's "Standing order" line is item 44. Found in the build: Pizza on Account details is a transfer in its data, so it stays one; trades appear in these lists and keep their buy and sell icons; a transfer made in the app opens as a payment on All bookings (46, from 31's setup). Built 2026-11-05.
+
+## 44. Booking sheet: an executed instance names its standing order
+
+Added 2026-11-05, out of 43's scope. An executed booking that is an instance of a standing order (Rent, Internet & Phone) shows a line "Standing order: <frequency>" in its sheet, linking to the order in the Recurring tab. To settle in its spec: how an instance points to its order (built-in data and the payment state), what the link opens (the order's sheet, or the Recurring tab scrolled to it), and how it reads on a phone and to a screen reader.
+
+## 45. Pay and the transfer: choose a frequency
+
+Found while writing 43's spec (2026-11-05). Pay's and the transfer's Recurring and Standing order have no frequency choice, so a recurring booking made in the app stores Monthly (43, D9). To settle in its spec: the choices (weekly, monthly, quarterly, yearly), where the field sits in the schedule step, what an edit shows, and the confirmation's wording.
+
+## 46. All bookings: a transfer made in the app opens as a payment
+
+Found during 43 (2026-11-05). On All bookings, the sheet of a transfer made in the app reads "Domestic Payment": `buildDataFromStateBooking` in `js/payment-details.js` takes the accounts from `window.__UZ_IAT_ACCOUNTS__`, which `js/iat-overlay.js` sets, and All bookings doesn't load it, so the transfer falls back to the payment sheet. Account details shows the same booking as an "Internal Account Transfer". To settle in its spec: where the accounts' details come from on a page without the transfer flow (a shared account list, or loading the transfer there too).
+
+## 47. Standing orders: the rule and its payments
+
+Added 2026-11-05. A standing order is a rule; its executions are bookings. Today tapping Rent in Recurring opens a payment sheet with Status "Pending". The rule gets a third variant of the booking sheet, next to Domestic Payment and Internal Account Transfer (not a new page): Status "Active", Frequency, Next execution; its Edit changes all future payments. An instance keeps its Pending or Executed sheet, and Edit on a pending instance changes that payment only (relates to 44). The Pending tab lists each standing order's next instance with the "Pending" chip (Rent, Netflix and Internet & Phone are missing there today). The built-in "Next on" dates are stale (01.11.2026 is past): derive them from today or move them into the future. Later, not in this item: "Skip this payment", pausing or deleting a standing order, a "Recent payments" list in the standing order's sheet.
+
+## 48. Chip: its own tokens, as in Figma
+
+Added 2026-11-05. `.chip--tonal` (43) uses `--color-btn-tonal-*`. Figma's Chip has its own Case=FilledTonal, bound to `chip/filled tonal/*` (background, border, foreground, hover, pressed; Des-Sys-Test, Component Library > Chip, node 769:106445). Those tokens are in `designs/tokens/_NEW/260617_tokens` but not in `designs/tokens/mapped`. Bring them into the token pipeline as `--color-chip-filled-tonal-*`, make the theme engine emit them for Multi-color themes, and point the chip at them. Settle the class name against Figma's "FilledTonal", and document the Secondary case in `designs/components/chip/chip.md` too.

@@ -512,10 +512,13 @@
     row.setAttribute('data-source', 'state');
     row.setAttribute('data-booking-id', b.id);
     row.setAttribute('data-status', b.status || 'executed');
+    var look = pay.bookingRowLook(b);
+    row.setAttribute('data-type', look.type);
     var sign = b.direction === 'in' ? '+' : '-';
     row.innerHTML =
-      '<svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#' + escapeHtml(b.icon || 'i-corner-up-right') + '"/></svg>' +
+      '<svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#' + escapeHtml(look.icon) + '"/></svg>' +
       '<span class="booking-row__name">' + escapeHtml(b.recipientName) + '</span>' +
+      (look.chip ? '<span class="chip chip--sm chip--tonal booking-row__chip">' + escapeHtml(look.chip) + '</span>' : '') +
       '<span class="booking-row__amount">' +
         '<span class="booking-row__currency">' + escapeHtml(b.currency) + '</span>' +
         '<span class="booking-row__value">' + sign + pay.formatMoney(b.amount) + '</span>' +
