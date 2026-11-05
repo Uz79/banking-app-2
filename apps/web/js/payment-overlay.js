@@ -257,33 +257,27 @@
     if (rec && live.recipient) rec.textContent = live.recipient.name;
   }
 
-  /** Confirmation dialog — amount, currency, recipient, date */
+  /** Confirmation dialog: what happened in one sentence, then the amount */
   function paintConfirmationDialog() {
-    var dlg = document.querySelector('.confirmation-dialog');
+    var dlg = confirmationOverlay && confirmationOverlay.querySelector('.confirmation-dialog');
     if (!dlg) return;
     var sum = dlg.querySelector('.confirmation-dialog__sum');
     var cur = dlg.querySelector('.confirmation-dialog__currency');
-    var rec = dlg.querySelector('.confirmation-dialog__recipient-name');
-    var date = dlg.querySelector('.confirmation-dialog__date');
-    var lead = dlg.querySelector('.confirmation-dialog__text');
-    var footer = dlg.querySelector('.confirmation-dialog__footer');
+    var message = dlg.querySelector('.confirmation-dialog__message');
     if (sum) sum.textContent = fmt(live.amount);
     if (cur) cur.textContent = live.currency;
-    if (rec && live.recipient) rec.textContent = live.recipient.name;
-    /* Say what happened: done now, made on a later date, or recurring from a date (roadmap 15).
-     * The schedule step names Recurring and Standing order apart, so the lead does too. */
+    /* Done now, made on a later date, or recurring from a date (roadmap 15), with the date in the sentence (roadmap 41,
+     * D11). The schedule step names Recurring and Standing order apart, so the sentence does too. */
     var status = scheduleStatus();
     var step = $step('schedule');
     var active = step && step.querySelector('.segmented__option--active');
     var mode = active ? active.textContent.trim() : 'Single';
-    if (lead) {
-      lead.textContent = status !== 'recurring' ? 'Your payment of'
-        : (mode === 'Standing order' ? 'Your standing order of' : 'Your recurring payment of');
-    }
-    if (footer) footer.textContent = status === 'executed' ? 'is done.' : (status === 'recurring' ? 'starts on' : 'will be made on');
-    if (date) {
-      date.textContent = live.dateLabel;
-      date.hidden = status === 'executed';
+    var to = live.recipient && live.recipient.name ? ' to ' + live.recipient.name : '';
+    if (message) {
+      message.textContent = status === 'executed' ? 'Your payment' + to + ' is done.'
+        : status === 'recurring'
+          ? (mode === 'Standing order' ? 'Your standing order' : 'Your recurring payment') + to + ' starts on ' + live.dateLabel + '.'
+          : 'Your payment' + to + ' will be made on ' + live.dateLabel + '.';
     }
   }
 

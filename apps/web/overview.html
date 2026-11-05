@@ -2888,24 +2888,19 @@
   </div>
 
   <div class="confirmation-overlay">
-    <div class="confirmation-dialog">
+    <div class="confirmation-dialog" role="dialog" aria-modal="true" aria-labelledby="uz-pay-conf-message" aria-describedby="uz-pay-conf-figure uz-pay-conf-note">
             <div class="confirmation-dialog__icon" aria-hidden="true">
         <svg class="confirmation-dialog__icon-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2"/>
           <path d="M15 24L21 30L33 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-      <span class="confirmation-dialog__text">Your payment of</span>
-      <div class="confirmation-dialog__amount">
+      <p class="confirmation-dialog__message" id="uz-pay-conf-message">Your payment is done.</p>
+      <p class="confirmation-dialog__amount" id="uz-pay-conf-figure">
         <span class="confirmation-dialog__currency">CHF</span>
         <span class="confirmation-dialog__sum">500.00</span>
-      </div>
-      <div class="confirmation-dialog__recipient">
-        <span>to</span>
-        <span class="confirmation-dialog__recipient-name"></span>
-      </div>
-      <span class="confirmation-dialog__footer">is done.</span>
-      <span class="confirmation-dialog__date" hidden>31.05.2026</span>
+      </p>
+      <p class="confirmation-dialog__note" id="uz-pay-conf-note" hidden></p>
       <button class="uz-btn uz-btn--primary uz-btn--md uz-btn--block" type="button" data-action="done">Done</button>
     </div>
   </div>
@@ -3087,24 +3082,19 @@
 
   <!-- Confirmation dialog — same shell as domestic payment flow -->
   <div class="confirmation-overlay" id="uz-iat-confirmation" aria-hidden="true">
-    <div class="confirmation-dialog">
+    <div class="confirmation-dialog" role="dialog" aria-modal="true" aria-labelledby="uz-iat-conf-message" aria-describedby="uz-iat-conf-figure uz-iat-conf-note">
             <div class="confirmation-dialog__icon" aria-hidden="true">
         <svg class="confirmation-dialog__icon-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2"/>
           <path d="M15 24L21 30L33 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-      <span class="confirmation-dialog__text" id="uz-iat-conf-lead">Your transfer of</span>
-      <div class="confirmation-dialog__amount">
+      <p class="confirmation-dialog__message" id="uz-iat-conf-message">Your transfer is done.</p>
+      <p class="confirmation-dialog__amount" id="uz-iat-conf-figure">
         <span class="confirmation-dialog__currency" id="uz-iat-conf-currency">CHF</span>
         <span class="confirmation-dialog__sum" id="uz-iat-conf-amount">500.00</span>
-      </div>
-      <div class="confirmation-dialog__recipient">
-        <span>to</span>
-        <span class="confirmation-dialog__recipient-name" id="uz-iat-conf-recipient">Household</span>
-      </div>
-      <span class="confirmation-dialog__footer" id="uz-iat-conf-footer">is done.</span>
-      <span class="confirmation-dialog__date" id="uz-iat-conf-date" hidden></span>
+      </p>
+      <p class="confirmation-dialog__note" id="uz-iat-conf-note" hidden></p>
       <button class="uz-btn uz-btn--primary uz-btn--md uz-btn--block" type="button" id="uz-iat-conf-btn">Done</button>
     </div>
   </div>

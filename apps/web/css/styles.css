@@ -4512,25 +4512,29 @@ button.debit-account:focus-visible {
   flex-shrink: 0;
 }
 
-.confirmation-dialog__text {
-  display: block;
+/* One layout for every confirmation (roadmap 41, D7 to D10, D15): what happened in one sentence, the amount, and an
+   optional secondary line (a trade's terms). */
+.confirmation-dialog__message {
+  margin: 0 0 var(--space-2);
   font-size: var(--fs-text-md);
   line-height: var(--lh-text);
   color: var(--color-fg);
-  margin-bottom: var(--space-2);
+  overflow-wrap: anywhere;
 }
 
+/* The amount as in the account and booking rows: the currency small, close before the value, on one baseline */
 .confirmation-dialog__amount {
   display: flex;
   justify-content: center;
-  gap: var(--space-4);
-  margin-bottom: var(--space-2);
+  align-items: baseline;
+  gap: var(--space-1);
+  margin: 0 0 var(--space-3);
 }
 
 .confirmation-dialog__currency {
-  font-size: var(--fs-text-md);
+  font-size: var(--fs-text-sm);
   line-height: var(--lh-text);
-  color: var(--color-fg);
+  color: var(--color-fg-secondary);
 }
 
 .confirmation-dialog__sum {
@@ -4540,38 +4544,22 @@ button.debit-account:focus-visible {
   color: var(--color-fg);
 }
 
-.confirmation-dialog__recipient {
-  display: flex;
-  justify-content: center;
-  gap: var(--space-4);
-  margin-bottom: var(--space-3);
-  font-size: var(--fs-text-md);
-  color: var(--color-fg);
-}
-
-.confirmation-dialog__recipient-name {
-  font-weight: var(--fw-medium);
-}
-
-.confirmation-dialog__footer {
-  display: block;
-  font-size: var(--fs-text-sm);
-  line-height: var(--lh-text);
-  color: var(--color-fg);
+/* With a note under it, the amount keeps it close */
+.confirmation-dialog__amount:has(+ .confirmation-dialog__note:not([hidden])) {
   margin-bottom: var(--space-1);
 }
 
-.confirmation-dialog__date {
-  display: block;
-  font-size: var(--fs-text-md);
-  font-weight: var(--fw-bold);
+.confirmation-dialog__note {
+  margin: 0 0 var(--space-3);
+  font-size: var(--fs-text-sm);
   line-height: var(--lh-text);
-  color: var(--color-fg);
-  margin-bottom: var(--space-3);
+  color: var(--color-fg-secondary);
+  overflow-wrap: anywhere;
 }
 
 @media (min-width: 1280px) {
-  .confirmation-dialog__date {
+  .confirmation-dialog__amount:not(:has(+ .confirmation-dialog__note:not([hidden]))),
+  .confirmation-dialog__note {
     margin-bottom: var(--space-4);
   }
 }
@@ -4586,19 +4574,6 @@ button.debit-account:focus-visible {
 
 #uz-trade-overlay > .confirmation-overlay {
   z-index: 10;
-}
-
-/* A footer that ends the text (no date or limit line under it) takes the date line's
-   size and its spacing above the button (roadmap 15, D3). */
-.confirmation-dialog__footer:not(:has(+ .confirmation-dialog__date:not([hidden]))) {
-  margin-bottom: var(--space-3);
-  font-size: var(--fs-text-md);
-}
-
-@media (min-width: 1280px) {
-  .confirmation-dialog__footer:not(:has(+ .confirmation-dialog__date:not([hidden]))) {
-    margin-bottom: var(--space-4);
-  }
 }
 
 /* ── Icons: central sprite + <use>. currentColor for stroke; default SVG fill

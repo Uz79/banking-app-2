@@ -138,10 +138,7 @@
   var confOverlay    = overlay.querySelector('.confirmation-overlay');
   var confCurrency   = overlay.querySelector('#uz-iat-conf-currency');
   var confAmount     = overlay.querySelector('#uz-iat-conf-amount');
-  var confRecipient  = overlay.querySelector('#uz-iat-conf-recipient');
-  var confLead       = overlay.querySelector('#uz-iat-conf-lead');
-  var confFooter     = overlay.querySelector('#uz-iat-conf-footer');
-  var confDate       = overlay.querySelector('#uz-iat-conf-date');
+  var confMessage    = overlay.querySelector('#uz-iat-conf-message');
   var confBtn        = overlay.querySelector('#uz-iat-conf-btn');
 
   /* ── Live state ────────────────────────────────────────────────── */
@@ -323,14 +320,13 @@
     var to = accountFor(live.toKey) || ACCOUNTS.household;
     if (confCurrency)  confCurrency.textContent  = live.currency;
     if (confAmount)    confAmount.textContent     = formatAmount(live.amount);
-    if (confRecipient) confRecipient.textContent  = to.name;
-    /* Say what happened: done now, made on a later date, or recurring from a date (roadmap 15). */
+    /* Done now, made on a later date, or recurring from a date (roadmap 15), in one sentence (roadmap 41, D12) */
     var status = scheduleStatus();
-    if (confLead)   confLead.textContent   = status === 'recurring' ? 'Your recurring transfer of' : 'Your transfer of';
-    if (confFooter) confFooter.textContent = status === 'executed' ? 'is done.' : (status === 'recurring' ? 'starts on' : 'will be made on');
-    if (confDate) {
-      confDate.textContent = live.dateLabel || formatTodayDate();
-      confDate.hidden = status === 'executed';
+    var date = live.dateLabel || formatTodayDate();
+    if (confMessage) {
+      confMessage.textContent = status === 'executed' ? 'Your transfer to ' + to.name + ' is done.'
+        : status === 'recurring' ? 'Your recurring transfer to ' + to.name + ' starts on ' + date + '.'
+          : 'Your transfer to ' + to.name + ' will be made on ' + date + '.';
     }
   }
 
