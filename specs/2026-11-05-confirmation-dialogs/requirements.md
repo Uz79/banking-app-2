@@ -60,5 +60,6 @@ Roadmap item 41 (`specs/roadmap.md`), widened at the start of the spec to the di
 
 ## Open questions
 
-- Whether the trade's Back after a placed order shows "Discard order?" (its close may prompt). To check; if it does, it closes without the prompt, as Pay (D4).
-- Whether `aria-modal` on a dialog nested in a sheet that is not itself `role="dialog"` reads well in VoiceOver, or whether the sheet needs `aria-hidden` while the dialog shows, on top of `inert`. To hear in the VoiceOver check.
+- Whether the trade's Back after a placed order shows "Discard order?". Answered 2026-11-05: it doesn't; it already closed without a prompt, so the trade's Back is unchanged (D4).
+- Found in the check: Back into a `#pay/summary` entry left by an earlier page load opens Pay at the summary with fresh defaults, as any deep link does. It is not a repeat of the earlier payment, so it stays.
+- Whether `aria-modal` on a dialog nested in a sheet that is not itself `role="dialog"` reads well in VoiceOver, or whether the sheet needs `aria-hidden` while the dialog shows, on top of `inert`. To hear in the VoiceOver check. Still open: waiting for Klaudiusz's VoiceOver pass.
