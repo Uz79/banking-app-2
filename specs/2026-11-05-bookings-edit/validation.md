@@ -27,6 +27,14 @@ Branch: `feature/bookings-edit`. Run on the agent's server (port 5199), then the
 - [x] Keyboard: from the open booking sheet, Tab to Edit, Enter opens Pay with focus inside it; Tab stays in Pay; after Done or Discard, focus is somewhere sensible and visible (record where, and compare with Account details). Enter on "Edit payment" opened Pay with focus in the amount; twelve Tabs stayed in Pay, the back button with a visible ring. After Enter on Done, focus is on the page itself and the next Tab starts at the top (the opener sat in the closed booking sheet); left as it is, item 41 covers focus around the confirmation. Not compared with Account details (no pending edit there)
 - [ ] Reduced motion on: Pay opens and closes without sliding, and the page responds afterwards. Not checked: needs the real macOS setting
 
+## 3b. Layout across tabs (D12)
+
+- [x] The sticky header is the same height on Executed, Pending and Recurring (74px, desktop Light)
+- [x] Switching tabs doesn't move the column sideways (`scrollbar-gutter: stable`)
+- [x] The gap under the toolbar is the same on all three tabs (24px: to the month chips on Executed, to the list on Pending and Recurring)
+- [x] The collapsed dock is 0px tall; scrolling Executed docks the month bar (45px) and scrolling back collapses it
+- [x] Enter on a month chip moves focus to the docked chip, and its focus ring is fully visible
+
 ## 4. Baseline smoke test
 
 Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, then repeat the starred (★) items in Dark and at phone width (390px).
@@ -68,4 +76,4 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 - [x] Tab through Overview: focus is always visible (Dark desktop, 2px solid ring)
 - [ ] With reduced motion on (System Settings → Accessibility → Display), page transitions and the character are still, and nothing is stuck mid-animation. Not checked: needs the real macOS setting
 
-Checked on 2026-11-05 against `feature/bookings-edit`, Chrome on macOS, Vite on port 5199, desktop (1440px) Light and Dark, 390px in a same-origin iframe, Light and Dark, the UZ Bank theme and Multi-color themes (Custom 01, Custom 11), by mouse and keyboard. Test bookings made through `UZBankPayState.commitPayment`, the call Pay itself makes. Not checked: reduced motion with the real macOS setting, the direction of page transitions, the status message's timing, editing a built-in row (item 43), editing on Account details (no pending rows there).
+Checked on 2026-11-05 against `feature/bookings-edit`, Chrome on macOS, Vite on port 5199, desktop (1440px) Light and Dark, 390px in a same-origin iframe, Light and Dark, the UZ Bank theme and Multi-color themes (Custom 01, Custom 11), by mouse and keyboard. Test bookings made through `UZBankPayState.commitPayment`, the call Pay itself makes. The layout follow-up (3b) checked the same day on desktop Light only. Not checked: reduced motion with the real macOS setting, the direction of page transitions, the status message's timing, editing a built-in row (item 43), editing on Account details (no pending rows there).

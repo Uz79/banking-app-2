@@ -16,3 +16,10 @@ Each group ends with something to check in the browser on the agent's server (`c
 - [x] `npm run build` in `apps/web`
 - [x] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
 - [x] Docs: `specs/roadmap.md` 31 marked done; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md`: the All bookings row notes that Edit opens Pay. No new storage key, so no change to `apps/web/README.md`
+
+## 3. Follow-up: the layout matches across tabs (D12)
+
+- [x] `apps/web/all-bookings-and-payments.html`: the docked month bar wrapped in `.all-bookings__month-dock-inner`
+- [x] `apps/web/css/styles.css`: the inner wrapper with no padding; Executed's gap above the Pending and Recurring lists; `scrollbar-gutter: stable` on this screen's `.main-content`
+- [x] Check: the header is 74px on all three tabs, the column stays put, the gap under the toolbar is 24px on each tab, the dock is 0px collapsed and docks when scrolled, a docked chip's focus ring is not clipped
+- [x] `npm run build`; `CHANGELOG.md`

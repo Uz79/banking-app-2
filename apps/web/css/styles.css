@@ -556,6 +556,12 @@ html.sidebar-compressed .sidebar__logout-btn {
   margin-inline: auto;
 }
 
+/* Long Executed list scrolls, short Pending/Recurring lists don't: reserve the scrollbar
+   gutter so the centred column doesn't jump sideways when switching tabs. */
+.body[data-screen="all-bookings"] .main-content {
+  scrollbar-gutter: stable;
+}
+
 /* ── Page title ───────────────────────────────────────── */
 
 .page-title {
@@ -2144,6 +2150,14 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
   grid-template-rows: 1fr;
 }
 
+/* The dock's grid item: no padding of its own, so 0fr really collapses it to 0px.
+   The bar's padding sat on the grid item before and kept 16px of header height
+   on Executed only, shifting the page against Pending/Recurring. */
+.all-bookings__month-dock-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
 .all-bookings__month-bar--docked {
   min-height: 0;
   opacity: 0;
@@ -2304,6 +2318,11 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
 .all-bookings--no-months .all-bookings__month-bar,
 .all-bookings--no-months .all-bookings__month-dock {
   display: none;
+}
+
+/* Pending / Recurring: no month chips, so keep Executed's toolbar → content gap. */
+.all-bookings--no-months .all-bookings__list.bookings-card {
+  margin-top: var(--all-bookings-month-gap-top);
 }
 
 .all-bookings__month-chip.is-search-empty {

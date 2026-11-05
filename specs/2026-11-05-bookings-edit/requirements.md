@@ -36,6 +36,7 @@ Roadmap item 31 (`specs/roadmap.md`). A pending or recurring payment's sheet on 
 | D9 | **No motion, token or layout change.** The sheet uses the shared `.modal-overlay` styles, which have no `data-screen` rules for Account details | Nothing new to animate or style |
 | D10 | **The merge gate** (interview): `npm run build`; this branch's `validation.md` in a real browser (Light and Dark, desktop and 390, keyboard, reduced motion); the baseline smoke test | Standard gate |
 | D11 | **The Pay markup comes before the booking sheet** (found in the build). `js/payment-overlay.js` takes the first `.modal-overlay` and `.modal-shell` on the page (lines 15 and 20); placed after the booking sheet, Pay bound to the booking sheet and never opened. Account details has the same order. The JS stays as it is (D4) | Smallest fix, no change to code that three pages share |
+| D12 | **All bookings' layout matches across tabs** (follow-up, made outside the session and reviewed here). The docked month bar sits in a new `.all-bookings__month-dock-inner` with no padding, so the collapsed dock is really 0px: before, the bar's padding on the grid item kept 16px of header height on Executed only. Pending and Recurring get Executed's 24px gap under the toolbar (`--all-bookings-month-gap-top`), and `.main-content` on this screen gets `scrollbar-gutter: stable`, so the column doesn't move sideways between a long and a short list. `--all-bookings-month-dock-height` now reads 0 while the dock is collapsed; nothing uses it | Switching tabs no longer shifts the page |
 
 ## Context
 

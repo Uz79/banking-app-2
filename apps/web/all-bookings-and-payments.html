@@ -2376,17 +2376,20 @@
                 </button>
               </header>
               <div class="all-bookings__month-dock" data-all-bookings-month-dock aria-hidden="true">
-                <div
-                  class="all-bookings__month-bar all-bookings__month-bar--docked"
-                  role="group"
-                  aria-label="Month"
-                  tabindex="-1"
-                >
-                  <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-02" aria-pressed="false" tabindex="-1">Feb</button>
-                  <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-03" aria-pressed="false" tabindex="-1">Mar</button>
-                  <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-04" aria-pressed="false" tabindex="-1">Apr</button>
-                  <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-05" aria-pressed="false" tabindex="-1">May</button>
-                  <button type="button" class="all-bookings__month-chip all-bookings__month-chip--active" data-bookings-month="2026-06" aria-pressed="true" tabindex="-1">Jun</button>
+                <!-- Grid item without padding, so the collapsed (0fr) dock is truly 0px tall. -->
+                <div class="all-bookings__month-dock-inner">
+                  <div
+                    class="all-bookings__month-bar all-bookings__month-bar--docked"
+                    role="group"
+                    aria-label="Month"
+                    tabindex="-1"
+                  >
+                    <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-02" aria-pressed="false" tabindex="-1">Feb</button>
+                    <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-03" aria-pressed="false" tabindex="-1">Mar</button>
+                    <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-04" aria-pressed="false" tabindex="-1">Apr</button>
+                    <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-05" aria-pressed="false" tabindex="-1">May</button>
+                    <button type="button" class="all-bookings__month-chip all-bookings__month-chip--active" data-bookings-month="2026-06" aria-pressed="true" tabindex="-1">Jun</button>
+                  </div>
                 </div>
               </div>
             </div>

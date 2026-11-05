@@ -15,6 +15,7 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 
 ### Fixed
 - **Edit works on All bookings** (roadmap 31). A pending or recurring payment's "Edit amount" and "Edit payment" closed its sheet and opened nothing. All bookings now carries the Pay sheet, so Edit opens Pay on the amount step with the payment's recipient, amount and schedule, as on Account details. After Done you stay on the same tab and the list shows the change. For now this works for payments made in the app; the page's built-in rows still read "Executed" (roadmap 43).
+- **All bookings keeps still when you switch tabs.** The header was 16px taller on Executed than on Pending and Recurring, the lists started at different heights, and the column moved sideways between a long and a short list. All three tabs now line up.
 - Spec: `specs/2026-11-05-bookings-edit/`.
 - **Every exit prompt names its own task** (roadmap 30). Closing Buy or Sell asked "Discard order?" but offered "Continue payment"; the transfer and editing a pending payment did the same. The stay button now reads "Continue order", "Continue transfer" or "Continue editing", and a new payment keeps "Continue payment". The shared prompt's own fallback words are now neutral ("Discard changes?", "Keep going"), so a flow that forgets its labels no longer shows another task's.
 - Spec: `specs/2026-11-05-exit-prompt-labels/`.
