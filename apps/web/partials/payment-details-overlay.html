@@ -60,18 +60,18 @@
 
           <div class="payment-details__rule pd-internal-only"></div>
 
-          <div class="payment-details__function-bar pd-domestic-only">
+          <div class="payment-details__function-bar">
             <div class="payment-details__function-bar__rule"></div>
-            <div class="payment-details__function-bar__actions pd-pending-only">
+            <div class="payment-details__function-bar__actions">
               <button class="payment-details__fn-btn" type="button" aria-label="Edit payment" data-pd-edit="amount">
                 <svg class="payment-details__fn-icon" aria-hidden="true" focusable="false"><use href="#i-edit-2"/></svg>
                 <span class="payment-details__fn-label">Edit</span>
               </button>
-              <button class="payment-details__fn-btn" type="button" aria-label="Delete payment">
+              <button class="payment-details__fn-btn" type="button" aria-label="Delete payment" data-pd-action="delete">
                 <svg class="payment-details__fn-icon" aria-hidden="true" focusable="false"><use href="#i-trash-2"/></svg>
                 <span class="payment-details__fn-label">Delete</span>
               </button>
-              <button class="payment-details__fn-btn" type="button" aria-label="Copy payment">
+              <button class="payment-details__fn-btn" type="button" aria-label="Copy payment" data-pd-action="copy">
                 <svg class="payment-details__fn-icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg>
                 <span class="payment-details__fn-label">Copy</span>
               </button>
@@ -120,7 +120,7 @@
       </div>
 
       <div class="modal__footer">
-        <button class="uz-btn uz-btn--primary uz-btn--md uz-btn--block uz-pd-confirm" type="button">Confirm</button>
+        <button class="uz-btn uz-btn--primary uz-btn--md uz-btn--block uz-pd-confirm" type="button">Done</button>
       </div>
 
     </div>

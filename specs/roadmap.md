@@ -270,9 +270,11 @@ Added 2026-11-05. After Buy, the "Your order has been placed" dialog lets Tab re
 
 Spec: `specs/2026-11-05-confirmation-dialogs/` (branch `feature/confirmation-dialogs`). Widened before the interview to the dialog's content and layout (one layout for all four flows, the amount on one baseline, no empty "to" row in the trade's, one plain sentence). Settled in its interview: sentence, amount, then one secondary line; a later payment's date in the sentence; "share" or "shares" now, units for funds and a nominal amount for bonds when they exist; the sheet goes inert behind the dialog and browser Back from it closes the flow, no disabled button; VoiceOver in the merge gate. Found in the spec: Back from Pay's dialog reopens the summary with Execute live, so a second payment was possible. Found in the build: the trade's Back already closed without a prompt; Back into a `#pay/summary` entry from an earlier page load opens a fresh Pay at the summary, like any deep link. Built 2026-11-05; VoiceOver and the macOS Reduce motion pass are still to run before merge.
 
-## 42. Edited example rows come back after a reload
+## 42. Edited example rows come back after a reload (done)
 
 Found while writing 31's spec (2026-11-05). Editing one of a page's built-in example bookings (Swisscom or Tax office Zurich in Pending, for example) stores the edit as a new booking and hides the example row only in the page (`hidden` and `data-replaced` in `js/payment-overlay.js`). After a reload the example row shows again next to the edited copy. Happens on Account details today, and on All bookings once 31 gives it Pay. To settle in its spec: how a replaced example row is remembered (a field in the payment state or a new `uzBankWeb` key), on every page that lists bookings, and that the demo data reset brings the rows back. Once it lands, built-in pending and recurring rows get their Edit (43 keeps it off until then).
+
+Spec: `specs/2026-11-05-booking-actions/` (branch `feature/booking-actions`). Widened before the interview to make built-in pending rows fully actionable: the function bar shows on them (Edit, Delete, Copy; executed payments Copy), Delete and Copy get handlers, and the footer reads "Done" on every booking. Settled in its interview: Copy stays in 42 (recipient and amount, as Pay has no message field); a pending transfer gets Delete, its Edit and Copy become a new item; standing orders stay as they are until 47; balances follow what is listed, so Apple's CHF 100 counts only while Apple is listed; standard gate. Found in the build: booking rows can't take keyboard focus (52), so focus after Delete stays as the sheet's close leaves it and a status line says what happened; Pay opens a past built-in date on the next possible day (53). Built 2026-11-05.
 
 ## 43. All bookings: built-in pending and recurring rows read "Executed" (done)
 
@@ -309,3 +311,15 @@ Found during 32 (2026-11-05). Pay, the transfer, Buy and Sell, and a booking's s
 ## 50. Built-in transfers can read as a transfer to the same account
 
 Found during 46 (2026-11-05). All bookings shows the same built-in rows for Household and Savings, and a built-in transfer's sheet takes the page's account as its debit (`buildAllBookingsRowData` in `js/payment-details.js`, from `ACCOUNT_SNAPSHOTS`). So on Household's All bookings "Transfer to Household" reads "from Household to Household", and on Savings' "Transfer to Savings" reads "from Savings account to Savings account". The two lists also name Savings differently ("Savings account" in the built-in snapshots, "Savings Account" in the transfer's). To settle in its spec: per-account built-in rows, or a debit account in each transfer row's data, and one name for Savings.
+
+## 51. Booking sheet: Edit and Copy for a pending transfer
+
+Found during 42 (2026-11-05). A pending transfer made in the app gets Delete in its sheet; Edit and Copy are left out, as the transfer flow (`js/iat-overlay.js`) has no way to open with an amount, accounts and a schedule filled in. To settle in its spec: a prefill path for the transfer like Pay's edit context, whether Edit updates both legs in place, what Copy of an executed transfer opens, and whether built-in transfers get Copy (they need 50 first).
+
+## 52. Booking rows can't be reached with the keyboard
+
+Found during 42 (2026-11-05). A booking row is a plain `div` with a click handler (`js/payment-details.js`, rows built in `js/all-bookings.js` and `js/data-render.js`): no tab stop, no role, no Enter or Space. A keyboard or screen reader user can't open a booking's sheet, so Edit, Delete and Copy are out of reach for them, and after Delete focus has no row to land on (42 announces "Payment deleted." instead). To settle in its spec: rows as buttons or links (and how a row reads: name, chip, amount), focus back on the row after the sheet closes, and after a Delete on the next row.
+
+## 53. Built-in pending payments are dated in the past
+
+Found during 42 (2026-11-05). On All bookings, Swisscom and Helvetia Insurance read "Execute on 30.10.2026" and Tax office Zurich "03.11.2026", already past and still Pending. Edit opens them in Pay on the next possible day instead. The same staleness as 47's "Next on" dates for Recurring. To settle in its spec: dates derived from today, or moved into the future, for Pending and Recurring together with 47.

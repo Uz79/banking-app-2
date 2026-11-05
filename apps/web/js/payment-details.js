@@ -310,6 +310,7 @@
 
   var isClosing = false;
   var pendingEditStep = null;
+  var pendingCopy = false; /* Copy opens Pay as a new payment, through the edit's path (roadmap 42, D14) */
   var currentPaymentData = null; /* snapshot of the last openOverlay() call */
   var currentBookingId       = null; /* data-booking-id of the tapped row, or null for static mocks */
   var currentBookingRouteId  = null; /* slug/id used in #payment-details/<type>/<id> */
@@ -623,11 +624,51 @@
     }
   }
 
+  /* ── What a booking allows (roadmap 42, D6 to D8) ───────────────── */
+
+  var fnEditBtn   = overlay.querySelector('.payment-details__function-bar [data-pd-edit]');
+  var fnDeleteBtn = overlay.querySelector('[data-pd-action="delete"]');
+  var fnCopyBtn   = overlay.querySelector('[data-pd-action="copy"]');
+  var currentActions = { edit: false, del: false, copy: false };
+
+  /* Pending payment: Edit, Delete, Copy; executed payment out: Copy; pending transfer: Delete. Standing orders keep
+     what they had until 47 (Edit when made in the app); trades and money in have none. A built-in row needs its id,
+     so what it does lasts past a reload. */
+  function bookingActions(data) {
+    var none = { edit: false, del: false, copy: false };
+    var status = data.status || 'executed';
+    if (data.title === 'Trade') return none;
+    if (data.type === 'internal') {
+      return { edit: false, del: status === 'pending' && !!currentBookingId, copy: false };
+    }
+    if (/^\+/.test(String(data.amount || '').trim())) return none;
+    if (status === 'executed') return { edit: false, del: false, copy: true };
+    if (status === 'recurring') return { edit: !!currentBookingId, del: false, copy: false };
+    var lasting = !!currentBookingId || !!(currentRow && currentRow.hasAttribute('data-builtin-id'));
+    return { edit: lasting, del: lasting, copy: true };
+  }
+
+  function applyActions(data) {
+    var a = bookingActions(data);
+    currentActions = a;
+    if (modal) {
+      modal.classList.toggle('pd--has-actions', a.edit || a.del || a.copy);
+      modal.classList.toggle('pd--can-edit', a.edit);
+    }
+    if (fnEditBtn) fnEditBtn.hidden = !a.edit;
+    if (fnDeleteBtn) {
+      fnDeleteBtn.hidden = !a.del;
+      fnDeleteBtn.setAttribute('aria-label', data.type === 'internal' ? 'Delete transfer' : 'Delete payment');
+    }
+    if (fnCopyBtn) fnCopyBtn.hidden = !a.copy;
+  }
+
   /* ── Open / close ─────────────────────────────────────────────── */
 
   function openOverlay(data, opts) {
     opts = opts || {};
     isClosing = false;
+    pendingCopy = false;
     currentPaymentData = data; // remember for edit-context export
 
     // Title
@@ -670,10 +711,8 @@
     if (statusIconUse) statusIconUse.setAttribute('href', isPending ? '#i-clock' : '#i-check');
     if (statusTextEl)  statusTextEl.textContent = isPending ? 'Pending' : 'Executed';
 
-    // Show edit buttons only for pending payments
     if (modal) modal.classList.toggle('pd--pending', isPending);
-    // ...from the payment state: a built-in row's edit wouldn't survive a reload until 42 (roadmap 43, D3)
-    if (modal) modal.classList.toggle('pd--editable', isPending && !!currentBookingId);
+    applyActions(data);
 
     // Further options / message — always starts collapsed per design
     if (furtherToggle)  furtherToggle.setAttribute('aria-expanded', 'false');
@@ -755,7 +794,9 @@
     // the payment flow at the correct step.
     if (pendingEditStep) {
       var step = pendingEditStep;
+      var copy = pendingCopy;
       pendingEditStep = null;
+      pendingCopy = false;
 
       // Export current payment data so payment-overlay.js can pre-seed live.*
       if (currentPaymentData) {
@@ -771,14 +812,14 @@
         var fullRecipient = findRecipientByName(recipientName);
 
         window.__UZ_PD_EDIT_CONTEXT__ = {
-          bookingId:     currentBookingId,       // null for static mocks
-          staticRow:     currentBookingId ? null : currentRow, // hide after commit
+          bookingId:     copy ? null : currentBookingId,       // null for static mocks and a copy
+          builtInId:     copy || currentBookingId || !currentRow ? null : currentRow.getAttribute('data-builtin-id'), // replaced on commit (roadmap 42, D4)
           recipientName: recipientName,
           recipient:     fullRecipient || null,  // full catalog record if found
           amount:        amtNum,
           currency:      d.currency || 'CHF',
-          status:        d.status || 'executed',  // the schedule step opens on it (roadmap 23, D3)
-          executeOn:     d.executeOn || null,
+          status:        copy ? 'executed' : (d.status || 'executed'),  // the schedule step opens on it (roadmap 23, D3); a copy as soon as possible
+          executeOn:     copy ? null : (d.executeOn || null),
           targetStep:    step
         };
       }
@@ -817,6 +858,58 @@
     if (!editBtn) return;
     if (!overlay.classList.contains('modal-overlay--active')) return;
     pendingEditStep = editBtn.getAttribute('data-pd-edit');
+    closeOverlay();
+  });
+
+  /* ── Delete: ask first, then remove (roadmap 42, D10 to D13) ──────── */
+
+  var deleteStatus = null;
+
+  /* Outside the sheet, which is hidden from screen readers once it closes */
+  function announce(text) {
+    if (!deleteStatus) {
+      deleteStatus = document.createElement('p');
+      deleteStatus.className = 'visually-hidden';
+      deleteStatus.setAttribute('role', 'status');
+      deleteStatus.setAttribute('aria-live', 'polite');
+      document.body.appendChild(deleteStatus);
+    }
+    deleteStatus.textContent = '';
+    window.setTimeout(function () { deleteStatus.textContent = text; }, 100);
+  }
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-pd-action="delete"]');
+    if (!btn || !overlay.contains(btn)) return;
+    if (!overlay.classList.contains('modal-overlay--active') || !currentActions.del) return;
+    var pay = window.UZBankPayState;
+    if (!pay || !window.UZBankPaymentExitPrompt) return;
+    var transfer = currentPaymentData && currentPaymentData.type === 'internal';
+    var bookingId = currentBookingId;
+    var builtInId = !bookingId && currentRow ? currentRow.getAttribute('data-builtin-id') : null;
+    var noun = transfer ? 'transfer' : 'payment';
+    window.UZBankPaymentExitPrompt(function () {
+      if (bookingId) pay.deleteBooking(bookingId);
+      else if (builtInId) pay.removeBuiltIn(builtInId);
+      closeOverlay();
+      announce(transfer ? 'Transfer deleted.' : 'Payment deleted.');
+    }, {
+      title:       'Delete ' + noun + '?',
+      message:     'This ' + noun + ' will not be made. You can\'t undo it.',
+      leaveLabel:  'Delete',
+      stayLabel:   'Keep ' + noun,
+      escapeStays: true
+    });
+  });
+
+  /* ── Copy → Pay with the recipient and amount (roadmap 42, D14) ── */
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-pd-action="copy"]');
+    if (!btn || !overlay.contains(btn)) return;
+    if (!overlay.classList.contains('modal-overlay--active') || !currentActions.copy) return;
+    pendingCopy = true;
+    pendingEditStep = 'amount';
     closeOverlay();
   });
 

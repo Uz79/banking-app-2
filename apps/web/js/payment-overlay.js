@@ -68,7 +68,7 @@
   /** Set to a booking ID when the flow was opened via an edit button;
    *  null for brand-new payments. Controls commit vs. update on execute. */
   var editingBookingId  = null;
-  /** The original static DOM row to hide after a static-mock edit is committed. */
+  /** The id of the built-in row an edit replaces once committed (roadmap 42, D4). */
   var editingStaticRow  = null;
 
   /* ── DATA WIRING (added in _10) ─────────────────────────────────────
@@ -928,7 +928,7 @@
       if (editCtx) {
         delete window.__UZ_PD_EDIT_CONTEXT__;
         editingBookingId = editCtx.bookingId  || null;
-        editingStaticRow = editCtx.staticRow  || null;
+        editingStaticRow = editCtx.builtInId  || null; /* a built-in row's id (roadmap 42, D4) */
 
         // Amount — parse just in case it was stored as a string
         seedScheduleFromBooking(editCtx.status, editCtx.executeOn);
@@ -1015,13 +1015,9 @@
         if (editingBookingId && window.UZBankPayState && window.UZBankPayState.updatePayment) {
           window.UZBankPayState.updatePayment(editingBookingId, payData);
         } else if (window.UZBankPayState && window.UZBankPayState.commitPayment) {
+          /* An edit of a built-in row: the new booking replaces it, also after a reload (roadmap 42, D4) */
+          if (editingStaticRow) payData.replacesBuiltIn = editingStaticRow;
           window.UZBankPayState.commitPayment(payData);
-          // If this was a static-mock edit, hide the original hardcoded row now
-          // that a real dynamic entry has replaced it.
-          if (editingStaticRow) {
-            editingStaticRow.setAttribute('hidden', '');
-            editingStaticRow.setAttribute('data-replaced', 'true');
-          }
         }
         editingBookingId = null;
         editingStaticRow = null;

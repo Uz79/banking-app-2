@@ -2836,7 +2836,7 @@
                   <header class="booking-group__header">
                     <span class="booking-group__label">Execute on 30.10.2026</span>
                   </header>
-                  <div class="booking-row" data-mock-booking="static" data-status="pending" data-type="payment" data-execute-on="30.10.2026">
+                  <div class="booking-row" data-mock-booking="static" data-status="pending" data-builtin-id="allb-pending-swisscom" data-type="payment" data-execute-on="30.10.2026">
                     <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-corner-up-right"/></svg>
                     <span class="booking-row__name">Swisscom</span>
                     <span class="chip chip--sm chip--tonal booking-row__chip">Pending</span>
@@ -2845,7 +2845,7 @@
                       <span class="booking-row__value">-89.90</span>
                     </span>
                   </div>
-                  <div class="booking-row" data-mock-booking="static" data-status="pending" data-type="payment" data-execute-on="30.10.2026">
+                  <div class="booking-row" data-mock-booking="static" data-status="pending" data-builtin-id="allb-pending-helvetia" data-type="payment" data-execute-on="30.10.2026">
                     <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-corner-up-right"/></svg>
                     <span class="booking-row__name">Helvetia Insurance</span>
                     <span class="chip chip--sm chip--tonal booking-row__chip">Pending</span>
@@ -2860,7 +2860,7 @@
                   <header class="booking-group__header">
                     <span class="booking-group__label">Execute on 03.11.2026</span>
                   </header>
-                  <div class="booking-row" data-mock-booking="static" data-status="pending" data-type="payment" data-execute-on="03.11.2026">
+                  <div class="booking-row" data-mock-booking="static" data-status="pending" data-builtin-id="allb-pending-tax-office" data-type="payment" data-execute-on="03.11.2026">
                     <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-corner-up-right"/></svg>
                     <span class="booking-row__name">Tax office Zurich</span>
                     <span class="chip chip--sm chip--tonal booking-row__chip">Pending</span>
@@ -2870,6 +2870,7 @@
                     </span>
                   </div>
                 </div>
+                <p class="all-bookings__panel-empty" data-bookings-empty hidden>No pending payments.</p>
               </div>
 
               <div class="bookings-card all-bookings__list" role="tabpanel" id="all-bookings-panel-recurring" aria-labelledby="all-bookings-tab-recurring" data-all-bookings-panel="recurring" hidden>
@@ -3264,18 +3265,18 @@
 
           <div class="payment-details__rule pd-internal-only"></div>
 
-          <div class="payment-details__function-bar pd-domestic-only">
+          <div class="payment-details__function-bar">
             <div class="payment-details__function-bar__rule"></div>
-            <div class="payment-details__function-bar__actions pd-pending-only">
+            <div class="payment-details__function-bar__actions">
               <button class="payment-details__fn-btn" type="button" aria-label="Edit payment" data-pd-edit="amount">
                 <svg class="payment-details__fn-icon" aria-hidden="true" focusable="false"><use href="#i-edit-2"/></svg>
                 <span class="payment-details__fn-label">Edit</span>
               </button>
-              <button class="payment-details__fn-btn" type="button" aria-label="Delete payment">
+              <button class="payment-details__fn-btn" type="button" aria-label="Delete payment" data-pd-action="delete">
                 <svg class="payment-details__fn-icon" aria-hidden="true" focusable="false"><use href="#i-trash-2"/></svg>
                 <span class="payment-details__fn-label">Delete</span>
               </button>
-              <button class="payment-details__fn-btn" type="button" aria-label="Copy payment">
+              <button class="payment-details__fn-btn" type="button" aria-label="Copy payment" data-pd-action="copy">
                 <svg class="payment-details__fn-icon" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg>
                 <span class="payment-details__fn-label">Copy</span>
               </button>
@@ -3324,7 +3325,7 @@
       </div>
 
       <div class="modal__footer">
-        <button class="uz-btn uz-btn--primary uz-btn--md uz-btn--block uz-pd-confirm" type="button">Confirm</button>
+        <button class="uz-btn uz-btn--primary uz-btn--md uz-btn--block uz-pd-confirm" type="button">Done</button>
       </div>
 
     </div>

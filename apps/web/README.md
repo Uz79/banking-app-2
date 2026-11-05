@@ -54,7 +54,7 @@ Persisted in `localStorage` (see `js/storage-migrate.js` for legacy key migratio
 | `uzBankWebColorTokens` | Finished `--color-*` tokens for Light and Dark, applied by the boot script on every page |
 | `uzBankWebAppearance` | Profile legibility / persona scale |
 | `uzBankWebPersonaProfile` | Profile > User Type slider values (financial knowledge, banking products, digital affinity) |
-| `uzBankWebPaymentState` | Demo payment balances and bookings: JSON `{ schemaVersion, bookings, positions, mandates, carried }`; at most 100 bookings, the oldest dropped, and `carried` `{ household, savings, householdOut }` keeps what the dropped executed bookings had moved (roadmap 14) |
+| `uzBankWebPaymentState` | Demo payment balances and bookings: JSON `{ schemaVersion, bookings, positions, mandates, carried, removedBuiltIns }`; at most 100 bookings, the oldest dropped, and `carried` `{ household, savings, householdOut }` keeps what the dropped executed bookings had moved (roadmap 14); `removedBuiltIns` lists the `data-builtin-id` of built-in rows an edit replaced or a delete removed (roadmap 42) |
 | `uzBankWebSavedColorThemes_v2` | Profile > Theme saved theme cards |
 | `uzBankWebBuiltinThemesSeeded_v1` | Built-in theme cards seeded once |
 | `uzBankWebPlaygroundSound` | Design system > Payday run: `on` or `off`, the Sound switch in the settings dialog (missing means on) |
