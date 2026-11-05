@@ -1,0 +1,33 @@
+# Booking rows: real status, counterparty icons and a status chip (43): plan
+
+Branch: `feature/booking-chips`. Decisions are cited as D1 to D16 from `requirements.md`.
+
+Each group ends with something to check in the browser on the agent's server (`cd apps/web && ./node_modules/.bin/vite --port 5199 --strictPort --no-open`).
+
+## 1. The tonal chip (D10, D11)
+
+- [ ] `apps/web/css/styles.css`: `.chip--tonal` next to `.chip`, on the `--color-btn-tonal-*` tokens
+- [ ] `designs/components/chip/chip.md`: the tonal variant
+- [ ] Check: a tonal chip in Light, Dark and a Multi-color theme (dev tools on any page)
+
+## 2. Row data and the sheet (D1, D2, D3, D5)
+
+- [ ] `apps/web/all-bookings-and-payments.html`: `data-type`, `data-execute-on` and `data-frequency` on the built-in rows (D2, D5, D7)
+- [ ] `apps/web/account-details.html`: `data-status`, `data-type` and `data-frequency` on the built-in rows (D1, D5, D7)
+- [ ] `apps/web/js/payment-details.js`: `isInternalTransferRow` reads `data-type`; `buildAllBookingsRowData` and the Account details path read the row's status and date; Edit only for bookings from the state (D3)
+- [ ] Check: Swisscom opens "Pending" with its date and no Edit; Rent opens as a payment; Pizza opens as a payment; a pending payment made in the app still shows Edit
+
+## 3. Icons and chips in the lists (D4, D6 to D9, D12, D13)
+
+- [ ] `apps/web/js/payment-state.js`: `frequency` on recurring bookings, kept by `updatePayment`, passed by `getState` (D9)
+- [ ] A shared helper for the chip label and the counterparty icon, used by `js/all-bookings.js` and `js/data-render.js` (D4, D8)
+- [ ] Built-in markup on both pages: counterparty icons, no `#i-repeat`, the chip after the name (D4, D6)
+- [ ] `apps/web/js/all-bookings.js` and `apps/web/js/data-render.js`: rendered rows get `data-type`, the icon and the chip (D12)
+- [ ] `apps/web/css/styles.css`: the row's name shrinks before the chip (D13)
+- [ ] Check: every tab on All bookings and Account details at desktop and 390, a transfer made in the app on both accounts' lists, a recurring payment made in the app reads "Monthly"
+
+## 4. Wrap-up
+
+- [ ] `npm run build` in `apps/web`
+- [ ] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
+- [ ] Docs: `specs/roadmap.md` 43 marked done and 42 noted to turn Edit on; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` if the booking data model is described there. No new storage key, so no change to `apps/web/README.md`
