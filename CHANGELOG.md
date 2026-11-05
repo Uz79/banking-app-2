@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 8ebaf80b2f939ac7c9ccbf4187748ab2c74890a5 -->
+<!-- changelog: last-commit 132d884972eb7d0034f6dbeea3ac09ceb13081f9 -->
 
 ### Changed
 - **All bookings: month separators** (roadmap 24). Each month in the list starts with a band naming it ("JUNE"; with the year when a tab crosses one, "JANUARY 2027"), in all three tabs and for payments made in the app too. Each band is a heading, so a screen reader can jump month to month. A month chip scrolls to its band, just under the docked chips, and while scrolling the chip of the month in view becomes active; a chip's own scroll doesn't flick through the months on the way. Search hides the band of a month with no match. With reduced motion the chip jumps instead of scrolling.
@@ -14,6 +14,8 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **Every exit prompt names its own task** (roadmap 30). Closing Buy or Sell asked "Discard order?" but offered "Continue payment"; the transfer and editing a pending payment did the same. The stay button now reads "Continue order", "Continue transfer" or "Continue editing", and a new payment keeps "Continue payment". The shared prompt's own fallback words are now neutral ("Discard changes?", "Keep going"), so a flow that forgets its labels no longer shows another task's.
+- Spec: `specs/2026-11-05-exit-prompt-labels/`.
 - **Pay's schedule step names the chosen recipient** (roadmap 29, also found as 38). The Time Schedule step showed "Hans Meyer" whoever was picked; it now shows the recipient, like the other steps, on Overview, Payments and Account details. The "Hans Meyer" placeholders are gone from the Pay sheet's markup, so a step that is never filled shows empty instead of a believable name.
 - Spec: `specs/2026-11-04-schedule-recipient/`.
 - **The transfer's Immediately switch shows its real state** (found in roadmap 28). It showed off while the transfer was immediate and on while it wasn't.

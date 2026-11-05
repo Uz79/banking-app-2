@@ -212,9 +212,11 @@ Found during 22 (2026-11-04). The Pay flow's Time Schedule step shows "Hans Meye
 
 Found again during 28 as item 38 (the cause: `paintScheduleStep` in `js/payment-overlay.js` never writes the name), closed as its duplicate. Spec: `specs/2026-11-04-schedule-recipient/` (branch `feature/schedule-recipient`). Settled in its interview: the schedule step only, with a check of every other placeholder in the Pay sheet on Overview, Payments and Account details; typed recipient fields not being read back is item 39. Changed at review: the Pay sheet's "Hans Meyer" placeholders leave the markup (D2), and the Lena Fischer case is checked down to the stored booking and the balance (D10). Built 2026-11-04.
 
-## 30. Buy and Sell: "Discard order?" offers "Continue payment"
+## 30. Buy and Sell: "Discard order?" offers "Continue payment" (done)
 
 Found during 22 (2026-11-04). Closing the trade sheet asks "Discard order?", but its stay button reads "Continue payment": `promptExit` in `js/trade-flow-overlay.js` sets the title, message and Discard label, not `stayLabel`, so the shared dialog's default shows. To settle in its spec: the label ("Continue order"), and whether the other callers of `UZBankPaymentExitPrompt` (the playground, the fridge) set theirs.
+
+Spec: `specs/2026-11-05-exit-prompt-labels/` (branch `feature/exit-prompt-labels`). Found while writing it: the transfer's "Discard transfer?" and Pay's edit-mode "Discard changes?" also show "Continue payment"; the fridge, the Playground and the reset set their own. Settled in its interview: all three prompts in this branch, each stay button naming its task ("Continue order", "Continue transfer", "Continue editing"), and the shared dialog's defaults made neutral with Pay passing its own words. Built 2026-11-05.
 
 ## 31. All bookings: the sheet's Edit buttons do nothing
 
@@ -257,3 +259,7 @@ Found while writing 29's spec (2026-11-04). The recipient step fills Recipient n
 ## 40. Pay: picking a date overrides As soon as possible
 
 Added 2026-11-05. In Pay's schedule step (single payment), the Execute on field always opens the calendar, also while "As soon as possible" is on. Picking a later date switches the toggle off; picking the next possible day keeps it on; switching the toggle back on resets the date to the next possible day. The field is never locked or greyed in Pay. Screen readers hear the toggle's change. The internal transfer stays as it is (its toggle shows and hides the field). Revises 28's D4 for Pay, where the field opens nothing while the toggle is on. To settle in its spec: what "the next possible day" is while the toggle is on (today, as "as soon as possible" executes now, or the next working day), whether the calendar can offer that day (28's D2 makes today unpickable), how the toggle's change is announced, and whether Recurring and Standing order follow the same rule.
+
+## 41. Confirmation dialogs are not modal
+
+Added 2026-11-05. After Buy, the "Your order has been placed" dialog lets Tab reach the sheet behind it, including its Confirm button, which could place the order a second time. The confirmation dialogs in Buy and Sell, Pay and the transfer must keep focus like the sheets do (27's helper in `js/dialog-focus.js`) and put focus on Done when they open. The sheet's Confirm must not be reachable, nor able to place a second order, while or after the dialog shows. To settle in its spec: how each flow guards against a second confirm (a disabled button, a flag, or both), where focus goes after Done closes the dialog and the sheet, and a pass over every confirmation by keyboard and screen reader.
