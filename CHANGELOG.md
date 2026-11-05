@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit c209a92f51dd0583deb4b6c60e2c32f647d2ef63 -->
+<!-- changelog: last-commit c6603e87a12dcf46829e704c4ece09e3b841f40e -->
 
 ### Changed
 - **Booking rows say who and what, not how** (roadmap 43). A row's icon now names the counterparty: money out, money in, or for a transfer between your own accounts the other account (Household's home, Savings' anchor). A small chip after the name says "Pending" for a booking not executed yet, or how often a standing order runs ("Monthly"), also on each executed payment of one; a one-off payment has none. The repeat icon no longer marks recurring rows. On All bookings and Account details, for the built-in bookings and the ones you make. Recurring payments made in the app are monthly for now. The Chip component gains a tonal variant for this.
@@ -17,6 +17,8 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **A transfer's sheet shows what it is** (roadmap 32, 46). A transfer made with "Immediately" off, or as a standing order, read "Executed" in its sheet; it now reads "Pending", as a payment does. On All bookings a transfer made in the app opened as a "Domestic Payment"; it now opens as an "Internal Account Transfer" with both accounts, as on Account details. Both legs, on the debit and the credit account's list.
+- Spec: `specs/2026-11-05-transfer-status/`.
 - **Edit works on All bookings** (roadmap 31). A pending or recurring payment's "Edit amount" and "Edit payment" closed its sheet and opened nothing. All bookings now carries the Pay sheet, so Edit opens Pay on the amount step with the payment's recipient, amount and schedule, as on Account details. After Done you stay on the same tab and the list shows the change. For now this works for payments made in the app; built-in rows show no Edit yet (roadmap 42).
 - **All bookings keeps still when you switch tabs.** The header was 16px taller on Executed than on Pending and Recurring, the lists started at different heights, and the column moved sideways between a long and a short list. All three tabs now line up.
 - Spec: `specs/2026-11-05-bookings-edit/`.
@@ -89,6 +91,7 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - **Flow sheet focus after the exit prompt.** In the fridge and opening sheet, Keep going returns focus to the control that had it, and Leave returns it to Investment (it used to land on the page body).
 
 ### Decided
+- **Roadmap items found during 32 and 46.** 49, the banking sheets (Pay, the transfer, Buy and Sell, a booking's sheet) don't close on Escape; 50, a built-in transfer can read as a transfer to the same account on All bookings.
 - **Roadmap items found during 31 and 43.** 42, edited example rows come back after a reload; 44, a standing order line in an executed instance's sheet; 45, a frequency choice in Pay; 46, a transfer made in the app opens as a payment on All bookings; 47, standing orders as a rule with its own sheet, apart from their instances; 48, the chip's own tokens to match Figma.
 - **A roadmap item found during 15.** 28, the execution date of a payment or transfer can't be picked yet (a later or recurring one keeps today's date).
 - **Focus rings are a design-system rule** (`specs/tech-spec.md`): keyboard only, in the interactive colour, never the browser's. **Three findings from its audit went onto the roadmap:** focus after a month chip docks the bar (with 24), the fridge result's amount over its ring on desktop with Large type (26), and Tab leaving the Pay and Buy sheets for the page behind (27).

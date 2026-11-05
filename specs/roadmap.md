@@ -224,9 +224,11 @@ Found during 23 (2026-11-04). A pending payment's sheet on All bookings shows "E
 
 Spec: `specs/2026-11-05-bookings-edit/` (branch `feature/bookings-edit`). Settled in its interview: All bookings gets the Pay sheet (its markup copied from Account details, its scripts loaded), the user stays on the same tab after Done, and built-in example rows that come back after a reload are item 42. Found in the build: Pay's markup must come before the booking sheet, as `payment-overlay.js` binds to the page's first sheet (D11), and the page's built-in pending rows open as "Executed" with no Edit (43). Built 2026-11-05.
 
-## 32. Booking sheet: a pending transfer shows "Executed"
+## 32. Booking sheet: a pending transfer shows "Executed" (done)
 
 Found during 23 (2026-11-04). `buildDataFromStateBooking` in `js/payment-details.js` gives every stored transfer (and trade) the status "executed", so a transfer made with "Immediately" off or as a standing order reads "Executed" in its sheet. To settle in its spec: read the booking's status as payments do since 23, and what the sheet shows for a recurring transfer.
+
+Spec: `specs/2026-11-05-transfer-status/` (branch `feature/transfer-status`), with 46. Settled in its interview: built with 46, since both are in `buildDataFromStateBooking`; a recurring transfer reads "Pending", as a recurring payment does, until 47. Found in the check: the banking sheets ignore Escape (49). Built 2026-11-05.
 
 ## 33. Booking rows can't be reached by keyboard
 
@@ -284,9 +286,11 @@ Added 2026-11-05, out of 43's scope. An executed booking that is an instance of 
 
 Found while writing 43's spec (2026-11-05). Pay's and the transfer's Recurring and Standing order have no frequency choice, so a recurring booking made in the app stores Monthly (43, D9). To settle in its spec: the choices (weekly, monthly, quarterly, yearly), where the field sits in the schedule step, what an edit shows, and the confirmation's wording.
 
-## 46. All bookings: a transfer made in the app opens as a payment
+## 46. All bookings: a transfer made in the app opens as a payment (done)
 
 Found during 43 (2026-11-05). On All bookings, the sheet of a transfer made in the app reads "Domestic Payment": `buildDataFromStateBooking` in `js/payment-details.js` takes the accounts from `window.__UZ_IAT_ACCOUNTS__`, which `js/iat-overlay.js` sets, and All bookings doesn't load it, so the transfer falls back to the payment sheet. Account details shows the same booking as an "Internal Account Transfer". To settle in its spec: where the accounts' details come from on a page without the transfer flow (a shared account list, or loading the transfer there too).
+
+Spec: `specs/2026-11-05-transfer-status/` (branch `feature/transfer-status`), with 32. Settled in its interview: All bookings loads `js/iat-overlay.js` without the transfer's markup, since it publishes the account list before it looks for its sheet. Found in the check: built-in transfer rows can read as a transfer to the same account (50). Built 2026-11-05.
 
 ## 47. Standing orders: the rule and its payments
 
@@ -295,3 +299,11 @@ Added 2026-11-05. A standing order is a rule; its executions are bookings. Today
 ## 48. Chip: its own tokens, as in Figma
 
 Added 2026-11-05. `.chip--tonal` (43) uses `--color-btn-tonal-*`. Figma's Chip has its own Case=FilledTonal, bound to `chip/filled tonal/*` (background, border, foreground, hover, pressed; Des-Sys-Test, Component Library > Chip, node 769:106445). Those tokens are in `designs/tokens/_NEW/260617_tokens` but not in `designs/tokens/mapped`. Bring them into the token pipeline as `--color-chip-filled-tonal-*`, make the theme engine emit them for Multi-color themes, and point the chip at them. Settle the class name against Figma's "FilledTonal", and document the Secondary case in `designs/components/chip/chip.md` too.
+
+## 49. Banking sheets don't close on Escape
+
+Found during 32 (2026-11-05). Pay, the transfer, Buy and Sell, and a booking's sheet ignore Escape: only their close button closes them. The fridge, the opening and the Playground close on Escape (`js/fridge-advisor-sheet.js`, `js/investment-opening.js`, `js/playground-sheet.js`). To settle in its spec: Escape on every banking sheet, with the flows asking their "Discard …?" prompt first as their close button does, what Escape does while a picker, the calendar or a confirmation is open over a sheet, and focus after the close.
+
+## 50. Built-in transfers can read as a transfer to the same account
+
+Found during 46 (2026-11-05). All bookings shows the same built-in rows for Household and Savings, and a built-in transfer's sheet takes the page's account as its debit (`buildAllBookingsRowData` in `js/payment-details.js`, from `ACCOUNT_SNAPSHOTS`). So on Household's All bookings "Transfer to Household" reads "from Household to Household", and on Savings' "Transfer to Savings" reads "from Savings account to Savings account". The two lists also name Savings differently ("Savings account" in the built-in snapshots, "Savings Account" in the transfer's). To settle in its spec: per-account built-in rows, or a debit account in each transfer row's data, and one name for Savings.
