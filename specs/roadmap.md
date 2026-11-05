@@ -311,3 +311,15 @@ Found during 32 (2026-11-05). Pay, the transfer, Buy and Sell, and a booking's s
 ## 50. Built-in transfers can read as a transfer to the same account
 
 Found during 46 (2026-11-05). All bookings shows the same built-in rows for Household and Savings, and a built-in transfer's sheet takes the page's account as its debit (`buildAllBookingsRowData` in `js/payment-details.js`, from `ACCOUNT_SNAPSHOTS`). So on Household's All bookings "Transfer to Household" reads "from Household to Household", and on Savings' "Transfer to Savings" reads "from Savings account to Savings account". The two lists also name Savings differently ("Savings account" in the built-in snapshots, "Savings Account" in the transfer's). To settle in its spec: per-account built-in rows, or a debit account in each transfer row's data, and one name for Savings.
+
+## 51. Booking sheet: Edit and Copy for a pending transfer
+
+Found during 42 (2026-11-05). A pending transfer made in the app gets Delete in its sheet; Edit and Copy are left out, as the transfer flow (`js/iat-overlay.js`) has no way to open with an amount, accounts and a schedule filled in. To settle in its spec: a prefill path for the transfer like Pay's edit context, whether Edit updates both legs in place, what Copy of an executed transfer opens, and whether built-in transfers get Copy (they need 50 first).
+
+## 52. Booking rows can't be reached with the keyboard
+
+Found during 42 (2026-11-05). A booking row is a plain `div` with a click handler (`js/payment-details.js`, rows built in `js/all-bookings.js` and `js/data-render.js`): no tab stop, no role, no Enter or Space. A keyboard or screen reader user can't open a booking's sheet, so Edit, Delete and Copy are out of reach for them, and after Delete focus has no row to land on (42 announces "Payment deleted." instead). To settle in its spec: rows as buttons or links (and how a row reads: name, chip, amount), focus back on the row after the sheet closes, and after a Delete on the next row.
+
+## 53. Built-in pending payments are dated in the past
+
+Found during 42 (2026-11-05). On All bookings, Swisscom and Helvetia Insurance read "Execute on 30.10.2026" and Tax office Zurich "03.11.2026", already past and still Pending. Edit opens them in Pay on the next possible day instead. The same staleness as 47's "Next on" dates for Recurring. To settle in its spec: dates derived from today, or moved into the future, for Pending and Recurring together with 47.
