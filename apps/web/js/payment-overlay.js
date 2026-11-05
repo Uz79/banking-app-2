@@ -191,6 +191,7 @@
     var amtInput = step.querySelector('.amount-input__value');
     if (recipName && live.recipient) recipName.textContent = live.recipient.name;
     if (amtInput) amtInput.value = fmt(live.amount);
+    recheckAmount(); /* a shown error follows a schedule changed since (roadmap 54, D10) */
     syncAmountCurrencyDisplay();
     syncAmountInputClearVisibility();
   }
@@ -459,6 +460,100 @@
     else btn.classList.add('amount-input__clear--hidden');
   }
 
+  /* ── Amount errors (roadmap 54) ───────────────────────────────────
+   * The amount is checked when focus leaves it after typing (D4), live once
+   * its error shows, and on Confirm (D5). The balance is checked at Execute for
+   * a payment that runs now; from then on the amount step checks it too (D10).
+   * Leaving the field by pressing close, back or an edit link checks nothing (D6). */
+
+  var amountTyped = false;
+  var amountBalanceChecked = false;
+  var amountLeavePressed = false;
+
+  function amountParts() {
+    var step = $step('amount');
+    var input = step && step.querySelector('.amount-input__value');
+    return input ? { step: step, input: input, field: input.closest('.form-field') } : null;
+  }
+
+  function householdBalance() {
+    var pay = window.UZBankPayState;
+    if (!pay || typeof pay.getState !== 'function') return null;
+    var amount = (pay.getState().accountBalances || {}).household;
+    return typeof amount === 'number' ? amount : null;
+  }
+
+  /* D7, D8, D10, D14 */
+  function amountProblem(p, withBalance) {
+    var trimmed = String(p.input.value || '').trim();
+    if (!trimmed) return 'Enter an amount.';
+    var n = parseFloat(trimmed.replace(/[^0-9.,-]/g, '').replace(',', '.'));
+    if (isNaN(n) || n <= 0) return 'Enter an amount above 0.';
+    if (withBalance && scheduleStatus() === 'executed') {
+      var balance = householdBalance();
+      if (balance !== null && n > balance) return 'You have CHF ' + fmt(balance) + ' in Household.';
+    }
+    return null;
+  }
+
+  function checkAmount(focus) {
+    var p = amountParts();
+    var fe = window.UZBankFieldError;
+    if (!p || !p.field || !fe) return true;
+    var msg = amountProblem(p, amountBalanceChecked);
+    if (msg) fe.show(p.field, p.input, msg);
+    else fe.clear(p.field, p.input);
+    if (msg && focus) {
+      try { p.input.focus(); } catch (err) { /* ignore */ }
+    }
+    return !msg;
+  }
+
+  function recheckAmount() {
+    var p = amountParts();
+    if (p && p.field && window.UZBankFieldError && window.UZBankFieldError.isShown(p.field)) checkAmount(false);
+  }
+
+  function clearAmountError() {
+    amountTyped = false;
+    amountBalanceChecked = false;
+    var p = amountParts();
+    if (p && p.field && window.UZBankFieldError) window.UZBankFieldError.clear(p.field, p.input);
+  }
+
+  /* Execute of a payment that runs now and is over the balance: back to the amount step (D10) */
+  function amountOverBalanceAtExecute() {
+    var p = amountParts();
+    if (!p || scheduleStatus() !== 'executed') return false;
+    var balance = householdBalance();
+    if (balance === null || !(live.amount > balance)) return false;
+    amountBalanceChecked = true;
+    currentStep = STEPS.indexOf('amount');
+    pushPayUrl('amount');
+    showStep();
+    checkAmount(true);
+    return true;
+  }
+
+  document.addEventListener('pointerdown', function (e) {
+    if (!e.target.closest || !modalOverlay.contains(e.target)) return;
+    if (!e.target.closest('.modal__close, .modal__back, [data-payment-nav]')) return;
+    amountLeavePressed = true;
+    window.setTimeout(function () { amountLeavePressed = false; }, 400);
+  });
+
+  document.addEventListener('focusout', function (e) {
+    var wrap = e.target.closest && e.target.closest('.modal__step[data-step="amount"] .amount-input');
+    if (!wrap || !amountTyped) return;
+    var to = e.relatedTarget;
+    if (to && (wrap.contains(to) || to === modalClose || to === modalBack)) return;
+    requestAnimationFrame(function () {
+      if (amountLeavePressed || paymentFlowClosing || !modalOverlay.classList.contains('modal-overlay--active')) return;
+      if (STEPS[currentStep] !== 'amount' || wrap.contains(document.activeElement)) return;
+      checkAmount(false);
+    });
+  });
+
   function ensureFlowSeeded() {
     var stepName = STEPS[currentStep];
     if (stepName === 'recipient-search') return;
@@ -492,6 +587,8 @@
       var n = parseFloat(raw);
       if (!isNaN(n) && n >= 0) live.amount = n;
     }
+    amountTyped = true;
+    recheckAmount();
     syncAmountInputClearVisibility();
   });
 
@@ -535,6 +632,8 @@
     if (input) {
       input.value = '';
       live.amount = 0;
+      amountTyped = true;
+      recheckAmount();
       input.focus();
     }
     syncAmountInputClearVisibility();
@@ -732,6 +831,7 @@
     prevStepIndexForTransition = null;
     editingBookingId = null;
     editingStaticRow = null;
+    clearAmountError();
     showStep();
     modalOverlay.classList.remove('modal-overlay--active', 'modal-overlay--closing');
     document.body.classList.remove('body--payment-open');
@@ -995,6 +1095,8 @@
       return;
     }
 
+    if (activeName === 'amount' && !checkAmount(true)) return;
+
     if (currentStep < STEPS.length - 1) {
       currentStep++;
       pushPayUrl(STEPS[currentStep]);
@@ -1003,6 +1105,7 @@
       // Last step is summary → "Execute":
       //   • Editing an existing booking → update it in-place (no duplicate)
       //   • New payment → commit as a fresh booking
+      if (amountOverBalanceAtExecute()) return;
       if (live.recipient) {
         var payData = {
           recipient: live.recipient,
@@ -1037,6 +1140,7 @@
     editingBookingId = null; // always a fresh payment from the pay button
     flowConfirmed = false;
     resetPaymentDefaults();
+    clearAmountError();
     currentStep = 0;
     prevStepIndexForTransition = null;
     hideConfirmationVisual();
