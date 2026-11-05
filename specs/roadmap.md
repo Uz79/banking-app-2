@@ -218,11 +218,11 @@ Found during 22 (2026-11-04). Closing the trade sheet asks "Discard order?", but
 
 Spec: `specs/2026-11-05-exit-prompt-labels/` (branch `feature/exit-prompt-labels`). Found while writing it: the transfer's "Discard transfer?" and Pay's edit-mode "Discard changes?" also show "Continue payment"; the fridge, the Playground and the reset set their own. Settled in its interview: all three prompts in this branch, each stay button naming its task ("Continue order", "Continue transfer", "Continue editing"), and the shared dialog's defaults made neutral with Pay passing its own words. Built 2026-11-05.
 
-## 31. All bookings: the sheet's Edit buttons do nothing
+## 31. All bookings: the sheet's Edit buttons do nothing (done)
 
 Found during 23 (2026-11-04). A pending payment's sheet on All bookings shows "Edit amount" and "Edit payment", but the page doesn't load the Pay sheet (`payment-overlay.js` and its markup), so the `#pay/amount` route the buttons set goes nowhere: the sheet closes and nothing opens. Editing works on Account details. To settle in its spec: give All bookings the Pay sheet, or hide Edit there.
 
-Spec: `specs/2026-11-05-bookings-edit/` (branch `feature/bookings-edit`). Settled in its interview: All bookings gets the Pay sheet (its markup copied from Account details, its scripts loaded), the user stays on the same tab after Done, and built-in example rows that come back after a reload are item 42.
+Spec: `specs/2026-11-05-bookings-edit/` (branch `feature/bookings-edit`). Settled in its interview: All bookings gets the Pay sheet (its markup copied from Account details, its scripts loaded), the user stays on the same tab after Done, and built-in example rows that come back after a reload are item 42. Found in the build: Pay's markup must come before the booking sheet, as `payment-overlay.js` binds to the page's first sheet (D11), and the page's built-in pending rows open as "Executed" with no Edit (43). Built 2026-11-05.
 
 ## 32. Booking sheet: a pending transfer shows "Executed"
 
