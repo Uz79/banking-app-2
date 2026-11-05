@@ -275,3 +275,11 @@ Found while writing 31's spec (2026-11-05). Editing one of a page's built-in exa
 Found during 31 (2026-11-05). On All bookings, every built-in row opens a sheet that says "Executed" with no Edit, also the ones in Pending and Recurring (Swisscom, Helvetia Insurance, Tax office Zurich): `buildAllBookingsRowData` in `js/payment-details.js` sets `status: 'executed'` and ignores the row's `data-status`. Payments made in the app read their real status since 23. To settle in its spec: read the row's status (and a date for "Execute on"), what Edit does on a built-in row once it shows (it runs into 42, and may leave an empty month band), and the same check for built-in transfer rows (32).
 
 Spec: `specs/2026-11-05-booking-chips/` (branch `feature/booking-chips`, from `feature/bookings-edit`). Direction settled before the interview: a row's icon names the counterparty, a tonal chip names "Pending" or the frequency, the booking type is row data, not the icon (which also made Rent and Account details' Pizza open as transfers). Settled in its interview: Edit stays off on built-in rows until 42; All bookings and Account details adopt it now; recurring bookings made in the app store Monthly, and a frequency choice in Pay is item 45. An executed instance's "Standing order" line is item 44.
+
+## 44. Booking sheet: an executed instance names its standing order
+
+Added 2026-11-05, out of 43's scope. An executed booking that is an instance of a standing order (Rent, Internet & Phone) shows a line "Standing order: <frequency>" in its sheet, linking to the order in the Recurring tab. To settle in its spec: how an instance points to its order (built-in data and the payment state), what the link opens (the order's sheet, or the Recurring tab scrolled to it), and how it reads on a phone and to a screen reader.
+
+## 45. Pay and the transfer: choose a frequency
+
+Found while writing 43's spec (2026-11-05). Pay's and the transfer's Recurring and Standing order have no frequency choice, so a recurring booking made in the app stores Monthly (43, D9). To settle in its spec: the choices (weekly, monthly, quarterly, yearly), where the field sits in the schedule step, what an edit shows, and the confirmation's wording.
