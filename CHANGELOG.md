@@ -17,6 +17,12 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **Every booking's sheet offers what you can do with it** (roadmap 42). The built-in pending payments (Swisscom, Helvetia Insurance and Tax office Zurich on All bookings, Apple on Account details) showed no actions; now a pending payment has Edit, Delete and Copy, an executed payment out has Copy, and a pending transfer made in the app has Delete. Standing orders keep what they had until roadmap 47; trades and money in have none.
+- **An edited or deleted example row stays gone after a reload.** It used to come back next to its edited copy. Profile's "Reset demo data" brings the rows back. A date group or month left with no row goes with it, and an empty Pending tab says "No pending payments."
+- **Delete asks first** ("Delete payment?" or "Delete transfer?", Escape keeps it), then removes the booking; a transfer loses both legs. Screen readers hear "Payment deleted." Apple's CHF 100 counts in the Household balance only while Apple is listed, so deleting or editing it no longer counts it twice.
+- **Copy** opens Pay with the recipient and amount, as soon as possible; Execute adds a new payment and the original stays.
+- **The sheet's footer reads "Done"**, not "Confirm", on every booking.
+- Spec: `specs/2026-11-05-booking-actions/`.
 - **Confirmation dialogs keep focus and can't confirm twice** (roadmap 41). After Buy, Sell, Pay or a transfer, Tab could reach the sheet behind the "done" dialog, its Confirm included. Now the sheet is inert while the dialog shows and focus is on Done (with the ring only after a keyboard action); Done hands focus back to the button that opened the flow. Browser Back from the dialog closed it and left Pay or the transfer live on its last step, so a second payment was possible; Back now closes the flow with no prompt, and one booking or order is recorded.
 - **One layout and one plain sentence for every confirmation** (roadmap 41). Pay, the transfer, Buy and Sell now show the same dialog: a sentence ("Your payment to Hans Meyer is done.", "Your order to buy 12 Toyota Motor Corporation shares has been placed."), the amount with "CHF" small before it on one baseline, and for a trade one line with its terms. The trade's empty "to" row is gone, "pcs." reads "share" or "shares", and long names wrap. Screen readers hear the sentence as the dialog's name.
 - Spec: `specs/2026-11-05-confirmation-dialogs/`.
