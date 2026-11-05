@@ -10,7 +10,7 @@
  * Persistence:
  *   localStorage key  uzBankWebPaymentState
  *   shape             { schemaVersion: 2, bookings: [...], positions: {...}, mandates: [...],
- *                       carried: { household, savings, householdOut } }
+ *                       carried: { household, savings, householdOut }, removedBuiltIns: [...] }
  *
  * State changes dispatch a `uzbank:state-changed` CustomEvent on document
  * so the renderer (js/data-render.js) and any other listener can react
@@ -26,6 +26,8 @@
  *                               investment-opening.html and returns its id; pending until a transfer funds it (9a D21)
  *   commitInternalTransfer({ fromKey, toKey, … }) → toKey may be a mandate's id: an executed transfer adds to its
  *                               `funded`, which Overview's total counts (roadmap 18)
+ *   removeBuiltIn(id)           → a built-in example row (data-builtin-id) an edit replaced or a delete removed;
+ *                               it stays hidden until the reset (roadmap 42)
  *   reset()                     → wipe storage, restore initial state (and the opening's session draft)
  *   formatMoney(n)              → "10'000.00" Swiss style
  *   STORAGE_KEY                 → string constant (for boot-script reuse)
@@ -54,6 +56,8 @@
   // Static mock outflow in HTML Today group (Apple −100 CHF) before any
   // payments the user commits in-session.
   var STATIC_TODAY_OUTFLOW = 100.00;
+  /* ...counted only while Apple's row is listed (roadmap 42, D12) */
+  var STATIC_TODAY_ROW = 'ad-household-apple';
 
   // Opening balances of the sibling accounts. Savings moves with internal transfers;
   // the custody and retirement accounts are fixed in this prototype.
@@ -186,8 +190,23 @@
       bookings: [],
       positions: defaultPositions(),
       mandates: [],
-      carried: noCarry()
+      carried: noCarry(),
+      removedBuiltIns: []
     };
+  }
+
+  /* Ids of built-in rows that are gone (roadmap 42, D2); a missing or broken list is empty. */
+  function normalizeIdList(raw) {
+    if (!Array.isArray(raw)) return [];
+    return raw.filter(function (id) { return typeof id === 'string' && id; });
+  }
+
+  function isBuiltInRemoved(id) {
+    return (state.removedBuiltIns || []).indexOf(id) !== -1;
+  }
+
+  function staticTodayOutflow() {
+    return isBuiltInRemoved(STATIC_TODAY_ROW) ? 0 : STATIC_TODAY_OUTFLOW;
   }
 
   /* What the bookings dropped by the limit had moved, in CHF (roadmap 14 D1): the signed amount per account, and the
@@ -270,7 +289,8 @@
           bookings: b,
           positions: normalizePositions(parsed.positions),
           mandates: normalizeMandates(parsed.mandates),
-          carried: normalizeCarried(parsed.carried)
+          carried: normalizeCarried(parsed.carried),
+          removedBuiltIns: normalizeIdList(parsed.removedBuiltIns)
         };
       } else if (parsed.schemaVersion === 1) {
         loaded = {
@@ -279,7 +299,8 @@
           bookings: b,
           positions: defaultPositions(),
           mandates: [],
-          carried: noCarry()
+          carried: noCarry(),
+          removedBuiltIns: []
         };
       }
       if (!loaded) return defaultState();
@@ -297,7 +318,8 @@
         bookings: state.bookings,
         positions: state.positions,
         mandates: state.mandates,
-        carried: state.carried
+        carried: state.carried,
+        removedBuiltIns: state.removedBuiltIns
       }));
     } catch (e) {}
   }
@@ -340,7 +362,7 @@
     var base = key === 'savings' ? SAVINGS : INITIAL_HOUSEHOLD;
     base += (state.carried && state.carried[key]) || 0;
     if (key === 'household') {
-      base -= STATIC_TODAY_OUTFLOW;
+      base -= staticTodayOutflow();
     }
     state.bookings.forEach(function (b) {
       if ((b.accountKey || 'household') !== key) return;
@@ -370,7 +392,7 @@
       return sum + (typeof b.amount === 'number' ? b.amount : 0);
     }, 0);
     var carriedOut = (state.carried && state.carried.householdOut) || 0;
-    var todayBalance = state.household - STATIC_TODAY_OUTFLOW - carriedOut - dynamicTodayOutflow;
+    var todayBalance = state.household - staticTodayOutflow() - carriedOut - dynamicTodayOutflow;
     var householdRunning = accountRunningBalance('household');
     var savingsRunning = accountRunningBalance('savings');
 
@@ -380,7 +402,8 @@
       household: state.household,
       yesterdayBalance: YESTERDAY_BALANCE,
       todayBalance: Math.round(todayBalance * 100) / 100,
-      staticTodayOutflow: STATIC_TODAY_OUTFLOW,
+      staticTodayOutflow: staticTodayOutflow(),
+      removedBuiltIns: (state.removedBuiltIns || []).slice(),
       accountBalances: {
         household: householdRunning,
         savings: savingsRunning
@@ -490,6 +513,8 @@
 
     state.bookings.push(booking);
     trimBookings(state);
+    /* An edit of a built-in row: the new booking takes its place for good (roadmap 42, D4) */
+    if (payment.replacesBuiltIn) markBuiltInRemoved(payment.replacesBuiltIn);
     // NOTE: We deliberately do NOT decrement state.household here.
     // The Household amount shown in the account list represents the
     // "registered" end-of-yesterday balance and stays fixed for the
@@ -673,6 +698,18 @@
     } catch (err) { /* ignore */ }
   });
 
+  function markBuiltInRemoved(id) {
+    if (!id || isBuiltInRemoved(id)) return;
+    if (!state.removedBuiltIns) state.removedBuiltIns = [];
+    state.removedBuiltIns.push(id);
+  }
+
+  function removeBuiltIn(id) {
+    if (!id || isBuiltInRemoved(id)) return;
+    markBuiltInRemoved(id);
+    dispatchChange();
+  }
+
   function reset() {
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
     /* The investment opening's draft goes with the demo data (9a D18). */
@@ -721,6 +758,7 @@
     commitTradeOrder:    commitTradeOrder,
     commitMandate:       commitMandate,
     updatePayment:       updatePayment,
+    removeBuiltIn:       removeBuiltIn,
     reset:               reset,
     formatMoney:         formatMoney,
     bookingRowLook:      bookingRowLook,

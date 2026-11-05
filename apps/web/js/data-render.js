@@ -159,6 +159,51 @@
     if (yesterdayEl) yesterdayEl.textContent = fmt(state.yesterdayBalance);
   }
 
+  /* ── Built-in rows an edit replaced or a delete removed (roadmap 42) ──
+   * Hidden from the list in the state, shown again once it no longer has
+   * them (after the reset), on every page that lists bookings (D3). A group
+   * left with no row hides with one divider next to it, and a tab with no
+   * group left shows its empty line (D5). */
+
+  function isDivider(el) {
+    return !!el && el.classList.contains('divider');
+  }
+
+  /* The nearest sibling that is not a month band or already hidden */
+  function siblingDivider(el, dir) {
+    var n = el[dir];
+    while (n && (n.hasAttribute('data-month-separator') || n.hidden)) n = n[dir];
+    return isDivider(n) ? n : null;
+  }
+
+  function syncBuiltInRows(root) {
+    root = root || document;
+    var removed = window.UZBankPayState.getState().removedBuiltIns || [];
+    root.querySelectorAll('[data-builtin-id]').forEach(function (row) {
+      row.hidden = removed.indexOf(row.getAttribute('data-builtin-id')) !== -1;
+    });
+    root.querySelectorAll('[data-builtin-emptied]').forEach(function (el) {
+      el.hidden = false;
+      el.removeAttribute('data-builtin-emptied');
+    });
+    root.querySelectorAll('.booking-group').forEach(function (g) {
+      if (!g.querySelector('[data-builtin-id]') || g.querySelector('.booking-row:not([hidden])')) return;
+      g.hidden = true;
+      g.setAttribute('data-builtin-emptied', '');
+      var divider = siblingDivider(g, 'nextElementSibling') || siblingDivider(g, 'previousElementSibling');
+      if (divider) {
+        divider.hidden = true;
+        divider.setAttribute('data-builtin-emptied', '');
+      }
+    });
+    root.querySelectorAll('[data-bookings-empty]').forEach(function (line) {
+      var panel = line.parentNode;
+      line.hidden = !!(panel && panel.querySelector('.booking-group:not([hidden])'));
+    });
+  }
+
+  window.UZBankBuiltInRows = { sync: syncBuiltInRows };
+
   /* ── Asset management mandates (Overview, 9a D21) ───────────────────
    * One row per mandate after Retirement savings 3a: pending until a transfer funds it, so the amount is in the
    * secondary style and the Accounts & investment total does not count it; once funded, the balance in the regular
@@ -196,6 +241,7 @@
     renderBookings(state);
     renderDayBalances(state);
     renderMandates(state);
+    syncBuiltInRows(document);
   }
 
   function onDocumentReady(fn) {

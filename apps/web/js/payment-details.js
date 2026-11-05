@@ -772,7 +772,7 @@
 
         window.__UZ_PD_EDIT_CONTEXT__ = {
           bookingId:     currentBookingId,       // null for static mocks
-          staticRow:     currentBookingId ? null : currentRow, // hide after commit
+          builtInId:     currentBookingId || !currentRow ? null : currentRow.getAttribute('data-builtin-id'), // replaced on commit (roadmap 42, D4)
           recipientName: recipientName,
           recipient:     fullRecipient || null,  // full catalog record if found
           amount:        amtNum,
