@@ -9,6 +9,13 @@
   var escapeStays = false;
   var closeFallbackTimer = null;
   var animatingClose = false;
+  /* Neutral on purpose: every caller names its own task (roadmap 30) */
+  var DEFAULTS = {
+    title: 'Discard changes?',
+    message: 'If you leave now, your entries will not be saved.',
+    leaveLabel: 'Discard',
+    stayLabel: 'Keep going'
+  };
 
   function prefersReducedMotion() {
     try {
@@ -76,14 +83,14 @@
     dialog.innerHTML =
       '<div class="basic-dialog-payment-exit__surface">' +
       '<h2 class="basic-dialog-payment-exit__title" id="basic-dialog-payment-exit-title">' +
-      'Discard payment?' +
+      DEFAULTS.title +
       '</h2>' +
       '<p class="basic-dialog-payment-exit__message" id="basic-dialog-payment-exit-msg">' +
-      'You have not finished this payment. If you exit now your entries will not be submitted.' +
+      DEFAULTS.message +
       '</p>' +
       '<div class="basic-dialog-payment-exit__actions">' +
-      '<button type="button" class="uz-btn uz-btn--secondary uz-btn--md uz-btn--block" data-payment-exit-stay>Continue payment</button>' +
-      '<button type="button" class="uz-btn uz-btn--primary uz-btn--md uz-btn--block" data-payment-exit-leave>Discard</button>' +
+      '<button type="button" class="uz-btn uz-btn--secondary uz-btn--md uz-btn--block" data-payment-exit-stay>' + DEFAULTS.stayLabel + '</button>' +
+      '<button type="button" class="uz-btn uz-btn--primary uz-btn--md uz-btn--block" data-payment-exit-leave>' + DEFAULTS.leaveLabel + '</button>' +
       '</div></div>';
 
     function stay() {
@@ -116,7 +123,7 @@
    * @param {function(): void} exitFn  called only when user chooses Discard.
    * @param {{ title?: string, message?: string, leaveLabel?: string, stayLabel?: string,
    *           onStay?: function(): void, escapeStays?: boolean }} [opts]
-   *   Optional copy overrides — used for edit-mode ("Discard changes?" etc.). onStay runs when the
+   *   The flow's own copy; without it the neutral DEFAULTS show. onStay runs when the
    *   user keeps going (the stay button, or Escape when escapeStays is set).
    */
   function prompt(exitFn, opts) {
@@ -124,13 +131,13 @@
     ensureDialog();
     var o = opts || {};
     dialog.querySelector('#basic-dialog-payment-exit-title').textContent =
-      o.title   || 'Discard payment?';
+      o.title   || DEFAULTS.title;
     dialog.querySelector('#basic-dialog-payment-exit-msg').textContent =
-      o.message || 'You have not finished this payment. If you exit now your entries will not be submitted.';
+      o.message || DEFAULTS.message;
     dialog.querySelector('[data-payment-exit-leave]').textContent =
-      o.leaveLabel || 'Discard';
+      o.leaveLabel || DEFAULTS.leaveLabel;
     dialog.querySelector('[data-payment-exit-stay]').textContent =
-      o.stayLabel || 'Continue payment';
+      o.stayLabel || DEFAULTS.stayLabel;
     stayFn = typeof o.onStay === 'function' ? o.onStay : null;
     escapeStays = !!o.escapeStays;
     dialog.classList.remove('basic-dialog-payment-exit--closing');

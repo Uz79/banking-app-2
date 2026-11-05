@@ -472,7 +472,8 @@
       window.UZBankPaymentExitPrompt(function () { closeOverlay(); }, {
         title: 'Discard order?',
         message: 'You have not finished this order. If you exit now your entries will not be submitted.',
-        leaveLabel: 'Discard'
+        leaveLabel: 'Discard',
+        stayLabel: 'Continue order'
       });
     } else {
       closeOverlay();

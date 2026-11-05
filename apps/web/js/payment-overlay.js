@@ -1064,11 +1064,18 @@
       return;
     }
     var isEdit = !!(editingBookingId || editingStaticRow);
+    /* Each prompt names its own task; the dialog's defaults are neutral (roadmap 30) */
     window.UZBankPaymentExitPrompt(exitFn, isEdit ? {
       title:      'Discard changes?',
       message:    'Your pending edits will not be saved if you exit now.',
-      leaveLabel: 'Discard'
-    } : undefined);
+      leaveLabel: 'Discard',
+      stayLabel:  'Continue editing'
+    } : {
+      title:      'Discard payment?',
+      message:    'You have not finished this payment. If you exit now your entries will not be submitted.',
+      leaveLabel: 'Discard',
+      stayLabel:  'Continue payment'
+    });
   }
 
   if (modalClose) {

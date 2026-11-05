@@ -509,7 +509,8 @@
       window.UZBankPaymentExitPrompt(function () { closeOverlay(); }, {
         title: 'Discard transfer?',
         message: 'You have not finished this transfer. If you exit now your entries will not be submitted.',
-        leaveLabel: 'Discard'
+        leaveLabel: 'Discard',
+        stayLabel: 'Continue transfer'
       });
     } else {
       closeOverlay();
