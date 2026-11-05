@@ -216,6 +216,8 @@ Found again during 28 as item 38 (the cause: `paintScheduleStep` in `js/payment-
 
 Found during 22 (2026-11-04). Closing the trade sheet asks "Discard order?", but its stay button reads "Continue payment": `promptExit` in `js/trade-flow-overlay.js` sets the title, message and Discard label, not `stayLabel`, so the shared dialog's default shows. To settle in its spec: the label ("Continue order"), and whether the other callers of `UZBankPaymentExitPrompt` (the playground, the fridge) set theirs.
 
+Spec: `specs/2026-11-05-exit-prompt-labels/` (branch `feature/exit-prompt-labels`). Found while writing it: the transfer's "Discard transfer?" and Pay's edit-mode "Discard changes?" also show "Continue payment"; the fridge, the Playground and the reset set their own. Settled in its interview: all three prompts in this branch, each stay button naming its task ("Continue order", "Continue transfer", "Continue editing"), and the shared dialog's defaults made neutral with Pay passing its own words.
+
 ## 31. All bookings: the sheet's Edit buttons do nothing
 
 Found during 23 (2026-11-04). A pending payment's sheet on All bookings shows "Edit amount" and "Edit payment", but the page doesn't load the Pay sheet (`payment-overlay.js` and its markup), so the `#pay/amount` route the buttons set goes nowhere: the sheet closes and nothing opens. Editing works on Account details. To settle in its spec: give All bookings the Pay sheet, or hide Edit there.
