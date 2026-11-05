@@ -7646,10 +7646,12 @@ dialog.basic-dialog-payment-exit.basic-dialog-payment-exit--closing[open] .basic
 /* .pd--domestic hides internal-only blocks, and vice-versa */
 .modal--payment-details.pd--domestic .pd-internal-only { display: none; }
 .modal--payment-details.pd--internal .pd-domestic-only { display: none; }
-/* .pd-pending-only items are hidden on non-pending (executed) payments */
-.modal--payment-details:not(.pd--pending) .pd-pending-only { display: none; }
-/* ...and on built-in rows, until 42 makes their edit last (roadmap 43, D3) */
-.modal--payment-details:not(.pd--editable) .pd-pending-only { display: none; }
+/* The function bar's buttons show by what the booking allows, each one by its `hidden` (roadmap 42, D6).
+   A transfer has its own rule above, so the bar's goes; with no action it has no bar at all. */
+.modal--payment-details:not(.pd--has-actions) .payment-details__function-bar__actions { display: none; }
+.modal--payment-details.pd--internal .payment-details__function-bar__rule { display: none; }
+.modal--payment-details.pd--internal:not(.pd--has-actions) .payment-details__function-bar { display: none; }
+.modal--payment-details.pd--internal .payment-details__function-bar__actions { padding-top: var(--space-2); }
 
 /* payment-details scroll container */
 .payment-details {
@@ -7683,9 +7685,8 @@ dialog.basic-dialog-payment-exit.basic-dialog-payment-exit--closing[open] .basic
   color: var(--color-fg-secondary);
 }
 
-/* Edit buttons are only visible for pending payments */
-.modal--payment-details:not(.pd--pending) .payment-details__edit-btn,
-.modal--payment-details:not(.pd--editable) .payment-details__edit-btn { display: none; }
+/* The amount's pencil follows the bar's Edit (roadmap 42, D6) */
+.modal--payment-details:not(.pd--can-edit) .payment-details__edit-btn { display: none; }
 
 /* Recipient is read-only in payment details (Edit/Delete/Copy bar covers pending edits). */
 .payment-details__edit-btn--to { display: none !important; }
@@ -7731,8 +7732,8 @@ dialog.basic-dialog-payment-exit.basic-dialog-payment-exit--closing[open] .basic
 
 /* ── Function bar: rule + action buttons for domestic payments ──────────────
    The rule is always shown (acts as the section divider).
-   The action buttons (.payment-details__function-bar__actions) carry the
-   pd-pending-only class so they appear only on pending domestic payments.
+   The action buttons (.payment-details__function-bar__actions) show by what
+   the booking allows (js/payment-details.js, roadmap 42).
    ─────────────────────────────────────────────────────────────────────────── */
 .payment-details__function-bar__rule {
   height: 0.0625rem;

@@ -623,6 +623,45 @@
     }
   }
 
+  /* ── What a booking allows (roadmap 42, D6 to D8) ───────────────── */
+
+  var fnEditBtn   = overlay.querySelector('.payment-details__function-bar [data-pd-edit]');
+  var fnDeleteBtn = overlay.querySelector('[data-pd-action="delete"]');
+  var fnCopyBtn   = overlay.querySelector('[data-pd-action="copy"]');
+  var currentActions = { edit: false, del: false, copy: false };
+
+  /* Pending payment: Edit, Delete, Copy; executed payment out: Copy; pending transfer: Delete. Standing orders keep
+     what they had until 47 (Edit when made in the app); trades and money in have none. A built-in row needs its id,
+     so what it does lasts past a reload. */
+  function bookingActions(data) {
+    var none = { edit: false, del: false, copy: false };
+    var status = data.status || 'executed';
+    if (data.title === 'Trade') return none;
+    if (data.type === 'internal') {
+      return { edit: false, del: status === 'pending' && !!currentBookingId, copy: false };
+    }
+    if (/^\+/.test(String(data.amount || '').trim())) return none;
+    if (status === 'executed') return { edit: false, del: false, copy: true };
+    if (status === 'recurring') return { edit: !!currentBookingId, del: false, copy: false };
+    var lasting = !!currentBookingId || !!(currentRow && currentRow.hasAttribute('data-builtin-id'));
+    return { edit: lasting, del: lasting, copy: true };
+  }
+
+  function applyActions(data) {
+    var a = bookingActions(data);
+    currentActions = a;
+    if (modal) {
+      modal.classList.toggle('pd--has-actions', a.edit || a.del || a.copy);
+      modal.classList.toggle('pd--can-edit', a.edit);
+    }
+    if (fnEditBtn) fnEditBtn.hidden = !a.edit;
+    if (fnDeleteBtn) {
+      fnDeleteBtn.hidden = !a.del;
+      fnDeleteBtn.setAttribute('aria-label', data.type === 'internal' ? 'Delete transfer' : 'Delete payment');
+    }
+    if (fnCopyBtn) fnCopyBtn.hidden = !a.copy;
+  }
+
   /* ── Open / close ─────────────────────────────────────────────── */
 
   function openOverlay(data, opts) {
@@ -670,10 +709,8 @@
     if (statusIconUse) statusIconUse.setAttribute('href', isPending ? '#i-clock' : '#i-check');
     if (statusTextEl)  statusTextEl.textContent = isPending ? 'Pending' : 'Executed';
 
-    // Show edit buttons only for pending payments
     if (modal) modal.classList.toggle('pd--pending', isPending);
-    // ...from the payment state: a built-in row's edit wouldn't survive a reload until 42 (roadmap 43, D3)
-    if (modal) modal.classList.toggle('pd--editable', isPending && !!currentBookingId);
+    applyActions(data);
 
     // Further options / message — always starts collapsed per design
     if (furtherToggle)  furtherToggle.setAttribute('aria-expanded', 'false');
