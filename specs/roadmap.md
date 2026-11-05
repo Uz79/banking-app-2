@@ -228,6 +228,8 @@ Spec: `specs/2026-11-05-bookings-edit/` (branch `feature/bookings-edit`). Settle
 
 Found during 23 (2026-11-04). `buildDataFromStateBooking` in `js/payment-details.js` gives every stored transfer (and trade) the status "executed", so a transfer made with "Immediately" off or as a standing order reads "Executed" in its sheet. To settle in its spec: read the booking's status as payments do since 23, and what the sheet shows for a recurring transfer.
 
+Spec: `specs/2026-11-05-transfer-status/` (branch `feature/transfer-status`), with 46. Settled in its interview: built with 46, since both are in `buildDataFromStateBooking`; a recurring transfer reads "Pending", as a recurring payment does, until 47.
+
 ## 33. Booking rows can't be reached by keyboard
 
 Found during 23 (2026-11-04). The booking rows on Account details (and the other bookings lists) are `div`s with no `tabindex` or role, so Tab skips them and a keyboard user can't open a booking's sheet, nor edit a pending payment from it. The sheet itself works by keyboard once open. To settle in its spec: rows as buttons or links (and what they announce), on every page that lists bookings.
@@ -287,6 +289,8 @@ Found while writing 43's spec (2026-11-05). Pay's and the transfer's Recurring a
 ## 46. All bookings: a transfer made in the app opens as a payment
 
 Found during 43 (2026-11-05). On All bookings, the sheet of a transfer made in the app reads "Domestic Payment": `buildDataFromStateBooking` in `js/payment-details.js` takes the accounts from `window.__UZ_IAT_ACCOUNTS__`, which `js/iat-overlay.js` sets, and All bookings doesn't load it, so the transfer falls back to the payment sheet. Account details shows the same booking as an "Internal Account Transfer". To settle in its spec: where the accounts' details come from on a page without the transfer flow (a shared account list, or loading the transfer there too).
+
+Spec: `specs/2026-11-05-transfer-status/` (branch `feature/transfer-status`), with 32. Settled in its interview: All bookings loads `js/iat-overlay.js` without the transfer's markup, since it publishes the account list before it looks for its sheet.
 
 ## 47. Standing orders: the rule and its payments
 
