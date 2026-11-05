@@ -283,3 +283,7 @@ Added 2026-11-05, out of 43's scope. An executed booking that is an instance of 
 ## 45. Pay and the transfer: choose a frequency
 
 Found while writing 43's spec (2026-11-05). Pay's and the transfer's Recurring and Standing order have no frequency choice, so a recurring booking made in the app stores Monthly (43, D9). To settle in its spec: the choices (weekly, monthly, quarterly, yearly), where the field sits in the schedule step, what an edit shows, and the confirmation's wording.
+
+## 46. All bookings: a transfer made in the app opens as a payment
+
+Found during 43 (2026-11-05). On All bookings, the sheet of a transfer made in the app reads "Domestic Payment": `buildDataFromStateBooking` in `js/payment-details.js` takes the accounts from `window.__UZ_IAT_ACCOUNTS__`, which `js/iat-overlay.js` sets, and All bookings doesn't load it, so the transfer falls back to the payment sheet. Account details shows the same booking as an "Internal Account Transfer". To settle in its spec: where the accounts' details come from on a page without the transfer flow (a shared account list, or loading the transfer there too).

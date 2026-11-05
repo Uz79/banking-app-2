@@ -26,6 +26,7 @@ Roadmap item 43 (`specs/roadmap.md`). On All bookings every built-in row opens a
 - Brand logos as counterparty icons (D4 keeps the slot for them)
 - Trade bookings' icons (`i-plus` / `i-minus`): trades do appear in these lists (a buy debits its account), but keep their buy and sell icons; their rows get `data-type="trade"` and no chip (D4). Whether a trade's counterparty icon should be the custody account is left for review
 - A pending transfer's status in its sheet (32), keyboard access to rows (33)
+- A transfer made in the app opens as a payment on All bookings, from 31's setup (found in the build): new roadmap item 46
 
 ## Decisions
 
