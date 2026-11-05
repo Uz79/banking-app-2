@@ -857,6 +857,47 @@
     closeOverlay();
   });
 
+  /* ── Delete: ask first, then remove (roadmap 42, D10 to D13) ──────── */
+
+  var deleteStatus = null;
+
+  /* Outside the sheet, which is hidden from screen readers once it closes */
+  function announce(text) {
+    if (!deleteStatus) {
+      deleteStatus = document.createElement('p');
+      deleteStatus.className = 'visually-hidden';
+      deleteStatus.setAttribute('role', 'status');
+      deleteStatus.setAttribute('aria-live', 'polite');
+      document.body.appendChild(deleteStatus);
+    }
+    deleteStatus.textContent = '';
+    window.setTimeout(function () { deleteStatus.textContent = text; }, 100);
+  }
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-pd-action="delete"]');
+    if (!btn || !overlay.contains(btn)) return;
+    if (!overlay.classList.contains('modal-overlay--active') || !currentActions.del) return;
+    var pay = window.UZBankPayState;
+    if (!pay || !window.UZBankPaymentExitPrompt) return;
+    var transfer = currentPaymentData && currentPaymentData.type === 'internal';
+    var bookingId = currentBookingId;
+    var builtInId = !bookingId && currentRow ? currentRow.getAttribute('data-builtin-id') : null;
+    var noun = transfer ? 'transfer' : 'payment';
+    window.UZBankPaymentExitPrompt(function () {
+      if (bookingId) pay.deleteBooking(bookingId);
+      else if (builtInId) pay.removeBuiltIn(builtInId);
+      closeOverlay();
+      announce(transfer ? 'Transfer deleted.' : 'Payment deleted.');
+    }, {
+      title:       'Delete ' + noun + '?',
+      message:     'This ' + noun + ' will not be made. You can\'t undo it.',
+      leaveLabel:  'Delete',
+      stayLabel:   'Keep ' + noun,
+      escapeStays: true
+    });
+  });
+
   /* ── Tap a booking row to open the overlay ───────────────────── */
 
   document.addEventListener('click', function (e) {

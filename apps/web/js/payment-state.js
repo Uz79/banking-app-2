@@ -26,6 +26,7 @@
  *                               investment-opening.html and returns its id; pending until a transfer funds it (9a D21)
  *   commitInternalTransfer({ fromKey, toKey, … }) → toKey may be a mandate's id: an executed transfer adds to its
  *                               `funded`, which Overview's total counts (roadmap 18)
+ *   deleteBooking(id)           → removes a booking made in the app; a transfer loses both legs (roadmap 42, D11)
  *   removeBuiltIn(id)           → a built-in example row (data-builtin-id) an edit replaced or a delete removed;
  *                               it stays hidden until the reset (roadmap 42)
  *   reset()                     → wipe storage, restore initial state (and the opening's session draft)
@@ -698,6 +699,22 @@
     } catch (err) { /* ignore */ }
   });
 
+  /* A transfer's two legs share the suffix after iat_out_ / iat_in_ */
+  function transferSuffix(id) {
+    var m = /^iat_(?:out|in)_(.+)$/.exec(id || '');
+    return m ? m[1] : null;
+  }
+
+  function deleteBooking(id) {
+    if (!id) return;
+    var suffix = transferSuffix(id);
+    var before = state.bookings.length;
+    state.bookings = state.bookings.filter(function (b) {
+      return b.id !== id && !(suffix && transferSuffix(b.id) === suffix);
+    });
+    if (state.bookings.length !== before) dispatchChange();
+  }
+
   function markBuiltInRemoved(id) {
     if (!id || isBuiltInRemoved(id)) return;
     if (!state.removedBuiltIns) state.removedBuiltIns = [];
@@ -759,6 +776,7 @@
     commitMandate:       commitMandate,
     updatePayment:       updatePayment,
     removeBuiltIn:       removeBuiltIn,
+    deleteBooking:       deleteBooking,
     reset:               reset,
     formatMoney:         formatMoney,
     bookingRowLook:      bookingRowLook,
