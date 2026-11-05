@@ -327,7 +327,7 @@
 
     var debtor = debtorAccountWithBalance(live.debtorKey);
     if (availableEl) availableEl.textContent = debtor.currency + ' ' + debtor.balance;
-    if (inDepotEl) inDepotEl.textContent = 'pcs. ' + live.heldQuantity;
+    if (inDepotEl) inDepotEl.textContent = sharesLabel(live.heldQuantity);
   }
 
   function paintAccounts() {

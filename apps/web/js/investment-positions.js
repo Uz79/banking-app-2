@@ -186,7 +186,7 @@
             '<span class="list-item__currency type-xs">CHF</span>' +
             '<span class="list-item__value type-sm type-bold">' + formatMoney(position.priceChf) + '</span>' +
           '</div>' +
-          '<span class="list-item__quantity type-xs type-trim">pcs. ' + position.quantity + '</span>' +
+          '<span class="list-item__quantity type-xs type-trim">' + position.quantity + (position.quantity === 1 ? ' share' : ' shares') + '</span>' +
           '<div class="list-item__total">' +
             '<span class="list-item__currency type-xs">CHF</span>' +
             '<span class="list-item__value type-sm">' + formatMoney(position.totalChf) + '</span>' +

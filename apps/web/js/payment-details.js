@@ -478,7 +478,7 @@
         currency: booking.currency || 'CHF',
         to: tradeTo,
         status: 'executed',
-        message: booking.quantity ? booking.quantity + ' pcs.' : null
+        message: booking.quantity ? booking.quantity + (booking.quantity === 1 ? ' share' : ' shares') : null
       };
     }
 
