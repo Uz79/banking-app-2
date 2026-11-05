@@ -265,3 +265,7 @@ Added 2026-11-05. In Pay's schedule step (single payment), the Execute on field 
 ## 41. Confirmation dialogs are not modal
 
 Added 2026-11-05. After Buy, the "Your order has been placed" dialog lets Tab reach the sheet behind it, including its Confirm button, which could place the order a second time. The confirmation dialogs in Buy and Sell, Pay and the transfer must keep focus like the sheets do (27's helper in `js/dialog-focus.js`) and put focus on Done when they open. The sheet's Confirm must not be reachable, nor able to place a second order, while or after the dialog shows. To settle in its spec: how each flow guards against a second confirm (a disabled button, a flag, or both), where focus goes after Done closes the dialog and the sheet, and a pass over every confirmation by keyboard and screen reader.
+
+## 42. Edited example rows come back after a reload
+
+Found while writing 31's spec (2026-11-05). Editing one of a page's built-in example bookings (Swisscom or Tax office Zurich in Pending, for example) stores the edit as a new booking and hides the example row only in the page (`hidden` and `data-replaced` in `js/payment-overlay.js`). After a reload the example row shows again next to the edited copy. Happens on Account details today, and on All bookings once 31 gives it Pay. To settle in its spec: how a replaced example row is remembered (a field in the payment state or a new `uzBankWeb` key), on every page that lists bookings, and that the demo data reset brings the rows back.
