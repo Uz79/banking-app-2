@@ -212,11 +212,11 @@ Found during 22 (2026-11-04). The Pay flow's Time Schedule step shows "Hans Meye
 
 Found again during 28 as item 38 (the cause: `paintScheduleStep` in `js/payment-overlay.js` never writes the name), closed as its duplicate. Spec: `specs/2026-11-04-schedule-recipient/` (branch `feature/schedule-recipient`). Settled in its interview: the schedule step only, with a check of every other placeholder in the Pay sheet on Overview, Payments and Account details; typed recipient fields not being read back is item 39. Changed at review: the Pay sheet's "Hans Meyer" placeholders leave the markup (D2), and the Lena Fischer case is checked down to the stored booking and the balance (D10). Built 2026-11-04.
 
-## 30. Buy and Sell: "Discard order?" offers "Continue payment"
+## 30. Buy and Sell: "Discard order?" offers "Continue payment" (done)
 
 Found during 22 (2026-11-04). Closing the trade sheet asks "Discard order?", but its stay button reads "Continue payment": `promptExit` in `js/trade-flow-overlay.js` sets the title, message and Discard label, not `stayLabel`, so the shared dialog's default shows. To settle in its spec: the label ("Continue order"), and whether the other callers of `UZBankPaymentExitPrompt` (the playground, the fridge) set theirs.
 
-Spec: `specs/2026-11-05-exit-prompt-labels/` (branch `feature/exit-prompt-labels`). Found while writing it: the transfer's "Discard transfer?" and Pay's edit-mode "Discard changes?" also show "Continue payment"; the fridge, the Playground and the reset set their own. Settled in its interview: all three prompts in this branch, each stay button naming its task ("Continue order", "Continue transfer", "Continue editing"), and the shared dialog's defaults made neutral with Pay passing its own words.
+Spec: `specs/2026-11-05-exit-prompt-labels/` (branch `feature/exit-prompt-labels`). Found while writing it: the transfer's "Discard transfer?" and Pay's edit-mode "Discard changes?" also show "Continue payment"; the fridge, the Playground and the reset set their own. Settled in its interview: all three prompts in this branch, each stay button naming its task ("Continue order", "Continue transfer", "Continue editing"), and the shared dialog's defaults made neutral with Pay passing its own words. Built 2026-11-05.
 
 ## 31. All bookings: the sheet's Edit buttons do nothing
 
