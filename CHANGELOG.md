@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit c6603e87a12dcf46829e704c4ece09e3b841f40e -->
+<!-- changelog: last-commit 17ab338221480d2683435381f9648cca018c8c10 -->
 
 ### Changed
 - **Booking rows say who and what, not how** (roadmap 43). A row's icon now names the counterparty: money out, money in, or for a transfer between your own accounts the other account (Household's home, Savings' anchor). A small chip after the name says "Pending" for a booking not executed yet, or how often a standing order runs ("Monthly"), also on each executed payment of one; a one-off payment has none. The repeat icon no longer marks recurring rows. On All bookings and Account details, for the built-in bookings and the ones you make. Recurring payments made in the app are monthly for now. The Chip component gains a tonal variant for this.
@@ -17,6 +17,9 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **Confirmation dialogs keep focus and can't confirm twice** (roadmap 41). After Buy, Sell, Pay or a transfer, Tab could reach the sheet behind the "done" dialog, its Confirm included. Now the sheet is inert while the dialog shows and focus is on Done (with the ring only after a keyboard action); Done hands focus back to the button that opened the flow. Browser Back from the dialog closed it and left Pay or the transfer live on its last step, so a second payment was possible; Back now closes the flow with no prompt, and one booking or order is recorded.
+- **One layout and one plain sentence for every confirmation** (roadmap 41). Pay, the transfer, Buy and Sell now show the same dialog: a sentence ("Your payment to Hans Meyer is done.", "Your order to buy 12 Toyota Motor Corporation shares has been placed."), the amount with "CHF" small before it on one baseline, and for a trade one line with its terms. The trade's empty "to" row is gone, "pcs." reads "share" or "shares", and long names wrap. Screen readers hear the sentence as the dialog's name.
+- Spec: `specs/2026-11-05-confirmation-dialogs/`.
 - **A transfer's sheet shows what it is** (roadmap 32, 46). A transfer made with "Immediately" off, or as a standing order, read "Executed" in its sheet; it now reads "Pending", as a payment does. On All bookings a transfer made in the app opened as a "Domestic Payment"; it now opens as an "Internal Account Transfer" with both accounts, as on Account details. Both legs, on the debit and the credit account's list.
 - Spec: `specs/2026-11-05-transfer-status/`.
 - **Edit works on All bookings** (roadmap 31). A pending or recurring payment's "Edit amount" and "Edit payment" closed its sheet and opened nothing. All bookings now carries the Pay sheet, so Edit opens Pay on the amount step with the payment's recipient, amount and schedule, as on Account details. After Done you stay on the same tab and the list shows the change. For now this works for payments made in the app; built-in rows show no Edit yet (roadmap 42).

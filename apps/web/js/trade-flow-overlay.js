@@ -60,10 +60,9 @@
   var closeBtn = document.getElementById('uz-trade-close');
   var confirmBtn = document.getElementById('uz-trade-confirm');
   var confOverlay = document.getElementById('uz-trade-confirmation');
-  var confLeadEl = document.getElementById('uz-trade-conf-lead');
+  var confMessageEl = document.getElementById('uz-trade-conf-message');
   var confAmountEl = document.getElementById('uz-trade-conf-amount');
   var confCurrencyEl = document.getElementById('uz-trade-conf-currency');
-  var confDetailEl = document.getElementById('uz-trade-conf-detail');
   var confTermsEl = document.getElementById('uz-trade-conf-terms');
   var confBtn = document.getElementById('uz-trade-conf-btn');
 
@@ -292,14 +291,14 @@
   function paintConfirmationDialog() {
     var pos = positionSnapshot();
     var totals = orderTotals();
-    if (confLeadEl) {
-      confLeadEl.textContent = live.side === 'sell' ? 'Your order to sell' : 'Your order to buy';
+    /* One sentence, shares counted in words (roadmap 41, D13). Every position is an equity today; funds and ETFs
+       would say unit or units, bonds a nominal amount. */
+    if (confMessageEl) {
+      var what = pos ? ' ' + totals.quantity + ' ' + pos.name + (totals.quantity === 1 ? ' share' : ' shares') : '';
+      confMessageEl.textContent = 'Your order to ' + (live.side === 'sell' ? 'sell' : 'buy') + what + ' has been placed.';
     }
     if (confCurrencyEl) confCurrencyEl.textContent = 'CHF';
     if (confAmountEl) confAmountEl.textContent = formatMoney(totals.total);
-    if (confDetailEl && pos) {
-      confDetailEl.textContent = totals.quantity + ' pcs. ' + pos.name;
-    }
     /* An order is placed, not executed: say so, with the limit and how long it runs (roadmap 15, D6). */
     if (confTermsEl) {
       if (orderTypeSelect && orderTypeSelect.value === 'market') {
@@ -317,6 +316,8 @@
     if (confOverlay) {
       confOverlay.setAttribute('aria-hidden', 'false');
       confOverlay.classList.add('confirmation-overlay--visible');
+      /* The sheet behind goes inert and Done takes focus (roadmap 41, D1, D2) */
+      if (window.UZBankConfirmFocus) window.UZBankConfirmFocus.open(confOverlay, confBtn);
     }
   }
 
@@ -324,6 +325,7 @@
     if (confOverlay) {
       confOverlay.classList.remove('confirmation-overlay--visible');
       confOverlay.setAttribute('aria-hidden', 'true');
+      if (window.UZBankConfirmFocus) window.UZBankConfirmFocus.close(confOverlay);
     }
   }
 

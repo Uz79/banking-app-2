@@ -138,13 +138,13 @@
   var confOverlay    = overlay.querySelector('.confirmation-overlay');
   var confCurrency   = overlay.querySelector('#uz-iat-conf-currency');
   var confAmount     = overlay.querySelector('#uz-iat-conf-amount');
-  var confRecipient  = overlay.querySelector('#uz-iat-conf-recipient');
-  var confLead       = overlay.querySelector('#uz-iat-conf-lead');
-  var confFooter     = overlay.querySelector('#uz-iat-conf-footer');
-  var confDate       = overlay.querySelector('#uz-iat-conf-date');
+  var confMessage    = overlay.querySelector('#uz-iat-conf-message');
   var confBtn        = overlay.querySelector('#uz-iat-conf-btn');
 
   /* ── Live state ────────────────────────────────────────────────── */
+
+  /* Set when Execute records the transfer, until the flow opens again (roadmap 41, D4) */
+  var transferConfirmed = false;
 
   var live = {
     currency: 'CHF',
@@ -320,14 +320,13 @@
     var to = accountFor(live.toKey) || ACCOUNTS.household;
     if (confCurrency)  confCurrency.textContent  = live.currency;
     if (confAmount)    confAmount.textContent     = formatAmount(live.amount);
-    if (confRecipient) confRecipient.textContent  = to.name;
-    /* Say what happened: done now, made on a later date, or recurring from a date (roadmap 15). */
+    /* Done now, made on a later date, or recurring from a date (roadmap 15), in one sentence (roadmap 41, D12) */
     var status = scheduleStatus();
-    if (confLead)   confLead.textContent   = status === 'recurring' ? 'Your recurring transfer of' : 'Your transfer of';
-    if (confFooter) confFooter.textContent = status === 'executed' ? 'is done.' : (status === 'recurring' ? 'starts on' : 'will be made on');
-    if (confDate) {
-      confDate.textContent = live.dateLabel || formatTodayDate();
-      confDate.hidden = status === 'executed';
+    var date = live.dateLabel || formatTodayDate();
+    if (confMessage) {
+      confMessage.textContent = status === 'executed' ? 'Your transfer to ' + to.name + ' is done.'
+        : status === 'recurring' ? 'Your recurring transfer to ' + to.name + ' starts on ' + date + '.'
+          : 'Your transfer to ' + to.name + ' will be made on ' + date + '.';
     }
   }
 
@@ -390,6 +389,7 @@
     } else {
       /* Last step (summary) → Execute records the transfer, then the confirmation says so (roadmap 15, D10) */
       commitTransfer();
+      transferConfirmed = true;
       showConfirmation();
     }
   }
@@ -424,6 +424,7 @@
     }
     live.immediately = true;
     live.dateLabel = formatTodayDate();
+    transferConfirmed = false;
     if (execTypeGroup) {
       execTypeGroup.querySelectorAll('.segmented__option').forEach(function (b) {
         b.classList.toggle('segmented__option--active', b.getAttribute('data-exec') === 'single');
@@ -478,6 +479,8 @@
     if (confOverlay) {
       confOverlay.setAttribute('aria-hidden', 'false');
       confOverlay.classList.add('confirmation-overlay--visible');
+      /* The sheet behind goes inert and Done takes focus (roadmap 41, D1, D2) */
+      if (window.UZBankConfirmFocus) window.UZBankConfirmFocus.open(confOverlay, confBtn);
     }
   }
 
@@ -485,6 +488,7 @@
     if (confOverlay) {
       confOverlay.classList.remove('confirmation-overlay--visible');
       confOverlay.setAttribute('aria-hidden', 'true');
+      if (window.UZBankConfirmFocus) window.UZBankConfirmFocus.close(confOverlay);
     }
   }
 
@@ -617,7 +621,15 @@
   /* Browser back button */
   window.addEventListener('popstate', function (e) {
     if (!e.state || !e.state.iat) {
+      hideConfirmation();
       if (overlay.getAttribute('aria-hidden') !== 'true') closeOverlay(false);
+      return;
+    }
+    /* After Execute, a step's history entry closes the flow, as Done does, so Back can't record again (roadmap 41, D4) */
+    if (transferConfirmed) {
+      hideConfirmation();
+      if (overlay.getAttribute('aria-hidden') !== 'true') closeOverlay();
+      else history.replaceState(null, '', location.pathname + location.search);
       return;
     }
     var step = e.state.iat;

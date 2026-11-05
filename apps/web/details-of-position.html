@@ -2717,24 +2717,19 @@
   </div>
 
   <div class="confirmation-overlay" id="uz-trade-confirmation" aria-hidden="true">
-    <div class="confirmation-dialog">
+    <div class="confirmation-dialog" role="dialog" aria-modal="true" aria-labelledby="uz-trade-conf-message" aria-describedby="uz-trade-conf-figure uz-trade-conf-terms">
       <div class="confirmation-dialog__icon" aria-hidden="true">
         <svg class="confirmation-dialog__icon-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2"/>
           <path d="M15 24L21 30L33 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-      <span class="confirmation-dialog__text" id="uz-trade-conf-lead">Your order to buy</span>
-      <div class="confirmation-dialog__amount">
+      <p class="confirmation-dialog__message" id="uz-trade-conf-message">Your order has been placed.</p>
+      <p class="confirmation-dialog__amount" id="uz-trade-conf-figure">
         <span class="confirmation-dialog__currency" id="uz-trade-conf-currency">CHF</span>
-        <span class="confirmation-dialog__sum" id="uz-trade-conf-amount">100'850.00</span>
-      </div>
-      <div class="confirmation-dialog__recipient">
-        <span></span>
-        <span class="confirmation-dialog__recipient-name" id="uz-trade-conf-detail">100 pcs. ABB Ltd</span>
-      </div>
-      <span class="confirmation-dialog__footer">has been placed.</span>
-      <span class="confirmation-dialog__date" id="uz-trade-conf-terms">Limit CHF 1'008.50, valid today</span>
+        <span class="confirmation-dialog__sum" id="uz-trade-conf-amount">0.00</span>
+      </p>
+      <p class="confirmation-dialog__note" id="uz-trade-conf-terms"></p>
       <button class="uz-btn uz-btn--primary uz-btn--md uz-btn--block" type="button" id="uz-trade-conf-btn">Done</button>
     </div>
   </div>

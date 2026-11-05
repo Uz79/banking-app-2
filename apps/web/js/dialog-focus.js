@@ -141,6 +141,33 @@
 
   window.UZBankSheetFocus = { open: openSheet, close: closeSheet };
 
+  /* ── A confirmation over its sheet keeps focus, roadmap 41 ─────────────
+   * The dialog sits beside the sheet's .modal-shell in the same overlay. While
+   * it shows, the shell is inert (D1) and focus is on Done (D2), with the ring
+   * only after a keyboard action. */
+  function confirmationShell(confOverlay) {
+    var host = confOverlay && confOverlay.closest('.modal-overlay');
+    return host ? host.querySelector(':scope > .modal-shell') : null;
+  }
+
+  function openConfirmation(confOverlay, doneBtn) {
+    var shell = confirmationShell(confOverlay);
+    if (shell) shell.inert = true;
+    if (!doneBtn) return;
+    requestAnimationFrame(function () {
+      try {
+        doneBtn.focus(byKeyboard ? { preventScroll: true } : { preventScroll: true, focusVisible: false });
+      } catch (err) { /* ignore */ }
+    });
+  }
+
+  function closeConfirmation(confOverlay) {
+    var shell = confirmationShell(confOverlay);
+    if (shell) shell.inert = false;
+  }
+
+  window.UZBankConfirmFocus = { open: openConfirmation, close: closeConfirmation };
+
   /* ── A sheet's close ends without waiting on an event, roadmap 35 ───────
    * `done` runs once: at once with reduced motion (no slide runs, D2); else on
    * the shell's own transform transitionend or after 300 ms (the slide is

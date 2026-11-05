@@ -60,6 +60,9 @@
   var currentStep = 0;
   var prevStepIndexForTransition = null;
   var paymentFlowClosing = false;
+  /** Set when Execute records the payment; Pay's history entries from before it then close the flow
+   *  instead of reopening a step, so Back can't record it again (roadmap 41, D4) */
+  var flowConfirmed = false;
   /** Avoid pushing history while applying popstate/hash sync */
   var syncingRoute = false;
   /** Set to a booking ID when the flow was opened via an edit button;
@@ -254,33 +257,27 @@
     if (rec && live.recipient) rec.textContent = live.recipient.name;
   }
 
-  /** Confirmation dialog — amount, currency, recipient, date */
+  /** Confirmation dialog: what happened in one sentence, then the amount */
   function paintConfirmationDialog() {
-    var dlg = document.querySelector('.confirmation-dialog');
+    var dlg = confirmationOverlay && confirmationOverlay.querySelector('.confirmation-dialog');
     if (!dlg) return;
     var sum = dlg.querySelector('.confirmation-dialog__sum');
     var cur = dlg.querySelector('.confirmation-dialog__currency');
-    var rec = dlg.querySelector('.confirmation-dialog__recipient-name');
-    var date = dlg.querySelector('.confirmation-dialog__date');
-    var lead = dlg.querySelector('.confirmation-dialog__text');
-    var footer = dlg.querySelector('.confirmation-dialog__footer');
+    var message = dlg.querySelector('.confirmation-dialog__message');
     if (sum) sum.textContent = fmt(live.amount);
     if (cur) cur.textContent = live.currency;
-    if (rec && live.recipient) rec.textContent = live.recipient.name;
-    /* Say what happened: done now, made on a later date, or recurring from a date (roadmap 15).
-     * The schedule step names Recurring and Standing order apart, so the lead does too. */
+    /* Done now, made on a later date, or recurring from a date (roadmap 15), with the date in the sentence (roadmap 41,
+     * D11). The schedule step names Recurring and Standing order apart, so the sentence does too. */
     var status = scheduleStatus();
     var step = $step('schedule');
     var active = step && step.querySelector('.segmented__option--active');
     var mode = active ? active.textContent.trim() : 'Single';
-    if (lead) {
-      lead.textContent = status !== 'recurring' ? 'Your payment of'
-        : (mode === 'Standing order' ? 'Your standing order of' : 'Your recurring payment of');
-    }
-    if (footer) footer.textContent = status === 'executed' ? 'is done.' : (status === 'recurring' ? 'starts on' : 'will be made on');
-    if (date) {
-      date.textContent = live.dateLabel;
-      date.hidden = status === 'executed';
+    var to = live.recipient && live.recipient.name ? ' to ' + live.recipient.name : '';
+    if (message) {
+      message.textContent = status === 'executed' ? 'Your payment' + to + ' is done.'
+        : status === 'recurring'
+          ? (mode === 'Standing order' ? 'Your standing order' : 'Your recurring payment') + to + ' starts on ' + live.dateLabel + '.'
+          : 'Your payment' + to + ' will be made on ' + live.dateLabel + '.';
     }
   }
 
@@ -709,7 +706,7 @@
   function openModalVisual() {
     if (!modalOverlay.classList.contains('modal-overlay--active')) {
       prevStepIndexForTransition = null;
-      if (confirmationOverlay) confirmationOverlay.classList.remove('confirmation-overlay--visible');
+      hideConfirmationVisual();
       if (modalShell) {
         modalShell.classList.remove('modal-shell--closing');
         modalShell.classList.add('modal-shell--offscreen', 'modal-shell--no-transition');
@@ -738,7 +735,7 @@
     showStep();
     modalOverlay.classList.remove('modal-overlay--active', 'modal-overlay--closing');
     document.body.classList.remove('body--payment-open');
-    if (confirmationOverlay) confirmationOverlay.classList.remove('confirmation-overlay--visible');
+    hideConfirmationVisual();
     if (modalFooter) modalFooter.style.display = '';
     if (modalShell) {
       modalShell.classList.remove('modal-shell--closing');
@@ -847,11 +844,18 @@
 
   function showConfirmationVisual() {
     paintConfirmationDialog();
-    if (confirmationOverlay) confirmationOverlay.classList.add('confirmation-overlay--visible');
+    if (!confirmationOverlay) return;
+    confirmationOverlay.classList.add('confirmation-overlay--visible');
+    /* The sheet behind goes inert and Done takes focus (roadmap 41, D1, D2) */
+    if (window.UZBankConfirmFocus) {
+      window.UZBankConfirmFocus.open(confirmationOverlay, confirmationOverlay.querySelector('[data-action="done"]'));
+    }
   }
 
   function hideConfirmationVisual() {
-    if (confirmationOverlay) confirmationOverlay.classList.remove('confirmation-overlay--visible');
+    if (!confirmationOverlay) return;
+    confirmationOverlay.classList.remove('confirmation-overlay--visible');
+    if (window.UZBankConfirmFocus) window.UZBankConfirmFocus.close(confirmationOverlay);
   }
 
   function syncRouteFromLocation() {
@@ -865,7 +869,8 @@
           // hash cleared). If we have something worth protecting (edit mode
           // or a recipient already chosen), intercept: restore the hash so
           // the URL stays inside the flow, then ask the user what to do.
-          var worthProtecting = !!(editingBookingId || editingStaticRow || live.recipient);
+          /* After Execute nothing is left to discard (roadmap 41, D4) */
+          var worthProtecting = !flowConfirmed && !!(editingBookingId || editingStaticRow || live.recipient);
           if (worthProtecting && !paymentFlowClosing &&
               typeof window.UZBankPaymentExitPrompt === 'function') {
             // Restore the hash so the browser URL reflects that we're still
@@ -887,6 +892,17 @@
           hideConfirmationVisual();
           finishClose();
         }
+        return;
+      }
+
+      /* Pay's own history entry after the payment is recorded: Back (or Forward) closes, as Done does (roadmap 41, D4).
+         A fresh address (the booking sheet's Edit, a typed one) has no state and opens as usual. */
+      var ownEntry = !!(history.state && history.state.uzBankPay);
+      if (!ownEntry || window.__UZ_PD_EDIT_CONTEXT__) flowConfirmed = false;
+      if (flowConfirmed && (seg === 'confirmation' || STEPS.indexOf(seg) >= 0)) {
+        hideConfirmationVisual();
+        replaceCleanUrl();
+        if (modalOverlay.classList.contains('modal-overlay--active')) finishClose();
         return;
       }
 
@@ -1010,6 +1026,7 @@
         editingBookingId = null;
         editingStaticRow = null;
       }
+      flowConfirmed = true;
       pushPayUrl('confirmation');
       showConfirmationVisual();
       notifyScreen();
@@ -1022,6 +1039,7 @@
     e.preventDefault();
     live.recipient = null;
     editingBookingId = null; // always a fresh payment from the pay button
+    flowConfirmed = false;
     resetPaymentDefaults();
     currentStep = 0;
     prevStepIndexForTransition = null;
