@@ -310,6 +310,7 @@
 
   var isClosing = false;
   var pendingEditStep = null;
+  var pendingCopy = false; /* Copy opens Pay as a new payment, through the edit's path (roadmap 42, D14) */
   var currentPaymentData = null; /* snapshot of the last openOverlay() call */
   var currentBookingId       = null; /* data-booking-id of the tapped row, or null for static mocks */
   var currentBookingRouteId  = null; /* slug/id used in #payment-details/<type>/<id> */
@@ -667,6 +668,7 @@
   function openOverlay(data, opts) {
     opts = opts || {};
     isClosing = false;
+    pendingCopy = false;
     currentPaymentData = data; // remember for edit-context export
 
     // Title
@@ -792,7 +794,9 @@
     // the payment flow at the correct step.
     if (pendingEditStep) {
       var step = pendingEditStep;
+      var copy = pendingCopy;
       pendingEditStep = null;
+      pendingCopy = false;
 
       // Export current payment data so payment-overlay.js can pre-seed live.*
       if (currentPaymentData) {
@@ -808,14 +812,14 @@
         var fullRecipient = findRecipientByName(recipientName);
 
         window.__UZ_PD_EDIT_CONTEXT__ = {
-          bookingId:     currentBookingId,       // null for static mocks
-          builtInId:     currentBookingId || !currentRow ? null : currentRow.getAttribute('data-builtin-id'), // replaced on commit (roadmap 42, D4)
+          bookingId:     copy ? null : currentBookingId,       // null for static mocks and a copy
+          builtInId:     copy || currentBookingId || !currentRow ? null : currentRow.getAttribute('data-builtin-id'), // replaced on commit (roadmap 42, D4)
           recipientName: recipientName,
           recipient:     fullRecipient || null,  // full catalog record if found
           amount:        amtNum,
           currency:      d.currency || 'CHF',
-          status:        d.status || 'executed',  // the schedule step opens on it (roadmap 23, D3)
-          executeOn:     d.executeOn || null,
+          status:        copy ? 'executed' : (d.status || 'executed'),  // the schedule step opens on it (roadmap 23, D3); a copy as soon as possible
+          executeOn:     copy ? null : (d.executeOn || null),
           targetStep:    step
         };
       }
@@ -896,6 +900,17 @@
       stayLabel:   'Keep ' + noun,
       escapeStays: true
     });
+  });
+
+  /* ── Copy → Pay with the recipient and amount (roadmap 42, D14) ── */
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-pd-action="copy"]');
+    if (!btn || !overlay.contains(btn)) return;
+    if (!overlay.classList.contains('modal-overlay--active') || !currentActions.copy) return;
+    pendingCopy = true;
+    pendingEditStep = 'amount';
+    closeOverlay();
   });
 
   /* ── Tap a booking row to open the overlay ───────────────────── */
