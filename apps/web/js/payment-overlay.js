@@ -709,7 +709,7 @@
   function openModalVisual() {
     if (!modalOverlay.classList.contains('modal-overlay--active')) {
       prevStepIndexForTransition = null;
-      if (confirmationOverlay) confirmationOverlay.classList.remove('confirmation-overlay--visible');
+      hideConfirmationVisual();
       if (modalShell) {
         modalShell.classList.remove('modal-shell--closing');
         modalShell.classList.add('modal-shell--offscreen', 'modal-shell--no-transition');
@@ -738,7 +738,7 @@
     showStep();
     modalOverlay.classList.remove('modal-overlay--active', 'modal-overlay--closing');
     document.body.classList.remove('body--payment-open');
-    if (confirmationOverlay) confirmationOverlay.classList.remove('confirmation-overlay--visible');
+    hideConfirmationVisual();
     if (modalFooter) modalFooter.style.display = '';
     if (modalShell) {
       modalShell.classList.remove('modal-shell--closing');
@@ -847,11 +847,18 @@
 
   function showConfirmationVisual() {
     paintConfirmationDialog();
-    if (confirmationOverlay) confirmationOverlay.classList.add('confirmation-overlay--visible');
+    if (!confirmationOverlay) return;
+    confirmationOverlay.classList.add('confirmation-overlay--visible');
+    /* The sheet behind goes inert and Done takes focus (roadmap 41, D1, D2) */
+    if (window.UZBankConfirmFocus) {
+      window.UZBankConfirmFocus.open(confirmationOverlay, confirmationOverlay.querySelector('[data-action="done"]'));
+    }
   }
 
   function hideConfirmationVisual() {
-    if (confirmationOverlay) confirmationOverlay.classList.remove('confirmation-overlay--visible');
+    if (!confirmationOverlay) return;
+    confirmationOverlay.classList.remove('confirmation-overlay--visible');
+    if (window.UZBankConfirmFocus) window.UZBankConfirmFocus.close(confirmationOverlay);
   }
 
   function syncRouteFromLocation() {

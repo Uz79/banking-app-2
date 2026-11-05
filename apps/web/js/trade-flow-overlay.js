@@ -317,6 +317,8 @@
     if (confOverlay) {
       confOverlay.setAttribute('aria-hidden', 'false');
       confOverlay.classList.add('confirmation-overlay--visible');
+      /* The sheet behind goes inert and Done takes focus (roadmap 41, D1, D2) */
+      if (window.UZBankConfirmFocus) window.UZBankConfirmFocus.open(confOverlay, confBtn);
     }
   }
 
@@ -324,6 +326,7 @@
     if (confOverlay) {
       confOverlay.classList.remove('confirmation-overlay--visible');
       confOverlay.setAttribute('aria-hidden', 'true');
+      if (window.UZBankConfirmFocus) window.UZBankConfirmFocus.close(confOverlay);
     }
   }
 
