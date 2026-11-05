@@ -206,9 +206,11 @@ Found during 15 (2026-11-03). Turning off "As soon as possible" (payment) or "Im
 
 Spec: `specs/2026-11-04-execution-date/` (branch `feature/execution-date`). Settled in its interview: the app's own calendar in the form sheet (pop-up on desktop, bottom sheet on a phone); working days from the next working day to twelve months ahead, no holidays; what happens when the date arrives moves to 37. Found in the build: the transfer's Immediately switch showed the opposite state (fixed here, D13) and Pay's schedule step always names Hans Meyer (38). Built 2026-11-04.
 
-## 29. Pay: the schedule step names the wrong recipient
+## 29. Pay: the schedule step names the wrong recipient (done)
 
 Found during 22 (2026-11-04). The Pay flow's Time Schedule step shows "Hans Meyer" as the recipient whoever was picked: the name is fixed in `overview.html` (the `data-step="schedule"` field) and nothing fills it. The summary, the confirmation and the booking use the right name. To settle in its spec: fill it from the chosen recipient like the amount step does, and check the same fixed name on the other pages that carry the Pay sheet.
+
+Found again during 28 as item 38 (the cause: `paintScheduleStep` in `js/payment-overlay.js` never writes the name), closed as its duplicate. Spec: `specs/2026-11-04-schedule-recipient/` (branch `feature/schedule-recipient`). Settled in its interview: the schedule step only, with a check of every other placeholder in the Pay sheet on Overview, Payments and Account details; typed recipient fields not being read back is item 39. Changed at review: the Pay sheet's "Hans Meyer" placeholders leave the markup (D2), and the Lena Fischer case is checked down to the stored booking and the balance (D10). Built 2026-11-04.
 
 ## 30. Buy and Sell: "Discard order?" offers "Continue payment"
 
@@ -244,6 +246,10 @@ Found during 35 (2026-11-04). With the macOS Reduce motion setting on, the forwa
 
 Split from 28 (2026-11-04). A payment or transfer set for a later date stays pending forever: nothing executes it when its date arrives, so its money never moves, and a recurring one never repeats. To settle in its spec: when it runs (on load, against the device date), what an executed one looks like in the bookings and balances, how a recurring or standing order repeats, and what the status message says.
 
-## 38. Pay: the schedule step always names Hans Meyer
+## 38. Pay: the schedule step always names Hans Meyer (duplicate of 29)
 
-Found during 28 (2026-11-04). Pay's schedule step shows "Recipient: Hans Meyer" whoever was picked: `paintScheduleStep` in `js/payment-overlay.js` never writes the recipient's name, so the markup's placeholder stays (the amount step and the summary are right). Also on `main`. To settle in its spec: the schedule step names `live.recipient`, and a look at the other steps' placeholders on Overview, Payments and Account details.
+Found during 28 (2026-11-04). Pay's schedule step shows "Recipient: Hans Meyer" whoever was picked: `paintScheduleStep` in `js/payment-overlay.js` never writes the recipient's name, so the markup's placeholder stays (the amount step and the summary are right). Also on `main`. The same bug as 29, closed on 2026-11-04 and built there; its look at the other steps' placeholders is 29's D3.
+
+## 39. Pay: a recipient's details typed on the recipient step are lost
+
+Found while writing 29's spec (2026-11-04). The recipient step fills Recipient name, Street and City from the chosen recipient, but nothing reads the inputs back (`js/payment-overlay.js`, the `input` handler only syncs the clear buttons). A name changed there is ignored: the schedule step, the summary, the confirmation and the stored booking keep the name picked from the list. To settle in its spec: whether the typed details update the flow's recipient (and the stored booking), whether a changed name makes a new recipient or edits the saved one, and what an emptied name does on Next.
