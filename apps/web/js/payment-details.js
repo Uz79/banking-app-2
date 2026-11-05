@@ -452,7 +452,8 @@
         currency: booking.currency || 'CHF',
         debit: debit,
         credit: credit,
-        status: 'executed',
+        /* Its own schedule, as a payment's (roadmap 32, D1); a recurring one reads Pending until 47 (D2) */
+        status: booking.status || 'executed',
         message: null
       };
     }
