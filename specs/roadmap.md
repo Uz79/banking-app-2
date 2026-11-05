@@ -269,3 +269,7 @@ Added 2026-11-05. After Buy, the "Your order has been placed" dialog lets Tab re
 ## 42. Edited example rows come back after a reload
 
 Found while writing 31's spec (2026-11-05). Editing one of a page's built-in example bookings (Swisscom or Tax office Zurich in Pending, for example) stores the edit as a new booking and hides the example row only in the page (`hidden` and `data-replaced` in `js/payment-overlay.js`). After a reload the example row shows again next to the edited copy. Happens on Account details today, and on All bookings once 31 gives it Pay. To settle in its spec: how a replaced example row is remembered (a field in the payment state or a new `uzBankWeb` key), on every page that lists bookings, and that the demo data reset brings the rows back.
+
+## 43. All bookings: built-in pending and recurring rows read "Executed"
+
+Found during 31 (2026-11-05). On All bookings, every built-in row opens a sheet that says "Executed" with no Edit, also the ones in Pending and Recurring (Swisscom, Helvetia Insurance, Tax office Zurich): `buildAllBookingsRowData` in `js/payment-details.js` sets `status: 'executed'` and ignores the row's `data-status`. Payments made in the app read their real status since 23. To settle in its spec: read the row's status (and a date for "Execute on"), what Edit does on a built-in row once it shows (it runs into 42, and may leave an empty month band), and the same check for built-in transfer rows (32).
