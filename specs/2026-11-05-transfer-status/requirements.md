@@ -22,6 +22,8 @@ Roadmap items 32 and 46 (`specs/roadmap.md`), built together (interview). Both a
 - A trade's status: trades are executed when placed, so they keep "Executed" (D7)
 - One shared account list in `payment-state.js` instead of the transfer script's (D3)
 - Pending transfers executing on their date (37), booking rows by keyboard (33), the confirmation dialog's focus (41)
+- Escape on the banking sheets: found in the check, new roadmap item 49
+- Built-in transfer rows that read as a transfer to the same account: found in the check, new roadmap item 50
 
 ## Decisions
 

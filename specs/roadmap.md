@@ -299,3 +299,11 @@ Added 2026-11-05. A standing order is a rule; its executions are bookings. Today
 ## 48. Chip: its own tokens, as in Figma
 
 Added 2026-11-05. `.chip--tonal` (43) uses `--color-btn-tonal-*`. Figma's Chip has its own Case=FilledTonal, bound to `chip/filled tonal/*` (background, border, foreground, hover, pressed; Des-Sys-Test, Component Library > Chip, node 769:106445). Those tokens are in `designs/tokens/_NEW/260617_tokens` but not in `designs/tokens/mapped`. Bring them into the token pipeline as `--color-chip-filled-tonal-*`, make the theme engine emit them for Multi-color themes, and point the chip at them. Settle the class name against Figma's "FilledTonal", and document the Secondary case in `designs/components/chip/chip.md` too.
+
+## 49. Banking sheets don't close on Escape
+
+Found during 32 (2026-11-05). Pay, the transfer, Buy and Sell, and a booking's sheet ignore Escape: only their close button closes them. The fridge, the opening and the Playground close on Escape (`js/fridge-advisor-sheet.js`, `js/investment-opening.js`, `js/playground-sheet.js`). To settle in its spec: Escape on every banking sheet, with the flows asking their "Discard …?" prompt first as their close button does, what Escape does while a picker, the calendar or a confirmation is open over a sheet, and focus after the close.
+
+## 50. Built-in transfers can read as a transfer to the same account
+
+Found during 46 (2026-11-05). All bookings shows the same built-in rows for Household and Savings, and a built-in transfer's sheet takes the page's account as its debit (`buildAllBookingsRowData` in `js/payment-details.js`, from `ACCOUNT_SNAPSHOTS`). So on Household's All bookings "Transfer to Household" reads "from Household to Household", and on Savings' "Transfer to Savings" reads "from Savings account to Savings account". The two lists also name Savings differently ("Savings account" in the built-in snapshots, "Savings Account" in the transfer's). To settle in its spec: per-account built-in rows, or a debit account in each transfer row's data, and one name for Savings.
