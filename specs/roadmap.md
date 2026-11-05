@@ -222,6 +222,8 @@ Spec: `specs/2026-11-05-exit-prompt-labels/` (branch `feature/exit-prompt-labels
 
 Found during 23 (2026-11-04). A pending payment's sheet on All bookings shows "Edit amount" and "Edit payment", but the page doesn't load the Pay sheet (`payment-overlay.js` and its markup), so the `#pay/amount` route the buttons set goes nowhere: the sheet closes and nothing opens. Editing works on Account details. To settle in its spec: give All bookings the Pay sheet, or hide Edit there.
 
+Spec: `specs/2026-11-05-bookings-edit/` (branch `feature/bookings-edit`). Settled in its interview: All bookings gets the Pay sheet (its markup copied from Account details, its scripts loaded), the user stays on the same tab after Done, and built-in example rows that come back after a reload are item 42.
+
 ## 32. Booking sheet: a pending transfer shows "Executed"
 
 Found during 23 (2026-11-04). `buildDataFromStateBooking` in `js/payment-details.js` gives every stored transfer (and trade) the status "executed", so a transfer made with "Immediately" off or as a standing order reads "Executed" in its sheet. To settle in its spec: read the booking's status as payments do since 23, and what the sheet shows for a recurring transfer.
