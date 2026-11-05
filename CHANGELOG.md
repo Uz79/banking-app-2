@@ -17,6 +17,8 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **A transfer's sheet shows what it is** (roadmap 32, 46). A transfer made with "Immediately" off, or as a standing order, read "Executed" in its sheet; it now reads "Pending", as a payment does. On All bookings a transfer made in the app opened as a "Domestic Payment"; it now opens as an "Internal Account Transfer" with both accounts, as on Account details. Both legs, on the debit and the credit account's list.
+- Spec: `specs/2026-11-05-transfer-status/`.
 - **Edit works on All bookings** (roadmap 31). A pending or recurring payment's "Edit amount" and "Edit payment" closed its sheet and opened nothing. All bookings now carries the Pay sheet, so Edit opens Pay on the amount step with the payment's recipient, amount and schedule, as on Account details. After Done you stay on the same tab and the list shows the change. For now this works for payments made in the app; built-in rows show no Edit yet (roadmap 42).
 - **All bookings keeps still when you switch tabs.** The header was 16px taller on Executed than on Pending and Recurring, the lists started at different heights, and the column moved sideways between a long and a short list. All three tabs now line up.
 - Spec: `specs/2026-11-05-bookings-edit/`.

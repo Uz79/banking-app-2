@@ -49,4 +49,5 @@ Roadmap items 32 and 46 (`specs/roadmap.md`), built together (interview). Both a
 
 ## Open questions
 
-- Whether anything else in `iat-overlay.js` runs before line 93 and does something on a page without the transfer's markup (a listener on `document`, a hash route). To check in the build; a change found there is recorded as a new decision.
+- Whether anything else in `iat-overlay.js` runs before line 93 and does something on a page without the transfer's markup (a listener on `document`, a hash route). Answered in the build: no. Before line 93 it only defines the account list, `liveBalance`, the mandates and `accountFor`; every listener comes after. A typed `#iat/recipient` on All bookings opens nothing. No change needed.
+- Where focus lands after the sheet closes. Answered in the check: on the page itself (`body`), as the row that opened it can't take focus (33).
