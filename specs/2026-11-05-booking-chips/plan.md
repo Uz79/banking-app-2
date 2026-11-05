@@ -28,6 +28,6 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 4. Wrap-up
 
-- [ ] `npm run build` in `apps/web`
-- [ ] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
-- [ ] Docs: `specs/roadmap.md` 43 marked done and 42 noted to turn Edit on; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` if the booking data model is described there. No new storage key, so no change to `apps/web/README.md`
+- [x] `npm run build` in `apps/web`
+- [x] The validation pass (`validation.md`) with the baseline smoke test and the dated "Checked on" line
+- [x] Docs: `specs/roadmap.md` 43 marked done and 42 noted to turn Edit on; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` if the booking data model is described there. No new storage key, so no change to `apps/web/README.md`
