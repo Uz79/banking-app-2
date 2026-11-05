@@ -2079,6 +2079,18 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
   color: var(--color-fg);
 }
 
+/* A row with a chip: the name takes only its width and is cut before the chip is (roadmap 43, D13) */
+.booking-row:has(.booking-row__chip) .booking-row__name {
+  flex: 0 1 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.booking-row__chip {
+  flex-shrink: 0;
+}
+
 .booking-row__amount {
   display: flex;
   gap: var(--space-2);

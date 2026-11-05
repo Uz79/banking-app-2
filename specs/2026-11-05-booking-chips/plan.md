@@ -19,12 +19,12 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 3. Icons and chips in the lists (D4, D6 to D9, D12, D13)
 
-- [ ] `apps/web/js/payment-state.js`: `frequency` on recurring bookings, kept by `updatePayment`, passed by `getState` (D9)
-- [ ] A shared helper for the chip label and the counterparty icon, used by `js/all-bookings.js` and `js/data-render.js` (D4, D8)
-- [ ] Built-in markup on both pages: counterparty icons, no `#i-repeat`, the chip after the name (D4, D6)
-- [ ] `apps/web/js/all-bookings.js` and `apps/web/js/data-render.js`: rendered rows get `data-type`, the icon and the chip (D12)
-- [ ] `apps/web/css/styles.css`: the row's name shrinks before the chip (D13)
-- [ ] Check: every tab on All bookings and Account details at desktop and 390, a transfer made in the app on both accounts' lists, a recurring payment made in the app reads "Monthly"
+- [x] `apps/web/js/payment-state.js`: `frequency` on recurring bookings, kept by `updatePayment`, passed by `getState` (D9)
+- [x] A shared helper for the chip label and the counterparty icon (`bookingRowLook` and `frequencyLabel` in `js/payment-state.js`, which both pages load first), used by `js/all-bookings.js` and `js/data-render.js` (D4, D8)
+- [x] Built-in markup on both pages: counterparty icons, no `#i-repeat`, the chip after the name (D4, D6)
+- [x] `apps/web/js/all-bookings.js` and `apps/web/js/data-render.js`: rendered rows get `data-type`, the icon and the chip (D12)
+- [x] `apps/web/css/styles.css`: the row's name shrinks before the chip (D13)
+- [x] Check: every tab on All bookings and Account details on desktop (390 in the validation pass), a transfer made in the app on both accounts' lists (anchor on Household's, home on Savings'), a recurring payment made in the app reads "Monthly", one stored without a frequency too
 
 ## 4. Wrap-up
 

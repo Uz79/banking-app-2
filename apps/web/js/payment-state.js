@@ -406,6 +406,7 @@
         };
         row.status = b.status || 'executed';
         if (b.executeOn) row.executeOn = b.executeOn;
+        if (b.frequency) row.frequency = b.frequency;
         if (b.kind) row.kind = b.kind;
         if (b.fromKey) row.fromKey = b.fromKey;
         if (b.toKey) row.toKey = b.toKey;
@@ -468,6 +469,8 @@
       booking.status = status;
       if (source.executeOn) booking.executeOn = source.executeOn;
     }
+    /* Pay and the transfer have no frequency choice yet (45): a standing order is monthly (roadmap 43, D9) */
+    if (status === 'recurring') booking.frequency = source.frequency || 'monthly';
   }
 
   function commitPayment(payment) {
@@ -577,10 +580,13 @@
       /* Still later: keep its date and place in the list */
       booking.status = status;
       if (updates.executeOn) booking.executeOn = updates.executeOn;
+      if (status === 'recurring') booking.frequency = updates.frequency || booking.frequency || 'monthly';
+      else delete booking.frequency;
     } else {
       /* Runs now: dated now, so its money leaves the account from this moment. No status, like a new payment */
       delete booking.status;
       delete booking.executeOn;
+      delete booking.frequency;
       booking.dateISO = updates.dateISO || new Date().toISOString();
     }
     state.bookings[idx] = booking;
@@ -675,6 +681,32 @@
     dispatchChange();
   }
 
+  /* ── How a booking row looks (roadmap 43) ───────────────────────── */
+
+  /* The icon names the counterparty, never the status (D4); the chip names the status or the frequency (D6) */
+  var ACCOUNT_ICONS = { household: 'i-home', savings: 'i-anchor', deposit: 'i-life-buoy' };
+  var FREQUENCY_LABELS = { weekly: 'Weekly', monthly: 'Monthly', quarterly: 'Quarterly', yearly: 'Yearly' };
+
+  function frequencyLabel(frequency) {
+    return FREQUENCY_LABELS[frequency] || FREQUENCY_LABELS.monthly;
+  }
+
+  function bookingRowLook(b) {
+    var out = b.direction !== 'in';
+    var look = { type: b.kind === 'iat' ? 'transfer' : (b.kind === 'trade' ? 'trade' : 'payment'), chip: null };
+    if (b.kind === 'trade') {
+      look.icon = b.icon; /* Trades keep their buy and sell icons */
+    } else if (b.kind === 'iat') {
+      /* Between own accounts: the other account's icon; a mandate has none, so the payment icon */
+      look.icon = ACCOUNT_ICONS[out ? b.toKey : b.fromKey] || (out ? 'i-corner-up-right' : 'i-download');
+    } else {
+      look.icon = out ? 'i-corner-up-right' : 'i-download';
+    }
+    if (b.status === 'pending') look.chip = 'Pending';
+    else if (b.status === 'recurring' || b.frequency) look.chip = frequencyLabel(b.frequency);
+    return look;
+  }
+
   /* ── Public surface ──────────────────────────────────────────────── */
 
   window.UZBankPayState = {
@@ -690,6 +722,8 @@
     commitMandate:       commitMandate,
     updatePayment:       updatePayment,
     reset:               reset,
-    formatMoney:         formatMoney
+    formatMoney:         formatMoney,
+    bookingRowLook:      bookingRowLook,
+    frequencyLabel:      frequencyLabel
   };
 })();

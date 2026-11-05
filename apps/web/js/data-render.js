@@ -102,12 +102,14 @@
     row.className = 'booking-row';
     row.setAttribute('data-source', 'state');
     row.setAttribute('data-booking-id', b.id);
-    var iconId = b.icon || 'i-corner-up-right';
+    var look = window.UZBankPayState.bookingRowLook(b);
+    row.setAttribute('data-type', look.type);
     var isCredit = b.direction === 'in';
     var sign = isCredit ? '+' : '-';
     row.innerHTML =
-      '<svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#' + escapeHtml(iconId) + '"/></svg>' +
+      '<svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#' + escapeHtml(look.icon) + '"/></svg>' +
       '<span class="booking-row__name">' + escapeHtml(b.recipientName) + '</span>' +
+      (look.chip ? '<span class="chip chip--sm chip--tonal booking-row__chip">' + escapeHtml(look.chip) + '</span>' : '') +
       '<span class="booking-row__amount">' +
         '<span class="booking-row__currency">' + escapeHtml(b.currency) + '</span>' +
         '<span class="booking-row__value">' + sign + fmt(b.amount) + '</span>' +

@@ -24,7 +24,7 @@ Roadmap item 43 (`specs/roadmap.md`). On All bookings every built-in row opens a
 - A frequency choice in Pay and the transfer: new roadmap item 45 (D9)
 - What happens when a pending booking's date arrives (built-in pending rows dated 30.10.2026 and 03.11.2026 stay pending): 37
 - Brand logos as counterparty icons (D4 keeps the slot for them)
-- Trade bookings' icons (`i-plus` / `i-minus`), which don't appear in these lists
+- Trade bookings' icons (`i-plus` / `i-minus`): trades do appear in these lists (a buy debits its account), but keep their buy and sell icons; their rows get `data-type="trade"` and no chip (D4). Whether a trade's counterparty icon should be the custody account is left for review
 - A pending transfer's status in its sheet (32), keyboard access to rows (33)
 
 ## Decisions
