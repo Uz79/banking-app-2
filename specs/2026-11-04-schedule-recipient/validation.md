@@ -39,7 +39,7 @@ The case from the 2026-10-28 baseline run:
 ## 5. Keyboard and motion
 
 - [x] Tab through the schedule step: focus is visible on the edit button, the segmented control, the toggle and Execute on (desktop Light: Edit recipient, Single, Recurring, Standing order, the toggle, then Confirm, each with a 2px solid ring; Execute on is skipped while "as soon as possible" is on, as 28 built it, D4 there)
-- [ ] Reduced motion on: the Pay sheet opens, moves between steps and closes as before (not run: needs the real macOS setting; this branch adds no motion)
+- [x] Reduced motion on: the Pay sheet opens, moves between steps and closes as before (checked by Klaudiusz on production with the real macOS setting, 2026-11-05: Pay opens and closes without sliding, the schedule step shows Lena Fischer, the page responds after Done and after Leave)
 
 ## 6. Baseline smoke test
 
@@ -80,6 +80,6 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 ### 6. Accessibility
 
 - [x] Tab through Overview: focus is always visible (the sidebar's Overview item and the Pay sheet's controls)
-- [ ] With reduced motion on (System Settings → Accessibility → Display), page transitions and the character are still, and nothing is stuck mid-animation (not run: needs the real macOS setting)
+- [ ] With reduced motion on (System Settings → Accessibility → Display), page transitions and the character are still, and nothing is stuck mid-animation (partly: Klaudiusz checked Pay on production with the real setting, 2026-11-05, and nothing was stuck after Done or Leave; page transitions and the character were not reported)
 
-Checked on 2026-11-04 against `feature/schedule-recipient`, Chrome on macOS through Claude in Chrome on the test server (port 5199): desktop (1483 px window) in Light and Dark, the UZ Bank theme and two Multi-color themes (Custom 10, Custom 11); 390 px in an iframe in Light and Dark; keyboard on the schedule step and Overview. Not checked: the real macOS Reduce motion setting, the page transitions' direction, when the status message first appears, Account details' own Household card after the payment, Safari and Firefox.
+Checked on 2026-11-04 against `feature/schedule-recipient`, Chrome on macOS through Claude in Chrome on the test server (port 5199): desktop (1483 px window) in Light and Dark, the UZ Bank theme and two Multi-color themes (Custom 10, Custom 11); 390 px in an iframe in Light and Dark; keyboard on the schedule step and Overview. The real macOS Reduce motion setting was checked by Klaudiusz on production after the merge (2026-11-05): Pay and its schedule step, and the page after Done and Leave. Not checked: page transitions and the character with Reduce motion, the page transitions' direction, when the status message first appears, Account details' own Household card after the payment, Safari and Firefox.
