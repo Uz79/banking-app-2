@@ -25,7 +25,7 @@ In every flow the stay button kept the flow open with its entries, and Discard c
 - [x] Desktop (1440px) and 390px, Light and Dark: the longer labels fit their buttons on one line (desktop Light: the edit prompt; desktop Dark: Sell; 390 Light: Buy; 390 Dark: the transfer)
 - [x] A Multi-color theme: the buttons take the theme as before (the transfer prompt at 390 Dark)
 - [x] Keyboard: Tab reaches both buttons with a visible ring; Enter on the stay button keeps the flow and returns focus to it; Escape still does nothing in Pay, the transfer and the trade (D5), and still means "Keep going" in the fridge. Checked on the transfer: focus opens on "Continue transfer", Tab reaches Discard, Escape does nothing, Enter on "Continue transfer" keeps the flow with focus back on its close button and a ring
-- [ ] Reduced motion on: the dialog opens and closes without its animation, and the page responds afterwards. Not checked with the real macOS setting; the code path (`prefersReducedMotion()` in `payment-exit-confirm.js`) is unchanged by this branch
+- [x] Reduced motion on: the dialog opens and closes without its animation, and the page responds afterwards. Checked by Klaudiusz with the real macOS setting: Buy, close, "Discard order?" with "Continue order"; both buttons close it at once and the page responds
 
 ## 4. Baseline smoke test
 
@@ -40,8 +40,8 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 
 - [x] ★ Overview loads with sidebar (desktop) or tab bar (phone); the 3D character appears in the lower right on desktop
 - [x] ★ Light/Dark toggle switches instantly and survives a reload (desktop, and the phone header's toggle at 390)
-- [ ] Navigating Overview → Account details → All bookings and back plays the page transitions in the right directions. Not checked: the pages were reached, but the direction of the transitions was not watched
-- [ ] The "Open payment!" status message appears after about 12 s on a main view; tapping it dismisses it. The message shows on every main view; the 12 s timing was not measured
+- [x] Navigating Overview → Account details → All bookings and back plays the page transitions in the right directions. Checked by Klaudiusz: Household and Custody account, and the back arrow
+- [x] The "Open payment!" status message appears after about 12 s on a main view; tapping it dismisses it. Measured by Klaudiusz: it comes back about 8 s after it is dismissed, not 12 s. That matches the code (`reappearAfter: 8000` in `js/status-feed.js`) and `specs/tech-spec.md` ("back 8 s after dismissal"); the baseline line only names the first appearance (12 s, `delay: 12000`), which was not timed. A gap in the baseline's wording, not a change by this branch
 
 ### 3. Banking flows
 
@@ -68,4 +68,4 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 - [x] Tab through Overview: focus is always visible (Dark desktop, up to the sidebar's Light button with a 2px solid ring)
 - [ ] With reduced motion on (System Settings → Accessibility → Display), page transitions and the character are still, and nothing is stuck mid-animation. Not checked: needs the real macOS setting
 
-Checked on 2026-11-05 against `feature/exit-prompt-labels`, Chrome on macOS, Vite on port 5199, desktop (1440px) Light and Dark, 390px in a same-origin iframe, Light and Dark, the UZ Bank theme and a Multi-color theme, by mouse and keyboard. Not checked: reduced motion with the real macOS setting, the direction of page transitions, the status message's 12 s timing.
+Checked on 2026-11-05 against `feature/exit-prompt-labels`, Chrome on macOS, Vite on port 5199, desktop (1440px) Light and Dark, 390px in a same-origin iframe, Light and Dark, the UZ Bank theme and a Multi-color theme, by mouse and keyboard. Then by Klaudiusz on 2026-11-05: the exit prompt with the real macOS Reduce motion, the page transitions, and the status message's reappearance (about 8 s). Not checked: the baseline's reduced-motion pass over page transitions and the character, and the status message's first appearance (12 s).
