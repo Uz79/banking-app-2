@@ -146,6 +146,9 @@
 
   /* ── Live state ────────────────────────────────────────────────── */
 
+  /* Set when Execute records the transfer, until the flow opens again (roadmap 41, D4) */
+  var transferConfirmed = false;
+
   var live = {
     currency: 'CHF',
     amount: 500.00,
@@ -390,6 +393,7 @@
     } else {
       /* Last step (summary) → Execute records the transfer, then the confirmation says so (roadmap 15, D10) */
       commitTransfer();
+      transferConfirmed = true;
       showConfirmation();
     }
   }
@@ -424,6 +428,7 @@
     }
     live.immediately = true;
     live.dateLabel = formatTodayDate();
+    transferConfirmed = false;
     if (execTypeGroup) {
       execTypeGroup.querySelectorAll('.segmented__option').forEach(function (b) {
         b.classList.toggle('segmented__option--active', b.getAttribute('data-exec') === 'single');
@@ -622,6 +627,13 @@
     if (!e.state || !e.state.iat) {
       hideConfirmation();
       if (overlay.getAttribute('aria-hidden') !== 'true') closeOverlay(false);
+      return;
+    }
+    /* After Execute, a step's history entry closes the flow, as Done does, so Back can't record again (roadmap 41, D4) */
+    if (transferConfirmed) {
+      hideConfirmation();
+      if (overlay.getAttribute('aria-hidden') !== 'true') closeOverlay();
+      else history.replaceState(null, '', location.pathname + location.search);
       return;
     }
     var step = e.state.iat;

@@ -60,6 +60,9 @@
   var currentStep = 0;
   var prevStepIndexForTransition = null;
   var paymentFlowClosing = false;
+  /** Set when Execute records the payment; Pay's history entries from before it then close the flow
+   *  instead of reopening a step, so Back can't record it again (roadmap 41, D4) */
+  var flowConfirmed = false;
   /** Avoid pushing history while applying popstate/hash sync */
   var syncingRoute = false;
   /** Set to a booking ID when the flow was opened via an edit button;
@@ -872,7 +875,8 @@
           // hash cleared). If we have something worth protecting (edit mode
           // or a recipient already chosen), intercept: restore the hash so
           // the URL stays inside the flow, then ask the user what to do.
-          var worthProtecting = !!(editingBookingId || editingStaticRow || live.recipient);
+          /* After Execute nothing is left to discard (roadmap 41, D4) */
+          var worthProtecting = !flowConfirmed && !!(editingBookingId || editingStaticRow || live.recipient);
           if (worthProtecting && !paymentFlowClosing &&
               typeof window.UZBankPaymentExitPrompt === 'function') {
             // Restore the hash so the browser URL reflects that we're still
@@ -894,6 +898,17 @@
           hideConfirmationVisual();
           finishClose();
         }
+        return;
+      }
+
+      /* Pay's own history entry after the payment is recorded: Back (or Forward) closes, as Done does (roadmap 41, D4).
+         A fresh address (the booking sheet's Edit, a typed one) has no state and opens as usual. */
+      var ownEntry = !!(history.state && history.state.uzBankPay);
+      if (!ownEntry || window.__UZ_PD_EDIT_CONTEXT__) flowConfirmed = false;
+      if (flowConfirmed && (seg === 'confirmation' || STEPS.indexOf(seg) >= 0)) {
+        hideConfirmationVisual();
+        replaceCleanUrl();
+        if (modalOverlay.classList.contains('modal-overlay--active')) finishClose();
         return;
       }
 
@@ -1017,6 +1032,7 @@
         editingBookingId = null;
         editingStaticRow = null;
       }
+      flowConfirmed = true;
       pushPayUrl('confirmation');
       showConfirmationVisual();
       notifyScreen();
@@ -1029,6 +1045,7 @@
     e.preventDefault();
     live.recipient = null;
     editingBookingId = null; // always a fresh payment from the pay button
+    flowConfirmed = false;
     resetPaymentDefaults();
     currentStep = 0;
     prevStepIndexForTransition = null;
