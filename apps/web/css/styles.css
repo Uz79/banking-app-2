@@ -7661,6 +7661,8 @@ dialog.basic-dialog-payment-exit.basic-dialog-payment-exit--closing[open] .basic
 .modal--payment-details.pd--internal .pd-domestic-only { display: none; }
 /* .pd-pending-only items are hidden on non-pending (executed) payments */
 .modal--payment-details:not(.pd--pending) .pd-pending-only { display: none; }
+/* ...and on built-in rows, until 42 makes their edit last (roadmap 43, D3) */
+.modal--payment-details:not(.pd--editable) .pd-pending-only { display: none; }
 
 /* payment-details scroll container */
 .payment-details {
@@ -7695,7 +7697,8 @@ dialog.basic-dialog-payment-exit.basic-dialog-payment-exit--closing[open] .basic
 }
 
 /* Edit buttons are only visible for pending payments */
-.modal--payment-details:not(.pd--pending) .payment-details__edit-btn { display: none; }
+.modal--payment-details:not(.pd--pending) .payment-details__edit-btn,
+.modal--payment-details:not(.pd--editable) .payment-details__edit-btn { display: none; }
 
 /* Recipient is read-only in payment details (Edit/Delete/Copy bar covers pending edits). */
 .payment-details__edit-btn--to { display: none !important; }

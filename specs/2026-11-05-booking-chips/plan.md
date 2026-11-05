@@ -6,16 +6,16 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 1. The tonal chip (D10, D11)
 
-- [ ] `apps/web/css/styles.css`: `.chip--tonal` next to `.chip`, on the `--color-btn-tonal-*` tokens
-- [ ] `designs/components/chip/chip.md`: the tonal variant
-- [ ] Check: a tonal chip in Light, Dark and a Multi-color theme (dev tools on any page)
+- [x] `apps/web/css/styles.css`: `.chip--tonal` next to `.chip`, on the `--color-btn-tonal-*` tokens
+- [x] `designs/components/chip/chip.md`: the tonal variant
+- [x] Check: a tonal chip in Light, Dark and a Multi-color theme; checked on the rows in group 3, where the chip first appears
 
 ## 2. Row data and the sheet (D1, D2, D3, D5)
 
-- [ ] `apps/web/all-bookings-and-payments.html`: `data-type`, `data-execute-on` and `data-frequency` on the built-in rows (D2, D5, D7)
-- [ ] `apps/web/account-details.html`: `data-status`, `data-type` and `data-frequency` on the built-in rows (D1, D5, D7)
-- [ ] `apps/web/js/payment-details.js`: `isInternalTransferRow` reads `data-type`; `buildAllBookingsRowData` and the Account details path read the row's status and date; Edit only for bookings from the state (D3)
-- [ ] Check: Swisscom opens "Pending" with its date and no Edit; Rent opens as a payment; Pizza opens as a payment; a pending payment made in the app still shows Edit
+- [x] `apps/web/all-bookings-and-payments.html`: `data-type`, `data-execute-on` and `data-frequency` on the built-in rows (D2, D5, D7)
+- [x] `apps/web/account-details.html`: `data-status`, `data-type` and `data-frequency` on the built-in rows (D1, D5, D7)
+- [x] `apps/web/js/payment-details.js`: `isInternalTransferRow` reads `data-type`; `buildAllBookingsRowData` and the Account details path read the row's status and date; Edit only for bookings from the state (D3)
+- [x] Check: Swisscom opens "Pending" and no Edit; Rent opens as a payment; Pizza stays a transfer (its data); a pending payment made in the app still shows Edit and opens Pay
 
 ## 3. Icons and chips in the lists (D4, D6 to D9, D12, D13)
 

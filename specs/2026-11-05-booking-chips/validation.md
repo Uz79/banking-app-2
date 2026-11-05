@@ -9,10 +9,10 @@ Branch: `feature/booking-chips`. Run on the agent's server (port 5199), then the
 
 ## 2. The sheet
 
-- [ ] All bookings, Pending: Swisscom, Helvetia Insurance and Tax office Zurich open "Pending" with their Execute on date, and no Edit (D1 to D3)
-- [ ] All bookings, Recurring: Rent, Netflix and Internet & Phone open as payments (not transfers), with their next date, and no Edit
+- [ ] All bookings, Pending: Swisscom, Helvetia Insurance and Tax office Zurich open "Pending" and no Edit; their Execute on date is in the sheet's data (D2) (D1 to D3)
+- [ ] All bookings, Recurring: Rent, Netflix and Internet & Phone open as payments (not transfers), and no Edit
 - [ ] All bookings, Executed: Transfer to Household opens as a transfer; Rent opens as a payment
-- [ ] Account details: Pizza opens as a payment; Transfer to Household as a transfer; Apple as decided in the open question
+- [ ] Account details: Pizza and Transfer to Household open as transfers (their data); Apple opens "Pending" with no Edit
 - [ ] A pending and a recurring payment made in the app still show Edit, and Edit still opens Pay (31)
 
 ## 3. Icons and chips
@@ -23,7 +23,7 @@ Branch: `feature/booking-chips`. Run on the agent's server (port 5199), then the
 - [ ] Pending tab: every row has "Pending"
 - [ ] Recurring tab: Rent, Netflix and Internet & Phone have "Monthly"; none says "Recurring"
 - [ ] Executed tab: Rent's and Internet & Phone's executed instances have "Monthly"; one-off payments and incoming money have no chip
-- [ ] Account details: Rent has "Monthly"; the others no chip (Apple per the open question)
+- [ ] Account details: Rent has "Monthly", Apple "Pending"; the others no chip
 - [ ] A recurring payment made in the app reads "Monthly"; one stored before this branch (no `frequency`) reads "Monthly" too
 - [ ] Search still finds rows by name and amount; the chip doesn't change what matches
 
