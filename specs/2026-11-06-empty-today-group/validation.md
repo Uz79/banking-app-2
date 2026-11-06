@@ -11,7 +11,7 @@ Branch: `feature/empty-today-group`. Run on the agent's server (port 5199), then
 
 - [x] First visit (no payment state): no Today group; the June band sits over Yesterday, flush at the top; no stray divider
 - [x] After a payment executed now (made through `UZBankPayState.commitPayment`, Pay itself not opened): Today is back with the payment and its balance, under June's band
-- [x] After deleting that payment again: no Today group
+- [x] After deleting that payment again: no Today group (by the payment state; in the app an executed payment has no Delete, so Klaudiusz checked the demo reset instead)
 - [x] Pending and Recurring as before; the month chips scroll to June
 
 ## 3. Elsewhere (D2)
@@ -68,3 +68,6 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 
 
 Checked on 2026-11-06 against `feature/empty-today-group`, Chrome on the agent's server (5199), desktop (1456px) and 390px in a same-origin frame, Light and Dark; lists read by script. Household: June's band (flush, first) over Yesterday with no Today and no stray divider; a payment of 120 executed now brought Today back (balance 9'780.00) under June, its Delete took it away again; Pending, Recurring, search ("Pizza": 1 booking; "zzz": nothing) and the Jun chip as before. Savings: Today (Salary), Yesterday and the months June to February as before. Account details: both accounts as before; Apple removed hides Household's Today as before. No console errors; the build passes. Not checked: the payment made through Pay's own sheet, a Multi-color theme, the real macOS Reduce motion setting (no motion added), VoiceOver, and in the baseline Pay, the transfer, Buy, page transitions, the status message, Profile, the Design system pages and Tab through Overview.
+
+Checked on 2026-11-06 by Klaudiusz on 5175: a payment made through Pay, executed immediately, brought Today back on Household's All bookings with June's band above Today; after the demo reset Today was gone, June sat above Yesterday and no divider was left over. An executed payment has Copy only, no Delete, so the reset stood in for it (the agent's "Delete" above went through `UZBankPayState.deleteBooking`). VoiceOver and Reduce motion skipped: nothing new moves or is announced. Found: Household's card and the list's last balance disagree (roadmap 69).
+
