@@ -68,6 +68,6 @@ Closing out a branch, once its work and `validation.md` are done, goes in this o
 1. Run `/changelog` and tidy the output.
 2. Commit the changelog update on the branch.
 3. Merge into `main` and push. This is still always an explicit ask; don't do it unprompted.
-4. Delete the branch, local and remote.
+4. Delete the branch. Once the merge and the push have succeeded, the agent deletes the merged branch locally, and remotely if it was pushed, without asking.
 
 Never stage `.idea/`, `.DS_Store`, `settings.local.json` or anything under `packages/ui/.claude/`.
