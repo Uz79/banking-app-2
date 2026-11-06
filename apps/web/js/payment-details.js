@@ -214,7 +214,8 @@
   function rowSchedule(row) {
     return {
       status: row.getAttribute('data-status') || 'executed',
-      executeOn: row.getAttribute('data-execute-on') || null
+      executeOn: row.getAttribute('data-execute-on') || null,
+      frequency: row.getAttribute('data-frequency') || null
     };
   }
 
@@ -246,6 +247,7 @@
         credit: credit,
         status: schedule.status,
         executeOn: schedule.executeOn,
+        frequency: schedule.frequency,
         message: null
       };
     }
@@ -263,6 +265,7 @@
       to: toStr,
       status: schedule.status,
       executeOn: schedule.executeOn,
+      frequency: schedule.frequency,
       message: null
     };
   }
@@ -304,6 +307,8 @@
   var furtherToggle  = document.getElementById('uz-pd-further-toggle');
   var furtherContent = document.getElementById('uz-pd-further-content');
   var messageValEl   = document.getElementById('uz-pd-message-value');
+  var frequencyValEl = document.getElementById('uz-pd-frequency-value');
+  var nextValEl      = document.getElementById('uz-pd-next-value');
 
   var closeBtn    = overlay.querySelector('.uz-pd-close');
   var confirmBtn  = overlay.querySelector('.uz-pd-confirm');
@@ -453,8 +458,10 @@
         currency: booking.currency || 'CHF',
         debit: debit,
         credit: credit,
-        /* Its own schedule, as a payment's (roadmap 32, D1); a recurring one reads Pending until 47 (D2) */
+        /* Its own schedule, as a payment's (roadmap 32, D1); a recurring one is a rule (roadmap 47, D2) */
         status: booking.status || 'executed',
+        executeOn: booking.executeOn || null,
+        frequency: booking.frequency || null,
         message: null
       };
     }
@@ -631,9 +638,9 @@
   var fnCopyBtn   = overlay.querySelector('[data-pd-action="copy"]');
   var currentActions = { edit: false, del: false, copy: false };
 
-  /* Pending payment: Edit, Delete, Copy; executed payment out: Copy; pending transfer: Delete. Standing orders keep
-     what they had until 47 (Edit when made in the app); trades and money in have none. A built-in row needs its id,
-     so what it does lasts past a reload. */
+  /* Pending payment: Edit, Delete, Copy; executed payment out: Copy; pending transfer: Delete; a standing order's
+     rule: Edit (all future payments) and Copy (roadmap 47, D6); trades and money in have none. A built-in row needs
+     its id, so what it does lasts past a reload. */
   function bookingActions(data) {
     var none = { edit: false, del: false, copy: false };
     var status = data.status || 'executed';
@@ -643,8 +650,8 @@
     }
     if (/^\+/.test(String(data.amount || '').trim())) return none;
     if (status === 'executed') return { edit: false, del: false, copy: true };
-    if (status === 'recurring') return { edit: !!currentBookingId, del: false, copy: false };
     var lasting = !!currentBookingId || !!(currentRow && currentRow.hasAttribute('data-builtin-id'));
+    if (status === 'recurring') return { edit: lasting, del: false, copy: true };
     return { edit: lasting, del: lasting, copy: true };
   }
 
@@ -671,8 +678,13 @@
     pendingCopy = false;
     currentPaymentData = data; // remember for edit-context export
 
+    /* A recurring booking is the rule of a standing order (roadmap 47, D1, D2) */
+    var isRule = data.status === 'recurring';
+
     // Title
-    if (titleEl) titleEl.textContent = data.title || 'Payment details';
+    if (titleEl) {
+      titleEl.textContent = isRule && data.type !== 'internal' ? 'Standing order' : (data.title || 'Payment details');
+    }
 
     // Amount + currency
     if (amountEl)   amountEl.textContent   = data.amount   || '';
@@ -706,12 +718,20 @@
       if (creditBalValueEl) creditBalValueEl.textContent = creditParts.value;
     }
 
-    // Status chip
+    // Status chip: a rule is Active, with its frequency and next execution (roadmap 47, D2)
     var isPending = data.status !== 'executed';
-    if (statusIconUse) statusIconUse.setAttribute('href', isPending ? '#i-clock' : '#i-check');
-    if (statusTextEl)  statusTextEl.textContent = isPending ? 'Pending' : 'Executed';
+    if (statusIconUse) statusIconUse.setAttribute('href', isRule ? '#i-repeat' : isPending ? '#i-clock' : '#i-check');
+    if (statusTextEl)  statusTextEl.textContent = isRule ? 'Active' : isPending ? 'Pending' : 'Executed';
+    if (frequencyValEl) {
+      var pay = window.UZBankPayState;
+      frequencyValEl.textContent = isRule && pay && pay.frequencyLabel ? pay.frequencyLabel(data.frequency) : '';
+    }
+    if (nextValEl) nextValEl.textContent = isRule ? (data.executeOn || '') : '';
 
-    if (modal) modal.classList.toggle('pd--pending', isPending);
+    if (modal) {
+      modal.classList.toggle('pd--pending', isPending && !isRule);
+      modal.classList.toggle('pd--rule', isRule);
+    }
     applyActions(data);
 
     // Further options / message — always starts collapsed per design
@@ -971,6 +991,7 @@
         to:        toStr,
         status:    stored ? (stored.status || 'executed') : 'pending',
         executeOn: stored && stored.executeOn ? stored.executeOn : null,
+        frequency: stored && stored.frequency ? stored.frequency : null,
         message:   null
       };
     }
