@@ -13,9 +13,9 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 2. Balances (D8 to D11, D17)
 
-- [ ] `apps/web/js/payment-state.js`: `STATIC_TODAY_OUTFLOW` and `staticTodayOutflow()` go (D10); the header figures (`todayBalance`, `yesterdayBalance`) give way to a per-day balance worked out from the list and the stored bookings (D8), in one place both pages call
-- [ ] `apps/web/js/data-render.js`: `renderDayBalances` follows; Overview and Account details show Household at 10'000.00 after the reset
-- [ ] Check: Household reads 10'000.00 on Overview, Account details, All bookings and Pay's Debit account card after the reset; a payment of 120 now makes it 9'880.00 everywhere; Overview's total adds up
+- [x] `apps/web/js/payment-state.js`: `STATIC_TODAY_OUTFLOW` and `staticTodayOutflow()` go (D10); the header figures (`todayBalance`, `yesterdayBalance`) give way to a per-day balance worked out from the list and the stored bookings (D8), in one place both pages call (`days` and `balanceAt` in `js/built-in-bookings.js`)
+- [x] `apps/web/js/data-render.js`: `renderDayBalances` follows; Overview and Account details show Household at 10'000.00 after the reset
+- [x] Check: Household reads 10'000.00 on Overview, Account details, All bookings and Pay's Debit account card after the reset; a payment of 120 now makes it 9'880.00 everywhere; Overview's total adds up
 
 ## 3. All bookings from the list (D2, D12, D13)
 

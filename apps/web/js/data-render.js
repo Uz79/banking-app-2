@@ -38,7 +38,7 @@
     var running = state.accountBalances && state.accountBalances.household;
     var formatted = fmt(running != null ? running : state.household);
 
-    // overview.html: running balance after today's bookings (payments + trades)
+    // overview.html: the running balance, the booked one: pending payments count nowhere (roadmap 69, D10)
     document.querySelectorAll('[data-account="household"] .product-item__value').forEach(function (el) {
       el.textContent = running != null ? fmt(running) : formatted;
     });
@@ -157,11 +157,22 @@
 
   /* ── Day-end balance shown in each booking-group header ─────────── */
 
+  /* Household's Today and Yesterday headers, worked out from the bookings (roadmap 62, D8) */
   function renderDayBalances(state) {
     var todayEl = document.querySelector('[data-day-balance="today"]');
     var yesterdayEl = document.querySelector('[data-day-balance="yesterday"]');
-    if (todayEl) todayEl.textContent = fmt(state.todayBalance);
-    if (yesterdayEl) yesterdayEl.textContent = fmt(state.yesterdayBalance);
+    if (!todayEl && !yesterdayEl) return;
+    var list = window.UZBankBuiltInBookings;
+    var running = state.accountBalances.household;
+    if (!list) {
+      if (todayEl) todayEl.textContent = fmt(running);
+      if (yesterdayEl) yesterdayEl.textContent = fmt(running);
+      return;
+    }
+    var t = list.today();
+    var yesterday = new Date(t.getFullYear(), t.getMonth(), t.getDate() - 1);
+    if (todayEl) todayEl.textContent = fmt(list.balanceAt('household', list.dayKey(t), t));
+    if (yesterdayEl) yesterdayEl.textContent = fmt(list.balanceAt('household', list.dayKey(yesterday), t));
   }
 
   /* ── Built-in rows an edit replaced or a delete removed (roadmap 42) ──

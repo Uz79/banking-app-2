@@ -41,24 +41,14 @@
   var MAX_BOOKINGS = 100;
   var SCHEMA_VERSION = 2;
 
-  // Household account in CHF. INITIAL_HOUSEHOLD is the *registered* balance, the
-  // end of yesterday: it stays fixed and feeds only the Yesterday and day headers
-  // of the bookings lists. Every place that shows a Household or Savings balance
-  // shows the *running* balance (accountBalances in getState()): what is left after
-  // today's bookings and transfers, so no page disagrees with another.
-  // Yesterday mock outflows (USD) sum to 430; 10'430 − 430 = 10'000 USD header
-  // on the Yesterday group. Today opens at CHF 10'000; Apple −100 → Today
-  // header CHF 9'900 (see account-details bookings card / Figma).
+  // Household account in CHF. INITIAL_HOUSEHOLD is the *registered* balance: what
+  // is left after every built-in executed booking up to today (js/built-in-bookings.js),
+  // before anything made in the app (roadmap 62, D9). Every place that shows a
+  // Household or Savings balance shows the *running* balance (accountBalances in
+  // getState()), so no page disagrees with another; the day headers of the bookings
+  // lists are worked out backwards from it (D8). A pending payment, built-in or made
+  // in the app, counts in no balance until it executes (roadmap 69, D10).
   var INITIAL_HOUSEHOLD = 10000.00;
-
-  // End-of-yesterday balance shown in the Yesterday group header (USD in UI).
-  var YESTERDAY_BALANCE = 10000.00;
-
-  // Static mock outflow in HTML Today group (Apple −100 CHF) before any
-  // payments the user commits in-session.
-  var STATIC_TODAY_OUTFLOW = 100.00;
-  /* ...counted only while Apple's row is listed (roadmap 42, D12) */
-  var STATIC_TODAY_ROW = 'ad-household-apple';
 
   // Opening balances of the sibling accounts. Savings moves with internal transfers;
   // the custody and retirement accounts are fixed in this prototype.
@@ -204,10 +194,6 @@
 
   function isBuiltInRemoved(id) {
     return (state.removedBuiltIns || []).indexOf(id) !== -1;
-  }
-
-  function staticTodayOutflow() {
-    return isBuiltInRemoved(STATIC_TODAY_ROW) ? 0 : STATIC_TODAY_OUTFLOW;
   }
 
   /* What the bookings dropped by the limit had moved, in CHF (roadmap 14 D1): the signed amount per account, and the
@@ -362,9 +348,6 @@
     var key = accountKey || 'household';
     var base = key === 'savings' ? SAVINGS : INITIAL_HOUSEHOLD;
     base += (state.carried && state.carried[key]) || 0;
-    if (key === 'household') {
-      base -= staticTodayOutflow();
-    }
     state.bookings.forEach(function (b) {
       if ((b.accountKey || 'household') !== key) return;
       if (!isExecuted(b)) return;
@@ -384,16 +367,6 @@
   }
 
   function getState() {
-    // Sum of all dynamic (state-driven) bookings — these are all "today"
-    // since the prototype doesn't simulate day rollover.
-    var dynamicTodayOutflow = state.bookings.reduce(function (sum, b) {
-      if ((b.accountKey || 'household') !== 'household') return sum;
-      if (!isExecuted(b)) return sum;
-      if (b.direction === 'in') return sum;
-      return sum + (typeof b.amount === 'number' ? b.amount : 0);
-    }, 0);
-    var carriedOut = (state.carried && state.carried.householdOut) || 0;
-    var todayBalance = state.household - staticTodayOutflow() - carriedOut - dynamicTodayOutflow;
     var householdRunning = accountRunningBalance('household');
     var savingsRunning = accountRunningBalance('savings');
 
@@ -401,9 +374,6 @@
     // internal store directly.
     return {
       household: state.household,
-      yesterdayBalance: YESTERDAY_BALANCE,
-      todayBalance: Math.round(todayBalance * 100) / 100,
-      staticTodayOutflow: staticTodayOutflow(),
       removedBuiltIns: (state.removedBuiltIns || []).slice(),
       accountBalances: {
         household: householdRunning,
@@ -524,9 +494,8 @@
     /* An edit of a built-in row: the new booking takes its place for good (roadmap 42, D4) */
     if (payment.replacesBuiltIn) markBuiltInRemoved(payment.replacesBuiltIn);
     // NOTE: We deliberately do NOT decrement state.household here.
-    // The Household amount shown in the account list represents the
-    // "registered" end-of-yesterday balance and stays fixed for the
-    // session. Today's running balance is derived in getState() instead.
+    // It is the registered balance before anything made in the app and
+    // stays fixed; the running balance is derived in getState() instead.
     dispatchChange();
   }
 

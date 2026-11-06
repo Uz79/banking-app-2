@@ -18,6 +18,8 @@
  *   executed(account, today?)    → executed bookings, newest first
  *   pending(account, today?)     → pending one-offs, in date order
  *   standingOrders(account, today?) → the rules, with their next execution
+ *   days(account, today?)        → [{ day, date, label, stored, builtIn, net, balance }], newest first
+ *   balanceAt(account, day, today?) → the balance at the end of a day ('YYYY-MM-DD')
  *   nextDate(rule, today)        → { offsetDays } or { dayOfMonth } → Date
  *   dateLabel(d)                 → 'DD.MM.YYYY'; dayKey(d) → 'YYYY-MM-DD'
  *
@@ -242,11 +244,89 @@
       .sort(function (a, b) { return a.date - b.date; });
   }
 
+  /* ── Days and their balances (D8, D12) ─────────────────────────────
+   * An account's executed bookings by day, newest first: the ones made in the
+   * app on the day they were made (dateISO), newest first, then the built-in
+   * ones. The newest day ends at the account's running balance; each earlier
+   * day ends at the later day's balance minus what the later day moved. What
+   * bookings dropped by the limit had moved (`carried`, roadmap 14) has no day,
+   * so it sits before every day listed. */
+
+  function signed(amount, direction) {
+    var a = typeof amount === 'number' ? amount : 0;
+    return direction === 'in' ? a : -a;
+  }
+
+  function storedExecuted(account) {
+    var pay = window.UZBankPayState;
+    if (!pay) return [];
+    return (pay.getState().bookings || []).filter(function (b) {
+      return (b.accountKey || 'household') === account && (!b.status || b.status === 'executed');
+    }).map(function (b) {
+      var made = b.dateISO ? new Date(b.dateISO) : new Date();
+      if (isNaN(made)) made = new Date();
+      return { stored: b, date: midnight(made), time: made.getTime() };
+    });
+  }
+
+  function days(account, t) {
+    t = t || today();
+    var pay = window.UZBankPayState;
+    var byDay = {};
+    var keys = [];
+    function bucket(date) {
+      var key = dayKey(date);
+      if (!byDay[key]) {
+        byDay[key] = { day: key, date: date, label: dateLabel(date), stored: [], builtIn: [], net: 0 };
+        keys.push(key);
+      }
+      return byDay[key];
+    }
+    storedExecuted(account)
+      .sort(function (a, b) { return b.time - a.time; })
+      .forEach(function (s) {
+        var d = bucket(s.date);
+        d.stored.push(s.stored);
+        d.net += signed(s.stored.amount, s.stored.direction);
+      });
+    executed(account, t).forEach(function (b) {
+      var d = bucket(b.date);
+      d.builtIn.push(b);
+      d.net += signed(b.amount, b.direction);
+    });
+    keys.sort(function (a, b) { return a < b ? 1 : a > b ? -1 : 0; });
+    var running = pay ? (pay.getState().accountBalances || {})[account] : null;
+    var balance = typeof running === 'number' ? running : 0;
+    return keys.map(function (key) {
+      var d = byDay[key];
+      d.balance = Math.round(balance * 100) / 100;
+      balance -= d.net;
+      d.net = Math.round(d.net * 100) / 100;
+      return d;
+    });
+  }
+
+  /* The balance at the end of a day ('YYYY-MM-DD') */
+  function balanceAt(account, key, t) {
+    var list = days(account, t);
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].day <= key) return list[i].balance;
+    }
+    var oldest = list[list.length - 1];
+    if (!oldest) {
+      var pay = window.UZBankPayState;
+      return pay ? (pay.getState().accountBalances || {})[account] : null;
+    }
+    return Math.round((oldest.balance - oldest.net) * 100) / 100;
+  }
+
   window.UZBankBuiltInBookings = {
     today: today,
     executed: executed,
     pending: pending,
     standingOrders: standingOrders,
+    days: days,
+    balanceAt: balanceAt,
     nextDate: nextDate,
     dateLabel: dateLabel,
     dayKey: dayKey
