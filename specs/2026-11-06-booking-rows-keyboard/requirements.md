@@ -19,6 +19,7 @@ Roadmap items 33 and 52 (`specs/roadmap.md`), the same bug found twice: a bookin
 - Arrow keys between rows or between the status tabs (the tabs take Tab and Enter, as before)
 - `spa-source.html`, the old reference page (tech-spec: "Do not extend")
 - Overview, which lists no booking rows
+- A standing order's next payment on Household reads "from Savings account" (57, found in the build)
 
 ## Decisions
 
@@ -41,4 +42,11 @@ Roadmap items 33 and 52 (`specs/roadmap.md`), the same bug found twice: a bookin
 
 ## Open questions
 
-- Whether an edit's focus can land on the edited payment's new row instead of the next one (D6), if the new row is listed at once.
+- Resolved in the build: an edit of a payment made in the app rebuilds its row with the same booking id, so focus lands on that row (D6's "the row again"). An edit of a built-in row stores a new payment with a new id, so focus goes to the next row, as D6 says.
+
+## Found in the build
+
+- The hand-on lives in the sheet's focus helper as `UZBankSheetFocus.handOn(el, pick)`: an opener that may be gone names who takes focus instead. `js/payment-details.js` registers it for each row it opens, so an edit's Pay sheet, whose opener resolves to the row (27), uses it too.
+- A row's accessible name is its text with spaces between the parts ("Rent Pending CHF -1'800.00"), also for rows built by script with no whitespace in their markup, since the parts are flex items.
+- Sheets ignore Escape, as before (49).
+- On Household's All bookings, a standing order's next payment names Savings as its debit account (57).

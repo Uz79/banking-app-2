@@ -230,11 +230,11 @@ Found during 23 (2026-11-04). `buildDataFromStateBooking` in `js/payment-details
 
 Spec: `specs/2026-11-05-transfer-status/` (branch `feature/transfer-status`), with 46. Settled in its interview: built with 46, since both are in `buildDataFromStateBooking`; a recurring transfer reads "Pending", as a recurring payment does, until 47. Found in the check: the banking sheets ignore Escape (49). Built 2026-11-05.
 
-## 33. Booking rows can't be reached by keyboard
+## 33. Booking rows can't be reached by keyboard (done)
 
 Found during 23 (2026-11-04). The booking rows on Account details (and the other bookings lists) are `div`s with no `tabindex` or role, so Tab skips them and a keyboard user can't open a booking's sheet, nor edit a pending payment from it. The sheet itself works by keyboard once open. To settle in its spec: rows as buttons or links (and what they announce), on every page that lists bookings.
 
-Spec: `specs/2026-11-06-booking-rows-keyboard/` (branch `feature/booking-rows-keyboard`), with 52, its duplicate. Settled in its interview: a row is a `<button>`, read as its visible text; focus back on the row after the sheet, on the next row after a Delete; standard gate.
+Spec: `specs/2026-11-06-booking-rows-keyboard/` (branch `feature/booking-rows-keyboard`), with 52, its duplicate. Settled in its interview: a row is a `<button>`, read as its visible text; focus back on the row after the sheet, on the next row after a Delete; standard gate. Found in the build: the hand-on is a small API of the sheet focus helper, so an edit's Pay sheet uses it too; a standing order's next payment on Household reads "from Savings account" (57). Built 2026-11-06.
 
 ## 34. Legibility doesn't reach the fridge and the opening
 

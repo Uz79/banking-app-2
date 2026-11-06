@@ -17,6 +17,8 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **Booking rows work with the keyboard** (roadmap 33, 52). On Account details and All bookings, Tab now reaches every booking, and Enter or Space opens its sheet, so Edit, Delete and Copy are in reach without a mouse. A screen reader hears a row as a button with its name, chip and amount. Closing the sheet puts focus back on the row. After a Delete, or an edit that replaces a row, focus moves to the next row, or the list's tab when none is left. Rows look as before.
+- Spec: `specs/2026-11-06-booking-rows-keyboard/`.
 - **Each account's All bookings lists its own bookings** (roadmap 56). Household and Savings showed the same example bookings, Savings' ones, and an edit made on the Savings view showed up only on Household's. Now Savings keeps its history, and Household lists Apple, Café, Pizza and Railway as on Account details, with the pending payments and standing orders, since payments go out from Household. Household's Today shows the same balance as on Account details. Savings' empty tabs say "No pending payments." and "No standing orders."
 - **A month band sits flush at the top** of a list after the first group's last booking was deleted, as it does when nothing was deleted.
 - Spec: `specs/2026-11-06-bookings-per-account/`.
