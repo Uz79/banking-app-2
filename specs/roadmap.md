@@ -337,3 +337,7 @@ Spec: `specs/2026-11-05-amount-errors/` (branch `feature/amount-errors`). Found 
 ## 55. Buy and Sell: "Available in Household account" doesn't follow the debit account
 
 Found during 54 (2026-11-05). The trade sheet's summary reads "Available in Household account" (`details-of-position.html`, a fixed label) also when Savings account is the debit account; the amount next to it may not match the account either. To settle in its spec: the label and amount from `live.debtorKey` (`js/trade-flow-overlay.js`), updated when the account picker changes it.
+
+## 56. All bookings: every account lists the same built-in rows, and edits land on Household
+
+Found during 47 (2026-11-06). All bookings shows the same built-in Executed, Pending and Recurring rows for every account (`?account=savings`, the default, and `?account=household`), while Pay always books to Household (`commitPayment` in `js/payment-state.js`). Editing a built-in row on the Savings view hides it there, and the edited payment shows only on Household's view. To settle in its spec: which built-in rows belong to which account, and the debit account an edit keeps.
