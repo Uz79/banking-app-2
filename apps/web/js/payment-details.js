@@ -492,6 +492,18 @@
     return null;
   }
 
+  /* A standing order's next payment: its rule's payment or transfer, pending on its date (roadmap 47, D7, D8) */
+  function instanceData(row, displayName) {
+    var rule = getStateBooking(row.getAttribute('data-rule-id'));
+    var data = rule ? buildDataFromStateBooking(rule, row) : null;
+    if (!data) data = buildAllBookingsRowData(row, displayName);
+    return Object.assign({}, data, {
+      status: 'pending',
+      executeOn: row.getAttribute('data-occurrence'),
+      frequency: null
+    });
+  }
+
   /* ── Booking route id (Maze / analytics) ─────────────────────── */
 
   function slugifyRouteId(value) {
@@ -650,6 +662,8 @@
     }
     if (/^\+/.test(String(data.amount || '').trim())) return none;
     if (status === 'executed') return { edit: false, del: false, copy: true };
+    /* A standing order's next payment: Edit (this one only) and Copy; skipping it is later (roadmap 47, D6, D10) */
+    if (currentRow && currentRow.hasAttribute('data-rule-id')) return { edit: true, del: false, copy: true };
     var lasting = !!currentBookingId || !!(currentRow && currentRow.hasAttribute('data-builtin-id'));
     if (status === 'recurring') return { edit: lasting, del: false, copy: true };
     return { edit: lasting, del: lasting, copy: true };
@@ -834,6 +848,8 @@
         window.__UZ_PD_EDIT_CONTEXT__ = {
           bookingId:     copy ? null : currentBookingId,       // null for static mocks and a copy
           builtInId:     copy || currentBookingId || !currentRow ? null : currentRow.getAttribute('data-builtin-id'), // replaced on commit (roadmap 42, D4)
+          ruleId:        copy || !currentRow ? null : currentRow.getAttribute('data-rule-id'),     // a standing order's next payment (roadmap 47, D10)
+          occurrence:    copy || !currentRow ? null : currentRow.getAttribute('data-occurrence'),
           recipientName: recipientName,
           recipient:     fullRecipient || null,  // full catalog record if found
           amount:        amtNum,
@@ -954,7 +970,9 @@
     var displayName = nameEl ? nameEl.textContent.trim() : '';
     var data = null;
 
-    if (isAllBookingsScreen() && row.getAttribute('data-mock-booking') === 'static') {
+    if (row.hasAttribute('data-rule-id')) {
+      data = instanceData(row, displayName);
+    } else if (isAllBookingsScreen() && row.getAttribute('data-mock-booking') === 'static') {
       data = buildAllBookingsRowData(row, displayName);
     } else {
       data = currentBookingId ? null : getBookingMap()[name];
