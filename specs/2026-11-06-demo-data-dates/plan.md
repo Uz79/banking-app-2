@@ -31,6 +31,6 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 5. Wrap-up
 
-- [ ] `npm run build` in `apps/web`
-- [ ] The validation pass (`validation.md`), the baseline smoke test and the dated "Checked on" line
-- [ ] Docs: `specs/roadmap.md` 62 and 69 marked done; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the "Standing orders" row's date helper, a new row for the built-in list, worked-out balances and the booked balance; `js/built-in-bookings.js` under Other systems); `apps/web/README.md` (the new file, and `?today=` as a dev URL parameter)
+- [x] `npm run build` in `apps/web`
+- [x] The validation pass (`validation.md`), the baseline smoke test and the dated "Checked on" line (partly: see its "Not checked")
+- [x] Docs: `specs/roadmap.md` 62 and 69 marked done; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the "Standing orders" row's date helper, a new row for the built-in list, worked-out balances and the booked balance; `js/built-in-bookings.js` under Other systems); `apps/web/README.md` (the new file, and `?today=` as a dev URL parameter)

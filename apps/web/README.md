@@ -76,6 +76,7 @@ Persisted in `sessionStorage` (this tab only):
 - `fridge-advisor.html` — "How much should I invest?": the 3D fridge advisor (opened as a sheet from Overview > Offers > Investment)
 - `playground.html` — design system: "Payday run", a small 3D game (full screen, opened as a sheet from the Design system page)
 - `js/appearance.js` — Profile > Legibility (`UZBankAppearance`): the type and spacing scale, Typeface and Font, applied on load from `uzBankWebAppearance`. Loaded before `js/app-mp.js` on every shell page, and by the fridge and the opening
+- `js/built-in-bookings.js` — every example booking of Household and Savings (`UZBankBuiltInBookings`), dated from today: executed history for the current month and the four before it, pending payments and standing orders; each day's balance worked out backwards from the account's running balance; the standing orders' next payments and the pending total. All bookings and Account details draw their rows from it. Dev URL parameter, on `localhost` and `*.local` only: `?today=YYYY-MM-DD` (the date the demo data counts from)
 - `js/date-picker.js` — the execution-date calendar (`UZBankDatePicker`) that Pay and the transfer open from "Execute on" in the form sheet
 - `css/tokens.css` — generated from `designs/tokens/`
 - `css/typography.css` — generated responsive type scale
