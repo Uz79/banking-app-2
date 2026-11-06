@@ -9703,7 +9703,9 @@ html body .view__main > .view__sticky-header.view__sticky-header[data-scroll-edg
      step) → nudges left.
    Uses the individual `translate` property, so it adds to the hover lean and the
    click step-back of the back arrow (Motion Specimens No. 004), which use transform.
-   Pointing at the control pauses it. Reduced motion: still. Not in Figma yet.
+   Pointing at the control pauses it. Reduced motion and disabled controls: still, as
+   the loop is set only without reduced motion and never on a disabled control (roadmap
+   36: a separate rule turning it off lost on specificity). Not in Figma yet.
    ========================================================================== */
 
 :root {
@@ -9717,33 +9719,24 @@ html body .view__main > .view__sticky-header.view__sticky-header[data-scroll-edg
   100% { translate: 0 0; }
 }
 
-/* Forward / deeper: Details, Show all, … (not the Playground steer button: it is a control, not a link onward) */
-:is(a, button):not(.uz-btn--proceed, .playground-touch__btn):has(> svg > use[href="#i-arrow-right"]) > svg:has(> use[href="#i-arrow-right"]) {
-  --arrow-dir: 1;
-  animation: uz-arrow-nudge var(--arrow-cycle) infinite;
-}
+@media (prefers-reduced-motion: no-preference) {
+  /* Forward / deeper: Details, Show all, … (not the Playground steer button: it is a control, not a link onward) */
+  :is(a, button):not(.uz-btn--proceed, .playground-touch__btn, :disabled, [aria-disabled="true"]):has(> svg > use[href="#i-arrow-right"]) > svg:has(> use[href="#i-arrow-right"]) {
+    --arrow-dir: 1;
+    animation: uz-arrow-nudge var(--arrow-cycle) infinite;
+  }
 
-/* Back / higher level: page back and previous flow step */
-:is(.view__back, .modal__back) > svg {
-  --arrow-dir: -1;
-  animation: uz-arrow-nudge var(--arrow-cycle) infinite;
+  /* Back / higher level: page back and previous flow step */
+  :is(.view__back, .modal__back):not(:disabled, [aria-disabled="true"]) > svg {
+    --arrow-dir: -1;
+    animation: uz-arrow-nudge var(--arrow-cycle) infinite;
+  }
 }
 
 /* Pointing at it pauses the loop; the hover state takes over */
 :is(a, button):has(> svg > use[href="#i-arrow-right"]):hover > svg:has(> use[href="#i-arrow-right"]),
 :is(.view__back, .modal__back):hover > svg {
   animation-play-state: paused;
-}
-
-:is(a, button):is(:disabled, [aria-disabled="true"]) > svg {
-  animation: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  :is(a, button):has(> svg > use[href="#i-arrow-right"]) > svg:has(> use[href="#i-arrow-right"]),
-  :is(.view__back, .modal__back) > svg {
-    animation: none;
-  }
 }
 
 /* ==========================================================================

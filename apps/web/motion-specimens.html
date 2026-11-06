@@ -3401,16 +3401,19 @@
   100% { translate: 0 0; }
 }
 
-/* forward / deeper: Details, Show all, … */
-:is(a, button):not(.uz-btn--proceed):has(> svg > use[href="#i-arrow-right"]) > svg {
-  --arrow-dir: 1;
-  animation: uz-arrow-nudge var(--arrow-cycle) infinite;
-}
+/* only without reduced motion, never on a disabled control */
+@media (prefers-reduced-motion: no-preference) {
+  /* forward / deeper: Details, Show all, … */
+  :is(a, button):not(.uz-btn--proceed, :disabled, [aria-disabled="true"]):has(> svg > use[href="#i-arrow-right"]) > svg {
+    --arrow-dir: 1;
+    animation: uz-arrow-nudge var(--arrow-cycle) infinite;
+  }
 
-/* back / higher level: page back and previous flow step */
-:is(.view__back, .modal__back) > svg {
-  --arrow-dir: -1;
-  animation: uz-arrow-nudge var(--arrow-cycle) infinite;
+  /* back / higher level: page back and previous flow step */
+  :is(.view__back, .modal__back):not(:disabled, [aria-disabled="true"]) > svg {
+    --arrow-dir: -1;
+    animation: uz-arrow-nudge var(--arrow-cycle) infinite;
+  }
 }
 
 /* pointing at it pauses the loop */

@@ -248,9 +248,11 @@ Found during 27 (2026-11-04). `closeOverlay()` in `js/iat-overlay.js` finishes o
 
 Taken before 28 (Klaudiusz, 2026-11-04). Spec: `specs/2026-11-04-sheet-close/` (branch `feature/sheet-close`). Root cause confirmed: only the transfer lacks a fallback; the other seven sheets each carry their own copy of one. Settled in its interview: one shared helper that ends every sheet's close on the slide's end, a 300 ms fallback, or at once with reduced motion; a sweep of every sheet and overlay with the real macOS setting, which Klaudiusz switches when asked. Found in the sweep: the forward arrows keep their nudge with reduced motion (36). Built 2026-11-04.
 
-## 36. Arrow nudge: forward arrows keep moving with reduced motion
+## 36. Arrow nudge: forward arrows keep moving with reduced motion (done)
 
 Found during 35 (2026-11-04). With the macOS Reduce motion setting on, the forward arrows (Show all bookings, Details, Show all) keep their nudge loop. The reduced-motion rule in `css/styles.css` (the Arrow nudge block) uses the same selector as the forward rule but without its `:not(.uz-btn--proceed, .playground-touch__btn)`, so the forward rule outweighs it and the animation stays. The back arrows stop as they should. To settle in its spec: a reduced-motion rule that wins (matching selector or the same `:not`), and a check of the proceed button's nudge and pulse with the setting on.
+
+Spec: `specs/2026-11-06-arrow-nudge-reduced-motion/` (branch `feature/arrow-nudge-reduced-motion`). Settled in its interview: the nudge loops are set only under `prefers-reduced-motion: no-preference`, so no reduce rule has to win; disabled arrows, outweighed the same way, are fixed here; the check covers every arrow and the proceed button with the real setting; standard gate. Found in the build: the proceed button's own rule already held; Motion specimens No. 009's code sample follows the new rule. Built 2026-11-06.
 
 ## 37. Pending payments and transfers execute on their date
 
