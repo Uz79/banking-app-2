@@ -34,6 +34,8 @@ Roadmap item 56 (`specs/roadmap.md`). All bookings shows the same built-in Execu
 | D8 | **Savings' Pending says "No pending payments."** (the existing line), **Recurring gets "No standing orders."** in the same style | An empty tab says so, as 42 settled for Pending |
 | D9 | **Copy on a Savings row starts a new payment from Household**, as every Copy does today | Copy makes a new payment; Pay has one debit account |
 | D10 | **No query still opens Savings**; Account details' "Show all" passes the account as before | Only Account details links to All bookings |
+| D11 | **The month chips Feb to May are Savings'** and go with its rows; Household keeps Jun only (found in the build) | A chip with no month under it would scroll to nothing |
+| D12 | **Household's Today header is set by `js/data-render.js`** (`data-day-balance`, the running balance), as on Account details; `js/all-bookings.js` leaves it alone (found in the build) | Two scripts wrote the same figure; one source keeps the pages equal |
 
 ## Context
 
@@ -42,3 +44,10 @@ Roadmap item 56 (`specs/roadmap.md`). All bookings shows the same built-in Execu
 - Household's rows: `account-details.html` around line 2482 (Today with Apple, Yesterday with Cafe, Pizza, Railway); its day headers are set by `renderDayBalances` in `js/data-render.js`.
 - Sheets: `js/payment-details.js`, the row click handler (static All bookings rows through `buildAllBookingsRowData`, Account details rows through `getBookingMap()`).
 - Order of page set-up: `UZBankBuiltInRows.date` (53), `renderBookings` with 47's instances, `UZBankBuiltInRows.sync` (42), `renderMonthSeparators`, search.
+
+## Found in the build
+
+- The month chips are static (Feb to Jun): D11.
+- Household's Today group is empty until a payment is made, as Apple is in Pending; the header still shows the day's balance.
+- A month band after a hidden group (a deleted built-in row's) kept its top margin, as `:first-child` no longer matched; it is now marked first when nothing visible precedes it. Seen with Apple deleted; the same since 42.
+- The status tabs don't move with the arrow keys, only Tab and Enter; as before this branch.
