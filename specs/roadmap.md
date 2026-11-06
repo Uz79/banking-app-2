@@ -234,6 +234,8 @@ Spec: `specs/2026-11-05-transfer-status/` (branch `feature/transfer-status`), wi
 
 Found during 23 (2026-11-04). The booking rows on Account details (and the other bookings lists) are `div`s with no `tabindex` or role, so Tab skips them and a keyboard user can't open a booking's sheet, nor edit a pending payment from it. The sheet itself works by keyboard once open. To settle in its spec: rows as buttons or links (and what they announce), on every page that lists bookings.
 
+Spec: `specs/2026-11-06-booking-rows-keyboard/` (branch `feature/booking-rows-keyboard`), with 52, its duplicate. Settled in its interview: a row is a `<button>`, read as its visible text; focus back on the row after the sheet, on the next row after a Delete; standard gate.
+
 ## 34. Legibility doesn't reach the fridge and the opening
 
 Found during 26 (2026-11-04). The fridge (`fridge-advisor.html`) and the investment opening load no `app-mp.js`, so Legibility's type and spacing scale, Typeface and Font don't apply inside them: a reader on Large gets default type there, in the Overview sheet and on their own pages. To settle in its spec: how the pages pick up the appearance settings (the shared code or a small boot), and a check of every fridge and opening layout at Small and Large, the result ring and the floating panel included.
@@ -318,9 +320,11 @@ Found during 46 (2026-11-05). All bookings shows the same built-in rows for Hous
 
 Found during 42 (2026-11-05). A pending transfer made in the app gets Delete in its sheet; Edit and Copy are left out, as the transfer flow (`js/iat-overlay.js`) has no way to open with an amount, accounts and a schedule filled in. To settle in its spec: a prefill path for the transfer like Pay's edit context, whether Edit updates both legs in place, what Copy of an executed transfer opens, and whether built-in transfers get Copy (they need 50 first).
 
-## 52. Booking rows can't be reached with the keyboard
+## 52. Booking rows can't be reached with the keyboard (duplicate of 33)
 
 Found during 42 (2026-11-05). A booking row is a plain `div` with a click handler (`js/payment-details.js`, rows built in `js/all-bookings.js` and `js/data-render.js`): no tab stop, no role, no Enter or Space. A keyboard or screen reader user can't open a booking's sheet, so Edit, Delete and Copy are out of reach for them, and after Delete focus has no row to land on (42 announces "Payment deleted." instead). To settle in its spec: rows as buttons or links (and how a row reads: name, chip, amount), focus back on the row after the sheet closes, and after a Delete on the next row.
+
+The same bug as 33, closed on 2026-11-06 and specified there (`specs/2026-11-06-booking-rows-keyboard/`).
 
 ## 53. Built-in pending payments are dated in the past (done)
 
