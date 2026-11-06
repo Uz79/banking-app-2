@@ -240,6 +240,8 @@ Spec: `specs/2026-11-06-booking-rows-keyboard/` (branch `feature/booking-rows-ke
 
 Found during 26 (2026-11-04). The fridge (`fridge-advisor.html`) and the investment opening load no `app-mp.js`, so Legibility's type and spacing scale, Typeface and Font don't apply inside them: a reader on Large gets default type there, in the Overview sheet and on their own pages. To settle in its spec: how the pages pick up the appearance settings (the shared code or a small boot), and a check of every fridge and opening layout at Small and Large, the result ring and the floating panel included.
 
+Spec: `specs/2026-11-06-legibility-fridge-opening/` (branch `feature/legibility-fridge-opening`). Settled in its interview: the Legibility code moves into its own `js/appearance.js`, loaded by every shell page and by the fridge and the opening; what breaks at Small or Large is fixed here; the Playground stays out (a new item); standard gate.
+
 ## 35. Transfer sheet: with reduced motion, closing leaves an invisible layer over the page (done)
 
 Found during 27 (2026-11-04). `closeOverlay()` in `js/iat-overlay.js` finishes only on the sheet's `transitionend`, with no fallback timer (Pay, the trade and the booking sheet have one). With reduced motion the sheet has no transition, so the overlay keeps `modal-overlay--active modal-overlay--closing`: the scrim fades to nothing but the overlay stays over the page and takes every click until a reload. Checked by injecting the reduced-motion rules on Overview (the system setting itself was not switched). To settle in its spec: a fallback timer as the other sheets have, and a pass over every sheet's close with reduced motion.
