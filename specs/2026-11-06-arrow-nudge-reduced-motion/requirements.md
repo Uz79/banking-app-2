@@ -36,6 +36,9 @@ Roadmap item 36 (`specs/roadmap.md`). With the macOS Reduce motion setting on, t
 - Motion specimens No. 009 shows the Arrow nudge with the app's own rules.
 - Forward arrows are on 14 pages (Overview, Account details, All bookings, Payments, Profile, the position and product pages, the fridge, the opening, the Design system pages, the Playground).
 
-## Open questions
+## Found in the build
 
-- Is any forward arrow in the app disabled today (to check D3 on a real one), or only by setting `aria-disabled` in the browser?
+- D3 was checked by setting `disabled` and `aria-disabled` in the browser on Overview's Details and a flow's back button; no search was made for an arrow disabled by the app itself.
+- The proceed button's own reduce rule holds (D5): its arrow and the last step's pulse are still with the setting on, so its block is unchanged.
+- The trade's only step is a last step, whose arrow is hidden; with motion on it pulses.
+- Nothing else was seen moving with the setting on; no new roadmap item.

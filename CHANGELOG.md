@@ -17,6 +17,8 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **Arrows keep still with reduced motion** (roadmap 36). With Reduce motion on, the forward arrows (Details, Show all, Show all bookings and the like) kept their nudge; now no arrow moves, and the proceed button stays still as before. A disabled control's arrow is still too. With motion on, nothing changes. Motion specimens No. 009 shows the updated rule.
+- Spec: `specs/2026-11-06-arrow-nudge-reduced-motion/`.
 - **Legibility reaches the fridge and the investment opening** (roadmap 34). Profile > Legibility (Small, Regular, Large, the Typeface and the Font) and the size a User Type sets now apply in "How much should I invest?" and the opening, in Overview's sheet and on their own pages; both kept the default type before. The Legibility code moved into its own script, loaded by every page that had it and by these two. At Large on a phone the risk chart's end values sit in rows, the strategy names under the carousel stay inside their markers, and the summary's strategy chip goes under the name when there's no room. The Playground doesn't follow Legibility yet (roadmap 58).
 - Spec: `specs/2026-11-06-legibility-fridge-opening/`.
 - **Booking rows work with the keyboard** (roadmap 33, 52). On Account details and All bookings, Tab now reaches every booking, and Enter or Space opens its sheet, so Edit, Delete and Copy are in reach without a mouse. A screen reader hears a row as a button with its name, chip and amount. Closing the sheet puts focus back on the row. After a Delete, or an edit that replaces a row, focus moves to the next row, or the list's tab when none is left. Rows look as before.
