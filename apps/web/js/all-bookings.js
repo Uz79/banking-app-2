@@ -653,6 +653,8 @@
     var search = bindSearch(root);
     bindTabs(root, search);
     function refreshBookings() {
+      /* The built-in dates first, so in-app groups sort among them (roadmap 53, D14) */
+      if (window.UZBankBuiltInRows && window.UZBankBuiltInRows.date) window.UZBankBuiltInRows.date(root);
       renderBookings(root, key);
       /* Before the month bands, so a month with no row left gets none (roadmap 42, D5) */
       if (window.UZBankBuiltInRows) window.UZBankBuiltInRows.sync(root);
