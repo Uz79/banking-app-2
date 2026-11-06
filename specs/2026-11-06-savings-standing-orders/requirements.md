@@ -18,6 +18,8 @@ Roadmap item 59 (`specs/roadmap.md`), found in Klaudiusz's manual check on 2026-
 - A debit account choice in Pay for a new payment (the card stays Household's for a fresh payment; its chevron stays inert, as today)
 - Linking an executed instance to its rule (44), a frequency choice (45), rules that execute on their date (37)
 - The transfer flow, Buy and Sell
+- An edited next payment surviving an edit of its rule: roadmap 68
+- A debit account in the payment sheet (57's finding)
 
 ## Decisions
 

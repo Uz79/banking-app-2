@@ -397,3 +397,7 @@ Klaudiusz, 2026-11-06. On Motion specimens, the Focus-mode choreography sample's
 
 Klaudiusz, 2026-11-06. The "Open payment!" message appears after about 9 s; the baseline smoke test and `js/status-feed.js`'s comment say 12 s (8 s was measured on 2026-11-05). To settle: what the timer actually counts from, then align the code or the baseline.
 
+
+## 68. Editing a standing order after its next payment leaves two payments
+
+Found during 59 (2026-11-06). Edit a standing order's next payment (stored as a one-off with the rule's id and date, 47 D10), then Edit the rule itself: the edited rule is a new booking that replaces the old one, so Pending lists both the earlier one-off and the new rule's next payment on the same date (seen with Rent on Savings: 1'700 and 1'750 on 01.12). Not from 59; the same on Household. To settle in its spec: whether an edit of the rule carries over or drops an edited next payment, and what the customer is told.
