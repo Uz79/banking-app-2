@@ -14,7 +14,7 @@ Roadmap item 34 (`specs/roadmap.md`). Profile > Legibility (type and spacing sca
 
 **Out (not in this branch):**
 
-- The Playground (`playground.html`), which also ignores Legibility: a new roadmap item
+- The Playground (`playground.html`), which also ignores Legibility: roadmap 58
 - Changing Legibility while the fridge or the opening is open (Profile and the sheet are never on screen together; the frame reads the settings when it loads)
 - The 3D scenes: the fridge, the persona, the helper and the vehicles keep their sizes; only text and spacing around them scale
 
@@ -28,6 +28,8 @@ Roadmap item 34 (`specs/roadmap.md`). Profile > Legibility (type and spacing sca
 | D4 | **Layouts at Small and Large are fixed in this branch** (interview): text that overflows, clips or crosses a ring or a panel edge, at desktop and 390px | 34 asks for the check; a setting that breaks a page isn't done |
 | D5 | **Fixes use the existing tokens and rules**: the `--fs-*` and `--space-*` scale, `clamp()`, wrapping; no new fixed sizes, no per-setting overrides unless a layout can't be made to fit otherwise (then recorded as a decision here) | The scale should just work, as on the other pages |
 | D6 | **No new storage key**: `uzBankWebAppearance` as today | The frame shares the app's origin and storage |
+| D7 | **At Large on a phone the risk chart's end values are rows** (name and amount on one row each, under the chart), by `:root.assistant--full[data-legibility="large"]` on `.opening-chart__values`; the one per-setting override D5 allows (build) | Three columns of label and amount can't fit 390px at Large in a wide typeface; wrapping inside each column split names mid-word |
+| D8 | **The strategy markers' names stop growing on a narrow screen**: `font-size: min(var(--fs-text-xs), 3.1vw)`, columns `minmax(min-content, 1fr)`, ellipsis kept (build) | Five names in one row overflowed at Large; `hyphens: auto` didn't break them in Chrome ("Conservati/ve") |
 
 ## Context
 
@@ -37,6 +39,10 @@ Roadmap item 34 (`specs/roadmap.md`). Profile > Legibility (type and spacing sca
 - The fridge and the opening: their own pages, loaded into an iframe by `js/fridge-advisor-sheet.js` (and the opening the same way) inside Overview's sheet; framed by `fridge--framed` and `opening--framed`. Fixed sheet sizes: the film frame 960 x 640 (8d), the opening 960 wide with the assistant's 360 column (9b), the flow sheet's height clamp (9d D14).
 - Earlier finding (26): a six-digit amount wraps in the result ring whatever the type size; the ring's text is sized by length.
 
-## Open questions
+## Found in the build
 
-- Which layouts break at Large, found in the check (group 2).
+- Desktop at Small, Regular and Large: every fridge step and opening screen fit as they were.
+- Phone (390px) at Large: the risk chart's legend names wrapped into its amounts (now the key sits above the name, D7 at Large); the strategy markers' names ran out of their markers (D8); the summary's strategy chip ran past the edge (now it goes under the name).
+- A wide typeface (Source Serif 4) at Large on a phone made all three worse; the overflow check passes with it after the fixes.
+- The page in the sheet's frame reloaded once by itself during the check, most likely Vite's reload on a CSS save; the session draft brought it back where it was.
+- The Playground ignores Legibility too: roadmap 58.

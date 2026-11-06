@@ -75,6 +75,7 @@ Persisted in `sessionStorage` (this tab only):
 - `character-kit.html` — design system: the 3D persona character, with a live specimen
 - `fridge-advisor.html` — "How much should I invest?": the 3D fridge advisor (opened as a sheet from Overview > Offers > Investment)
 - `playground.html` — design system: "Payday run", a small 3D game (full screen, opened as a sheet from the Design system page)
+- `js/appearance.js` — Profile > Legibility (`UZBankAppearance`): the type and spacing scale, Typeface and Font, applied on load from `uzBankWebAppearance`. Loaded before `js/app-mp.js` on every shell page, and by the fridge and the opening
 - `js/date-picker.js` — the execution-date calendar (`UZBankDatePicker`) that Pay and the transfer open from "Execute on" in the form sheet
 - `css/tokens.css` — generated from `designs/tokens/`
 - `css/typography.css` — generated responsive type scale
