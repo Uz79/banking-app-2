@@ -6,8 +6,8 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 1. Rent and Internet & Phone back on Savings (D1, D2, D9)
 
-- [ ] `apps/web/all-bookings-and-payments.html`: the Recurring groups of Rent and Internet & Phone get `data-account="savings"` (split from Netflix's group as needed)
-- [ ] Check: Savings' Recurring lists Rent and Internet & Phone, its Pending their next payments; Household's lists Netflix and its next payment, and the one-offs
+- [x] `apps/web/all-bookings-and-payments.html`: the Recurring groups of Rent and Internet & Phone get `data-account="savings"` (split from Netflix's group as needed)
+- [x] Check: Savings' Recurring lists Rent and Internet & Phone, its Pending their next payments; Household's lists Netflix and its next payment, and the one-offs
 
 ## 2. The sheets name the row's account (D8, 57)
 
