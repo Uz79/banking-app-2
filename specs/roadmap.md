@@ -252,6 +252,8 @@ Taken before 28 (Klaudiusz, 2026-11-04). Spec: `specs/2026-11-04-sheet-close/` (
 
 Found during 35 (2026-11-04). With the macOS Reduce motion setting on, the forward arrows (Show all bookings, Details, Show all) keep their nudge loop. The reduced-motion rule in `css/styles.css` (the Arrow nudge block) uses the same selector as the forward rule but without its `:not(.uz-btn--proceed, .playground-touch__btn)`, so the forward rule outweighs it and the animation stays. The back arrows stop as they should. To settle in its spec: a reduced-motion rule that wins (matching selector or the same `:not`), and a check of the proceed button's nudge and pulse with the setting on.
 
+Spec: `specs/2026-11-06-arrow-nudge-reduced-motion/` (branch `feature/arrow-nudge-reduced-motion`). Settled in its interview: the nudge loops are set only under `prefers-reduced-motion: no-preference`, so no reduce rule has to win; disabled arrows, outweighed the same way, are fixed here; the check covers every arrow and the proceed button with the real setting; standard gate.
+
 ## 37. Pending payments and transfers execute on their date
 
 Split from 28 (2026-11-04). A payment or transfer set for a later date stays pending forever: nothing executes it when its date arrives, so its money never moves, and a recurring one never repeats. To settle in its spec: when it runs (on load, against the device date), what an executed one looks like in the bookings and balances, how a recurring or standing order repeats, and what the status message says.
