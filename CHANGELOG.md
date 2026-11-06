@@ -17,6 +17,8 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **No empty "Today" on Household's All bookings** (roadmap 61). The list opened with a "Today" header and balance and nothing under it. A day now shows only while it has a booking: Today appears with the first payment made in the app and goes again if that is deleted. June's band moves to the first day shown. The same rule hides any group left without bookings, on All bookings and Account details.
+- Spec: `specs/2026-11-06-empty-today-group/`.
 - **VoiceOver says "Payment deleted."** (roadmap 60). After Delete in a booking's sheet, VoiceOver read the next row and never the result. Now the row that takes focus (or the tab, when none is left) carries "Payment deleted." or "Transfer deleted." for that one focus, so it is read right after the row. Profile's "Demo data reset." is set once the confirmation has closed. Nothing changes on screen.
 - Spec: `specs/2026-11-06-deleted-announcement/`.
 - **Savings has its standing orders again** (roadmap 59). Since 56, Savings' Recurring and Pending were empty while its history showed Rent and Internet & Phone as monthly payments. Rent and Internet & Phone are Savings' again, as rules in Recurring and as next payments in Pending; Netflix stays Household's.

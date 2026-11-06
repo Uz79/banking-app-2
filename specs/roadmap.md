@@ -371,11 +371,11 @@ Found in Klaudiusz's manual check (2026-11-06). After Delete in a booking's shee
 
 Spec: `specs/2026-11-06-deleted-announcement/` (branch `feature/deleted-announcement`). Cause read in the code: the line was set while the confirmation, a modal dialog that makes the rest of the page inert, was still closing, in a region created on the spot. Settled in its interview: the region exists from load and is set only after the dialog has closed and focus has moved; Profile's "Demo data reset." gets the same fix; the gate includes Klaudiusz's VoiceOver check. Found in the build: VoiceOver read the next row taking focus and dropped the live update, so Delete now says it as that row's one-time description (or the tab's, when no row is left); the live region stays for the demo reset. Heard in Chrome, with Reduce motion and in Safari. Built 2026-11-06.
 
-## 61. Household's All bookings shows an empty "Today" group
+## 61. Household's All bookings shows an empty "Today" group (done)
 
 Found in Klaudiusz's manual check (2026-11-06). Household's Executed tab shows a "Today" header with its balance and no rows. 56's D5 put it there for payments made in the app. To settle in its spec: the group shows only once it has a row, on All bookings and Account details alike.
 
-Spec: `specs/2026-11-06-empty-today-group/` (branch `feature/empty-today-group`). Settled in its interview: any group without a row shown is hidden, on both pages; June's band moves to the first group shown; built before 62; standard gate.
+Spec: `specs/2026-11-06-empty-today-group/` (branch `feature/empty-today-group`). Settled in its interview: any group without a row shown is hidden, on both pages; June's band moves to the first group shown; built before 62; standard gate. Built 2026-11-06.
 
 ## 62. Demo data moves with the real date
 
