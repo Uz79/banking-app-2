@@ -956,6 +956,38 @@
     closeOverlay();
   });
 
+  /* ── Focus when the row is gone (roadmap 33, D6) ───────────────
+   * A Delete, or an edit that replaces the row, leaves the sheet's opener
+   * hidden or rebuilt. Focus goes to the row again if its list was rebuilt,
+   * else the next row, the one before, else the list's tab or Show all. */
+
+  function rowSelector(r) {
+    var id = r.getAttribute('data-booking-id');
+    if (id) return '.booking-row[data-booking-id="' + id + '"]';
+    id = r.getAttribute('data-builtin-id');
+    if (id) return '.booking-row[data-builtin-id="' + id + '"]';
+    id = r.getAttribute('data-rule-id');
+    if (id) return '.booking-row[data-rule-id="' + id + '"][data-occurrence="' + r.getAttribute('data-occurrence') + '"]';
+    return null;
+  }
+
+  function focusAfterRow(row) {
+    var scope = row.closest('[role="tabpanel"]') || row.closest('[data-account-bookings]') || document;
+    var rows = Array.prototype.slice.call(scope.querySelectorAll('.booking-row'));
+    var i = rows.indexOf(row);
+    var order = [row].concat(rows.slice(i + 1), rows.slice(0, Math.max(i, 0)).reverse()).map(function (r) {
+      return { el: r, sel: rowSelector(r) };
+    });
+    return function () {
+      for (var k = 0; k < order.length; k++) {
+        var el = order[k].el.isConnected ? order[k].el : (order[k].sel ? scope.querySelector(order[k].sel) : null);
+        if (el && el.getClientRects().length) return el;
+      }
+      var tab = scope.getAttribute && document.getElementById(scope.getAttribute('aria-labelledby') || '');
+      return tab || (scope.querySelector && scope.querySelector('.show-all-btn'));
+    };
+  }
+
   /* ── Tap a booking row to open the overlay ───────────────────── */
 
   document.addEventListener('click', function (e) {
@@ -971,6 +1003,7 @@
     // Track the row and booking ID so the edit flow can update in-place
     // (or hide this static row after a new booking is committed)
     currentRow       = row;
+    if (window.UZBankSheetFocus && window.UZBankSheetFocus.handOn) window.UZBankSheetFocus.handOn(row, focusAfterRow(row));
     currentBookingId = row.getAttribute('data-booking-id') || null;
     currentBookingRouteId = resolveBookingRouteId(row, currentBookingId);
 

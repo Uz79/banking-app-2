@@ -130,16 +130,24 @@
     focusOpener(overlay);
   }
 
+  /* An opener that may be gone when its sheet closes names who takes focus instead (a deleted booking row, roadmap 33) */
+  var handOns = new WeakMap();
+
+  function handOn(el, pick) {
+    if (el) handOns.set(el, pick);
+  }
+
   function focusOpener(overlay) {
     if (stack.indexOf(overlay) !== -1) return; /* opened again meanwhile */
     var opener = resolveOpener(openers.get(overlay));
+    if (!canTakeFocus(opener) && opener && handOns.has(opener)) opener = handOns.get(opener)();
     if (!canTakeFocus(opener)) return;
     try {
       opener.focus(byKeyboard ? { preventScroll: true } : { preventScroll: true, focusVisible: false });
     } catch (err) { /* ignore */ }
   }
 
-  window.UZBankSheetFocus = { open: openSheet, close: closeSheet };
+  window.UZBankSheetFocus = { open: openSheet, close: closeSheet, handOn: handOn };
 
   /* ── A confirmation over its sheet keeps focus, roadmap 41 ─────────────
    * The dialog sits beside the sheet's .modal-shell in the same overlay. While
