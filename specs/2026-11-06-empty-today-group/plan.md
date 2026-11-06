@@ -6,9 +6,9 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 1. Hide a group without rows (D1 to D4)
 
-- [ ] `apps/web/js/data-render.js`: `syncBuiltInRows` hides any group with no row shown
-- [ ] `apps/web/js/all-bookings.js`: `renderMonthSeparators` carries the month over hidden groups
-- [ ] Check: Household's All bookings opens with June's band over Yesterday and no Today; a payment made in Pay brings Today back, with its balance; Savings and Account details as before
+- [x] `apps/web/js/data-render.js`: `syncBuiltInRows` hides any group with no row shown
+- [x] `apps/web/js/all-bookings.js`: `renderMonthSeparators` carries the month over hidden groups
+- [x] Check: Household's All bookings opens with June's band over Yesterday and no Today; a payment made in Pay brings Today back, with its balance; Savings and Account details as before
 
 ## 2. Wrap-up
 

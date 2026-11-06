@@ -551,8 +551,14 @@
       var executed = panel.getAttribute('data-all-bookings-panel') === 'executed';
       var month = null;
       var starts = [];
-      panel.querySelectorAll('.booking-group:not([hidden])').forEach(function (g) {
-        var key = executed ? g.getAttribute('data-bookings-month-start') || month : groupDateKey(g).slice(0, 6).replace(/^(\d{4})(\d{2})$/, '$1-$2');
+      var handed = null; /* the month a hidden group starts, handed on to the next group shown (roadmap 61, D3) */
+      panel.querySelectorAll('.booking-group').forEach(function (g) {
+        if (g.hidden) {
+          if (executed && g.getAttribute('data-bookings-month-start')) handed = g.getAttribute('data-bookings-month-start');
+          return;
+        }
+        var key = executed ? g.getAttribute('data-bookings-month-start') || handed || month : groupDateKey(g).slice(0, 6).replace(/^(\d{4})(\d{2})$/, '$1-$2');
+        handed = null;
         if (!key) return;
         g.setAttribute('data-month-key', key);
         if (key !== month) starts.push(g);

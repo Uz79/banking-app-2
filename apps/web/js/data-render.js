@@ -191,8 +191,10 @@
       el.hidden = false;
       el.removeAttribute('data-builtin-emptied');
     });
+    /* A group with no row shown is hidden, whatever emptied it: a Delete, or Household's Today before any payment
+       made in the app (roadmap 61, D1) */
     root.querySelectorAll('.booking-group').forEach(function (g) {
-      if (!g.querySelector('[data-builtin-id]') || g.querySelector('.booking-row:not([hidden])')) return;
+      if (g.querySelector('.booking-row:not([hidden])')) return;
       g.hidden = true;
       g.setAttribute('data-builtin-emptied', '');
       var divider = siblingDivider(g, 'nextElementSibling') || siblingDivider(g, 'previousElementSibling');
