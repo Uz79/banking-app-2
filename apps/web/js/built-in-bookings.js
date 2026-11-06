@@ -22,6 +22,8 @@
  *   balanceAt(account, day, today?) → the balance at the end of a day ('YYYY-MM-DD')
  *   nextDate(rule, today)        → { offsetDays } or { dayOfMonth } → Date
  *   dateLabel(d)                 → 'DD.MM.YYYY'; dayKey(d) → 'YYYY-MM-DD'
+ *   dayLabel(d, today?)          → 'Today', 'Yesterday' or 'DD.MM'
+ *   row(booking)                 → the booking as a .booking-row button
  *
  * A booking: { id, account, name, amount, direction ('in' | 'out'), type
  * ('payment' | 'transfer'), icon, frequency, status, date, day, label } and,
@@ -320,7 +322,58 @@
     return Math.round((oldest.balance - oldest.net) * 100) / 100;
   }
 
+  /* ── A built-in booking as a row (D2) ──────────────────────────────
+   * The attributes the sheet, Edit, Copy, Delete and the sync read, as the
+   * hand-written rows had them. */
+
+  function escapeHtml(text) {
+    return String(text).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function money(n) {
+    var pay = window.UZBankPayState;
+    return pay ? pay.formatMoney(n) : n.toFixed(2);
+  }
+
+  function row(b) {
+    var el = document.createElement('button');
+    el.type = 'button';
+    el.className = 'booking-row';
+    el.setAttribute('data-mock-booking', 'static');
+    el.setAttribute('data-builtin-id', b.id);
+    el.setAttribute('data-status', b.status);
+    el.setAttribute('data-type', b.type);
+    if (b.status !== 'executed' && b.label) el.setAttribute('data-execute-on', b.label);
+    if (b.frequency) el.setAttribute('data-frequency', b.frequency);
+    /* A transfer between own accounts names both, so its sheet reads the right way round (D18) */
+    if (b.from) el.setAttribute('data-from', b.from);
+    if (b.to) el.setAttribute('data-to', b.to);
+    var chip = b.status === 'pending' ? 'Pending' : b.frequency === 'monthly' ? 'Monthly' : null;
+    el.innerHTML =
+      '<svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#' + escapeHtml(b.icon) + '"/></svg>' +
+      '<span class="booking-row__name">' + escapeHtml(b.name) + '</span>' +
+      (chip ? '<span class="chip chip--sm chip--tonal booking-row__chip">' + chip + '</span>' : '') +
+      '<span class="booking-row__amount">' +
+        '<span class="booking-row__currency">CHF</span>' +
+        '<span class="booking-row__value">' + (b.direction === 'in' ? '+' : '-') + money(b.amount) + '</span>' +
+      '</span>';
+    return el;
+  }
+
+  /* A day group's label: Today, Yesterday or DD.MM (D14) */
+  function dayLabel(date, t) {
+    t = t || today();
+    var diff = Math.round((t - date) / 86400000);
+    if (diff === 0) return 'Today';
+    if (diff === 1) return 'Yesterday';
+    return pad(date.getDate()) + '.' + pad(date.getMonth() + 1);
+  }
+
   window.UZBankBuiltInBookings = {
+    row: row,
+    dayLabel: dayLabel,
     today: today,
     executed: executed,
     pending: pending,

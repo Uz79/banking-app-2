@@ -65,5 +65,5 @@ Checked against `tech-spec.md`: no new dependency or system. The "Booking rows" 
 ## Open questions
 
 - ~~Household's monthly money in from Savings~~: settled in D18.
-- A built-in transfer's sheet reads the page's account as its debit (50). The new monthly pair carries `from` and `to`; whether the sheet reads them is checked in task group 3.
+- ~~Whether the new monthly pair's sheets read the right way round~~: they do since task group 3 (`buildAllBookingsRowData` reads `data-from` and `data-to`); the older built-in transfers stay 50's.
 - Whether `components.html`'s booking row specimens use fixed dates or balances that should stay as they are (expected: they stay, they are specimens).

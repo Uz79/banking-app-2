@@ -19,9 +19,9 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 3. All bookings from the list (D2, D12, D13)
 
-- [ ] `apps/web/all-bookings-and-payments.html`: the built-in groups, their dividers and the fixed month chips leave the markup; the panels, their empty lines and the bars stay
-- [ ] `apps/web/js/all-bookings.js`: render the account's groups from the list (with day balances), the in-app executed bookings in their day's group (D12), then the chips from the months listed (D13), before the sync, the bands, the spy and search; the standing orders' next payments read their rules from the list (D15's move)
-- [ ] Check: both accounts, all three tabs; the bands and chips match (five months, the newest active); a chip scrolls to its band; Delete of a month's last row; Edit and Copy of a built-in pending row and a standing order; search
+- [x] `apps/web/all-bookings-and-payments.html`: the built-in groups, their dividers and the fixed month chips leave the markup; the panels, their empty lines and the bars stay
+- [x] `apps/web/js/all-bookings.js`: render the account's groups from the list (with day balances), the in-app executed bookings in their day's group (D12), then the chips from the months listed (D13), before the sync, the bands, the spy and search; the standing orders' next payments read their rules from the list (D15's move); `js/payment-details.js` reads a built-in transfer's `data-from` and `data-to` (D18)
+- [x] Check: both accounts, all three tabs; the bands and chips match (five months, the newest active); a chip scrolls to its band; Delete of a month's last row; Edit and Copy of a built-in pending row and a standing order; search
 
 ## 4. Account details from the list (D11, D14, D15)
 

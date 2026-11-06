@@ -230,6 +230,23 @@
     var schedule = rowSchedule(row);
 
     if (isInternalTransferRow(row)) {
+      /* A built-in transfer that names both accounts reads them (roadmap 62, D18) */
+      var fromKey = row.getAttribute('data-from');
+      var toKey = row.getAttribute('data-to');
+      if (ACCOUNT_SNAPSHOTS[fromKey] && ACCOUNT_SNAPSHOTS[toKey]) {
+        return {
+          type: 'internal',
+          title: 'Internal Account Transfer',
+          amount: amount,
+          currency: currency,
+          debit: ACCOUNT_SNAPSHOTS[fromKey],
+          credit: ACCOUNT_SNAPSHOTS[toKey],
+          status: schedule.status,
+          executeOn: schedule.executeOn,
+          frequency: schedule.frequency,
+          message: null
+        };
+      }
       var targetLabel = displayName.replace(/^Transfer to /i, '').trim();
       var credit = findAccountSnapshotByLabel(targetLabel) || {
         name: targetLabel,
