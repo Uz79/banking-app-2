@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 1fdd7e7d2cd42a849c5d0f0ead15f2dd3fc79e34 -->
+<!-- changelog: last-commit 38658e82fecc5847967df73ca98b09012989ee9d -->
 
 ### Changed
 - **Booking rows say who and what, not how** (roadmap 43). A row's icon now names the counterparty: money out, money in, or for a transfer between your own accounts the other account (Household's home, Savings' anchor). A small chip after the name says "Pending" for a booking not executed yet, or how often a standing order runs ("Monthly"), also on each executed payment of one; a one-off payment has none. The repeat icon no longer marks recurring rows. On All bookings and Account details, for the built-in bookings and the ones you make. Recurring payments made in the app are monthly for now. The Chip component gains a tonal variant for this.
@@ -17,6 +17,8 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **Booking rows work with the keyboard** (roadmap 33, 52). On Account details and All bookings, Tab now reaches every booking, and Enter or Space opens its sheet, so Edit, Delete and Copy are in reach without a mouse. A screen reader hears a row as a button with its name, chip and amount. Closing the sheet puts focus back on the row. After a Delete, or an edit that replaces a row, focus moves to the next row, or the list's tab when none is left. Rows look as before.
+- Spec: `specs/2026-11-06-booking-rows-keyboard/`.
 - **Each account's All bookings lists its own bookings** (roadmap 56). Household and Savings showed the same example bookings, Savings' ones, and an edit made on the Savings view showed up only on Household's. Now Savings keeps its history, and Household lists Apple, Café, Pizza and Railway as on Account details, with the pending payments and standing orders, since payments go out from Household. Household's Today shows the same balance as on Account details. Savings' empty tabs say "No pending payments." and "No standing orders."
 - **A month band sits flush at the top** of a list after the first group's last booking was deleted, as it does when nothing was deleted.
 - Spec: `specs/2026-11-06-bookings-per-account/`.

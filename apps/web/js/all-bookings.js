@@ -507,7 +507,8 @@
   }
 
   function buildRow(pay, b) {
-    var row = document.createElement('div');
+    var row = document.createElement('button');
+    row.type = 'button';
     row.className = 'booking-row';
     row.setAttribute('data-source', 'state');
     row.setAttribute('data-booking-id', b.id);
@@ -583,7 +584,8 @@
    * each time, never stored. Into the group of that date if there is one. */
 
   function instanceRow(pay, rule) {
-    var row = document.createElement('div');
+    var row = document.createElement('button');
+    row.type = 'button';
     row.className = 'booking-row';
     row.setAttribute('data-source', 'rule');
     row.setAttribute('data-status', 'pending');

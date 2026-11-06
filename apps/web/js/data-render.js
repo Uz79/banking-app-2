@@ -98,7 +98,8 @@
   /* ── Bookings list (Today group on account-details) ─────────────── */
 
   function buildBookingRow(b) {
-    var row = document.createElement('div');
+    var row = document.createElement('button');
+    row.type = 'button';
     row.className = 'booking-row';
     row.setAttribute('data-source', 'state');
     row.setAttribute('data-booking-id', b.id);
