@@ -12541,12 +12541,14 @@ html.fridge--wide .fridge__ring-amount {
   transition: background-color 0.2s ease-out;
 }
 
+/* Five names in one row: on a narrow screen their size stops growing at what fits (Large with a wide
+   typeface), so none is cut; the card above names the strategy in full (roadmap 34, D8) */
 .opening-carousel__marker-label {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: var(--fs-text-xs);
+  font-size: min(var(--fs-text-xs), 3.1vw);
   line-height: var(--lh-text);
 }
 
@@ -12886,6 +12888,23 @@ html.fridge--wide .fridge__ring-amount {
 }
 
 .assistant--wide .opening-chart__amount {
+  line-height: 1.25;
+}
+
+/* Large type on a phone: three columns are too narrow for a wide typeface, so the end values become
+   rows of name and amount, as on desktop (roadmap 34, D7) */
+:root.assistant--full[data-legibility="large"] .opening-chart__values {
+  grid-template-columns: auto auto;
+  justify-content: start;
+  column-gap: var(--space-3);
+  row-gap: 0;
+}
+
+:root.assistant--full[data-legibility="large"] .opening-chart__value {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: baseline;
   line-height: 1.25;
 }
 
@@ -13243,6 +13262,7 @@ html.fridge--wide .fridge__ring-amount {
 
 .opening-summary__name {
   display: flex;
+  flex-wrap: wrap; /* the chip goes under the name when they don't fit side by side (roadmap 34, D4) */
   align-items: center;
   gap: var(--space-1);
   margin: 0;
