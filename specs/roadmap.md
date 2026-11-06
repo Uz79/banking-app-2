@@ -353,6 +353,8 @@ Spec: `specs/2026-11-06-bookings-per-account/` (branch `feature/bookings-per-acc
 
 Found during 33 (2026-11-06). On Household's All bookings, the sheet of a standing order's next payment in Pending (Internet & Phone, seen by keyboard) names "Savings account" as the debit account, although since 56 the standing orders are Household's. Not changed by 33. To settle in its spec: where the instance's sheet takes its debit account (`instanceData` and `buildAllBookingsRowData` in `js/payment-details.js`, `ACCOUNT_SNAPSHOTS`), and the same check for the rule's own sheet in Recurring and for Rent and Netflix.
 
+Taken into 59 (`specs/2026-11-06-savings-standing-orders/`).
+
 ## 58. Legibility doesn't reach the Playground
 
 Found while writing 34's spec (2026-11-06). The Playground (`playground.html`, admin only, opened as a full-screen sheet) loads neither `js/app-mp.js` nor, since 34, `js/appearance.js`, so Legibility's type and spacing scale, Typeface and Font don't apply there. To settle in its spec: loading `js/appearance.js` as the fridge and the opening do, and a check of the Playground's layouts at Small and Large, desktop and phone.
@@ -360,6 +362,8 @@ Found while writing 34's spec (2026-11-06). The Playground (`playground.html`, a
 ## 59. Savings lost its standing orders
 
 Found in Klaudiusz's manual check (2026-11-06), from 56. On Savings' All bookings, Recurring says "No standing orders." and Pending "No pending payments.", while Rent shows in Executed with its "Monthly" chip. Rent and the account's other built-in standing orders must show as rules in Recurring and as next payments in Pending. Revises 56's D3 (Pending and Recurring moved to Household) and D4 (Rent's history on Savings, its rule on Household). To settle in its spec: which standing orders are Savings' and which Household's, where an edit of a Savings rule or its next payment books (Pay books to Household), and the Pending one-offs.
+
+Spec: `specs/2026-11-06-savings-standing-orders/` (branch `feature/savings-standing-orders`), with 57. Settled in its interview: Rent and Internet & Phone back on Savings, Netflix stays Household's; Pay books from the account a row belongs to, so an edit or Copy of a Savings row stays on Savings; 57 fixed here; standard gate.
 
 ## 60. VoiceOver doesn't announce "Payment deleted."
 
