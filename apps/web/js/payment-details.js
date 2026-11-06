@@ -83,7 +83,7 @@
       currency: 'CHF',
       to: 'Employer AG\nTechnikumstrasse 1\n8401 Winterthur',
       status: 'executed',
-      message: 'Salary May 2026'
+      message: 'Salary'
     },
     'rent': {
       type: 'domestic',
@@ -210,13 +210,17 @@
     return row.getAttribute('data-type') === 'transfer';
   }
 
-  /* A built-in row's status and date come from its markup (roadmap 43, D1, D2) */
+  /* A built-in row's status and date come from its markup (roadmap 43, D1, D2), and so does its amount: the maps'
+     fixed amounts would contradict the list's rows (roadmap 62, D20) */
   function rowSchedule(row) {
-    return {
+    var value = row.querySelector('.booking-row__value');
+    var out = {
       status: row.getAttribute('data-status') || 'executed',
       executeOn: row.getAttribute('data-execute-on') || null,
       frequency: row.getAttribute('data-frequency') || null
     };
+    if (value && row.getAttribute('data-mock-booking') === 'static') out.amount = value.textContent.trim();
+    return out;
   }
 
   function buildAllBookingsRowData(row, displayName) {
@@ -1077,6 +1081,10 @@
       /* Account details' built-in rows: the row's status wins over the map's (roadmap 43, D1) */
       if (data && row.hasAttribute('data-status')) {
         data = Object.assign({}, data, rowSchedule(row));
+      }
+      /* A built-in row the map doesn't know (the list's, roadmap 62) opens from its own data, as on All bookings */
+      if (!data && !currentBookingId && row.getAttribute('data-mock-booking') === 'static') {
+        data = buildAllBookingsRowData(row, displayName);
       }
     }
 

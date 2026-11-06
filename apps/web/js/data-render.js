@@ -7,8 +7,9 @@
  *   • Household balance — overview product-item, account-details carousel,
  *     every .debit-account__amount inside the payment modal
  *   • Sum-of-all-accounts on overview ("Accounts & investment" total)
- *   • Bookings list — injects executed payments into the "Today" group
- *     on account-details (newest at top, above static mock rows)
+ *   • Bookings list — each account's two newest days on account-details,
+ *     drawn from js/built-in-bookings.js with the payments made in the app,
+ *     and its "Pending payments" line (roadmap 62, D14, D15)
  *
  * Runs on DOMContentLoaded (initial paint) and on every
  * `uzbank:state-changed` event so navigating between pages or finishing
@@ -17,8 +18,8 @@
  *
  * Conventions:
  *   - Dynamic rows carry data-source="state" so they can be located + removed
-   *   - Static mock rows ([data-mock-booking="static"]) stay in HTML; only
-   *     day headers and [data-source="state"] rows are updated
+   *   - Built-in rows ([data-mock-booking="static"]) are drawn by the same
+   *     render, from the built-in list
  */
 (function () {
   'use strict';
@@ -99,7 +100,14 @@
     }
   }
 
-  /* ── Bookings list (Today group on account-details) ─────────────── */
+  /* ── Bookings list (account-details, roadmap 62, D14, D15) ───────────
+   * Each account's two newest days with bookings, labelled Today, Yesterday
+   * or the date, each with its worked-out balance (D8), the payments made in
+   * the app on their own day (D12); above them the "Pending payments" line,
+   * what the account's Pending tab on All bookings lists, hidden when none.
+   * Pending payments are not listed under a day (D11). */
+
+  var ACCOUNT_DAYS = 2;
 
   function buildBookingRow(b) {
     var row = document.createElement('button');
@@ -122,57 +130,50 @@
     return row;
   }
 
-  function renderBookingsForAccount(state, accountKey) {
+  function renderAccountBookings(accountKey) {
     var panel = document.querySelector('[data-account-bookings="' + accountKey + '"]');
-    if (!panel) return;
-    var group = panel.querySelector('.booking-group[data-day="today"]');
-    if (!group) return;
-
-    group.querySelectorAll('[data-source="state"]').forEach(function (n) { n.remove(); });
-
-    var accountBookings = (state.bookings || []).filter(function (b) {
-      return (b.accountKey || 'household') === accountKey && (!b.status || b.status === 'executed');
-    });
-    if (accountBookings.length === 0) return;
-
-    var header = group.querySelector('.booking-group__header');
-    var insertAfter = header || group.firstChild;
-    for (var i = accountBookings.length - 1; i >= 0; i--) {
-      var row = buildBookingRow(accountBookings[i]);
-      if (insertAfter && insertAfter.parentNode) {
-        insertAfter.parentNode.insertBefore(row, insertAfter.nextSibling);
-        insertAfter = row;
-      } else {
-        group.appendChild(row);
-        insertAfter = row;
-      }
-    }
-  }
-
-  function renderBookings(state) {
-    ['household', 'savings'].forEach(function (accountKey) {
-      renderBookingsForAccount(state, accountKey);
-    });
-  }
-
-  /* ── Day-end balance shown in each booking-group header ─────────── */
-
-  /* Household's Today and Yesterday headers, worked out from the bookings (roadmap 62, D8) */
-  function renderDayBalances(state) {
-    var todayEl = document.querySelector('[data-day-balance="today"]');
-    var yesterdayEl = document.querySelector('[data-day-balance="yesterday"]');
-    if (!todayEl && !yesterdayEl) return;
     var list = window.UZBankBuiltInBookings;
-    var running = state.accountBalances.household;
-    if (!list) {
-      if (todayEl) todayEl.textContent = fmt(running);
-      if (yesterdayEl) yesterdayEl.textContent = fmt(running);
-      return;
-    }
+    if (!panel || !list) return;
     var t = list.today();
-    var yesterday = new Date(t.getFullYear(), t.getMonth(), t.getDate() - 1);
-    if (todayEl) todayEl.textContent = fmt(list.balanceAt('household', list.dayKey(t), t));
-    if (yesterdayEl) yesterdayEl.textContent = fmt(list.balanceAt('household', list.dayKey(yesterday), t));
+
+    var line = panel.querySelector('[data-pending-line]');
+    if (line) {
+      var total = list.pendingTotal(accountKey, t);
+      line.hidden = !(total !== 0);
+      var value = line.querySelector('[data-pending-value]');
+      if (value) value.textContent = fmt(Math.abs(total));
+      var lineDivider = panel.querySelector('[data-pending-divider]');
+      if (lineDivider) lineDivider.hidden = line.hidden;
+    }
+
+    panel.querySelectorAll('[data-source="days"]').forEach(function (n) { n.remove(); });
+    var end = panel.querySelector('.show-all-btn');
+    list.days(accountKey, t).slice(0, ACCOUNT_DAYS).forEach(function (d, i) {
+      if (i > 0) {
+        var divider = document.createElement('div');
+        divider.className = 'divider';
+        divider.setAttribute('data-source', 'days');
+        panel.insertBefore(divider, end);
+      }
+      var label = list.dayLabel(d.date, t);
+      var group = document.createElement('div');
+      group.className = 'booking-group';
+      group.setAttribute('data-source', 'days');
+      group.setAttribute('data-day', label === 'Today' ? 'today' : label === 'Yesterday' ? 'yesterday' : d.day);
+      group.innerHTML = '<header class="booking-group__header">' +
+        '<span class="booking-group__label">' + escapeHtml(label) + '</span>' +
+        '<span class="booking-group__balance">' +
+          '<span class="booking-group__balance-currency">CHF</span>' +
+          '<span class="booking-group__balance-value">' + escapeHtml(fmt(d.balance)) + '</span>' +
+        '</span></header>';
+      d.stored.forEach(function (b) { group.appendChild(buildBookingRow(b)); });
+      d.builtIn.forEach(function (b) { group.appendChild(list.row(b)); });
+      panel.insertBefore(group, end);
+    });
+  }
+
+  function renderBookings() {
+    ['household', 'savings'].forEach(renderAccountBookings);
   }
 
   /* ── Built-in rows an edit replaced or a delete removed (roadmap 42) ──
@@ -220,65 +221,7 @@
     });
   }
 
-  /* ── Built-in dates from today (roadmap 53) ──────────────────────────
-   * A pending row is a few working days after today (data-offset-days, D12); a
-   * standing order keeps its day of the month (data-day-of-month), the next one
-   * after today, a weekend moved to Monday (D13). The row's data-execute-on and
-   * its group label take the date, and the groups re-sort by it (D14). Once per
-   * page, before any in-app row joins the list. The dates come from the
-   * built-in list's helpers (roadmap 62, D5). */
-
-  function builtInDate(row, today) {
-    return window.UZBankBuiltInBookings.nextDate({
-      offsetDays: parseInt(row.getAttribute('data-offset-days'), 10),
-      dayOfMonth: parseInt(row.getAttribute('data-day-of-month'), 10)
-    }, today);
-  }
-
-  function groupKey(g) {
-    var row = g.querySelector('[data-execute-on]');
-    var m = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec(row ? row.getAttribute('data-execute-on') : '');
-    return m ? m[3] + m[2] + m[1] : '';
-  }
-
-  function sortGroups(panel) {
-    var groups = [], dividers = [];
-    Array.prototype.forEach.call(panel.children, function (el) {
-      if (el.classList.contains('booking-group')) groups.push(el);
-      else if (isDivider(el)) dividers.push(el);
-    });
-    groups.sort(function (a, b) { return groupKey(a) < groupKey(b) ? -1 : groupKey(a) > groupKey(b) ? 1 : 0; });
-    var end = panel.querySelector(':scope > [data-bookings-empty]');
-    groups.forEach(function (g, i) {
-      if (i > 0 && dividers[i - 1]) panel.insertBefore(dividers[i - 1], end);
-      panel.insertBefore(g, end);
-    });
-  }
-
-  function dateBuiltInRows(root) {
-    root = root || document;
-    var list = window.UZBankBuiltInBookings;
-    if (!list) return;
-    var today = list.today();
-    var dateLabel = list.dateLabel;
-    var panels = [];
-    root.querySelectorAll('[data-offset-days]:not([data-dated]), [data-day-of-month]:not([data-dated])').forEach(function (row) {
-      var d = builtInDate(row, today);
-      row.setAttribute('data-dated', '');
-      if (!d) return;
-      row.setAttribute('data-execute-on', dateLabel(d));
-      var group = row.closest('.booking-group');
-      var label = group && group.querySelector('.booking-group__label');
-      if (label && /\d{2}\.\d{2}\.\d{4}/.test(label.textContent)) {
-        label.textContent = label.textContent.replace(/\d{2}\.\d{2}\.\d{4}/, dateLabel(d));
-      }
-      var panel = group && group.parentNode;
-      if (panel && panel.hasAttribute('data-all-bookings-panel') && panels.indexOf(panel) === -1) panels.push(panel);
-    });
-    panels.forEach(sortGroups);
-  }
-
-  window.UZBankBuiltInRows = { sync: syncBuiltInRows, date: dateBuiltInRows };
+  window.UZBankBuiltInRows = { sync: syncBuiltInRows };
 
   /* ── Asset management mandates (Overview, 9a D21) ───────────────────
    * One row per mandate after Retirement savings 3a: pending until a transfer funds it, so the amount is in the
@@ -314,10 +257,8 @@
     var state = window.UZBankPayState.getState();
     renderHouseholdBalance(state);
     renderAccountSum(state);
-    renderBookings(state);
-    renderDayBalances(state);
+    renderBookings();
     renderMandates(state);
-    dateBuiltInRows(document);
     syncBuiltInRows(document);
   }
 

@@ -49,6 +49,7 @@ Roadmap items 62 and 69 (`specs/roadmap.md`), both from Klaudiusz on 2026-11-06.
 | D17 | **No new storage key, no schema change** | D9 |
 | D18 | **Household gets CHF 1'500 from Savings every month, on the 26th** (a working day): "Transfer from Savings" (+) on Household and "Transfer to Household" (-) on Savings, each leg naming both accounts (`from`, `to`) for its sheet. Savings' "Transfer to Household" -320 and Household's "Pizza" -320 stay as they were, yesterday (they are 50's) | Settled in the build (task group 1), the open question on D6. Without money in, Household's past balances only ever fall; the existing pair is 50's to sort out |
 | D19 | **A standing order's next execution is its first occurrence after today, the weekend already moved** (53 D13 moved the weekend after picking the month). The same occurrence is the executed instance once it is today or earlier | Found in the build: on a Saturday the 1st, 53's rule skipped to next month while this month's Monday occurrence was still ahead, so one month's Rent was in neither list |
+| D20 | **A built-in row's sheet takes its amount from the row**, over the fixed amount in `BOOKING_MAP_HOUSEHOLD` and `BOOKING_MAP_SAVINGS` (`rowSchedule` in `js/payment-details.js`); Salary's message loses its month ("Salary", not "Salary May 2026"); a row the maps don't know opens from its own data on Account details too, as on All bookings | Found in task group 4: Internet & Phone's sheet said -60.00 under a -59.00 row, the monthly transfer's would have said -320.00, and every new Household row opened as "Pending" (the sheet's fallback for an unknown name) |
 
 Checked against `tech-spec.md`: no new dependency or system. The "Booking rows" and "Standing orders" decisions still hold; the "Standing orders" row's "Built-in Pending and Recurring dates are set from today when the page builds (`UZBankBuiltInRows.date` in `js/data-render.js`)" changes to the new list (D5) and is updated at wrap-up, with a new row for D1, D8 and D10.
 
@@ -61,6 +62,11 @@ Checked against `tech-spec.md`: no new dependency or system. The "Booking rows" 
 - `js/all-bookings.js`: `renderBookings` puts in-app executed bookings into Today and adds their net to its typed figure (`data-base`); `renderMonthSeparators`, the month chips and spy; `rulesOf` and `renderInstances` derive the standing orders' next payments from the Recurring markup; `init` removes the other account's groups.
 - `js/payment-details.js`: `buildAllBookingsRowData` reads a built-in row's status and date from its attributes; `BOOKING_MAP_HOUSEHOLD` and `BOOKING_MAP_SAVINGS` hold a few rows' sheet details by name (Apple's and Café's addresses), and stay.
 - Stored bookings carry `dateISO` (`commitPayment`, the transfer, trades), so D12 needs no new field.
+
+## Found in the build
+
+- The Savings sheet map's "Transfer to Household" names "Household account" with the IBAN ending 2920 3 and fixed balances (CHF 25'000.00, 10'000.00), unlike the cards. It predates this branch; it belongs with 50 (one name and one snapshot per account).
+- An executed Netflix, Rent or Internet & Phone opens as a plain "Domestic Payment"; naming its standing order is 44.
 
 ## Open questions
 

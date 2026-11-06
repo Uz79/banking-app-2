@@ -19,7 +19,8 @@
  *   pending(account, today?)     → pending one-offs, in date order
  *   standingOrders(account, today?) → the rules, with their next execution
  *   days(account, today?)        → [{ day, date, label, stored, builtIn, net, balance }], newest first
- *   balanceAt(account, day, today?) → the balance at the end of a day ('YYYY-MM-DD')
+ *   nextPayments(account, today?) → each standing order's next payment still due, as Pending lists it
+ *   pendingTotal(account, today?) → what the account's Pending tab lists, in CHF
  *   nextDate(rule, today)        → { offsetDays } or { dayOfMonth } → Date
  *   dateLabel(d)                 → 'DD.MM.YYYY'; dayKey(d) → 'YYYY-MM-DD'
  *   dayLabel(d, today?)          → 'Today', 'Yesterday' or 'DD.MM'
@@ -308,18 +309,59 @@
     });
   }
 
-  /* The balance at the end of a day ('YYYY-MM-DD') */
-  function balanceAt(account, key, t) {
-    var list = days(account, t);
-    for (var i = 0; i < list.length; i++) {
-      if (list[i].day <= key) return list[i].balance;
-    }
-    var oldest = list[list.length - 1];
-    if (!oldest) {
-      var pay = window.UZBankPayState;
-      return pay ? (pay.getState().accountBalances || {})[account] : null;
-    }
-    return Math.round((oldest.balance - oldest.net) * 100) / 100;
+  /* ── What is pending (roadmap 47, D7 to D10; 62, D15) ─────────────────
+   * Each standing order's next payment, built-in or made in the app, unless
+   * a removed rule, or an edit of that payment stored with the rule's id and
+   * date. Derived each time, never stored. One derivation for All bookings'
+   * Pending tab and Account details' "Pending payments" line. */
+
+  function removedIds() {
+    var pay = window.UZBankPayState;
+    return pay ? pay.getState().removedBuiltIns || [] : [];
+  }
+
+  function storedOf(account) {
+    var pay = window.UZBankPayState;
+    return (pay ? pay.getState().bookings || [] : []).filter(function (b) {
+      return (b.accountKey || 'household') === account;
+    });
+  }
+
+  function nextPayments(account, t) {
+    var pay = window.UZBankPayState;
+    var removed = removedIds();
+    var all = pay ? pay.getState().bookings || [] : [];
+    var rules = [];
+    standingOrders(account, t).forEach(function (b) {
+      if (removed.indexOf(b.id) !== -1 || !b.label) return;
+      rules.push({ id: b.id, date: b.label, type: b.type, icon: b.icon, name: b.name, amount: b.amount, direction: b.direction, currency: 'CHF' });
+    });
+    storedOf(account).forEach(function (b) {
+      if (b.status !== 'recurring' || !b.executeOn) return;
+      var look = pay.bookingRowLook(b);
+      rules.push({ id: b.id, date: b.executeOn, type: look.type, icon: look.icon, name: b.recipientName, amount: b.amount, direction: b.direction || 'out', currency: b.currency });
+    });
+    return rules.filter(function (rule) {
+      return !all.some(function (b) { return b.ruleId === rule.id && b.occurrence === rule.date; });
+    }).map(function (rule) {
+      rule.value = (rule.direction === 'in' ? '+' : '-') + money(rule.amount);
+      return rule;
+    });
+  }
+
+  /* What the account's Pending tab lists, in CHF: the built-in one-offs still listed, the pending payments made in
+     the app and the standing orders' next payments; money out counts up, money in down (D15) */
+  function pendingTotal(account, t) {
+    var removed = removedIds();
+    var sum = 0;
+    pending(account, t).forEach(function (b) {
+      if (removed.indexOf(b.id) === -1) sum -= signed(b.amount, b.direction);
+    });
+    storedOf(account).forEach(function (b) {
+      if (b.status === 'pending') sum -= signed(b.amount, b.direction);
+    });
+    nextPayments(account, t).forEach(function (r) { sum -= signed(r.amount, r.direction); });
+    return Math.round(sum * 100) / 100;
   }
 
   /* ── A built-in booking as a row (D2) ──────────────────────────────
@@ -379,7 +421,8 @@
     pending: pending,
     standingOrders: standingOrders,
     days: days,
-    balanceAt: balanceAt,
+    nextPayments: nextPayments,
+    pendingTotal: pendingTotal,
     nextDate: nextDate,
     dateLabel: dateLabel,
     dayKey: dayKey

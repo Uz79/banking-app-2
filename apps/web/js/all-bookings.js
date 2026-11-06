@@ -632,7 +632,7 @@
    * next execution, unless an edit of that payment is stored (D10). Derived
    * each time, never stored. Into the group of that date if there is one. */
 
-  function instanceRow(pay, rule) {
+  function instanceRow(rule) {
     var row = document.createElement('button');
     row.type = 'button';
     row.className = 'booking-row';
@@ -651,39 +651,6 @@
         '<span class="booking-row__value">' + escapeHtml(rule.value) + '</span>' +
       '</span>';
     return row;
-  }
-
-  function rulesOf(accountKey, pay, mine) {
-    var removed = pay.getState().removedBuiltIns || [];
-    var rules = [];
-    /* The built-in rules from the list (roadmap 62, D15) */
-    var list = window.UZBankBuiltInBookings;
-    (list ? list.standingOrders(accountKey) : []).forEach(function (b) {
-      if (removed.indexOf(b.id) !== -1 || !b.label) return;
-      rules.push({
-        id: b.id,
-        date: b.label,
-        type: b.type,
-        icon: b.icon,
-        name: b.name,
-        currency: 'CHF',
-        value: (b.direction === 'in' ? '+' : '-') + pay.formatMoney(b.amount)
-      });
-    });
-    mine.forEach(function (b) {
-      if (b.status !== 'recurring' || !b.executeOn) return;
-      var look = pay.bookingRowLook(b);
-      rules.push({
-        id: b.id,
-        date: b.executeOn,
-        type: look.type,
-        icon: look.icon,
-        name: b.recipientName,
-        currency: b.currency,
-        value: (b.direction === 'in' ? '+' : '-') + pay.formatMoney(b.amount)
-      });
-    });
-    return rules;
   }
 
   /* The group of that date in the panel, or a new one in date order (roadmap 24, D12) */
@@ -717,14 +684,13 @@
     return group;
   }
 
-  function renderInstances(root, pay, mine, accountKey) {
+  function renderInstances(root, accountKey) {
     var panel = root.querySelector('[data-all-bookings-panel="pending"]');
-    if (!panel) return;
-    var all = pay.getState().bookings || [];
-    rulesOf(accountKey, pay, mine).forEach(function (rule) {
-      var edited = all.some(function (b) { return b.ruleId === rule.id && b.occurrence === rule.date; });
-      if (edited) return;
-      dateGroup(panel, 'Execute on ', rule.date).appendChild(instanceRow(pay, rule));
+    var list = window.UZBankBuiltInBookings;
+    if (!panel || !list) return;
+    /* The derivation the Account details' pending line shares (roadmap 62, D15) */
+    list.nextPayments(accountKey).forEach(function (rule) {
+      dateGroup(panel, 'Execute on ', rule.date).appendChild(instanceRow(rule));
     });
   }
 
@@ -754,7 +720,7 @@
       });
     });
 
-    renderInstances(root, pay, mine, accountKey);
+    renderInstances(root, accountKey);
   }
 
   /* ── The lists from the built-in list (roadmap 62, D1, D2, D8, D12) ─────

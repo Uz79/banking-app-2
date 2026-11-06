@@ -25,9 +25,9 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 4. Account details from the list (D11, D14, D15)
 
-- [ ] `apps/web/account-details.html`: the hand-written groups leave both panels; the "Pending payments" line on both, without its date
-- [ ] `apps/web/js/data-render.js`: each panel's two newest days with bookings from the list and the stored bookings; the pending line's total from the shared next-payment derivation, hidden when nothing is pending
-- [ ] Check: both carousel slides; Today, Yesterday or a date as labels; Apple not under a day; the pending line's total equals what Household's Pending tab lists, before and after a pending payment made in Pay; a row's sheet, Edit and Delete as before
+- [x] `apps/web/account-details.html`: the hand-written groups leave both panels; the "Pending payments" line on both, without its date
+- [x] `apps/web/js/data-render.js`: each panel's two newest days with bookings from the list and the stored bookings; the pending line's total from the shared next-payment derivation, hidden when nothing is pending; `nextPayments` and `pendingTotal` in `js/built-in-bookings.js`, which All bookings' Pending now uses too; `dateBuiltInRows` goes (every row is drawn dated); `js/payment-details.js`: D20
+- [x] Check: both carousel slides; Today, Yesterday or a date as labels; Apple not under a day; the pending line's total equals what Household's Pending tab lists, before and after a pending payment made in Pay; a row's sheet, Edit and Delete as before
 
 ## 5. Wrap-up
 
