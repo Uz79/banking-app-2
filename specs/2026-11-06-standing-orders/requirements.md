@@ -24,6 +24,7 @@ Roadmap items 47 and 53 (`specs/roadmap.md`), on one branch.
 - 37: payments executing on their date; nothing here moves money or advances a rule's next date
 - From 47's own "later" list: skipping one payment, pausing or deleting a standing order, a "Recent payments" list in the rule's sheet
 - Edit and Copy for transfers (51): a recurring transfer gets the rule's info rows but no Edit
+- The built-in rows per account (56)
 
 ## Decisions
 
@@ -53,6 +54,9 @@ Roadmap items 47 and 53 (`specs/roadmap.md`), on one branch.
 - Rules in the state: `commitPayment` and `updatePayment` (`js/payment-state.js`) store `status`, `executeOn`, `frequency` ('monthly'). Pay seeds an edit's schedule with `seedScheduleFromBooking` (`js/payment-overlay.js:233`).
 - Dates: `js/date-picker.js` (`nextWorkingDay`, `formatLabel`, `parseLabel`), loaded on All bookings and Account details.
 
-## Open questions
+## Found in the build
 
-- The repeat icon for the "Active" chip: `#i-repeat` if the sprite has it, else `#i-refresh-cw`. To check in the build.
+- The sprite has `#i-repeat`; the "Active" chip uses it.
+- In-app pending payments on a date that already has a group now join it, as instances do (D9), instead of a second group with the same label.
+- On a standing order's sheet, Edit and Copy are announced as "Edit standing order" and "Copy standing order".
+- All bookings lists the same built-in rows for every account, while Pay books to Household, so an edit made on the Savings view shows only on Household's view. Pre-existing since 42: roadmap 56, out of scope.

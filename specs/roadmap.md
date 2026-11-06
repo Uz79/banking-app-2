@@ -296,11 +296,11 @@ Found during 43 (2026-11-05). On All bookings, the sheet of a transfer made in t
 
 Spec: `specs/2026-11-05-transfer-status/` (branch `feature/transfer-status`), with 32. Settled in its interview: All bookings loads `js/iat-overlay.js` without the transfer's markup, since it publishes the account list before it looks for its sheet. Found in the check: built-in transfer rows can read as a transfer to the same account (50). Built 2026-11-05.
 
-## 47. Standing orders: the rule and its payments
+## 47. Standing orders: the rule and its payments (done)
 
 Added 2026-11-05. A standing order is a rule; its executions are bookings. Today tapping Rent in Recurring opens a payment sheet with Status "Pending". The rule gets a third variant of the booking sheet, next to Domestic Payment and Internal Account Transfer (not a new page): Status "Active", Frequency, Next execution; its Edit changes all future payments. An instance keeps its Pending or Executed sheet, and Edit on a pending instance changes that payment only (relates to 44). The Pending tab lists each standing order's next instance with the "Pending" chip (Rent, Netflix and Internet & Phone are missing there today). The built-in "Next on" dates are stale (01.11.2026 is past): derive them from today or move them into the future. Later, not in this item: "Skip this payment", pausing or deleting a standing order, a "Recent payments" list in the standing order's sheet.
 
-Spec: `specs/2026-11-06-standing-orders/` (branch `feature/standing-orders`), with 53. Settled in its interview: the next instance is derived from the rule each time a list renders, and an edit of it is stored as a one-off pending payment for that date; the rule and a pending instance both get Edit and Copy, no Delete; standard gate. Out of the branch: 44, 45, 37.
+Spec: `specs/2026-11-06-standing-orders/` (branch `feature/standing-orders`), with 53. Settled in its interview: the next instance is derived from the rule each time a list renders, and an edit of it is stored as a one-off pending payment for that date; the rule and a pending instance both get Edit and Copy, no Delete; standard gate. Out of the branch: 44, 45, 37. Found in the build: All bookings lists the same built-in rows for every account while Pay books to Household (56). Built 2026-11-06.
 
 ## 48. Chip: its own tokens, as in Figma
 
@@ -322,11 +322,11 @@ Found during 42 (2026-11-05). A pending transfer made in the app gets Delete in 
 
 Found during 42 (2026-11-05). A booking row is a plain `div` with a click handler (`js/payment-details.js`, rows built in `js/all-bookings.js` and `js/data-render.js`): no tab stop, no role, no Enter or Space. A keyboard or screen reader user can't open a booking's sheet, so Edit, Delete and Copy are out of reach for them, and after Delete focus has no row to land on (42 announces "Payment deleted." instead). To settle in its spec: rows as buttons or links (and how a row reads: name, chip, amount), focus back on the row after the sheet closes, and after a Delete on the next row.
 
-## 53. Built-in pending payments are dated in the past
+## 53. Built-in pending payments are dated in the past (done)
 
 Found during 42 (2026-11-05). On All bookings, Swisscom and Helvetia Insurance read "Execute on 30.10.2026" and Tax office Zurich "03.11.2026", already past and still Pending. Edit opens them in Pay on the next possible day instead. The same staleness as 47's "Next on" dates for Recurring. To settle in its spec: dates derived from today, or moved into the future, for Pending and Recurring together with 47.
 
-Spec: `specs/2026-11-06-standing-orders/` (branch `feature/standing-orders`), with 47. Settled in its interview: Pending one-offs a few working days after today (Swisscom and Helvetia +2, Tax office +6); standing orders keep their day of the month (Rent the 1st, Netflix and Internet & Phone the 5th), the next one after today, a weekend moved to Monday.
+Spec: `specs/2026-11-06-standing-orders/` (branch `feature/standing-orders`), with 47. Settled in its interview: Pending one-offs a few working days after today (Swisscom and Helvetia +2, Tax office +6); standing orders keep their day of the month (Rent the 1st, Netflix and Internet & Phone the 5th), the next one after today, a weekend moved to Monday. Built 2026-11-06.
 
 ## 54. Forms: an invalid amount shows where the error is (done)
 

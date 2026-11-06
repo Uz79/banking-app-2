@@ -676,12 +676,19 @@
       modal.classList.toggle('pd--has-actions', a.edit || a.del || a.copy);
       modal.classList.toggle('pd--can-edit', a.edit);
     }
-    if (fnEditBtn) fnEditBtn.hidden = !a.edit;
+    var noun = data.status === 'recurring' ? 'standing order' : 'payment';
+    if (fnEditBtn) {
+      fnEditBtn.hidden = !a.edit;
+      fnEditBtn.setAttribute('aria-label', 'Edit ' + noun);
+    }
     if (fnDeleteBtn) {
       fnDeleteBtn.hidden = !a.del;
       fnDeleteBtn.setAttribute('aria-label', data.type === 'internal' ? 'Delete transfer' : 'Delete payment');
     }
-    if (fnCopyBtn) fnCopyBtn.hidden = !a.copy;
+    if (fnCopyBtn) {
+      fnCopyBtn.hidden = !a.copy;
+      fnCopyBtn.setAttribute('aria-label', 'Copy ' + noun);
+    }
   }
 
   /* ── Open / close ─────────────────────────────────────────────── */
