@@ -70,6 +70,7 @@
   var editingBookingId  = null;
   /** The id of the built-in row an edit replaces once committed (roadmap 42, D4). */
   var editingStaticRow  = null;
+  var editingInstance   = null; /* a standing order's next payment: { ruleId, occurrence } (roadmap 47, D10) */
 
   /* ── DATA WIRING (added in _10) ─────────────────────────────────────
    * Each modal__step block is templated HTML. We track the "live" payment
@@ -831,6 +832,7 @@
     prevStepIndexForTransition = null;
     editingBookingId = null;
     editingStaticRow = null;
+    editingInstance = null;
     clearAmountError();
     showStep();
     modalOverlay.classList.remove('modal-overlay--active', 'modal-overlay--closing');
@@ -1029,6 +1031,7 @@
         delete window.__UZ_PD_EDIT_CONTEXT__;
         editingBookingId = editCtx.bookingId  || null;
         editingStaticRow = editCtx.builtInId  || null; /* a built-in row's id (roadmap 42, D4) */
+        editingInstance  = editCtx.ruleId && editCtx.occurrence ? { ruleId: editCtx.ruleId, occurrence: editCtx.occurrence } : null;
 
         // Amount — parse just in case it was stored as a string
         seedScheduleFromBooking(editCtx.status, editCtx.executeOn);
@@ -1120,10 +1123,16 @@
         } else if (window.UZBankPayState && window.UZBankPayState.commitPayment) {
           /* An edit of a built-in row: the new booking replaces it, also after a reload (roadmap 42, D4) */
           if (editingStaticRow) payData.replacesBuiltIn = editingStaticRow;
+          /* It stands in for that one payment of the rule; the rule stays (roadmap 47, D10) */
+          if (editingInstance) {
+            payData.ruleId = editingInstance.ruleId;
+            payData.occurrence = editingInstance.occurrence;
+          }
           window.UZBankPayState.commitPayment(payData);
         }
         editingBookingId = null;
         editingStaticRow = null;
+        editingInstance = null;
       }
       flowConfirmed = true;
       pushPayUrl('confirmation');
@@ -1181,7 +1190,7 @@
       exitFn();
       return;
     }
-    var isEdit = !!(editingBookingId || editingStaticRow);
+    var isEdit = !!(editingBookingId || editingStaticRow || editingInstance);
     /* Each prompt names its own task; the dialog's defaults are neutral (roadmap 30) */
     window.UZBankPaymentExitPrompt(exitFn, isEdit ? {
       title:      'Discard changes?',
@@ -1205,7 +1214,7 @@
       }
       // Recipient search is a pre-flow step: nothing has been chosen yet, so there
       // is nothing to discard — close straight away (edit mode never starts here).
-      if (STEPS[currentStep] === 'recipient-search' && !editingBookingId && !editingStaticRow) {
+      if (STEPS[currentStep] === 'recipient-search' && !editingBookingId && !editingStaticRow && !editingInstance) {
         runExitFromFlow();
         return;
       }

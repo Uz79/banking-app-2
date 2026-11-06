@@ -202,7 +202,80 @@
     });
   }
 
-  window.UZBankBuiltInRows = { sync: syncBuiltInRows };
+  /* ── Built-in dates from today (roadmap 53) ──────────────────────────
+   * A pending row is a few working days after today (data-offset-days, D12); a
+   * standing order keeps its day of the month (data-day-of-month), the next one
+   * after today, a weekend moved to Monday (D13). The row's data-execute-on and
+   * its group label take the date, and the groups re-sort by it (D14). Once per
+   * page, before any in-app row joins the list. */
+
+  function isWeekend(d) { return d.getDay() === 0 || d.getDay() === 6; }
+
+  function toWorkingDay(d) {
+    while (isWeekend(d)) d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
+    return d;
+  }
+
+  function dateLabel(d) {
+    return String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + d.getFullYear();
+  }
+
+  function builtInDate(row, today) {
+    var offset = parseInt(row.getAttribute('data-offset-days'), 10);
+    if (offset > 0) {
+      var d = today;
+      for (var i = 0; i < offset; i++) d = toWorkingDay(new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1));
+      return d;
+    }
+    var day = parseInt(row.getAttribute('data-day-of-month'), 10);
+    if (!(day > 0)) return null;
+    var next = new Date(today.getFullYear(), today.getMonth(), day);
+    if (next <= today) next = new Date(today.getFullYear(), today.getMonth() + 1, day);
+    return toWorkingDay(next);
+  }
+
+  function groupKey(g) {
+    var row = g.querySelector('[data-execute-on]');
+    var m = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec(row ? row.getAttribute('data-execute-on') : '');
+    return m ? m[3] + m[2] + m[1] : '';
+  }
+
+  function sortGroups(panel) {
+    var groups = [], dividers = [];
+    Array.prototype.forEach.call(panel.children, function (el) {
+      if (el.classList.contains('booking-group')) groups.push(el);
+      else if (isDivider(el)) dividers.push(el);
+    });
+    groups.sort(function (a, b) { return groupKey(a) < groupKey(b) ? -1 : groupKey(a) > groupKey(b) ? 1 : 0; });
+    var end = panel.querySelector(':scope > [data-bookings-empty]');
+    groups.forEach(function (g, i) {
+      if (i > 0 && dividers[i - 1]) panel.insertBefore(dividers[i - 1], end);
+      panel.insertBefore(g, end);
+    });
+  }
+
+  function dateBuiltInRows(root) {
+    root = root || document;
+    var now = new Date();
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var panels = [];
+    root.querySelectorAll('[data-offset-days]:not([data-dated]), [data-day-of-month]:not([data-dated])').forEach(function (row) {
+      var d = builtInDate(row, today);
+      row.setAttribute('data-dated', '');
+      if (!d) return;
+      row.setAttribute('data-execute-on', dateLabel(d));
+      var group = row.closest('.booking-group');
+      var label = group && group.querySelector('.booking-group__label');
+      if (label && /\d{2}\.\d{2}\.\d{4}/.test(label.textContent)) {
+        label.textContent = label.textContent.replace(/\d{2}\.\d{2}\.\d{4}/, dateLabel(d));
+      }
+      var panel = group && group.parentNode;
+      if (panel && panel.hasAttribute('data-all-bookings-panel') && panels.indexOf(panel) === -1) panels.push(panel);
+    });
+    panels.forEach(sortGroups);
+  }
+
+  window.UZBankBuiltInRows = { sync: syncBuiltInRows, date: dateBuiltInRows };
 
   /* ── Asset management mandates (Overview, 9a D21) ───────────────────
    * One row per mandate after Retirement savings 3a: pending until a transfer funds it, so the amount is in the
@@ -241,6 +314,7 @@
     renderBookings(state);
     renderDayBalances(state);
     renderMandates(state);
+    dateBuiltInRows(document);
     syncBuiltInRows(document);
   }
 

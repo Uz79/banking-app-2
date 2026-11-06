@@ -438,6 +438,8 @@
         if (b.toName) row.toName = b.toName;
         if (b.symbol) row.symbol = b.symbol;
         if (b.quantity != null) row.quantity = b.quantity;
+        if (b.ruleId) row.ruleId = b.ruleId;
+        if (b.occurrence) row.occurrence = b.occurrence;
         return row;
       })
     };
@@ -511,6 +513,11 @@
       direction: 'out'
     };
     applySchedule(booking, payment);
+    /* An edit of a standing order's next payment: the rule and date it stands in for (roadmap 47, D10) */
+    if (payment.ruleId && payment.occurrence) {
+      booking.ruleId = payment.ruleId;
+      booking.occurrence = payment.occurrence;
+    }
 
     state.bookings.push(booking);
     trimBookings(state);

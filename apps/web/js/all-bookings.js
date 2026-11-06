@@ -575,10 +575,113 @@
     });
   }
 
+  /* ── A standing order's next payment (roadmap 47, D7 to D9) ─────────
+   * Every rule, built-in or made in the app, yields one row in Pending on its
+   * next execution, unless an edit of that payment is stored (D10). Derived
+   * each time, never stored. Into the group of that date if there is one. */
+
+  function instanceRow(pay, rule) {
+    var row = document.createElement('div');
+    row.className = 'booking-row';
+    row.setAttribute('data-source', 'rule');
+    row.setAttribute('data-status', 'pending');
+    row.setAttribute('data-type', rule.type);
+    row.setAttribute('data-rule-id', rule.id);
+    row.setAttribute('data-occurrence', rule.date);
+    row.setAttribute('data-execute-on', rule.date);
+    row.innerHTML =
+      '<svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#' + escapeHtml(rule.icon) + '"/></svg>' +
+      '<span class="booking-row__name">' + escapeHtml(rule.name) + '</span>' +
+      '<span class="chip chip--sm chip--tonal booking-row__chip">Pending</span>' +
+      '<span class="booking-row__amount">' +
+        '<span class="booking-row__currency">' + escapeHtml(rule.currency) + '</span>' +
+        '<span class="booking-row__value">' + escapeHtml(rule.value) + '</span>' +
+      '</span>';
+    return row;
+  }
+
+  function rulesOf(root, pay, mine) {
+    var removed = pay.getState().removedBuiltIns || [];
+    var rules = [];
+    root.querySelectorAll('[data-all-bookings-panel="recurring"] [data-builtin-id]').forEach(function (row) {
+      var id = row.getAttribute('data-builtin-id');
+      if (removed.indexOf(id) !== -1 || !row.getAttribute('data-execute-on')) return;
+      var use = row.querySelector('.booking-row__icon use');
+      var cur = row.querySelector('.booking-row__currency');
+      var val = row.querySelector('.booking-row__value');
+      var name = row.querySelector('.booking-row__name');
+      rules.push({
+        id: id,
+        date: row.getAttribute('data-execute-on'),
+        type: row.getAttribute('data-type') || 'payment',
+        icon: use ? use.getAttribute('href').replace(/^#/, '') : 'i-corner-up-right',
+        name: name ? name.textContent : '',
+        currency: cur ? cur.textContent : 'CHF',
+        value: val ? val.textContent : ''
+      });
+    });
+    mine.forEach(function (b) {
+      if (b.status !== 'recurring' || !b.executeOn) return;
+      var look = pay.bookingRowLook(b);
+      rules.push({
+        id: b.id,
+        date: b.executeOn,
+        type: look.type,
+        icon: look.icon,
+        name: b.recipientName,
+        currency: b.currency,
+        value: (b.direction === 'in' ? '+' : '-') + pay.formatMoney(b.amount)
+      });
+    });
+    return rules;
+  }
+
+  /* The group of that date in the panel, or a new one in date order (roadmap 24, D12) */
+  function dateGroup(panel, prefix, date) {
+    var key = dateSortKey(date);
+    var anchor = null;
+    var same = null;
+    Array.prototype.some.call(panel.querySelectorAll('.booking-group'), function (g) {
+      var k = groupDateKey(g);
+      if (k === key) { same = g; return true; }
+      if (k > key) { anchor = g; return true; }
+      return false;
+    });
+    if (same) return same;
+    var group = document.createElement('div');
+    group.className = 'booking-group';
+    group.setAttribute('data-source', 'state');
+    group.innerHTML = '<header class="booking-group__header"><span class="booking-group__label">' + escapeHtml(prefix + (date || '')) + '</span></header>';
+    var divider = document.createElement('div');
+    divider.className = 'divider';
+    divider.setAttribute('data-source', 'state');
+    if (anchor) {
+      panel.insertBefore(group, anchor);
+      panel.insertBefore(divider, anchor);
+    } else {
+      /* Last in the list: the divider goes above it, as the last group has none below */
+      var end = panel.querySelector(':scope > [data-bookings-empty]');
+      if (panel.querySelector('.booking-group')) panel.insertBefore(divider, end);
+      panel.insertBefore(group, end);
+    }
+    return group;
+  }
+
+  function renderInstances(root, pay, mine) {
+    var panel = root.querySelector('[data-all-bookings-panel="pending"]');
+    if (!panel) return;
+    var all = pay.getState().bookings || [];
+    rulesOf(root, pay, mine).forEach(function (rule) {
+      var edited = all.some(function (b) { return b.ruleId === rule.id && b.occurrence === rule.date; });
+      if (edited) return;
+      dateGroup(panel, 'Execute on ', rule.date).appendChild(instanceRow(pay, rule));
+    });
+  }
+
   function renderBookings(root, accountKey) {
     var pay = window.UZBankPayState;
     if (!pay || typeof pay.getState !== 'function') return;
-    root.querySelectorAll('[data-source="state"]').forEach(function (n) { n.remove(); });
+    root.querySelectorAll('[data-source="state"], [data-source="rule"]').forEach(function (n) { n.remove(); });
 
     var mine = (pay.getState().bookings || []).filter(function (b) {
       return (b.accountKey || 'household') === accountKey;
@@ -613,32 +716,15 @@
       list.forEach(function (b) { if (dates.indexOf(b.executeOn) === -1) dates.push(b.executeOn); });
       dates.sort(function (a, b) { return dateSortKey(a) < dateSortKey(b) ? -1 : 1; });
       dates.forEach(function (date) {
-        /* In date order among the static groups (roadmap 24, D12) */
-        var anchor = null;
-        Array.prototype.some.call(panel.querySelectorAll('.booking-group'), function (g) {
-          if (groupDateKey(g) > dateSortKey(date)) { anchor = g; return true; }
-          return false;
-        });
-        var group = document.createElement('div');
-        group.className = 'booking-group';
-        group.setAttribute('data-source', 'state');
-        group.innerHTML = '<header class="booking-group__header"><span class="booking-group__label">' + escapeHtml(def[1] + (date || '')) + '</span></header>';
+        /* In date order among the static groups, in the group of that date if there is one (roadmap 47, D9) */
+        var group = dateGroup(panel, def[1], date);
         list.filter(function (b) { return b.executeOn === date; }).reverse().forEach(function (b) {
           group.appendChild(buildRow(pay, b));
         });
-        var divider = document.createElement('div');
-        divider.className = 'divider';
-        divider.setAttribute('data-source', 'state');
-        if (anchor) {
-          panel.insertBefore(group, anchor);
-          panel.insertBefore(divider, anchor);
-        } else {
-          /* Last in the list: the divider goes above it, as the last group has none below */
-          if (panel.querySelector('.booking-group')) panel.appendChild(divider);
-          panel.appendChild(group);
-        }
       });
     });
+
+    renderInstances(root, pay, mine);
   }
 
   function init() {
@@ -653,6 +739,8 @@
     var search = bindSearch(root);
     bindTabs(root, search);
     function refreshBookings() {
+      /* The built-in dates first, so in-app groups sort among them (roadmap 53, D14) */
+      if (window.UZBankBuiltInRows && window.UZBankBuiltInRows.date) window.UZBankBuiltInRows.date(root);
       renderBookings(root, key);
       /* Before the month bands, so a month with no row left gets none (roadmap 42, D5) */
       if (window.UZBankBuiltInRows) window.UZBankBuiltInRows.sync(root);

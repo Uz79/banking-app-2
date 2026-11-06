@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit f4230d4adefd97f66e72210a22beaead2ffe8050 -->
+<!-- changelog: last-commit d3c45a136b4c8c1e23e0d459737feda7f9843485 -->
 
 ### Changed
 - **Booking rows say who and what, not how** (roadmap 43). A row's icon now names the counterparty: money out, money in, or for a transfer between your own accounts the other account (Household's home, Savings' anchor). A small chip after the name says "Pending" for a booking not executed yet, or how often a standing order runs ("Monthly"), also on each executed payment of one; a one-off payment has none. The repeat icon no longer marks recurring rows. On All bookings and Account details, for the built-in bookings and the ones you make. Recurring payments made in the app are monthly for now. The Chip component gains a tonal variant for this.
@@ -17,6 +17,9 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **A standing order is a rule, and its next payment is pending** (roadmap 47). Rent, Netflix and Internet & Phone in the Recurring tab opened a payment sheet reading "Pending". Now a standing order's sheet says what it is: "Standing order", Status "Active", how often it runs and its next execution. Its Edit changes all future payments; Copy starts a new one-off payment. The Pending tab lists each standing order's next payment with the "Pending" chip, built-in ones and the ones you make. Editing that payment changes it only; the standing order stays as it was. Delete the edit and the planned payment is back. Pending payments on the same date now share one date group instead of repeating its label.
+- **Pending and recurring example dates are never in the past** (roadmap 53). Swisscom and Helvetia Insurance now run two working days after today, Tax office Zurich six; Rent on the 1st and Netflix and Internet & Phone on the 5th of the next month they fall in, a weekend moved to Monday. Apple on Account details runs on the next working day.
+- Spec: `specs/2026-11-06-standing-orders/`.
 - **An invalid amount says what's wrong, where it is** (roadmap 54). Buy, Sell, Pay and the transfer used to ignore an empty or zero amount, or go on without a word. Now the field is outlined, with a line under it: "Enter an amount.", "Enter an amount above 0.", "Enter at least 1 share.", "Enter a limit price.", "You hold 5 shares." The error shows when you leave a field you typed into and clears as soon as the value is valid; Confirm checks every field and moves focus to the first error. Closing a sheet never shows one. Screen readers hear the error with the field.
 - **No more spending money you don't have, for what runs now.** Buy checks the total against the debit account. Pay and the transfer check at Execute: a payment or transfer that runs now and is over the balance goes back to the amount with "You have CHF 9'900.00 in Household." A later or recurring one is not checked.
 - **The transfer no longer moves an amount you deleted.** An emptied field used to go on with the last amount (CHF 500); now it asks for one. Sell no longer accepts more shares than you hold.

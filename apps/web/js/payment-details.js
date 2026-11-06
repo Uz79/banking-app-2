@@ -214,7 +214,8 @@
   function rowSchedule(row) {
     return {
       status: row.getAttribute('data-status') || 'executed',
-      executeOn: row.getAttribute('data-execute-on') || null
+      executeOn: row.getAttribute('data-execute-on') || null,
+      frequency: row.getAttribute('data-frequency') || null
     };
   }
 
@@ -246,6 +247,7 @@
         credit: credit,
         status: schedule.status,
         executeOn: schedule.executeOn,
+        frequency: schedule.frequency,
         message: null
       };
     }
@@ -263,6 +265,7 @@
       to: toStr,
       status: schedule.status,
       executeOn: schedule.executeOn,
+      frequency: schedule.frequency,
       message: null
     };
   }
@@ -304,6 +307,8 @@
   var furtherToggle  = document.getElementById('uz-pd-further-toggle');
   var furtherContent = document.getElementById('uz-pd-further-content');
   var messageValEl   = document.getElementById('uz-pd-message-value');
+  var frequencyValEl = document.getElementById('uz-pd-frequency-value');
+  var nextValEl      = document.getElementById('uz-pd-next-value');
 
   var closeBtn    = overlay.querySelector('.uz-pd-close');
   var confirmBtn  = overlay.querySelector('.uz-pd-confirm');
@@ -453,8 +458,10 @@
         currency: booking.currency || 'CHF',
         debit: debit,
         credit: credit,
-        /* Its own schedule, as a payment's (roadmap 32, D1); a recurring one reads Pending until 47 (D2) */
+        /* Its own schedule, as a payment's (roadmap 32, D1); a recurring one is a rule (roadmap 47, D2) */
         status: booking.status || 'executed',
+        executeOn: booking.executeOn || null,
+        frequency: booking.frequency || null,
         message: null
       };
     }
@@ -483,6 +490,18 @@
     }
 
     return null;
+  }
+
+  /* A standing order's next payment: its rule's payment or transfer, pending on its date (roadmap 47, D7, D8) */
+  function instanceData(row, displayName) {
+    var rule = getStateBooking(row.getAttribute('data-rule-id'));
+    var data = rule ? buildDataFromStateBooking(rule, row) : null;
+    if (!data) data = buildAllBookingsRowData(row, displayName);
+    return Object.assign({}, data, {
+      status: 'pending',
+      executeOn: row.getAttribute('data-occurrence'),
+      frequency: null
+    });
   }
 
   /* ── Booking route id (Maze / analytics) ─────────────────────── */
@@ -631,9 +650,9 @@
   var fnCopyBtn   = overlay.querySelector('[data-pd-action="copy"]');
   var currentActions = { edit: false, del: false, copy: false };
 
-  /* Pending payment: Edit, Delete, Copy; executed payment out: Copy; pending transfer: Delete. Standing orders keep
-     what they had until 47 (Edit when made in the app); trades and money in have none. A built-in row needs its id,
-     so what it does lasts past a reload. */
+  /* Pending payment: Edit, Delete, Copy; executed payment out: Copy; pending transfer: Delete; a standing order's
+     rule: Edit (all future payments) and Copy (roadmap 47, D6); trades and money in have none. A built-in row needs
+     its id, so what it does lasts past a reload. */
   function bookingActions(data) {
     var none = { edit: false, del: false, copy: false };
     var status = data.status || 'executed';
@@ -643,8 +662,10 @@
     }
     if (/^\+/.test(String(data.amount || '').trim())) return none;
     if (status === 'executed') return { edit: false, del: false, copy: true };
-    if (status === 'recurring') return { edit: !!currentBookingId, del: false, copy: false };
+    /* A standing order's next payment: Edit (this one only) and Copy; skipping it is later (roadmap 47, D6, D10) */
+    if (currentRow && currentRow.hasAttribute('data-rule-id')) return { edit: true, del: false, copy: true };
     var lasting = !!currentBookingId || !!(currentRow && currentRow.hasAttribute('data-builtin-id'));
+    if (status === 'recurring') return { edit: lasting, del: false, copy: true };
     return { edit: lasting, del: lasting, copy: true };
   }
 
@@ -655,12 +676,19 @@
       modal.classList.toggle('pd--has-actions', a.edit || a.del || a.copy);
       modal.classList.toggle('pd--can-edit', a.edit);
     }
-    if (fnEditBtn) fnEditBtn.hidden = !a.edit;
+    var noun = data.status === 'recurring' ? 'standing order' : 'payment';
+    if (fnEditBtn) {
+      fnEditBtn.hidden = !a.edit;
+      fnEditBtn.setAttribute('aria-label', 'Edit ' + noun);
+    }
     if (fnDeleteBtn) {
       fnDeleteBtn.hidden = !a.del;
       fnDeleteBtn.setAttribute('aria-label', data.type === 'internal' ? 'Delete transfer' : 'Delete payment');
     }
-    if (fnCopyBtn) fnCopyBtn.hidden = !a.copy;
+    if (fnCopyBtn) {
+      fnCopyBtn.hidden = !a.copy;
+      fnCopyBtn.setAttribute('aria-label', 'Copy ' + noun);
+    }
   }
 
   /* ── Open / close ─────────────────────────────────────────────── */
@@ -671,8 +699,13 @@
     pendingCopy = false;
     currentPaymentData = data; // remember for edit-context export
 
+    /* A recurring booking is the rule of a standing order (roadmap 47, D1, D2) */
+    var isRule = data.status === 'recurring';
+
     // Title
-    if (titleEl) titleEl.textContent = data.title || 'Payment details';
+    if (titleEl) {
+      titleEl.textContent = isRule && data.type !== 'internal' ? 'Standing order' : (data.title || 'Payment details');
+    }
 
     // Amount + currency
     if (amountEl)   amountEl.textContent   = data.amount   || '';
@@ -706,12 +739,20 @@
       if (creditBalValueEl) creditBalValueEl.textContent = creditParts.value;
     }
 
-    // Status chip
+    // Status chip: a rule is Active, with its frequency and next execution (roadmap 47, D2)
     var isPending = data.status !== 'executed';
-    if (statusIconUse) statusIconUse.setAttribute('href', isPending ? '#i-clock' : '#i-check');
-    if (statusTextEl)  statusTextEl.textContent = isPending ? 'Pending' : 'Executed';
+    if (statusIconUse) statusIconUse.setAttribute('href', isRule ? '#i-repeat' : isPending ? '#i-clock' : '#i-check');
+    if (statusTextEl)  statusTextEl.textContent = isRule ? 'Active' : isPending ? 'Pending' : 'Executed';
+    if (frequencyValEl) {
+      var pay = window.UZBankPayState;
+      frequencyValEl.textContent = isRule && pay && pay.frequencyLabel ? pay.frequencyLabel(data.frequency) : '';
+    }
+    if (nextValEl) nextValEl.textContent = isRule ? (data.executeOn || '') : '';
 
-    if (modal) modal.classList.toggle('pd--pending', isPending);
+    if (modal) {
+      modal.classList.toggle('pd--pending', isPending && !isRule);
+      modal.classList.toggle('pd--rule', isRule);
+    }
     applyActions(data);
 
     // Further options / message — always starts collapsed per design
@@ -814,6 +855,8 @@
         window.__UZ_PD_EDIT_CONTEXT__ = {
           bookingId:     copy ? null : currentBookingId,       // null for static mocks and a copy
           builtInId:     copy || currentBookingId || !currentRow ? null : currentRow.getAttribute('data-builtin-id'), // replaced on commit (roadmap 42, D4)
+          ruleId:        copy || !currentRow ? null : currentRow.getAttribute('data-rule-id'),     // a standing order's next payment (roadmap 47, D10)
+          occurrence:    copy || !currentRow ? null : currentRow.getAttribute('data-occurrence'),
           recipientName: recipientName,
           recipient:     fullRecipient || null,  // full catalog record if found
           amount:        amtNum,
@@ -934,7 +977,9 @@
     var displayName = nameEl ? nameEl.textContent.trim() : '';
     var data = null;
 
-    if (isAllBookingsScreen() && row.getAttribute('data-mock-booking') === 'static') {
+    if (row.hasAttribute('data-rule-id')) {
+      data = instanceData(row, displayName);
+    } else if (isAllBookingsScreen() && row.getAttribute('data-mock-booking') === 'static') {
       data = buildAllBookingsRowData(row, displayName);
     } else {
       data = currentBookingId ? null : getBookingMap()[name];
@@ -971,6 +1016,7 @@
         to:        toStr,
         status:    stored ? (stored.status || 'executed') : 'pending',
         executeOn: stored && stored.executeOn ? stored.executeOn : null,
+        frequency: stored && stored.frequency ? stored.frequency : null,
         message:   null
       };
     }

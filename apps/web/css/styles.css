@@ -7655,6 +7655,9 @@ dialog.basic-dialog-payment-exit.basic-dialog-payment-exit--closing[open] .basic
 /* .pd--domestic hides internal-only blocks, and vice-versa */
 .modal--payment-details.pd--domestic .pd-internal-only { display: none; }
 .modal--payment-details.pd--internal .pd-domestic-only { display: none; }
+/* The rule of a standing order: its frequency and next execution, no booking confirmation (roadmap 47, D2) */
+.modal--payment-details:not(.pd--rule) .pd-rule-only { display: none; }
+.modal--payment-details.pd--rule .pd-not-rule { display: none; }
 /* The function bar's buttons show by what the booking allows, each one by its `hidden` (roadmap 42, D6).
    A transfer has its own rule above, so the bar's goes; with no action it has no bar at all. */
 .modal--payment-details:not(.pd--has-actions) .payment-details__function-bar__actions { display: none; }
