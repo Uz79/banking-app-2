@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 7f3f8b6e1c9021e5d3b43b001587f38048726e3e -->
+<!-- changelog: last-commit 6b358bb111282de4f854d80c4ba0b85bd72102c8 -->
 
 ### Changed
 - **The example bookings move with the real date** (roadmap 62). "Today" and "Yesterday" are right whenever the app is opened, and every example booking is dated from today: Rent on the 1st, Netflix and Internet & Phone on the 5th, Salary on the 25th (a weekend moved to Monday), the rest scattered over the current month and the four before it. The month chips come from the months listed, with the year when the list crosses one. Household has five months of its own again, with CHF 1'500 from Savings each month. On Account details each account shows its two newest days.
