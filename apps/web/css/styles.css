@@ -2062,6 +2062,14 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
   gap: var(--space-3);
   cursor: pointer;
   border-radius: var(--radius-small);
+  /* A row is a button (roadmap 33, D1, D4): none of the button's own look */
+  width: 100%;
+  margin: 0;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  appearance: none;
 }
 
 .booking-row__icon {
