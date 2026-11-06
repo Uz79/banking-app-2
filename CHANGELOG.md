@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit d3c45a136b4c8c1e23e0d459737feda7f9843485 -->
+<!-- changelog: last-commit 1fdd7e7d2cd42a849c5d0f0ead15f2dd3fc79e34 -->
 
 ### Changed
 - **Booking rows say who and what, not how** (roadmap 43). A row's icon now names the counterparty: money out, money in, or for a transfer between your own accounts the other account (Household's home, Savings' anchor). A small chip after the name says "Pending" for a booking not executed yet, or how often a standing order runs ("Monthly"), also on each executed payment of one; a one-off payment has none. The repeat icon no longer marks recurring rows. On All bookings and Account details, for the built-in bookings and the ones you make. Recurring payments made in the app are monthly for now. The Chip component gains a tonal variant for this.
@@ -17,6 +17,9 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **Each account's All bookings lists its own bookings** (roadmap 56). Household and Savings showed the same example bookings, Savings' ones, and an edit made on the Savings view showed up only on Household's. Now Savings keeps its history, and Household lists Apple, Café, Pizza and Railway as on Account details, with the pending payments and standing orders, since payments go out from Household. Household's Today shows the same balance as on Account details. Savings' empty tabs say "No pending payments." and "No standing orders."
+- **A month band sits flush at the top** of a list after the first group's last booking was deleted, as it does when nothing was deleted.
+- Spec: `specs/2026-11-06-bookings-per-account/`.
 - **A standing order is a rule, and its next payment is pending** (roadmap 47). Rent, Netflix and Internet & Phone in the Recurring tab opened a payment sheet reading "Pending". Now a standing order's sheet says what it is: "Standing order", Status "Active", how often it runs and its next execution. Its Edit changes all future payments; Copy starts a new one-off payment. The Pending tab lists each standing order's next payment with the "Pending" chip, built-in ones and the ones you make. Editing that payment changes it only; the standing order stays as it was. Delete the edit and the planned payment is back. Pending payments on the same date now share one date group instead of repeating its label.
 - **Pending and recurring example dates are never in the past** (roadmap 53). Swisscom and Helvetia Insurance now run two working days after today, Tax office Zurich six; Rent on the 1st and Netflix and Internet & Phone on the 5th of the next month they fall in, a weekend moved to Monday. Apple on Account details runs on the next working day.
 - Spec: `specs/2026-11-06-standing-orders/`.

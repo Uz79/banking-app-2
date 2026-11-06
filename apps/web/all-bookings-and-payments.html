@@ -2384,10 +2384,10 @@
                     aria-label="Month"
                     tabindex="-1"
                   >
-                    <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-02" aria-pressed="false" tabindex="-1">Feb</button>
-                    <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-03" aria-pressed="false" tabindex="-1">Mar</button>
-                    <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-04" aria-pressed="false" tabindex="-1">Apr</button>
-                    <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-05" aria-pressed="false" tabindex="-1">May</button>
+                    <button type="button" class="all-bookings__month-chip" data-account="savings" data-bookings-month="2026-02" aria-pressed="false" tabindex="-1">Feb</button>
+                    <button type="button" class="all-bookings__month-chip" data-account="savings" data-bookings-month="2026-03" aria-pressed="false" tabindex="-1">Mar</button>
+                    <button type="button" class="all-bookings__month-chip" data-account="savings" data-bookings-month="2026-04" aria-pressed="false" tabindex="-1">Apr</button>
+                    <button type="button" class="all-bookings__month-chip" data-account="savings" data-bookings-month="2026-05" aria-pressed="false" tabindex="-1">May</button>
                     <button type="button" class="all-bookings__month-chip all-bookings__month-chip--active" data-bookings-month="2026-06" aria-pressed="true" tabindex="-1">Jun</button>
                   </div>
                 </div>
@@ -2442,15 +2442,60 @@
                 aria-label="Month"
                 tabindex="-1"
               >
-                <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-02" aria-pressed="false">Feb</button>
-                <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-03" aria-pressed="false">Mar</button>
-                <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-04" aria-pressed="false">Apr</button>
-                <button type="button" class="all-bookings__month-chip" data-bookings-month="2026-05" aria-pressed="false">May</button>
+                <button type="button" class="all-bookings__month-chip" data-account="savings" data-bookings-month="2026-02" aria-pressed="false">Feb</button>
+                <button type="button" class="all-bookings__month-chip" data-account="savings" data-bookings-month="2026-03" aria-pressed="false">Mar</button>
+                <button type="button" class="all-bookings__month-chip" data-account="savings" data-bookings-month="2026-04" aria-pressed="false">Apr</button>
+                <button type="button" class="all-bookings__month-chip" data-account="savings" data-bookings-month="2026-05" aria-pressed="false">May</button>
                 <button type="button" class="all-bookings__month-chip all-bookings__month-chip--active" data-bookings-month="2026-06" aria-pressed="true">Jun</button>
               </div>
 
               <div class="bookings-card all-bookings__list" role="tabpanel" id="all-bookings-panel-executed" aria-labelledby="all-bookings-tab-executed" data-all-bookings-panel="executed">
-                <div class="booking-group" data-day="today" data-bookings-month-start="2026-06">
+                <div class="booking-group" data-account="household" data-day="today" data-bookings-month-start="2026-06">
+                  <header class="booking-group__header">
+                    <span class="booking-group__label">Today</span>
+                    <span class="booking-group__balance">
+                      <span class="booking-group__balance-currency">CHF</span>
+                      <span class="booking-group__balance-value" data-day-balance="today">9'900.00</span>
+                    </span>
+                  </header>
+                </div>
+                <div class="divider" data-account="household"></div>
+
+                <div class="booking-group" data-account="household" data-day="yesterday">
+                  <header class="booking-group__header">
+                    <span class="booking-group__label">Yesterday</span>
+                    <span class="booking-group__balance">
+                      <span class="booking-group__balance-currency">CHF</span>
+                      <span class="booking-group__balance-value" data-day-balance="yesterday">10'000.00</span>
+                    </span>
+                  </header>
+                  <div class="booking-row" data-mock-booking="static" data-status="executed" data-type="payment">
+                    <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-corner-up-right"/></svg>
+                    <span class="booking-row__name">Cafe</span>
+                    <span class="booking-row__amount">
+                      <span class="booking-row__currency">CHF</span>
+                      <span class="booking-row__value">-10.00</span>
+                    </span>
+                  </div>
+                  <div class="booking-row" data-mock-booking="static" data-status="executed" data-type="transfer">
+                    <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-anchor"/></svg>
+                    <span class="booking-row__name">Pizza</span>
+                    <span class="booking-row__amount">
+                      <span class="booking-row__currency">CHF</span>
+                      <span class="booking-row__value">-320.00</span>
+                    </span>
+                  </div>
+                  <div class="booking-row" data-mock-booking="static" data-status="executed" data-type="payment">
+                    <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-corner-up-right"/></svg>
+                    <span class="booking-row__name">Railway</span>
+                    <span class="booking-row__amount">
+                      <span class="booking-row__currency">CHF</span>
+                      <span class="booking-row__value">-100.00</span>
+                    </span>
+                  </div>
+                </div>
+                <!-- Savings -->
+                <div class="booking-group" data-account="savings" data-day="today" data-bookings-month-start="2026-06">
                   <header class="booking-group__header">
                     <span class="booking-group__label">Today</span>
                     <span class="booking-group__balance">
@@ -2467,9 +2512,9 @@
                     </span>
                   </div>
                 </div>
-                <div class="divider"></div>
+                <div class="divider" data-account="savings"></div>
 
-                <div class="booking-group" data-day="yesterday">
+                <div class="booking-group" data-account="savings" data-day="yesterday">
                   <header class="booking-group__header">
                     <span class="booking-group__label">Yesterday</span>
                     <span class="booking-group__balance">
@@ -2495,9 +2540,9 @@
                     </span>
                   </div>
                 </div>
-                <div class="divider"></div>
+                <div class="divider" data-account="savings"></div>
 
-                <div class="booking-group" data-day="2026-05-28" data-bookings-month-start="2026-05">
+                <div class="booking-group" data-account="savings" data-day="2026-05-28" data-bookings-month-start="2026-05">
                   <header class="booking-group__header">
                     <span class="booking-group__label">28.05</span>
                     <span class="booking-group__balance">
@@ -2514,9 +2559,9 @@
                     </span>
                   </div>
                 </div>
-                <div class="divider"></div>
+                <div class="divider" data-account="savings"></div>
 
-                <div class="booking-group" data-day="2026-05-25">
+                <div class="booking-group" data-account="savings" data-day="2026-05-25">
                   <header class="booking-group__header">
                     <span class="booking-group__label">25.05</span>
                     <span class="booking-group__balance">
@@ -2541,9 +2586,9 @@
                     </span>
                   </div>
                 </div>
-                <div class="divider"></div>
+                <div class="divider" data-account="savings"></div>
 
-                <div class="booking-group" data-day="2026-05-12">
+                <div class="booking-group" data-account="savings" data-day="2026-05-12">
                   <header class="booking-group__header">
                     <span class="booking-group__label">12.05</span>
                     <span class="booking-group__balance">
@@ -2560,9 +2605,9 @@
                     </span>
                   </div>
                 </div>
-                <div class="divider"></div>
+                <div class="divider" data-account="savings"></div>
 
-                <div class="booking-group" data-day="2026-05-07">
+                <div class="booking-group" data-account="savings" data-day="2026-05-07">
                   <header class="booking-group__header">
                     <span class="booking-group__label">07.05</span>
                     <span class="booking-group__balance">
@@ -2580,9 +2625,9 @@
                     </span>
                   </div>
                 </div>
-                <div class="divider"></div>
+                <div class="divider" data-account="savings"></div>
 
-                <div class="booking-group" data-day="2026-04-28" data-bookings-month-start="2026-04">
+                <div class="booking-group" data-account="savings" data-day="2026-04-28" data-bookings-month-start="2026-04">
                   <header class="booking-group__header">
                     <span class="booking-group__label">28.04</span>
                     <span class="booking-group__balance">
@@ -2607,9 +2652,9 @@
                     </span>
                   </div>
                 </div>
-                <div class="divider"></div>
+                <div class="divider" data-account="savings"></div>
 
-                <div class="booking-group" data-day="2026-04-18">
+                <div class="booking-group" data-account="savings" data-day="2026-04-18">
                   <header class="booking-group__header">
                     <span class="booking-group__label">18.04</span>
                     <span class="booking-group__balance">
@@ -2626,9 +2671,9 @@
                     </span>
                   </div>
                 </div>
-                <div class="divider"></div>
+                <div class="divider" data-account="savings"></div>
 
-                <div class="booking-group" data-day="2026-04-10">
+                <div class="booking-group" data-account="savings" data-day="2026-04-10">
                   <header class="booking-group__header">
                     <span class="booking-group__label">10.04</span>
                     <span class="booking-group__balance">
@@ -2645,9 +2690,9 @@
                     </span>
                   </div>
                 </div>
-                <div class="divider"></div>
+                <div class="divider" data-account="savings"></div>
 
-                <div class="booking-group" data-day="2026-04-03">
+                <div class="booking-group" data-account="savings" data-day="2026-04-03">
                   <header class="booking-group__header">
                     <span class="booking-group__label">03.04</span>
                     <span class="booking-group__balance">
@@ -2672,9 +2717,9 @@
                     </span>
                   </div>
                 </div>
-                <div class="divider"></div>
+                <div class="divider" data-account="savings"></div>
 
-                <div class="booking-group" data-day="2026-03-25" data-bookings-month-start="2026-03">
+                <div class="booking-group" data-account="savings" data-day="2026-03-25" data-bookings-month-start="2026-03">
                   <header class="booking-group__header">
                     <span class="booking-group__label">25.03</span>
                     <span class="booking-group__balance">
@@ -2691,9 +2736,9 @@
                     </span>
                   </div>
                 </div>
-                <div class="divider"></div>
+                <div class="divider" data-account="savings"></div>
 
-                <div class="booking-group" data-day="2026-03-15">
+                <div class="booking-group" data-account="savings" data-day="2026-03-15">
                   <header class="booking-group__header">
                     <span class="booking-group__label">15.03</span>
                     <span class="booking-group__balance">
@@ -2719,9 +2764,9 @@
                     </span>
                   </div>
                 </div>
-                <div class="divider"></div>
+                <div class="divider" data-account="savings"></div>
 
-                <div class="booking-group" data-day="2026-03-08">
+                <div class="booking-group" data-account="savings" data-day="2026-03-08">
                   <header class="booking-group__header">
                     <span class="booking-group__label">08.03</span>
                     <span class="booking-group__balance">
@@ -2746,9 +2791,9 @@
                     </span>
                   </div>
                 </div>
-                <div class="divider"></div>
+                <div class="divider" data-account="savings"></div>
 
-                <div class="booking-group" data-day="2026-03-01">
+                <div class="booking-group" data-account="savings" data-day="2026-03-01">
                   <header class="booking-group__header">
                     <span class="booking-group__label">01.03</span>
                     <span class="booking-group__balance">
@@ -2765,9 +2810,9 @@
                     </span>
                   </div>
                 </div>
-                <div class="divider"></div>
+                <div class="divider" data-account="savings"></div>
 
-                <div class="booking-group" data-day="2026-02-27" data-bookings-month-start="2026-02">
+                <div class="booking-group" data-account="savings" data-day="2026-02-27" data-bookings-month-start="2026-02">
                   <header class="booking-group__header">
                     <span class="booking-group__label">27.02</span>
                     <span class="booking-group__balance">
@@ -2784,9 +2829,9 @@
                     </span>
                   </div>
                 </div>
-                <div class="divider"></div>
+                <div class="divider" data-account="savings"></div>
 
-                <div class="booking-group" data-day="2026-02-14">
+                <div class="booking-group" data-account="savings" data-day="2026-02-14">
                   <header class="booking-group__header">
                     <span class="booking-group__label">14.02</span>
                     <span class="booking-group__balance">
@@ -2803,9 +2848,9 @@
                     </span>
                   </div>
                 </div>
-                <div class="divider"></div>
+                <div class="divider" data-account="savings"></div>
 
-                <div class="booking-group" data-day="2026-02-05">
+                <div class="booking-group" data-account="savings" data-day="2026-02-05">
                   <header class="booking-group__header">
                     <span class="booking-group__label">05.02</span>
                     <span class="booking-group__balance">
@@ -2832,7 +2877,22 @@
                 </div>
               </div>
               <div class="bookings-card all-bookings__list" role="tabpanel" id="all-bookings-panel-pending" aria-labelledby="all-bookings-tab-pending" data-all-bookings-panel="pending" hidden>
-                <div class="booking-group">
+                <div class="booking-group" data-account="household">
+                  <header class="booking-group__header">
+                    <span class="booking-group__label">Execute on 09.11.2026</span>
+                  </header>
+                  <div class="booking-row" data-mock-booking="static" data-status="pending" data-builtin-id="ad-household-apple" data-type="payment" data-execute-on="09.11.2026" data-offset-days="1">
+                    <svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#i-corner-up-right"/></svg>
+                    <span class="booking-row__name">Apple</span>
+                    <span class="chip chip--sm chip--tonal booking-row__chip">Pending</span>
+                    <span class="booking-row__amount">
+                      <span class="booking-row__currency">CHF</span>
+                      <span class="booking-row__value">-100.00</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="divider" data-account="household"></div>
+                <div class="booking-group" data-account="household">
                   <header class="booking-group__header">
                     <span class="booking-group__label">Execute on 30.10.2026</span>
                   </header>
@@ -2855,8 +2915,8 @@
                     </span>
                   </div>
                 </div>
-                <div class="divider"></div>
-                <div class="booking-group">
+                <div class="divider" data-account="household"></div>
+                <div class="booking-group" data-account="household">
                   <header class="booking-group__header">
                     <span class="booking-group__label">Execute on 03.11.2026</span>
                   </header>
@@ -2874,7 +2934,7 @@
               </div>
 
               <div class="bookings-card all-bookings__list" role="tabpanel" id="all-bookings-panel-recurring" aria-labelledby="all-bookings-tab-recurring" data-all-bookings-panel="recurring" hidden>
-                <div class="booking-group">
+                <div class="booking-group" data-account="household">
                   <header class="booking-group__header">
                     <span class="booking-group__label">Next on 01.11.2026</span>
                   </header>
@@ -2888,8 +2948,8 @@
                     </span>
                   </div>
                 </div>
-                <div class="divider"></div>
-                <div class="booking-group">
+                <div class="divider" data-account="household"></div>
+                <div class="booking-group" data-account="household">
                   <header class="booking-group__header">
                     <span class="booking-group__label">Next on 05.11.2026</span>
                   </header>
@@ -2912,6 +2972,7 @@
                     </span>
                   </div>
                 </div>
+                <p class="all-bookings__panel-empty" data-bookings-empty hidden>No standing orders.</p>
               </div>
             </div>
           </div>
