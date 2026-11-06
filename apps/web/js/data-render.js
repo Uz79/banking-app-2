@@ -214,31 +214,14 @@
    * standing order keeps its day of the month (data-day-of-month), the next one
    * after today, a weekend moved to Monday (D13). The row's data-execute-on and
    * its group label take the date, and the groups re-sort by it (D14). Once per
-   * page, before any in-app row joins the list. */
-
-  function isWeekend(d) { return d.getDay() === 0 || d.getDay() === 6; }
-
-  function toWorkingDay(d) {
-    while (isWeekend(d)) d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
-    return d;
-  }
-
-  function dateLabel(d) {
-    return String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + d.getFullYear();
-  }
+   * page, before any in-app row joins the list. The dates come from the
+   * built-in list's helpers (roadmap 62, D5). */
 
   function builtInDate(row, today) {
-    var offset = parseInt(row.getAttribute('data-offset-days'), 10);
-    if (offset > 0) {
-      var d = today;
-      for (var i = 0; i < offset; i++) d = toWorkingDay(new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1));
-      return d;
-    }
-    var day = parseInt(row.getAttribute('data-day-of-month'), 10);
-    if (!(day > 0)) return null;
-    var next = new Date(today.getFullYear(), today.getMonth(), day);
-    if (next <= today) next = new Date(today.getFullYear(), today.getMonth() + 1, day);
-    return toWorkingDay(next);
+    return window.UZBankBuiltInBookings.nextDate({
+      offsetDays: parseInt(row.getAttribute('data-offset-days'), 10),
+      dayOfMonth: parseInt(row.getAttribute('data-day-of-month'), 10)
+    }, today);
   }
 
   function groupKey(g) {
@@ -263,8 +246,10 @@
 
   function dateBuiltInRows(root) {
     root = root || document;
-    var now = new Date();
-    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var list = window.UZBankBuiltInBookings;
+    if (!list) return;
+    var today = list.today();
+    var dateLabel = list.dateLabel;
     var panels = [];
     root.querySelectorAll('[data-offset-days]:not([data-dated]), [data-day-of-month]:not([data-dated])').forEach(function (row) {
       var d = builtInDate(row, today);

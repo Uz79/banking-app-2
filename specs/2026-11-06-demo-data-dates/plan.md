@@ -6,10 +6,10 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 1. The list and its dates (D1 to D7, D16)
 
-- [ ] `apps/web/js/built-in-bookings.js` (new): `UZBankBuiltInBookings` with each account's executed, pending and standing-order bookings and their date rules; `today()` honouring `?today=` on localhost and `*.local` only; the date helpers moved from `dateBuiltInRows` in `js/data-render.js`
-- [ ] Household's five months authored (D6); Savings' rows re-dated (D7); the open question on the monthly transfer settled and recorded in `requirements.md`
-- [ ] Loaded before `js/data-render.js` on `all-bookings-and-payments.html` and `account-details.html` (and on any other page that loads `data-render.js` and needs it)
-- [ ] Check in the console on both pages: the list for today, for `?today=2026-12-01`, `?today=2027-01-04` and a Saturday; no date after today in Executed; Rent on the 1st, Internet & Phone and Netflix on the 5th, Salary on the 25th; a 31st one-off lands on a short month's last day
+- [x] `apps/web/js/built-in-bookings.js` (new): `UZBankBuiltInBookings` with each account's executed, pending and standing-order bookings and their date rules; `today()` honouring `?today=` on localhost and `*.local` only; the date helpers moved from `dateBuiltInRows` in `js/data-render.js`
+- [x] Household's five months authored (D6); Savings' rows re-dated (D7); the open question on the monthly transfer settled and recorded in `requirements.md` (D18; D19 found on the way)
+- [x] Loaded before `js/data-render.js` on `all-bookings-and-payments.html` and `account-details.html` (the other pages that load `data-render.js` list no built-in rows; `dateBuiltInRows` returns early without the list)
+- [x] Check in the console on both pages: the list for today, for `?today=2026-12-01`, `?today=2027-01-04` and a Saturday; no date after today in Executed; Rent on the 1st, Internet & Phone and Netflix on the 5th, Salary on the 25th; a 31st one-off lands on a short month's last day
 
 ## 2. Balances (D8 to D11, D17)
 

@@ -11,7 +11,7 @@ Branch: `feature/demo-data-dates`. Run on the agent's server (port 5199), then t
 
 - [ ] Today's date: Yesterday is yesterday, no Executed booking dated after today, the newest band is the current month
 - [ ] Rent on the 1st, Internet & Phone and Netflix on the 5th, Salary on the 25th, in every month listed up to today
-- [ ] `?today=2026-12-01` (a month's first day): Rent under Today; December's band and chip; five months, August to December
+- [ ] `?today=2026-12-01` (a month's first day): Savings' Rent under Today, December's band and chip, five months, August to December; Household has nothing on the 1st, so four months, August to November
 - [ ] `?today=2027-01-04` (a Monday in January): the bands and chips carry the year; Yesterday is Sunday 03.01
 - [ ] `?today=` is ignored on a Vercel preview URL (or by a host check in the console standing in for it)
 - [ ] Pending one-offs and standing orders' next dates as since 53, for today and the dates above

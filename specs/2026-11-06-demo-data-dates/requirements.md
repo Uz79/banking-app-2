@@ -47,6 +47,8 @@ Roadmap items 62 and 69 (`specs/roadmap.md`), both from Klaudiusz on 2026-11-06.
 | D15 | **The "Pending payments" line sums what the account's Pending tab lists**: its pending one-offs and each standing order's next payment, built-in and made in the app, without "until 31.05.2026". On both accounts; hidden when nothing is pending. The next-payment derivation (47, `rulesOf` and `renderInstances` in `js/all-bookings.js`) moves where both pages can call it | The line's date and amount are stale markup. One derivation, so the line and the tab can't disagree |
 | D16 | **`?today=YYYY-MM-DD` sets the date the demo data counts from, on `localhost` and `*.local` only**, ignored on every other host (the live domain and Vercel previews). Nothing is stored; the flows keep the device date | So a month's first day, a Monday and a January (the year band) can be checked without changing the Mac's clock (interview) |
 | D17 | **No new storage key, no schema change** | D9 |
+| D18 | **Household gets CHF 1'500 from Savings every month, on the 26th** (a working day): "Transfer from Savings" (+) on Household and "Transfer to Household" (-) on Savings, each leg naming both accounts (`from`, `to`) for its sheet. Savings' "Transfer to Household" -320 and Household's "Pizza" -320 stay as they were, yesterday (they are 50's) | Settled in the build (task group 1), the open question on D6. Without money in, Household's past balances only ever fall; the existing pair is 50's to sort out |
+| D19 | **A standing order's next execution is its first occurrence after today, the weekend already moved** (53 D13 moved the weekend after picking the month). The same occurrence is the executed instance once it is today or earlier | Found in the build: on a Saturday the 1st, 53's rule skipped to next month while this month's Monday occurrence was still ahead, so one month's Rent was in neither list |
 
 Checked against `tech-spec.md`: no new dependency or system. The "Booking rows" and "Standing orders" decisions still hold; the "Standing orders" row's "Built-in Pending and Recurring dates are set from today when the page builds (`UZBankBuiltInRows.date` in `js/data-render.js`)" changes to the new list (D5) and is updated at wrap-up, with a new row for D1, D8 and D10.
 
@@ -62,5 +64,6 @@ Checked against `tech-spec.md`: no new dependency or system. The "Booking rows" 
 
 ## Open questions
 
-- Household's monthly money in from Savings: the amount, and whether it replaces Savings' existing "Transfer to Household -320" and Household's "Pizza" (a transfer of -320 in its data, 43). Settled while authoring the list (D6) and recorded here.
+- ~~Household's monthly money in from Savings~~: settled in D18.
+- A built-in transfer's sheet reads the page's account as its debit (50). The new monthly pair carries `from` and `to`; whether the sheet reads them is checked in task group 3.
 - Whether `components.html`'s booking row specimens use fixed dates or balances that should stay as they are (expected: they stay, they are specimens).
