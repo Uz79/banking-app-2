@@ -270,6 +270,26 @@
     };
   }
 
+  /* The account a row belongs to (roadmap 59, D4, D8): a stored booking's own, a rule's next payment its rule's,
+     a built-in row its group's (All bookings) or panel's (Account details), else the page's */
+  function rowAccountKey(row) {
+    var key = null;
+    if (row) {
+      var stored = getStateBooking(row.getAttribute('data-booking-id') || row.getAttribute('data-rule-id'));
+      if (stored) key = stored.accountKey || 'household';
+      if (!key && row.hasAttribute('data-rule-id')) {
+        var rule = document.querySelector('[data-builtin-id="' + row.getAttribute('data-rule-id') + '"]');
+        if (rule) row = rule;
+      }
+      if (!key) {
+        var host = row.closest('[data-account], [data-account-bookings]');
+        if (host) key = host.getAttribute('data-account') || host.getAttribute('data-account-bookings');
+      }
+    }
+    key = key || window.__UZ_ACTIVE_ACCOUNT__;
+    return key === 'savings' ? 'savings' : 'household';
+  }
+
   function getBookingMap() {
     var account = window.__UZ_ACTIVE_ACCOUNT__ || 'household';
     if (account === 'savings') return BOOKING_MAP_SAVINGS;
@@ -857,6 +877,7 @@
           builtInId:     copy || currentBookingId || !currentRow ? null : currentRow.getAttribute('data-builtin-id'), // replaced on commit (roadmap 42, D4)
           ruleId:        copy || !currentRow ? null : currentRow.getAttribute('data-rule-id'),     // a standing order's next payment (roadmap 47, D10)
           occurrence:    copy || !currentRow ? null : currentRow.getAttribute('data-occurrence'),
+          accountKey:    rowAccountKey(currentRow), // an edit or a copy books from the row's account (roadmap 59, D4, D5)
           recipientName: recipientName,
           recipient:     fullRecipient || null,  // full catalog record if found
           amount:        amtNum,

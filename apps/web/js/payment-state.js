@@ -508,7 +508,7 @@
       currency: payment.currency || 'CHF',
       amount: payment.amount,
       dateISO: payment.dateISO || new Date().toISOString(),
-      accountKey: 'household',
+      accountKey: payment.accountKey === 'savings' ? 'savings' : 'household', /* Pay books from the edited row's account (roadmap 59, D3) */
       icon: 'i-corner-up-right',
       direction: 'out'
     };

@@ -95,8 +95,36 @@
     recipient: null,
     amount: DEFAULT_AMOUNT,
     currency: DEFAULT_CURRENCY,
-    dateLabel: formatTodayDate()  // default execute-on = today (toggle ON)
+    dateLabel: formatTodayDate(),  // default execute-on = today (toggle ON)
+    debitKey: 'household'         // the account it books from: Household, or an edited row's own (roadmap 59, D4)
   };
+
+  /* The accounts Pay can book from (roadmap 59, D6): the card shows what gets booked */
+  var DEBIT_ACCOUNTS = {
+    household: { name: 'Household', iban: 'CH35 0900 0000 2470 2920 1', icon: '#i-home' },
+    savings:   { name: 'Savings account', iban: 'CH35 0900 0000 2470 2920 2', icon: '#i-anchor' }
+  };
+
+  function debitAccount() {
+    return DEBIT_ACCOUNTS[live.debitKey] || DEBIT_ACCOUNTS.household;
+  }
+
+  /* Every Debit account card in Pay names live.debitKey; data-render.js paints its balance from data-debit-key */
+  function paintDebitAccount() {
+    var acc = debitAccount();
+    var balance = debitBalance();
+    modalOverlay.querySelectorAll('.modal--payment-flow .debit-account').forEach(function (el) {
+      el.setAttribute('data-debit-key', DEBIT_ACCOUNTS[live.debitKey] ? live.debitKey : 'household');
+      var use = el.querySelector('.debit-account__icon use');
+      if (use) use.setAttribute('href', acc.icon);
+      var name = el.querySelector('.debit-account__name');
+      if (name) name.textContent = acc.name;
+      var iban = el.querySelector('.debit-account__iban');
+      if (iban) iban.textContent = acc.iban;
+      var val = el.querySelector('.debit-account__amount-value');
+      if (val && balance !== null) val.textContent = fmt(balance);
+    });
+  }
 
   function fmt(n) {
     if (window.UZBankPayState && window.UZBankPayState.formatMoney) {
@@ -158,6 +186,7 @@
     live.amount = DEFAULT_AMOUNT;
     live.currency = DEFAULT_CURRENCY;
     live.dateLabel = formatTodayDate();
+    live.debitKey = 'household';
     resetScheduleToggleOn();
     var firstMode = $step('schedule') && $step('schedule').querySelectorAll('.segmented__option');
     if (firstMode) firstMode.forEach(function (b, i) { b.classList.toggle('segmented__option--active', i === 0); });
@@ -192,6 +221,7 @@
     var amtInput = step.querySelector('.amount-input__value');
     if (recipName && live.recipient) recipName.textContent = live.recipient.name;
     if (amtInput) amtInput.value = fmt(live.amount);
+    paintDebitAccount();
     recheckAmount(); /* a shown error follows a schedule changed since (roadmap 54, D10) */
     syncAmountCurrencyDisplay();
     syncAmountInputClearVisibility();
@@ -246,8 +276,7 @@
     live.dateLabel = later && executeOn ? executeOn : formatTodayDate();
   }
 
-  /** Summary step — amount, date, recipient (debit account is rendered
-   *  separately by data-render.js with the Household balance) */
+  /** Summary step — amount, date, recipient, debit account (its balance also follows data-render.js) */
   function paintSummaryStep() {
     var step = $step('summary'); if (!step) return;
     var fields = step.querySelectorAll('.form-field');
@@ -257,6 +286,7 @@
     if (amt) amt.textContent = live.currency + '  ' + fmt(live.amount);
     if (date) date.textContent = live.dateLabel;
     if (rec && live.recipient) rec.textContent = live.recipient.name;
+    paintDebitAccount();
   }
 
   /** Confirmation dialog: what happened in one sentence, then the amount */
@@ -477,10 +507,11 @@
     return input ? { step: step, input: input, field: input.closest('.form-field') } : null;
   }
 
-  function householdBalance() {
+  /* The running balance of the account Pay books from (roadmap 59, D7) */
+  function debitBalance() {
     var pay = window.UZBankPayState;
     if (!pay || typeof pay.getState !== 'function') return null;
-    var amount = (pay.getState().accountBalances || {}).household;
+    var amount = (pay.getState().accountBalances || {})[DEBIT_ACCOUNTS[live.debitKey] ? live.debitKey : 'household'];
     return typeof amount === 'number' ? amount : null;
   }
 
@@ -491,8 +522,8 @@
     var n = parseFloat(trimmed.replace(/[^0-9.,-]/g, '').replace(',', '.'));
     if (isNaN(n) || n <= 0) return 'Enter an amount above 0.';
     if (withBalance && scheduleStatus() === 'executed') {
-      var balance = householdBalance();
-      if (balance !== null && n > balance) return 'You have CHF ' + fmt(balance) + ' in Household.';
+      var balance = debitBalance();
+      if (balance !== null && n > balance) return 'You have CHF ' + fmt(balance) + ' in ' + debitAccount().name + '.';
     }
     return null;
   }
@@ -526,7 +557,7 @@
   function amountOverBalanceAtExecute() {
     var p = amountParts();
     if (!p || scheduleStatus() !== 'executed') return false;
-    var balance = householdBalance();
+    var balance = debitBalance();
     if (balance === null || !(live.amount > balance)) return false;
     amountBalanceChecked = true;
     currentStep = STEPS.indexOf('amount');
@@ -1032,6 +1063,8 @@
         editingBookingId = editCtx.bookingId  || null;
         editingStaticRow = editCtx.builtInId  || null; /* a built-in row's id (roadmap 42, D4) */
         editingInstance  = editCtx.ruleId && editCtx.occurrence ? { ruleId: editCtx.ruleId, occurrence: editCtx.occurrence } : null;
+        /* An edit or a copy books from the row's own account (roadmap 59, D4, D5) */
+        live.debitKey = DEBIT_ACCOUNTS[editCtx.accountKey] ? editCtx.accountKey : 'household';
 
         // Amount — parse just in case it was stored as a string
         seedScheduleFromBooking(editCtx.status, editCtx.executeOn);
@@ -1116,7 +1149,8 @@
           currency:  live.currency,
           dateISO:   new Date().toISOString(),
           status:    scheduleStatus(),
-          executeOn: live.dateLabel
+          executeOn: live.dateLabel,
+          accountKey: live.debitKey
         };
         if (editingBookingId && window.UZBankPayState && window.UZBankPayState.updatePayment) {
           window.UZBankPayState.updatePayment(editingBookingId, payData);

@@ -55,14 +55,18 @@
     var paymentRoot = document.querySelector('.modal-overlay:not(#uz-iat-overlay) .modal--payment-flow');
     if (paymentRoot) {
       paymentRoot.querySelectorAll('.debit-account__amount').forEach(function (el) {
+        /* The account the card names: Household, or Savings for an edit of a Savings row (roadmap 59, D6) */
+        var card = el.closest('.debit-account');
+        var key = card && card.getAttribute('data-debit-key');
+        var shown = key && key !== 'household' && balances[key] != null ? fmt(balances[key]) : formatted;
         var cur = el.querySelector('.debit-account__amount-currency');
         var val = el.querySelector('.debit-account__amount-value');
         if (cur && val) {
           cur.textContent = 'CHF';
-          val.textContent = formatted;
+          val.textContent = shown;
           return;
         }
-        el.textContent = 'CHF ' + formatted;
+        el.textContent = 'CHF ' + shown;
       });
     }
 

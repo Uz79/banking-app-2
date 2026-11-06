@@ -11,15 +11,15 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 2. The sheets name the row's account (D8, 57)
 
-- [ ] `apps/web/js/payment-details.js`: the debit account from the row's own account (its group's `data-account`, a stored booking's `accountKey`) for rules, next payments and built-in rows
-- [ ] Check: every rule's and next payment's sheet, on both accounts, names its own account
+- [x] `apps/web/js/payment-details.js`: the row's own account (`rowAccountKey`: its group's `data-account`, a stored booking's `accountKey`, a next payment's rule), used by the edit context in group 3
+- [x] Check: every rule's and next payment's sheet, on both accounts: no debit account shows in the payment sheet (57, see Found in the build)
 
 ## 3. Pay books from the row's account (D3 to D7, D10)
 
-- [ ] `apps/web/js/payment-state.js`: `commitPayment` and `updatePayment` keep `payment.accountKey`
-- [ ] `apps/web/js/payment-details.js`: the edit context (Edit and Copy) carries `accountKey`
-- [ ] `apps/web/js/payment-overlay.js`: `live.debitKey`, the Debit account card painted from it, the over-balance check against its balance
-- [ ] Check: Edit of Rent's next payment on Savings, Edit of the Rent rule, Copy of a Savings payment: each lands on Savings (list, sheet, balance); a fresh Pay is Household's as before
+- [x] `apps/web/js/payment-state.js`: `commitPayment` and `updatePayment` keep `payment.accountKey`
+- [x] `apps/web/js/payment-details.js`: the edit context (Edit and Copy) carries `accountKey`
+- [x] `apps/web/js/payment-overlay.js`: `live.debitKey`, the Debit account card painted from it, the over-balance check against its balance; `apps/web/js/data-render.js` paints the card's balance for the account it names
+- [x] Check: Edit of Rent's next payment on Savings, Edit of the Rent rule, Copy of a Savings payment: each lands on Savings (list, sheet, balance); a fresh Pay is Household's as before
 
 ## 4. Wrap-up
 
