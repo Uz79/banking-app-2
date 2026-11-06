@@ -980,7 +980,9 @@
     if (row.hasAttribute('data-rule-id')) {
       data = instanceData(row, displayName);
     } else if (isAllBookingsScreen() && row.getAttribute('data-mock-booking') === 'static') {
-      data = buildAllBookingsRowData(row, displayName);
+      /* Household's rows open the sheet they have on Account details, with the row's status (roadmap 56, D7) */
+      var accountRow = window.__UZ_ACTIVE_ACCOUNT__ === 'household' ? BOOKING_MAP_HOUSEHOLD[name] : null;
+      data = accountRow ? Object.assign({}, accountRow, rowSchedule(row)) : buildAllBookingsRowData(row, displayName);
     } else {
       data = currentBookingId ? null : getBookingMap()[name];
       /* Account details' built-in rows: the row's status wins over the map's (roadmap 43, D1) */

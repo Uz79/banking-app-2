@@ -2335,7 +2335,8 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
   text-transform: uppercase;
 }
 
-.all-bookings__list > .all-bookings__month:first-child {
+.all-bookings__list > .all-bookings__month:first-child,
+.all-bookings__list > .all-bookings__month--first {
   margin-top: 0;
 }
 

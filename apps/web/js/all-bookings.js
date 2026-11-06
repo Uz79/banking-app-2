@@ -570,6 +570,8 @@
         var prev = g.previousElementSibling;
         while (prev && prev.hidden) prev = prev.previousElementSibling;
         if (prev && prev.classList.contains('divider')) prev.classList.add('is-month-break');
+        /* First in the list even after hidden groups (a deleted row's), so it sits flush as :first-child does (roadmap 56) */
+        if (!prev) sep.classList.add('all-bookings__month--first');
         g.parentNode.insertBefore(sep, g);
       });
     });
