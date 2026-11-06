@@ -23,6 +23,6 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 4. Wrap-up
 
-- [ ] `npm run build` in `apps/web`
-- [ ] The validation pass (`validation.md`), the baseline smoke test and the dated "Checked on" line
-- [ ] Docs: `specs/roadmap.md` 59 and 57 done; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the Booking rows and Standing orders rows: a row's account, Pay's debit account)
+- [x] `npm run build` in `apps/web`
+- [x] The validation pass (`validation.md`), the baseline smoke test and the dated "Checked on" line
+- [x] Docs: `specs/roadmap.md` 59 and 57 done; `CHANGELOG.md` under `Unreleased`; `specs/tech-spec.md` (the Booking rows and Standing orders rows: a row's account, Pay's debit account)

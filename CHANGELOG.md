@@ -17,6 +17,9 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **Savings has its standing orders again** (roadmap 59). Since 56, Savings' Recurring and Pending were empty while its history showed Rent and Internet & Phone as monthly payments. Rent and Internet & Phone are Savings' again, as rules in Recurring and as next payments in Pending; Netflix stays Household's.
+- **An edit or a copy stays on its account.** Pay booked everything from Household. Now Edit and Copy of a Savings booking book from Savings: Pay's Debit account card names Savings with its balance, the result lands in Savings' lists and balance, and an amount over the balance says "You have CHF … in Savings account." A new payment from Pay is Household's, as before.
+- Spec: `specs/2026-11-06-savings-standing-orders/`.
 - **Arrows keep still with reduced motion** (roadmap 36). With Reduce motion on, the forward arrows (Details, Show all, Show all bookings and the like) kept their nudge; now no arrow moves, and the proceed button stays still as before. A disabled control's arrow is still too. With motion on, nothing changes. Motion specimens No. 009 shows the updated rule.
 - Spec: `specs/2026-11-06-arrow-nudge-reduced-motion/`.
 - **Legibility reaches the fridge and the investment opening** (roadmap 34). Profile > Legibility (Small, Regular, Large, the Typeface and the Font) and the size a User Type sets now apply in "How much should I invest?" and the opening, in Overview's sheet and on their own pages; both kept the default type before. The Legibility code moved into its own script, loaded by every page that had it and by these two. At Large on a phone the risk chart's end values sit in rows, the strategy names under the carousel stay inside their markers, and the summary's strategy chip goes under the name when there's no room. The Playground doesn't follow Legibility yet (roadmap 58).
