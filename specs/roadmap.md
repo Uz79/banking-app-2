@@ -375,6 +375,8 @@ Spec: `specs/2026-11-06-deleted-announcement/` (branch `feature/deleted-announce
 
 Found in Klaudiusz's manual check (2026-11-06). Household's Executed tab shows a "Today" header with its balance and no rows. 56's D5 put it there for payments made in the app. To settle in its spec: the group shows only once it has a row, on All bookings and Account details alike.
 
+Spec: `specs/2026-11-06-empty-today-group/` (branch `feature/empty-today-group`). Settled in its interview: any group without a row shown is hidden, on both pages; June's band moves to the first group shown; built before 62; standard gate.
+
 ## 62. Demo data moves with the real date
 
 Klaudiusz, 2026-11-06. Every built-in booking is dated relative to today, so "Today" and "Yesterday" are right whenever the app is opened, and the month chips come from the data (the last months up to now). Household gets several months of bookings again, so scrolling, the month chips and deleting the last row of a month can be checked there. Widens 53 (Pending and Recurring dated from today) to Executed. To settle in its spec: how many months, the balances per day as the dates move, Account details and Overview agreeing, and the demo reset.
