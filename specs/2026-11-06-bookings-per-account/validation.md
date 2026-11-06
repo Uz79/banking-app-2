@@ -71,3 +71,5 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 - [ ] With reduced motion on (System Settings → Accessibility → Display), page transitions and the character are still, and nothing is stuck mid-animation
 
 Checked on 2026-11-06 against `feature/bookings-per-account`, Chrome (Claude in Chrome) on the agent's server (port 5199), desktop 1483px and 390px (same-origin iframes), Light and Dark (set through `UZBankApplyThemeChoice`); flows driven by scripts, keyboard by real Tab and Enter. Not checked: Light at 390px, a Multi-color theme, the real macOS Reduce motion setting, search, Account details' "Show all" by click, Apple deleted on Account details then seen on All bookings, and in the baseline the Light/Dark toggle by click, page transitions, the status message, User Type, Legibility, Theme, the Design system pages and Tab through Overview.
+
+Checked on 2026-11-06 by Klaudiusz, by hand: phone width passed.

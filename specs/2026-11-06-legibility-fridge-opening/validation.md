@@ -71,3 +71,5 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 
 
 Checked on 2026-11-06 against `feature/legibility-fridge-opening`, Chrome on the agent's server (5199), desktop (1300 to 1483px wide) and 390px in same-origin frames. Legibility on every page at Small, Regular and Large by script (13 pages, no errors); the fridge and the opening walked visually at Large on desktop and phone, with an overflow script at Small, Regular and Large, and in Source Serif 4 at Large; Light, Dark and the Multi-color theme Custom 10 in the sheet; keyboard rings at Large on both pages; User Type's Newbie and Power user set Large and Small. Baseline: Overview, Pay to Hans Meyer (balance 5'900 to 5'400), the transfer, Buy opened and dismissed, All bookings tabs, Dark surviving a reload, Overview at 390px with its tab bar. Not checked: the page transitions, the status message's timing, the demo reset's balance (reset by script only), the Design system hub, Motion specimens and the Character kit beyond loading, a real phone, VoiceOver, and the macOS Reduce motion setting itself.
+
+Checked on 2026-11-06 by Klaudiusz, by hand: phone width passed.
