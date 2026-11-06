@@ -133,12 +133,9 @@ When the bookings list is full and the oldest booking is dropped, its amount is 
 
 The transfer confirmation still says the transfer "will be executed now". The copy needs another look. Found at the end of `specs/2026-10-25-all-bookings-real/`. Spec: `specs/2026-11-03-confirmation-copy/` (branch `feature/confirmation-copy`). Settled in its interview: the payment and trade confirmations too (the same shell, the same problem); the text says what happened, following the schedule (done now, made on a date, starts on a date); "Done" on every button. Changed in the build: the transfer and the trade record on Execute and the order button, as the payment does, so the dialog comes after the booking (D10). Built 2026-11-04.
 
-## 16. Open checks
+## 16. Open checks (done)
 
-Checks that were not run on merged branches. Each is a pass to do and record, not a feature:
-
-- **Playground settings dialog** (`specs/2026-10-25-playground-settings-dialog/validation.md`): the recolour cost on a throttled CPU, on a phone, and at a 2x pixel ratio.
-- **All bookings** (`specs/2026-10-25-all-bookings-real/validation.md`): reduced motion and a screen reader.
+Checks that were not run on merged branches. Each is a pass to do and record, not a feature. None open: the Playground settings dialog's (recolour cost on a throttled CPU, on a phone, at a 2x pixel ratio) and All bookings' (reduced motion, a screen reader) passed in Klaudiusz's manual check on 2026-11-06, recorded in their `validation.md`.
 
 ## 17. Retire GitHub Pages (done)
 
@@ -352,10 +349,55 @@ Found during 47 (2026-11-06). All bookings shows the same built-in Executed, Pen
 
 Spec: `specs/2026-11-06-bookings-per-account/` (branch `feature/bookings-per-account`). Settled in its interview: Pending and Recurring move to Household, so every row you can edit is Household's and Pay stays as it is; Savings keeps its Executed history; Household's Executed shows Today and Yesterday as on Account details; standard gate. Found in the build: the month chips Feb to May go with Savings' rows; a month band after a deleted row's group sat lower than the first. Built 2026-11-06.
 
-## 57. A standing order's next payment on Household reads "from Savings account"
+## 57. A standing order's next payment on Household reads "from Savings account" (done, in 59)
 
 Found during 33 (2026-11-06). On Household's All bookings, the sheet of a standing order's next payment in Pending (Internet & Phone, seen by keyboard) names "Savings account" as the debit account, although since 56 the standing orders are Household's. Not changed by 33. To settle in its spec: where the instance's sheet takes its debit account (`instanceData` and `buildAllBookingsRowData` in `js/payment-details.js`, `ACCOUNT_SNAPSHOTS`), and the same check for the rule's own sheet in Recurring and for Rent and Netflix.
+
+Taken into 59 (`specs/2026-11-06-savings-standing-orders/`).
 
 ## 58. Legibility doesn't reach the Playground
 
 Found while writing 34's spec (2026-11-06). The Playground (`playground.html`, admin only, opened as a full-screen sheet) loads neither `js/app-mp.js` nor, since 34, `js/appearance.js`, so Legibility's type and spacing scale, Typeface and Font don't apply there. To settle in its spec: loading `js/appearance.js` as the fridge and the opening do, and a check of the Playground's layouts at Small and Large, desktop and phone.
+
+## 59. Savings lost its standing orders (done)
+
+Found in Klaudiusz's manual check (2026-11-06), from 56. On Savings' All bookings, Recurring says "No standing orders." and Pending "No pending payments.", while Rent shows in Executed with its "Monthly" chip. Rent and the account's other built-in standing orders must show as rules in Recurring and as next payments in Pending. Revises 56's D3 (Pending and Recurring moved to Household) and D4 (Rent's history on Savings, its rule on Household). To settle in its spec: which standing orders are Savings' and which Household's, where an edit of a Savings rule or its next payment books (Pay books to Household), and the Pending one-offs.
+
+Spec: `specs/2026-11-06-savings-standing-orders/` (branch `feature/savings-standing-orders`), with 57. Settled in its interview: Rent and Internet & Phone back on Savings, Netflix stays Household's; Pay books from the account a row belongs to, so an edit or Copy of a Savings row stays on Savings; 57 fixed here; standard gate. Found in the build: the payment sheet shows no debit account, so 57's "Savings account" was the hidden row's markup text and nothing visible changes; an edit of a rule after its next payment leaves both (68). Built 2026-11-06.
+
+## 60. VoiceOver doesn't announce "Payment deleted."
+
+Found in Klaudiusz's manual check (2026-11-06). After Delete in a booking's sheet, VoiceOver says nothing; the status line "Payment deleted." (42) isn't read. To settle in its spec: why the live region is missed (inserted too late or too early, focus moving at the same moment, the region hidden), and the same check for the other status lines.
+
+## 61. Household's All bookings shows an empty "Today" group
+
+Found in Klaudiusz's manual check (2026-11-06). Household's Executed tab shows a "Today" header with its balance and no rows. 56's D5 put it there for payments made in the app. To settle in its spec: the group shows only once it has a row, on All bookings and Account details alike.
+
+## 62. Demo data moves with the real date
+
+Klaudiusz, 2026-11-06. Every built-in booking is dated relative to today, so "Today" and "Yesterday" are right whenever the app is opened, and the month chips come from the data (the last months up to now). Household gets several months of bookings again, so scrolling, the month chips and deleting the last row of a month can be checked there. Widens 53 (Pending and Recurring dated from today) to Executed. To settle in its spec: how many months, the balances per day as the dates move, Account details and Overview agreeing, and the demo reset.
+
+## 63. Month band background: a separator ink at 5%
+
+Klaudiusz, 2026-11-06. The month bands on All bookings (24) use the solid secondary background. They should use a separator-style ink at 5% opacity, as a token with Light and Dark values (and the Multi-color themes). 10% stays for strokes. To settle in its spec: the token's name and place in the pipeline, and the theme engine.
+
+## 64. Form fields keep their height with or without the helper or error row
+
+Klaudiusz, 2026-11-06, a design system rule. In Buy and Sell, Limit grows when its error shows and pushes the order-duration control down. A field reserves its helper or error row whether or not it shows. To settle in its spec: the reserved height, a field with a two-line error, and a pass over every field with an error (Pay, the transfer, Buy and Sell, the admin sign-in).
+
+## 65. Sell: "Available in" and the account picker's label
+
+Klaudiusz, 2026-11-06. In Sell, "Available in <account>" goes, and the account picker reads "Credit account", not "Debit account". Also check: in Buy, "Price" changes to the typed limit (389.22 to 100.00); the market price shouldn't follow it. Relates to 55. To settle in its spec: what Buy shows as Price and as the expected total with a limit, and whether 55 is still needed once Sell drops the line.
+
+## 66. Motion specimens: Focus-mode choreography's sample stays white in Dark
+
+Klaudiusz, 2026-11-06. On Motion specimens, the Focus-mode choreography sample's right column keeps a white background in Dark. It needs a surface token.
+
+## 67. The status message's timing
+
+Klaudiusz, 2026-11-06. The "Open payment!" message appears after about 9 s; the baseline smoke test and `js/status-feed.js`'s comment say 12 s (8 s was measured on 2026-11-05). To settle: what the timer actually counts from, then align the code or the baseline.
+
+
+## 68. Editing a standing order after its next payment leaves two payments
+
+Found during 59 (2026-11-06). Edit a standing order's next payment (stored as a one-off with the rule's id and date, 47 D10), then Edit the rule itself: the edited rule is a new booking that replaces the old one, so Pending lists both the earlier one-off and the new rule's next payment on the same date (seen with Rent on Savings: 1'700 and 1'750 on 01.12). Not from 59; the same on Household. To settle in its spec: whether an edit of the rule carries over or drops an edited next payment, and what the customer is told.

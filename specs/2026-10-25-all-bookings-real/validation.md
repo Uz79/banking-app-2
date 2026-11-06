@@ -61,3 +61,5 @@ Run 2026-10-25 on port 5199 (desktop, Chrome), after the changes of this branch.
 
 Checked on 2026-10-25 against `feature/all-bookings-real`, Chrome on port 5199, desktop width (2391px), 768px and 390px in an iframe for the toolbar, Light, Dark (navy) and one Multi-color theme (Custom 08). Balance, status and cap checks were run partly through `UZBankPayState` calls (three bookings of each status, 105 payments for the limit) and partly through the real Pay and transfer sheets. Build passes.
 Not checked: a pending payment (Pay with "as soon as possible" off) through the UI, a trade order appearing on the Custody page, the edit flow for a pending payment on Account details, a screen reader reading the field and the match count, reduced motion, the baseline items listed above, the transfer's both-legs rows on the other account's page through the UI (checked through the state), and keyboard order beyond the page controls (the tab stop before Executed is a pre-existing "Month" group).
+
+Checked on 2026-11-06 by Klaudiusz, by hand: the open checks listed in roadmap 16 (reduced motion and a screen reader) passed.

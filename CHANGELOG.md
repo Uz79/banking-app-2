@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 907bbad059e28e163208e0507f3c70954e7564a7 -->
+<!-- changelog: last-commit 5aaad22d3bdc955185c448b6be9da4d47b86eae4 -->
 
 ### Changed
 - **Booking rows say who and what, not how** (roadmap 43). A row's icon now names the counterparty: money out, money in, or for a transfer between your own accounts the other account (Household's home, Savings' anchor). A small chip after the name says "Pending" for a booking not executed yet, or how often a standing order runs ("Monthly"), also on each executed payment of one; a one-off payment has none. The repeat icon no longer marks recurring rows. On All bookings and Account details, for the built-in bookings and the ones you make. Recurring payments made in the app are monthly for now. The Chip component gains a tonal variant for this.
@@ -17,6 +17,9 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **Savings has its standing orders again** (roadmap 59). Since 56, Savings' Recurring and Pending were empty while its history showed Rent and Internet & Phone as monthly payments. Rent and Internet & Phone are Savings' again, as rules in Recurring and as next payments in Pending; Netflix stays Household's.
+- **An edit or a copy stays on its account.** Pay booked everything from Household. Now Edit and Copy of a Savings booking book from Savings: Pay's Debit account card names Savings with its balance, the result lands in Savings' lists and balance, and an amount over the balance says "You have CHF … in Savings account." A new payment from Pay is Household's, as before.
+- Spec: `specs/2026-11-06-savings-standing-orders/`.
 - **Arrows keep still with reduced motion** (roadmap 36). With Reduce motion on, the forward arrows (Details, Show all, Show all bookings and the like) kept their nudge; now no arrow moves, and the proceed button stays still as before. A disabled control's arrow is still too. With motion on, nothing changes. Motion specimens No. 009 shows the updated rule.
 - Spec: `specs/2026-11-06-arrow-nudge-reduced-motion/`.
 - **Legibility reaches the fridge and the investment opening** (roadmap 34). Profile > Legibility (Small, Regular, Large, the Typeface and the Font) and the size a User Type sets now apply in "How much should I invest?" and the opening, in Overview's sheet and on their own pages; both kept the default type before. The Legibility code moved into its own script, loaded by every page that had it and by these two. At Large on a phone the risk chart's end values sit in rows, the strategy names under the carousel stay inside their markers, and the summary's strategy chip goes under the name when there's no room. The Playground doesn't follow Legibility yet (roadmap 58).

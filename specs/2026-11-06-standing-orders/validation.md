@@ -82,3 +82,5 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 - [ ] With reduced motion on (System Settings → Accessibility → Display), page transitions and the character are still, and nothing is stuck mid-animation
 
 Checked on 2026-11-06 against `feature/standing-orders`, Chrome (Claude in Chrome) on the agent's server (port 5199), desktop 1483px and 390px (a same-origin iframe), Light and Dark (set through `UZBankApplyThemeChoice`), All bookings on `?account=household`; flows driven by scripts, keyboard by real Tab. Not checked: a Multi-color theme, Dark at 390px, the real macOS Reduce motion setting, a weekend day of month on a real date (only Netflix's 05.12.2026 moving to 07.12.2026), and in the baseline the Light/Dark toggle by click, page transitions, the status message, User Type, Legibility, Theme, the Design system pages and Tab through Overview.
+
+Checked on 2026-11-06 by Klaudiusz, by hand: phone width passed.
