@@ -9,18 +9,19 @@ Branch: `feature/deleted-announcement`. Run on the agent's server (port 5199), t
 
 ## 2. Timing (agent, by script; D1, D2)
 
-- [x] The status region is in the page before any Delete
-- [x] Delete of a pending payment on All bookings: the region stays empty while the confirmation is open, and reads "Payment deleted." after it closed, with focus on the next row
-- [x] The same for a pending transfer ("Transfer deleted."), and on Account details
-- [x] A second Delete is announced again (emptied first)
-- [ ] With reduced motion: the same order
+- [x] Delete of a pending payment on All bookings, by keys: the next row takes focus described by the note "Payment deleted." (D7)
+- [x] The note leaves the row once it loses focus; no other element keeps it
+- [x] A pending transfer as the last row in Pending: the Pending tab takes focus described by "Transfer deleted."
+- [x] Account details: the next row, "Payment deleted."
+- [ ] With reduced motion: the same
 - [x] Profile's Reset demo data: the line fills only after the confirmation closed; its icon shows as before
 
-## 3. VoiceOver (Klaudiusz, D5)
+## 3. VoiceOver (Klaudiusz, D5): Chrome, then once in Safari
 
-- [ ] Delete a pending payment: VoiceOver says "Payment deleted." (with or after the next row)
+- [ ] Delete a pending payment: VoiceOver says the next row, then "Payment deleted."
 - [ ] Delete a pending transfer: "Transfer deleted."
-- [ ] Profile, Reset demo data: "Demo data reset."
+- [ ] One of these with Reduce motion on
+- [x] Profile, Reset demo data: "Demo data reset." (Klaudiusz, Chrome, after group 1)
 
 ## 4. Look
 
@@ -70,3 +71,7 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 
 
 Checked on 2026-11-06 by the agent against `feature/deleted-announcement`, Chrome on the agent's server (5199), desktop width, Light: the region and the focus sampled every 20 to 40 ms. By real keys on All bookings (Household, Helvetia Insurance): the confirmation closed at about 320 ms, focus moved to the next row (Tax office Zurich) at about 340 ms, "Payment deleted." was set at about 600 ms. By script: a pending transfer ("Transfer deleted."), a second Delete (emptied, then set again), Account details (Apple), Profile's reset twice (the line and its icon after the confirmation closed). No console errors; the build passes. Not checked: VoiceOver (section 3, Klaudiusz's), the macOS Reduce motion setting, the look in Dark and at 390px (no markup or CSS changed), the baseline beyond the build. Seen, not from this branch: with clicks made by script (no focus on the clicked buttons), focus after Delete ended on the page instead of the next row; with real keys it lands on the next row.
+
+Checked on 2026-11-06 by Klaudiusz, VoiceOver in Chrome on 5175, after group 1: "Payment deleted." and "Transfer deleted." not heard (the next row was read, then nothing); "Demo data reset." heard; Reduce motion not run.
+
+Checked on 2026-11-06 by the agent after group 2 (D7), Chrome on 5199, desktop, real keys: on All bookings (Household) Delete of Swisscom put focus on Helvetia Insurance described by "Payment deleted.", gone after Tab; on Savings, the only pending row (a transfer) deleted put focus on the Pending tab described by "Transfer deleted."; on Account details Delete of Apple put focus on Cafe with "Payment deleted.". No console errors; the build passes. Not checked: VoiceOver (Klaudiusz's, next), Reduce motion, the baseline beyond the build.
