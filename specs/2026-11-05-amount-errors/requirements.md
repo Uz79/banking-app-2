@@ -27,6 +27,7 @@ Roadmap item 54 (`specs/roadmap.md`). The flows' amount fields take any value an
 - Other fields' errors (recipient name, IBAN, dates)
 - The error colour as a token: the dark-mode pink is hard-coded in the existing error rules (`css/styles.css`, "status error placeholder until status tokens exist"); this branch reuses those rules and adds no colour
 - Funds, ETFs and bonds as units (41, D13)
+- The trade's "Available in Household account" label: roadmap 55
 
 ## Decisions
 
@@ -46,6 +47,9 @@ Roadmap item 54 (`specs/roadmap.md`). The flows' amount fields take any value an
 | D12 | **"pcs." becomes "share" or "shares"**, number first: the trade sheet ("51 shares"), the position page's Quantity, the Custody account list, a trade booking's message ("12 shares") | Roadmap 54, left from 41 (D13 there) |
 | D13 | **The transfer reads its amount as typed**: an emptied field is 0, not the last amount, and its Confirm uses D5 | The transfer could move CHF 500 that no longer showed |
 | D14 | **Messages say amounts as the app shows them**: "CHF 9'900.00", the account's own name ("Household", "Savings account") | Matches the balances on the same screen |
+| D15 | **The trade sheet opens with 1 share**, not 100 (found in the build) | 100 shares was over Household's balance and above the holding, so Buy and Sell opened already invalid |
+| D16 | **Once Execute has found the amount over the balance, the amount step checks the balance too** (on leaving the field, live and on Confirm), for as long as the flow is open; a later or recurring schedule still isn't checked (found in the build) | Otherwise the error would clear at a still-too-high amount and come back only at Execute |
+| D17 | **Pressing Back or an edit link on the amount step checks nothing**, as close doesn't (D6) (found in the build) | The step changes; an error left behind would show when coming back |
 
 ## Context
 
@@ -54,7 +58,13 @@ Roadmap item 54 (`specs/roadmap.md`). The flows' amount fields take any value an
 - Running balances: `UZBankPayState.getState().accountBalances` (household, savings). The trade's debit account is `live.debtorKey`; Pay debits Household; the transfer's is `live.fromKey`, and a mandate or the custody account has no balance to check against.
 - Pay's amount input handler (`js/payment-overlay.js`, around line 484) sets `live.amount`; the transfer's `collectRecipientStep` (`js/iat-overlay.js:342`).
 
+## Found in the build
+
+- The trade's default of 100 shares was invalid on opening (D15).
+- The transfer's account picker repainted the amount from the last valid one; it now keeps the field as typed (D13).
+- The trade summary's "Available in Household account" doesn't follow the debit account: roadmap 55, out of scope.
+
 ## Open questions
 
 - Whether `aria-live="polite"` plus the focus move on Confirm reads the error once or twice in VoiceOver (D11). To hear in the check; if it doubles, the live region is muted while Confirm moves focus.
-- Whether Pay's and the transfer's balance check at Execute (D10) reads well, or whether the amount step should check the balance when "As soon as possible" is the default. To try in the build.
+- Whether Pay's and the transfer's balance check at Execute (D10) reads well, or whether the amount step should check the balance when "As soon as possible" is the default. Tried in the build: it reads well, and D16 keeps the error honest after the bounce. Klaudiusz to confirm.
