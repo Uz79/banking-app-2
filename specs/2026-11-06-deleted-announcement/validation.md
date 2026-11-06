@@ -4,17 +4,17 @@ Branch: `feature/deleted-announcement`. Run on the agent's server (port 5199), t
 
 ## 1. Build
 
-- [ ] `npm run build` in `apps/web` succeeds with no new warnings
-- [ ] No console errors on All bookings, Account details and Profile
+- [x] `npm run build` in `apps/web` succeeds with no new warnings
+- [x] No console errors on All bookings, Account details and Profile
 
 ## 2. Timing (agent, by script; D1, D2)
 
-- [ ] The status region is in the page before any Delete
-- [ ] Delete of a pending payment on All bookings: the region stays empty while the confirmation is open, and reads "Payment deleted." after it closed, with focus on the next row
-- [ ] The same for a pending transfer ("Transfer deleted."), and on Account details
-- [ ] A second Delete is announced again (emptied first)
+- [x] The status region is in the page before any Delete
+- [x] Delete of a pending payment on All bookings: the region stays empty while the confirmation is open, and reads "Payment deleted." after it closed, with focus on the next row
+- [x] The same for a pending transfer ("Transfer deleted."), and on Account details
+- [x] A second Delete is announced again (emptied first)
 - [ ] With reduced motion: the same order
-- [ ] Profile's Reset demo data: the line fills only after the confirmation closed; its icon shows as before
+- [x] Profile's Reset demo data: the line fills only after the confirmation closed; its icon shows as before
 
 ## 3. VoiceOver (Klaudiusz, D5)
 
@@ -32,7 +32,7 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 
 ### 1. Build
 
-- [ ] `npm run build` succeeds with no new warnings
+- [x] `npm run build` succeeds with no new warnings
 - [ ] The browser console shows no errors on any page visited below
 
 ### 2. Shell
@@ -69,4 +69,4 @@ Copied from `specs/baseline/validation.md`. Check desktop (1440px) in Light, the
 
 
 
-Checked on: not yet.
+Checked on 2026-11-06 by the agent against `feature/deleted-announcement`, Chrome on the agent's server (5199), desktop width, Light: the region and the focus sampled every 20 to 40 ms. By real keys on All bookings (Household, Helvetia Insurance): the confirmation closed at about 320 ms, focus moved to the next row (Tax office Zurich) at about 340 ms, "Payment deleted." was set at about 600 ms. By script: a pending transfer ("Transfer deleted."), a second Delete (emptied, then set again), Account details (Apple), Profile's reset twice (the line and its icon after the confirmation closed). No console errors; the build passes. Not checked: VoiceOver (section 3, Klaudiusz's), the macOS Reduce motion setting, the look in Dark and at 390px (no markup or CSS changed), the baseline beyond the build. Seen, not from this branch: with clicks made by script (no focus on the clicked buttons), focus after Delete ended on the page instead of the next row; with real keys it lands on the next row.

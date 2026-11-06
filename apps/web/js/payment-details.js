@@ -927,19 +927,17 @@
 
   /* ── Delete: ask first, then remove (roadmap 42, D10 to D13) ──────── */
 
-  var deleteStatus = null;
+  /* Outside the sheet, which is hidden from screen readers once it closes; in the page from the start (roadmap 60, D1) */
+  var deleteStatus = document.createElement('p');
+  deleteStatus.className = 'visually-hidden';
+  deleteStatus.setAttribute('role', 'status');
+  deleteStatus.setAttribute('aria-live', 'polite');
+  document.body.appendChild(deleteStatus);
 
-  /* Outside the sheet, which is hidden from screen readers once it closes */
+  /* Once the confirmation has closed and focus has moved on (roadmap 60, D2) */
   function announce(text) {
-    if (!deleteStatus) {
-      deleteStatus = document.createElement('p');
-      deleteStatus.className = 'visually-hidden';
-      deleteStatus.setAttribute('role', 'status');
-      deleteStatus.setAttribute('aria-live', 'polite');
-      document.body.appendChild(deleteStatus);
-    }
-    deleteStatus.textContent = '';
-    window.setTimeout(function () { deleteStatus.textContent = text; }, 100);
+    if (window.UZBankAnnounce) window.UZBankAnnounce(deleteStatus, text);
+    else deleteStatus.textContent = text;
   }
 
   document.addEventListener('click', function (e) {
