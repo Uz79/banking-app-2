@@ -365,9 +365,11 @@ Found in Klaudiusz's manual check (2026-11-06), from 56. On Savings' All booking
 
 Spec: `specs/2026-11-06-savings-standing-orders/` (branch `feature/savings-standing-orders`), with 57. Settled in its interview: Rent and Internet & Phone back on Savings, Netflix stays Household's; Pay books from the account a row belongs to, so an edit or Copy of a Savings row stays on Savings; 57 fixed here; standard gate. Found in the build: the payment sheet shows no debit account, so 57's "Savings account" was the hidden row's markup text and nothing visible changes; an edit of a rule after its next payment leaves both (68). Built 2026-11-06.
 
-## 60. VoiceOver doesn't announce "Payment deleted."
+## 60. VoiceOver doesn't announce "Payment deleted." (done)
 
 Found in Klaudiusz's manual check (2026-11-06). After Delete in a booking's sheet, VoiceOver says nothing; the status line "Payment deleted." (42) isn't read. To settle in its spec: why the live region is missed (inserted too late or too early, focus moving at the same moment, the region hidden), and the same check for the other status lines.
+
+Spec: `specs/2026-11-06-deleted-announcement/` (branch `feature/deleted-announcement`). Cause read in the code: the line was set while the confirmation, a modal dialog that makes the rest of the page inert, was still closing, in a region created on the spot. Settled in its interview: the region exists from load and is set only after the dialog has closed and focus has moved; Profile's "Demo data reset." gets the same fix; the gate includes Klaudiusz's VoiceOver check. Found in the build: VoiceOver read the next row taking focus and dropped the live update, so Delete now says it as that row's one-time description (or the tab's, when no row is left); the live region stays for the demo reset. Heard in Chrome, with Reduce motion and in Safari. Built 2026-11-06.
 
 ## 61. Household's All bookings shows an empty "Today" group
 

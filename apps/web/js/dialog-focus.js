@@ -197,4 +197,27 @@
   }
 
   window.UZBankAfterSheetClose = afterSheetClose;
+
+  /* ── A status line after a confirmation, roadmap 60 ────────────────────
+   * While a modal <dialog> is open the rest of the page is inert, so a live
+   * region changed then is never heard (D2). The region is emptied at once,
+   * filled once no dialog is open, and a moment later, so the focus move
+   * after a sheet's close has landed first. `html` is set as markup. */
+  var ANNOUNCE_PAUSE = 250;
+
+  function announce(region, html) {
+    if (!region) return;
+    region.textContent = ''; /* emptied first, so the same text is announced again */
+    function fill() {
+      window.setTimeout(function () {
+        if (document.querySelector('dialog[open]')) { fill(); return; }
+        region.innerHTML = html;
+      }, ANNOUNCE_PAUSE);
+    }
+    var open = document.querySelector('dialog[open]');
+    if (open) open.addEventListener('close', fill, { once: true });
+    else fill();
+  }
+
+  window.UZBankAnnounce = announce;
 })();

@@ -927,19 +927,36 @@
 
   /* ── Delete: ask first, then remove (roadmap 42, D10 to D13) ──────── */
 
-  var deleteStatus = null;
+  /* What Delete did is said with the focus move, not in a live region: VoiceOver reads the row taking focus and
+     drops a polite update made meanwhile (roadmap 60, D7). The element that takes focus after the sheet closes
+     (the next row, or the tab when none is left) is described by this note until it loses focus. */
+  var deleteNote = document.createElement('span');
+  deleteNote.id = 'uz-pd-delete-note';
+  deleteNote.hidden = true;
+  document.body.appendChild(deleteNote);
 
-  /* Outside the sheet, which is hidden from screen readers once it closes */
-  function announce(text) {
-    if (!deleteStatus) {
-      deleteStatus = document.createElement('p');
-      deleteStatus.className = 'visually-hidden';
-      deleteStatus.setAttribute('role', 'status');
-      deleteStatus.setAttribute('aria-live', 'polite');
-      document.body.appendChild(deleteStatus);
-    }
-    deleteStatus.textContent = '';
-    window.setTimeout(function () { deleteStatus.textContent = text; }, 100);
+  function describeOnce(el, text) {
+    if (!el || !el.setAttribute) return;
+    deleteNote.textContent = text;
+    var ids = (el.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+    if (ids.indexOf(deleteNote.id) === -1) ids.push(deleteNote.id);
+    el.setAttribute('aria-describedby', ids.join(' '));
+    el.addEventListener('blur', function () {
+      var left = (el.getAttribute('aria-describedby') || '').split(/\s+/).filter(function (id) { return id && id !== deleteNote.id; });
+      if (left.length) el.setAttribute('aria-describedby', left.join(' '));
+      else el.removeAttribute('aria-describedby');
+    }, { once: true });
+  }
+
+  /* The sheet's close hands focus on through this row's pick (roadmap 33); the pick's choice gets the note */
+  function announceOnFocus(row, text) {
+    if (!row || !window.UZBankSheetFocus || !window.UZBankSheetFocus.handOn) return;
+    var pick = focusAfterRow(row);
+    window.UZBankSheetFocus.handOn(row, function () {
+      var target = pick();
+      describeOnce(target, text);
+      return target;
+    });
   }
 
   document.addEventListener('click', function (e) {
@@ -952,11 +969,12 @@
     var bookingId = currentBookingId;
     var builtInId = !bookingId && currentRow ? currentRow.getAttribute('data-builtin-id') : null;
     var noun = transfer ? 'transfer' : 'payment';
+    var row = currentRow;
     window.UZBankPaymentExitPrompt(function () {
+      announceOnFocus(row, transfer ? 'Transfer deleted.' : 'Payment deleted.');
       if (bookingId) pay.deleteBooking(bookingId);
       else if (builtInId) pay.removeBuiltIn(builtInId);
       closeOverlay();
-      announce(transfer ? 'Transfer deleted.' : 'Payment deleted.');
     }, {
       title:       'Delete ' + noun + '?',
       message:     'This ' + noun + ' will not be made. You can\'t undo it.',

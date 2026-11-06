@@ -323,13 +323,16 @@
       var section = btn.closest('.demo-reset');
       var status = section && section.querySelector('[data-demo-reset-status]');
       if (!status) return;
-      /* Empty first so a second reset is announced again */
+      var line =
+        '<svg class="demo-reset__status-icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>' +
+        '<span>Demo data reset.</span>';
+      /* Once the confirmation has closed, emptied first so a second reset is announced again (roadmap 60, D4) */
+      if (window.UZBankAnnounce) {
+        window.UZBankAnnounce(status, line);
+        return;
+      }
       status.textContent = '';
-      setTimeout(function () {
-        status.innerHTML =
-          '<svg class="demo-reset__status-icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>' +
-          '<span>Demo data reset.</span>';
-      }, 100);
+      setTimeout(function () { status.innerHTML = line; }, 100);
     }
 
     document.addEventListener('click', function (e) {
