@@ -369,6 +369,8 @@ Spec: `specs/2026-11-06-savings-standing-orders/` (branch `feature/savings-stand
 
 Found in Klaudiusz's manual check (2026-11-06). After Delete in a booking's sheet, VoiceOver says nothing; the status line "Payment deleted." (42) isn't read. To settle in its spec: why the live region is missed (inserted too late or too early, focus moving at the same moment, the region hidden), and the same check for the other status lines.
 
+Spec: `specs/2026-11-06-deleted-announcement/` (branch `feature/deleted-announcement`). Cause read in the code: the line was set while the confirmation, a modal dialog that makes the rest of the page inert, was still closing, in a region created on the spot. Settled in its interview: the region exists from load and is set only after the dialog has closed and focus has moved; Profile's "Demo data reset." gets the same fix; the gate includes Klaudiusz's VoiceOver check.
+
 ## 61. Household's All bookings shows an empty "Today" group
 
 Found in Klaudiusz's manual check (2026-11-06). Household's Executed tab shows a "Today" header with its balance and no rows. 56's D5 put it there for payments made in the app. To settle in its spec: the group shows only once it has a row, on All bookings and Account details alike.
