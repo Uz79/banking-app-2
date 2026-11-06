@@ -405,3 +405,7 @@ Klaudiusz, 2026-11-06. The "Open payment!" message appears after about 9 s; the 
 ## 68. Editing a standing order after its next payment leaves two payments
 
 Found during 59 (2026-11-06). Edit a standing order's next payment (stored as a one-off with the rule's id and date, 47 D10), then Edit the rule itself: the edited rule is a new booking that replaces the old one, so Pending lists both the earlier one-off and the new rule's next payment on the same date (seen with Rent on Savings: 1'700 and 1'750 on 01.12). Not from 59; the same on Household. To settle in its spec: whether an edit of the rule carries over or drops an edited next payment, and what the customer is told.
+
+## 69. All bookings: Household's card and the list's last balance disagree
+
+Found in Klaudiusz's check of 61 (2026-11-06). After the demo reset, Household's card on All bookings reads CHF 9'900.00 while the list's newest day (Yesterday) ends at 10'000.00, likely because the pending Apple (-100) is already subtracted from the card. To settle in its spec: whether the card shows the booked or the available balance, and a label when the two differ, the same on Account details and Overview.

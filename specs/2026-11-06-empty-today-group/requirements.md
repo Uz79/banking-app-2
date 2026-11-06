@@ -15,6 +15,7 @@ Roadmap item 61 (`specs/roadmap.md`), found in Klaudiusz's manual check on 2026-
 
 - Demo data moving with the real date (62)
 - What a group's header shows
+- Household's card against the list's last balance: roadmap 69
 
 ## Decisions
 
