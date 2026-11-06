@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 38658e82fecc5847967df73ca98b09012989ee9d -->
+<!-- changelog: last-commit 22402d5e12f1c9cfad4c177dd18264de8aa69f18 -->
 
 ### Changed
 - **Booking rows say who and what, not how** (roadmap 43). A row's icon now names the counterparty: money out, money in, or for a transfer between your own accounts the other account (Household's home, Savings' anchor). A small chip after the name says "Pending" for a booking not executed yet, or how often a standing order runs ("Monthly"), also on each executed payment of one; a one-off payment has none. The repeat icon no longer marks recurring rows. On All bookings and Account details, for the built-in bookings and the ones you make. Recurring payments made in the app are monthly for now. The Chip component gains a tonal variant for this.
@@ -17,6 +17,8 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **Legibility reaches the fridge and the investment opening** (roadmap 34). Profile > Legibility (Small, Regular, Large, the Typeface and the Font) and the size a User Type sets now apply in "How much should I invest?" and the opening, in Overview's sheet and on their own pages; both kept the default type before. The Legibility code moved into its own script, loaded by every page that had it and by these two. At Large on a phone the risk chart's end values sit in rows, the strategy names under the carousel stay inside their markers, and the summary's strategy chip goes under the name when there's no room. The Playground doesn't follow Legibility yet (roadmap 58).
+- Spec: `specs/2026-11-06-legibility-fridge-opening/`.
 - **Booking rows work with the keyboard** (roadmap 33, 52). On Account details and All bookings, Tab now reaches every booking, and Enter or Space opens its sheet, so Edit, Delete and Copy are in reach without a mouse. A screen reader hears a row as a button with its name, chip and amount. Closing the sheet puts focus back on the row. After a Delete, or an edit that replaces a row, focus moves to the next row, or the list's tab when none is left. Rows look as before.
 - Spec: `specs/2026-11-06-booking-rows-keyboard/`.
 - **Each account's All bookings lists its own bookings** (roadmap 56). Household and Savings showed the same example bookings, Savings' ones, and an edit made on the Savings view showed up only on Household's. Now Savings keeps its history, and Household lists Apple, Café, Pizza and Railway as on Account details, with the pending payments and standing orders, since payments go out from Household. Household's Today shows the same balance as on Account details. Savings' empty tabs say "No pending payments." and "No standing orders."

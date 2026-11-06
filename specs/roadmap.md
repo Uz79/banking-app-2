@@ -236,9 +236,11 @@ Found during 23 (2026-11-04). The booking rows on Account details (and the other
 
 Spec: `specs/2026-11-06-booking-rows-keyboard/` (branch `feature/booking-rows-keyboard`), with 52, its duplicate. Settled in its interview: a row is a `<button>`, read as its visible text; focus back on the row after the sheet, on the next row after a Delete; standard gate. Found in the build: the hand-on is a small API of the sheet focus helper, so an edit's Pay sheet uses it too; a standing order's next payment on Household reads "from Savings account" (57). Built 2026-11-06.
 
-## 34. Legibility doesn't reach the fridge and the opening
+## 34. Legibility doesn't reach the fridge and the opening (done)
 
 Found during 26 (2026-11-04). The fridge (`fridge-advisor.html`) and the investment opening load no `app-mp.js`, so Legibility's type and spacing scale, Typeface and Font don't apply inside them: a reader on Large gets default type there, in the Overview sheet and on their own pages. To settle in its spec: how the pages pick up the appearance settings (the shared code or a small boot), and a check of every fridge and opening layout at Small and Large, the result ring and the floating panel included.
+
+Spec: `specs/2026-11-06-legibility-fridge-opening/` (branch `feature/legibility-fridge-opening`). Settled in its interview: the Legibility code moves into its own `js/appearance.js`, loaded by every shell page and by the fridge and the opening; what breaks at Small or Large is fixed here; the Playground stays out (a new item, 58); standard gate. Found in the build: at Large on a phone the risk chart's end values and the strategy markers' names overflowed, the more so in a wide typeface (Source Serif 4), and the summary's strategy chip ran past the edge; the chart's values become rows at Large on a phone (the one per-setting rule) and the markers' names stop growing on a narrow screen. Built 2026-11-06.
 
 ## 35. Transfer sheet: with reduced motion, closing leaves an invisible layer over the page (done)
 
@@ -351,3 +353,7 @@ Spec: `specs/2026-11-06-bookings-per-account/` (branch `feature/bookings-per-acc
 ## 57. A standing order's next payment on Household reads "from Savings account"
 
 Found during 33 (2026-11-06). On Household's All bookings, the sheet of a standing order's next payment in Pending (Internet & Phone, seen by keyboard) names "Savings account" as the debit account, although since 56 the standing orders are Household's. Not changed by 33. To settle in its spec: where the instance's sheet takes its debit account (`instanceData` and `buildAllBookingsRowData` in `js/payment-details.js`, `ACCOUNT_SNAPSHOTS`), and the same check for the rule's own sheet in Recurring and for Rent and Netflix.
+
+## 58. Legibility doesn't reach the Playground
+
+Found while writing 34's spec (2026-11-06). The Playground (`playground.html`, admin only, opened as a full-screen sheet) loads neither `js/app-mp.js` nor, since 34, `js/appearance.js`, so Legibility's type and spacing scale, Typeface and Font don't apply there. To settle in its spec: loading `js/appearance.js` as the fridge and the opening do, and a check of the Playground's layouts at Small and Large, desktop and phone.
