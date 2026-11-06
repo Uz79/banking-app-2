@@ -13,14 +13,14 @@ Branch: `feature/deleted-announcement`. Run on the agent's server (port 5199), t
 - [x] The note leaves the row once it loses focus; no other element keeps it
 - [x] A pending transfer as the last row in Pending: the Pending tab takes focus described by "Transfer deleted."
 - [x] Account details: the next row, "Payment deleted."
-- [ ] With reduced motion: the same
+- [x] With reduced motion: the same (heard by Klaudiusz with VoiceOver, Chrome)
 - [x] Profile's Reset demo data: the line fills only after the confirmation closed; its icon shows as before
 
 ## 3. VoiceOver (Klaudiusz, D5): Chrome, then once in Safari
 
-- [ ] Delete a pending payment: VoiceOver says the next row, then "Payment deleted."
-- [ ] Delete a pending transfer: "Transfer deleted."
-- [ ] One of these with Reduce motion on
+- [x] Delete a pending payment: VoiceOver says the next row, then "Payment deleted." (Chrome and Safari)
+- [x] Delete a pending transfer: "Transfer deleted."
+- [x] One of these with Reduce motion on (a payment, Chrome)
 - [x] Profile, Reset demo data: "Demo data reset." (Klaudiusz, Chrome, after group 1)
 
 ## 4. Look
@@ -75,3 +75,6 @@ Checked on 2026-11-06 by the agent against `feature/deleted-announcement`, Chrom
 Checked on 2026-11-06 by Klaudiusz, VoiceOver in Chrome on 5175, after group 1: "Payment deleted." and "Transfer deleted." not heard (the next row was read, then nothing); "Demo data reset." heard; Reduce motion not run.
 
 Checked on 2026-11-06 by the agent after group 2 (D7), Chrome on 5199, desktop, real keys: on All bookings (Household) Delete of Swisscom put focus on Helvetia Insurance described by "Payment deleted.", gone after Tab; on Savings, the only pending row (a transfer) deleted put focus on the Pending tab described by "Transfer deleted."; on Account details Delete of Apple put focus on Cafe with "Payment deleted.". No console errors; the build passes. Not checked: VoiceOver (Klaudiusz's, next), Reduce motion, the baseline beyond the build.
+
+Checked on 2026-11-06 by Klaudiusz, VoiceOver round 2 on 5175, after D7: each heard after the next row is read: "Payment deleted." (Chrome), "Transfer deleted." (Chrome), "Payment deleted." with Reduce motion on (Chrome), "Payment deleted." (Safari). "Demo data reset." unchanged since round 1, not rerun.
+

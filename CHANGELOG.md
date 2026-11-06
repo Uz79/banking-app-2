@@ -17,6 +17,8 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **VoiceOver says "Payment deleted."** (roadmap 60). After Delete in a booking's sheet, VoiceOver read the next row and never the result. Now the row that takes focus (or the tab, when none is left) carries "Payment deleted." or "Transfer deleted." for that one focus, so it is read right after the row. Profile's "Demo data reset." is set once the confirmation has closed. Nothing changes on screen.
+- Spec: `specs/2026-11-06-deleted-announcement/`.
 - **Savings has its standing orders again** (roadmap 59). Since 56, Savings' Recurring and Pending were empty while its history showed Rent and Internet & Phone as monthly payments. Rent and Internet & Phone are Savings' again, as rules in Recurring and as next payments in Pending; Netflix stays Household's.
 - **An edit or a copy stays on its account.** Pay booked everything from Household. Now Edit and Copy of a Savings booking book from Savings: Pay's Debit account card names Savings with its balance, the result lands in Savings' lists and balance, and an amount over the balance says "You have CHF … in Savings account." A new payment from Pay is Household's, as before.
 - Spec: `specs/2026-11-06-savings-standing-orders/`.
