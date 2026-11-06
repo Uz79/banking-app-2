@@ -300,6 +300,8 @@ Spec: `specs/2026-11-05-transfer-status/` (branch `feature/transfer-status`), wi
 
 Added 2026-11-05. A standing order is a rule; its executions are bookings. Today tapping Rent in Recurring opens a payment sheet with Status "Pending". The rule gets a third variant of the booking sheet, next to Domestic Payment and Internal Account Transfer (not a new page): Status "Active", Frequency, Next execution; its Edit changes all future payments. An instance keeps its Pending or Executed sheet, and Edit on a pending instance changes that payment only (relates to 44). The Pending tab lists each standing order's next instance with the "Pending" chip (Rent, Netflix and Internet & Phone are missing there today). The built-in "Next on" dates are stale (01.11.2026 is past): derive them from today or move them into the future. Later, not in this item: "Skip this payment", pausing or deleting a standing order, a "Recent payments" list in the standing order's sheet.
 
+Spec: `specs/2026-11-06-standing-orders/` (branch `feature/standing-orders`), with 53. Settled in its interview: the next instance is derived from the rule each time a list renders, and an edit of it is stored as a one-off pending payment for that date; the rule and a pending instance both get Edit and Copy, no Delete; standard gate. Out of the branch: 44, 45, 37.
+
 ## 48. Chip: its own tokens, as in Figma
 
 Added 2026-11-05. `.chip--tonal` (43) uses `--color-btn-tonal-*`. Figma's Chip has its own Case=FilledTonal, bound to `chip/filled tonal/*` (background, border, foreground, hover, pressed; Des-Sys-Test, Component Library > Chip, node 769:106445). Those tokens are in `designs/tokens/_NEW/260617_tokens` but not in `designs/tokens/mapped`. Bring them into the token pipeline as `--color-chip-filled-tonal-*`, make the theme engine emit them for Multi-color themes, and point the chip at them. Settle the class name against Figma's "FilledTonal", and document the Secondary case in `designs/components/chip/chip.md` too.
@@ -323,6 +325,8 @@ Found during 42 (2026-11-05). A booking row is a plain `div` with a click handle
 ## 53. Built-in pending payments are dated in the past
 
 Found during 42 (2026-11-05). On All bookings, Swisscom and Helvetia Insurance read "Execute on 30.10.2026" and Tax office Zurich "03.11.2026", already past and still Pending. Edit opens them in Pay on the next possible day instead. The same staleness as 47's "Next on" dates for Recurring. To settle in its spec: dates derived from today, or moved into the future, for Pending and Recurring together with 47.
+
+Spec: `specs/2026-11-06-standing-orders/` (branch `feature/standing-orders`), with 47. Settled in its interview: Pending one-offs a few working days after today (Swisscom and Helvetia +2, Tax office +6); standing orders keep their day of the month (Rent the 1st, Netflix and Internet & Phone the 5th), the next one after today, a weekend moved to Monday.
 
 ## 54. Forms: an invalid amount shows where the error is (done)
 
