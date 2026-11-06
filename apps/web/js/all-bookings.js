@@ -699,7 +699,8 @@
       }
       /* The Today header follows the bookings: its static figure plus what moved today. */
       var value = today.querySelector('.booking-group__balance-value');
-      if (value) {
+      /* Household's header is the running balance data-render.js sets, as on Account details (roadmap 56, D6) */
+      if (value && !value.hasAttribute('data-day-balance')) {
         if (!value.hasAttribute('data-base')) value.setAttribute('data-base', value.textContent.replace(/'/g, ''));
         /* Plus what the bookings dropped by the limit had moved (roadmap 14 D10). */
         var carried = (pay.getState().carried || {})[accountKey] || 0;
@@ -732,6 +733,11 @@
     if (!root) return;
 
     var key = accountKeyFromQuery();
+    /* Each account lists its own built-in rows: the other account's groups, dividers and month chips go before
+       anything else reads the list (roadmap 56, D1, D11) */
+    document.querySelectorAll('[data-account]').forEach(function (el) {
+      if (el.getAttribute('data-account') !== key && el.closest('[data-view="all-bookings"]')) el.remove();
+    });
     applyAccount(root, key);
     document.addEventListener('uzbank:state-changed', function () { applyAccount(root, key); });
     window.__UZ_ACTIVE_ACCOUNT__ = key;
