@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 1fdd7e7d2cd42a849c5d0f0ead15f2dd3fc79e34 -->
+<!-- changelog: last-commit 38658e82fecc5847967df73ca98b09012989ee9d -->
 
 ### Changed
 - **Booking rows say who and what, not how** (roadmap 43). A row's icon now names the counterparty: money out, money in, or for a transfer between your own accounts the other account (Household's home, Savings' anchor). A small chip after the name says "Pending" for a booking not executed yet, or how often a standing order runs ("Monthly"), also on each executed payment of one; a one-off payment has none. The repeat icon no longer marks recurring rows. On All bookings and Account details, for the built-in bookings and the ones you make. Recurring payments made in the app are monthly for now. The Chip component gains a tonal variant for this.
