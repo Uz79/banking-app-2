@@ -3245,7 +3245,7 @@ a.show-all-btn {
 }
 
 /* Interactive fields reserve 16dp under the control for helper/error text (Figma 88dp frame). */
-.form-field:not(.form-field--readonly):not(.form-field--no-footer):not(:has(.debit-account)):not(:has(.form-field__optional-row)):not(:has(.form-field__error-row)):not(:has(.form-field__footer))::after {
+.form-field:not(.form-field--readonly):not(.form-field--no-footer):not(:has(.debit-account)):not(:has(.form-field__optional-row)):not(:has(.form-field__error-row:not([hidden]))):not(:has(.form-field__footer))::after {
   content: "";
   display: block;
   min-height: 1rem;
@@ -9785,14 +9785,22 @@ html.is-admin .admin-access__signed-out {
   margin-top: 0.125rem;
 }
 
-/* Error state (Figma TextField, Case = Error): error stroke on the control, icon and message in the row under it */
+/* Error state (Figma TextField, Case = Error): error stroke on the control, icon and message in the row under it.
+   The amount fields take it too (roadmap 54, D1), and the error row takes the info row's place (D3). */
 .form-field--error .form-field__text-wrap,
-.form-field--error .form-field__text-wrap:focus-within {
+.form-field--error .form-field__text-wrap:focus-within,
+.form-field--error .amount-input,
+.form-field--error .amount-input:focus-within {
   box-shadow: inset 0 0 0 var(--input-stroke-px, 1px) var(--color-fg-error, #ff0095);
 }
 
-.form-field--error .form-field__text-wrap:focus-within {
+.form-field--error .form-field__text-wrap:focus-within,
+.form-field--error .amount-input:focus-within {
   box-shadow: inset 0 0 0 var(--input-stroke-focus-px, 2px) var(--color-fg-error, #ff0095);
+}
+
+.form-field--error > .form-field__optional-row {
+  display: none;
 }
 
 /* = status error placeholder until status tokens exist */
@@ -9801,11 +9809,14 @@ html[data-theme="dark"] .form-field__error-row {
 }
 
 html[data-theme="dark"] .form-field--error .form-field__text-wrap,
-html[data-theme="dark"] .form-field--error .form-field__text-wrap:focus-within {
+html[data-theme="dark"] .form-field--error .form-field__text-wrap:focus-within,
+html[data-theme="dark"] .form-field--error .amount-input,
+html[data-theme="dark"] .form-field--error .amount-input:focus-within {
   box-shadow: inset 0 0 0 var(--input-stroke-px, 1px) #FF7AC6;
 }
 
-html[data-theme="dark"] .form-field--error .form-field__text-wrap:focus-within {
+html[data-theme="dark"] .form-field--error .form-field__text-wrap:focus-within,
+html[data-theme="dark"] .form-field--error .amount-input:focus-within {
   box-shadow: inset 0 0 0 var(--input-stroke-focus-px, 2px) #FF7AC6;
 }
 

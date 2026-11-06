@@ -214,6 +214,91 @@
     };
   }
 
+  /* ── Field errors (roadmap 54) ────────────────────────────────────
+   * A field typed into is checked when focus leaves it (D4), live once its
+   * error shows, and every field on Confirm (D5). Leaving it by pressing the
+   * close button checks nothing (D6). */
+
+  var amountField = amountInput ? amountInput.closest('.form-field') : null;
+  var typed = { amount: false, limit: false };
+  var closePressed = false;
+
+  function sharesLabel(n) {
+    return n + (n === 1 ? ' share' : ' shares');
+  }
+
+  function debtorBalance() {
+    var pay = window.UZBankPayState;
+    if (!pay || typeof pay.getState !== 'function') return null;
+    var amount = (pay.getState().accountBalances || {})[live.debtorKey];
+    return typeof amount === 'number' ? amount : null;
+  }
+
+  /* D7 to D10, D14: empty, zero, more than held, over the debit account's balance */
+  function amountProblem() {
+    if (!String(amountInput.value || '').trim()) return 'Enter an amount.';
+    var qty = parseQuantity(amountInput.value);
+    if (qty <= 0) return 'Enter at least 1 share.';
+    if (live.side === 'sell') {
+      if (qty > live.heldQuantity) return 'You hold ' + sharesLabel(live.heldQuantity) + '.';
+      return null;
+    }
+    var balance = debtorBalance();
+    if (balance !== null && qty * effectiveLimitPrice() > balance) {
+      var acc = DEBTOR_ACCOUNTS[live.debtorKey] || DEBTOR_ACCOUNTS.household;
+      return 'You have CHF ' + formatMoney(balance) + ' in ' + acc.name + '.';
+    }
+    return null;
+  }
+
+  function limitProblem() {
+    if (!limitInput || !limitField || limitField.hidden) return null;
+    if (!String(limitInput.value || '').trim()) return 'Enter a limit price.';
+    if (parseMoneyInput(limitInput.value) <= 0) return 'Enter a limit price above 0.';
+    return null;
+  }
+
+  var checks = [
+    { key: 'amount', input: amountInput, field: amountField, problem: amountProblem },
+    { key: 'limit', input: limitInput, field: limitField, problem: limitProblem }
+  ];
+
+  function checkField(c) {
+    var fe = window.UZBankFieldError;
+    if (!fe || !c.input || !c.field) return true;
+    var msg = c.problem();
+    if (msg) fe.show(c.field, c.input, msg);
+    else fe.clear(c.field, c.input);
+    return !msg;
+  }
+
+  /* Once an error shows, it follows the value (D4) */
+  function recheckShown() {
+    if (!window.UZBankFieldError) return;
+    checks.forEach(function (c) {
+      if (window.UZBankFieldError.isShown(c.field)) checkField(c);
+    });
+  }
+
+  function clearFieldErrors() {
+    typed.amount = false;
+    typed.limit = false;
+    if (!window.UZBankFieldError) return;
+    checks.forEach(function (c) { window.UZBankFieldError.clear(c.field, c.input); });
+  }
+
+  /* Confirm: every field, focus on the first error (D5) */
+  function checkAllFields() {
+    var first = null;
+    checks.forEach(function (c) {
+      if (!checkField(c) && !first) first = c.input;
+    });
+    if (first) {
+      try { first.focus(); } catch (err) { /* ignore */ }
+    }
+    return !first;
+  }
+
   function syncAmountClearVisibility(wrap) {
     if (!wrap) return;
     var input = wrap.querySelector('.amount-input__value');
@@ -242,7 +327,7 @@
 
     var debtor = debtorAccountWithBalance(live.debtorKey);
     if (availableEl) availableEl.textContent = debtor.currency + ' ' + debtor.balance;
-    if (inDepotEl) inDepotEl.textContent = 'pcs. ' + live.heldQuantity;
+    if (inDepotEl) inDepotEl.textContent = sharesLabel(live.heldQuantity);
   }
 
   function paintAccounts() {
@@ -274,7 +359,8 @@
     live.duration = 'daily';
     live.untilDateLabel = formatTodayDate();
 
-    if (amountInput) amountInput.value = '100';
+    /* 1 share: the old 100 was over Household's balance and above the holding (roadmap 54, D15) */
+    if (amountInput) amountInput.value = '1';
     if (orderTypeSelect) orderTypeSelect.value = 'limit';
 
     if (durationGroup) {
@@ -286,6 +372,7 @@
 
     hideConfirmation();
     paintForm();
+    clearFieldErrors();
   }
 
   function paintConfirmationDialog() {
@@ -497,6 +584,7 @@
         if (role === 'depot') live.depotKey = acc.key;
         else live.debtorKey = acc.key;
         paintAccounts();
+        recheckShown();
       }
     });
   }
@@ -539,6 +627,7 @@
 
   if (confirmBtn) {
     confirmBtn.addEventListener('click', function () {
+      if (!checkAllFields()) return;
       var totals = orderTotals();
       if (totals.quantity <= 0 || totals.total <= 0) return;
       /* The order button stays focused behind the confirmation; a second press must not record again */
@@ -558,14 +647,18 @@
 
   if (amountInput) {
     amountInput.addEventListener('input', function () {
+      typed.amount = true;
       paintSummary();
+      recheckShown();
       syncAmountClearVisibility(amountInput.closest('.amount-input'));
     });
   }
 
   if (limitInput) {
     limitInput.addEventListener('input', function () {
+      typed.limit = true;
       paintSummary();
+      recheckShown();
       syncAmountClearVisibility(limitInput.closest('.amount-input'));
     });
   }
@@ -580,7 +673,24 @@
     var wrap = e.target.closest && e.target.closest('.amount-input');
     if (!wrap || !overlay.contains(wrap)) return;
     setTimeout(function () { syncAmountClearVisibility(wrap); }, 0);
+    /* A field typed into is checked once focus has left it (its input and its clear button), unless the close
+       button took it (D4, D6) */
+    var c = checks.filter(function (x) { return x.input && wrap.contains(x.input); })[0];
+    if (!c || !typed[c.key] || e.relatedTarget === closeBtn) return;
+    if (e.relatedTarget && wrap.contains(e.relatedTarget)) return;
+    requestAnimationFrame(function () {
+      if (closePressed || isClosing || !overlay.classList.contains('modal-overlay--active')) return;
+      if (wrap.contains(document.activeElement)) return;
+      checkField(c);
+    });
   });
+
+  if (closeBtn) {
+    closeBtn.addEventListener('pointerdown', function () {
+      closePressed = true;
+      window.setTimeout(function () { closePressed = false; }, 400);
+    });
+  }
 
   overlay.addEventListener('click', function (e) {
     var clearBtn = e.target.closest && e.target.closest('.amount-input__clear');
@@ -590,8 +700,11 @@
     if (!input) return;
     e.preventDefault();
     input.value = '';
+    if (input === amountInput) typed.amount = true;
+    if (input === limitInput) typed.limit = true;
     input.focus();
     paintSummary();
+    recheckShown();
     syncAmountClearVisibility(wrap);
   });
 
@@ -599,6 +712,9 @@
     orderTypeSelect.addEventListener('change', function () {
       paintOrderTypeLayout();
       paintSummary();
+      /* Market hides the limit price and its error */
+      if (limitField && limitField.hidden && window.UZBankFieldError) window.UZBankFieldError.clear(limitField, limitInput);
+      recheckShown();
     });
   }
 

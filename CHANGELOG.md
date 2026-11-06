@@ -3,7 +3,7 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 98b923536eee6ecdc4727b7f59ed45d0e2f4ae37 -->
+<!-- changelog: last-commit f4230d4adefd97f66e72210a22beaead2ffe8050 -->
 
 ### Changed
 - **Booking rows say who and what, not how** (roadmap 43). A row's icon now names the counterparty: money out, money in, or for a transfer between your own accounts the other account (Household's home, Savings' anchor). A small chip after the name says "Pending" for a booking not executed yet, or how often a standing order runs ("Monthly"), also on each executed payment of one; a one-off payment has none. The repeat icon no longer marks recurring rows. On All bookings and Account details, for the built-in bookings and the ones you make. Recurring payments made in the app are monthly for now. The Chip component gains a tonal variant for this.
@@ -17,6 +17,11 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **An invalid amount says what's wrong, where it is** (roadmap 54). Buy, Sell, Pay and the transfer used to ignore an empty or zero amount, or go on without a word. Now the field is outlined, with a line under it: "Enter an amount.", "Enter an amount above 0.", "Enter at least 1 share.", "Enter a limit price.", "You hold 5 shares." The error shows when you leave a field you typed into and clears as soon as the value is valid; Confirm checks every field and moves focus to the first error. Closing a sheet never shows one. Screen readers hear the error with the field.
+- **No more spending money you don't have, for what runs now.** Buy checks the total against the debit account. Pay and the transfer check at Execute: a payment or transfer that runs now and is over the balance goes back to the amount with "You have CHF 9'900.00 in Household." A later or recurring one is not checked.
+- **The transfer no longer moves an amount you deleted.** An emptied field used to go on with the last amount (CHF 500); now it asks for one. Sell no longer accepts more shares than you hold.
+- **"share" and "shares" everywhere**, number first, in place of "pcs.": the trade sheet, the position page, the Custody account list and a trade's booking. The trade sheet now opens with 1 share instead of 100.
+- Spec: `specs/2026-11-05-amount-errors/`.
 - **Every booking's sheet offers what you can do with it** (roadmap 42). The built-in pending payments (Swisscom, Helvetia Insurance and Tax office Zurich on All bookings, Apple on Account details) showed no actions; now a pending payment has Edit, Delete and Copy, an executed payment out has Copy, and a pending transfer made in the app has Delete. Standing orders keep what they had until roadmap 47; trades and money in have none.
 - **An edited or deleted example row stays gone after a reload.** It used to come back next to its edited copy. Profile's "Reset demo data" brings the rows back. A date group or month left with no row goes with it, and an empty Pending tab says "No pending payments."
 - **Delete asks first** ("Delete payment?" or "Delete transfer?", Escape keeps it), then removes the booking; a transfer loses both legs. Screen readers hear "Payment deleted." Apple's CHF 100 counts in the Household balance only while Apple is listed, so deleting or editing it no longer counts it twice.

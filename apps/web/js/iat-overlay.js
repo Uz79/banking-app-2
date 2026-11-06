@@ -217,8 +217,9 @@
           if ((accountFor(live.toKey) || {}).mandate && !wasMandate) live.fromKey = 'household';
           if (live.toKey === live.fromKey) live.fromKey = pickOtherKey(live.toKey);
         }
-        paintRecipientStep();
+        paintRecipientStep(true);
         paintSummaryStep();
+        recheckAmount();
       }
     });
   }
@@ -275,11 +276,12 @@
     }
   }
 
-  function paintRecipientStep() {
+  /* keepAmount: an account was picked, so the amount stays as typed (roadmap 54, D13) */
+  function paintRecipientStep(keepAmount) {
     var from = accountFor(live.fromKey) || ACCOUNTS.savings;
     var to   = accountFor(live.toKey)   || ACCOUNTS.household;
 
-    if (amountInput) amountInput.value = formatAmount(live.amount);
+    if (amountInput && !keepAmount) amountInput.value = formatAmount(live.amount);
     if (currencyLabel) currencyLabel.textContent = live.currency;
     syncIatAmountClearVisibility();
 
@@ -338,11 +340,79 @@
 
   /* ── Step navigation ───────────────────────────────────────────── */
 
+  /* The amount as typed: an emptied field is 0, not the last amount (roadmap 54, D13) */
   function collectRecipientStep() {
     if (amountInput) {
-      var v = parseFloat(String(amountInput.value).replace(/'/g, ''));
-      if (!isNaN(v) && v > 0) live.amount = v;
+      var v = parseFloat(String(amountInput.value).replace(/'/g, '').replace(',', '.'));
+      live.amount = !isNaN(v) && v > 0 ? v : 0;
     }
+  }
+
+  /* ── Amount errors (roadmap 54) ────────────────────────────────────
+   * Checked when focus leaves the field after typing (D4), live once its error
+   * shows, and on Confirm (D5). The debit account's balance is checked at Execute
+   * for a transfer that runs now; from then on the first step checks it too (D10).
+   * Leaving the field by pressing close or back checks nothing (D6). */
+
+  var amountField = amountInput ? amountInput.closest('.form-field') : null;
+  var amountTyped = false;
+  var amountBalanceChecked = false;
+  var amountLeavePressed = false;
+
+  function fromBalance() {
+    var pay = window.UZBankPayState;
+    if (!pay || typeof pay.getState !== 'function') return null;
+    var amount = (pay.getState().accountBalances || {})[live.fromKey];
+    return typeof amount === 'number' ? amount : null;
+  }
+
+  /* D7, D8, D10, D14 */
+  function amountProblem() {
+    var trimmed = String(amountInput.value || '').trim();
+    if (!trimmed) return 'Enter an amount.';
+    var v = parseFloat(trimmed.replace(/'/g, '').replace(',', '.'));
+    if (isNaN(v) || v <= 0) return 'Enter an amount above 0.';
+    if (amountBalanceChecked && scheduleStatus() === 'executed') {
+      var balance = fromBalance();
+      var from = accountFor(live.fromKey);
+      if (balance !== null && from && v > balance) {
+        return 'You have CHF ' + formatAmount(balance) + ' in ' + from.name + '.';
+      }
+    }
+    return null;
+  }
+
+  function checkAmount(focus) {
+    var fe = window.UZBankFieldError;
+    if (!fe || !amountInput || !amountField) return true;
+    var msg = amountProblem();
+    if (msg) fe.show(amountField, amountInput, msg);
+    else fe.clear(amountField, amountInput);
+    if (msg && focus) {
+      try { amountInput.focus(); } catch (err) { /* ignore */ }
+    }
+    return !msg;
+  }
+
+  function recheckAmount() {
+    if (amountField && window.UZBankFieldError && window.UZBankFieldError.isShown(amountField)) checkAmount(false);
+  }
+
+  function clearAmountError() {
+    amountTyped = false;
+    amountBalanceChecked = false;
+    if (amountField && window.UZBankFieldError) window.UZBankFieldError.clear(amountField, amountInput);
+  }
+
+  /* Execute of a transfer that runs now and is over the debit account's balance: back to the first step (D10) */
+  function amountOverBalanceAtExecute() {
+    if (scheduleStatus() !== 'executed') return false;
+    var balance = fromBalance();
+    if (balance === null || !(live.amount > balance)) return false;
+    amountBalanceChecked = true;
+    goToStep('recipient');
+    checkAmount(true);
+    return true;
   }
 
   function goToStep(name, pushState) {
@@ -365,8 +435,9 @@
       confirmBtn.textContent = name === 'summary' ? 'Execute' : 'Confirm';
     }
 
-    /* Paint the step */
+    /* Paint the step; a shown amount error follows a schedule changed since (roadmap 54, D10) */
     paintStep(name);
+    if (name === 'recipient') recheckAmount();
     refreshIatScrollChrome();
 
     /* History */
@@ -381,13 +452,14 @@
     var current = currentStepName();
     if (current === 'recipient') {
       collectRecipientStep();
-      if (live.amount <= 0 || live.fromKey === live.toKey) return;
+      if (!checkAmount(true) || live.amount <= 0 || live.fromKey === live.toKey) return;
     }
     var idx = STEPS.indexOf(current);
     if (idx < STEPS.length - 1) {
       goToStep(STEPS[idx + 1]);
     } else {
       /* Last step (summary) → Execute records the transfer, then the confirmation says so (roadmap 15, D10) */
+      if (amountOverBalanceAtExecute()) return;
       commitTransfer();
       transferConfirmed = true;
       showConfirmation();
@@ -433,6 +505,7 @@
 
     /* Reset to first step; goToStep reads the amount back from the field, so the field shows it first */
     if (amountInput) amountInput.value = formatAmount(live.amount);
+    clearAmountError();
     goToStep('recipient', false);
 
     /* Slide in */
@@ -598,13 +671,37 @@
     amountInput.addEventListener('blur', function () {
       setTimeout(syncIatAmountClearVisibility, 0);
     });
-    amountInput.addEventListener('input', syncIatAmountClearVisibility);
+    amountInput.addEventListener('input', function () {
+      amountTyped = true;
+      recheckAmount();
+      syncIatAmountClearVisibility();
+    });
+    /* The whole field, with its clear button, is left (D4); not when close or back took the focus (D6) */
+    var amountWrap = amountInput.closest('.amount-input');
+    if (amountWrap) amountWrap.addEventListener('focusout', function (e) {
+      var to = e.relatedTarget;
+      if (!amountTyped || (to && (amountWrap.contains(to) || to === closeBtn || to === backBtn))) return;
+      requestAnimationFrame(function () {
+        if (amountLeavePressed || !overlay.classList.contains('modal-overlay--active')) return;
+        if (overlay.classList.contains('modal-overlay--closing') || currentStepName() !== 'recipient') return;
+        if (amountWrap.contains(document.activeElement)) return;
+        checkAmount(false);
+      });
+    });
+    [closeBtn, backBtn].forEach(function (btn) {
+      if (btn) btn.addEventListener('pointerdown', function () {
+        amountLeavePressed = true;
+        window.setTimeout(function () { amountLeavePressed = false; }, 400);
+      });
+    });
   }
   if (amountClear && amountInput) {
     amountClear.addEventListener('click', function (e) {
       e.preventDefault();
       amountInput.value = '';
       live.amount = 0;
+      amountTyped = true;
+      recheckAmount();
       amountInput.focus();
       syncIatAmountClearVisibility();
     });

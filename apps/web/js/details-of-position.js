@@ -221,7 +221,7 @@
       if (rows[0]) rows[0].querySelector('.data-card__value').textContent = DEPOSIT_ACCOUNT_LABEL;
       if (rows[1]) rows[1].querySelector('.data-card__value').textContent = 'CHF ' + formatMoney(position.acquisitionPrice);
       if (rows[2]) rows[2].querySelector('.data-card__value').textContent = 'CHF ' + formatMoney(position.value);
-      if (rows[3]) rows[3].querySelector('.data-card__value').textContent = 'pcs. ' + position.quantity;
+      if (rows[3]) rows[3].querySelector('.data-card__value').textContent = position.quantity + (position.quantity === 1 ? ' share' : ' shares');
       if (rows[4]) rows[4].querySelector('.data-card__value').textContent = 'CHF ' + formatSignedMoney(position.unrealizedPl);
       if (rows[5]) rows[5].querySelector('.data-card__value').textContent = 'CHF ' + formatSignedMoney(position.totalPl);
     }
