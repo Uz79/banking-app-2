@@ -27,6 +27,7 @@ Roadmap item 36 (`specs/roadmap.md`). With the macOS Reduce motion setting on, t
 | D4 | **Checked with the real macOS Reduce motion setting**, which Klaudiusz switches when asked, plus the browser's emulation for the rest (interview) | 35 found this bug only with the real setting |
 | D5 | **The proceed button's block stays as it is** unless the check shows it moving with reduced motion (its reduce rule has equal weight and comes later, so it should hold) | Read in the code; confirmed in the check |
 | D6 | **No new storage key, no markup change** | CSS only |
+| D7 | **Motion specimens No. 009's code sample follows the rule** (the `no-preference` wrapper and the disabled `:not`) (build) | It shows the core CSS to copy; a stale copy would bring the bug back |
 
 ## Context
 

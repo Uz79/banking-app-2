@@ -6,8 +6,8 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 1. The nudge loops only without reduced motion (D1 to D3, D5, D6)
 
-- [ ] `apps/web/css/styles.css`, Arrow nudge block: the forward and back rules inside `@media (prefers-reduced-motion: no-preference)`; `:disabled` and `[aria-disabled="true"]` in their `:not(…)`; the old reduce rule and the separate disabled rule removed; the block's comment updated
-- [ ] Check: with reduce emulated, no arrow on Overview, Account details or a flow step has an animation; without it, they nudge as before and pause on hover
+- [x] `apps/web/css/styles.css`, Arrow nudge block: the forward and back rules inside `@media (prefers-reduced-motion: no-preference)`; `:disabled` and `[aria-disabled="true"]` in their `:not(…)`; the old reduce rule and the separate disabled rule removed; the block's comment updated
+- [x] Check: with reduce emulated, no arrow on Overview, Account details or a flow step has an animation; without it, they nudge as before and pause on hover
 
 ## 2. The check with the real setting (D4, D5)
 
