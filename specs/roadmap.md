@@ -51,7 +51,7 @@ A settings button in the Playground HUD that pauses the run and opens a settings
 
 Spec: `specs/2026-10-25-playground-settings-dialog/` (branch `feature/playground-settings-dialog`). Decided in its interview: the four visual parameters are render quality, camera distance, effects and fog distance; Sound moves into the dialog from the HUD; Theme is Light and Dark only (Multi-color themes stay in Profile); the visual parameters are remembered in `uzBankWebPlaygroundSettings`. Still to do first: measure the paused theme switch on a throttled CPU (below).
 
-Original open questions: which visual parameters (for example render quality or pixel ratio, camera distance), whether Sound moves into the dialog from the HUD, and whether Multi-color themes are picked here or stay in Profile. Measure the paused theme switch on a throttled CPU first: a mid-run switch on a desktop cost about one extra frame, a phone is untested. Spec: `specs/2026-10-25-playground-settings-dialog/` (branch `feature/playground-settings-dialog`). Decided in its interview: the four visual parameters are render quality, camera distance, effects and fog distance; Sound moves into the dialog from the HUD; Theme is Light and Dark only; the visual parameters are remembered in `uzBankWebPlaygroundSettings`.
+Original open questions: which visual parameters (for example render quality or pixel ratio, camera distance), whether Sound moves into the dialog from the HUD, and whether Multi-color themes are picked here or stay in Profile. Measure the paused theme switch on a throttled CPU first: a mid-run switch on a desktop cost about one extra frame, a phone is untested.
 
 ## 8. "How much should I invest?": the fridge advisor (8a, 8c, 8d and 8e done)
 
@@ -377,9 +377,11 @@ Found in Klaudiusz's manual check (2026-11-06). Household's Executed tab shows a
 
 Spec: `specs/2026-11-06-empty-today-group/` (branch `feature/empty-today-group`). Settled in its interview: any group without a row shown is hidden, on both pages; June's band moves to the first group shown; built before 62; standard gate. Built 2026-11-06.
 
-## 62. Demo data moves with the real date
+## 62. Demo data moves with the real date (done)
 
 Klaudiusz, 2026-11-06. Every built-in booking is dated relative to today, so "Today" and "Yesterday" are right whenever the app is opened, and the month chips come from the data (the last months up to now). Household gets several months of bookings again, so scrolling, the month chips and deleting the last row of a month can be checked there. Widens 53 (Pending and Recurring dated from today) to Executed. To settle in its spec: how many months, the balances per day as the dates move, Account details and Overview agreeing, and the demo reset.
+
+Spec: `specs/2026-11-06-demo-data-dates/` (branch `feature/demo-data-dates`), with 69. Settled in its interview: every built-in booking moves into one JS list that both pages draw from, each day's balance worked out from it; calendar days (standing items on their day, the current month and the four before it); a dev-only `?today=` on localhost to check other dates. Found in the build: the old sheet maps' fixed amounts contradicted the rows, so a row's sheet takes its amount from the row (D20); a standing order's next date now picks its first working-day occurrence after today (D19). Built 2026-11-06.
 
 ## 63. Month band background: a separator ink at 5%
 
@@ -401,11 +403,12 @@ Klaudiusz, 2026-11-06. On Motion specimens, the Focus-mode choreography sample's
 
 Klaudiusz, 2026-11-06. The "Open payment!" message appears after about 9 s; the baseline smoke test and `js/status-feed.js`'s comment say 12 s (8 s was measured on 2026-11-05). To settle: what the timer actually counts from, then align the code or the baseline.
 
-
 ## 68. Editing a standing order after its next payment leaves two payments
 
 Found during 59 (2026-11-06). Edit a standing order's next payment (stored as a one-off with the rule's id and date, 47 D10), then Edit the rule itself: the edited rule is a new booking that replaces the old one, so Pending lists both the earlier one-off and the new rule's next payment on the same date (seen with Rent on Savings: 1'700 and 1'750 on 01.12). Not from 59; the same on Household. To settle in its spec: whether an edit of the rule carries over or drops an edited next payment, and what the customer is told.
 
-## 69. All bookings: Household's card and the list's last balance disagree
+## 69. All bookings: Household's card and the list's last balance disagree (done)
 
 Found in Klaudiusz's check of 61 (2026-11-06). After the demo reset, Household's card on All bookings reads CHF 9'900.00 while the list's newest day (Yesterday) ends at 10'000.00, likely because the pending Apple (-100) is already subtracted from the card. To settle in its spec: whether the card shows the booked or the available balance, and a label when the two differ, the same on Account details and Overview.
+
+Spec: `specs/2026-11-06-demo-data-dates/` (branch `feature/demo-data-dates`), with 62. Settled in its interview: the cards show the booked balance; a pending payment, Apple included, counts nowhere until it executes, so no label is needed. Built 2026-11-06.

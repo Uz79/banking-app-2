@@ -205,15 +205,57 @@
     };
   }
 
+  /* On the bars, as the chips are drawn anew from the list (roadmap 62, D13) */
   function bindMonthChips(root) {
-    root.querySelectorAll('[data-bookings-month]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        if (btn.getAttribute('tabindex') === '-1' || btn.getAttribute('aria-disabled') === 'true') return;
-        var monthKey = btn.getAttribute('data-bookings-month');
-        setActiveMonth(root, monthKey);
-        scrollToMonth(root, monthKey);
-      });
+    root.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-bookings-month]');
+      if (!btn || !root.contains(btn)) return;
+      if (btn.getAttribute('tabindex') === '-1' || btn.getAttribute('aria-disabled') === 'true') return;
+      var monthKey = btn.getAttribute('data-bookings-month');
+      setActiveMonth(root, monthKey);
+      scrollToMonth(root, monthKey);
     });
+  }
+
+  var MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  /* One chip per month the Executed list shows, oldest first, in the flow bar and the docked bar (D13). The active
+     month stays if it is still listed, else the newest; the year only when the list crosses one, as the bands. */
+  function renderMonthChips(root) {
+    var panel = root.querySelector('[data-all-bookings-panel="executed"]');
+    var flowBar = root.querySelector('[data-all-bookings-month-bar]');
+    var dockBar = root.querySelector('.all-bookings__month-bar--docked');
+    if (!panel || !flowBar || !dockBar) return;
+    var months = [];
+    panel.querySelectorAll('.booking-group:not([hidden])').forEach(function (g) {
+      var key = g.getAttribute('data-bookings-month-start');
+      if (key && months.indexOf(key) === -1) months.push(key);
+    });
+    months.sort();
+    var years = {};
+    months.forEach(function (key) { years[key.slice(0, 4)] = true; });
+    var crossesYear = Object.keys(years).length > 1;
+    var current = root.querySelector('.all-bookings__month-chip--active');
+    var active = current && months.indexOf(current.getAttribute('data-bookings-month')) !== -1
+      ? current.getAttribute('data-bookings-month')
+      : months[months.length - 1];
+    var focused = document.activeElement;
+    var focusKey = focused && focused.hasAttribute && focused.hasAttribute('data-bookings-month') ? focused.getAttribute('data-bookings-month') : null;
+    var focusDocked = !!(focusKey && dockBar.contains(focused));
+    var merged = document.body.classList.contains('all-bookings--month-merged');
+    [[flowBar, !merged], [dockBar, merged]].forEach(function (def) {
+      var bar = def[0];
+      bar.innerHTML = months.map(function (key) {
+        var on = key === active;
+        return '<button type="button" class="all-bookings__month-chip' + (on ? ' all-bookings__month-chip--active' : '') +
+          '" data-bookings-month="' + key + '" aria-pressed="' + (on ? 'true' : 'false') + '"' + (def[1] ? '' : ' tabindex="-1"') + '>' +
+          MONTH_SHORT[parseInt(key.slice(5, 7), 10) - 1] + (crossesYear ? ' ' + key.slice(0, 4) : '') + '</button>';
+      }).join('');
+    });
+    if (focusKey) {
+      var again = (focusDocked ? dockBar : flowBar).querySelector('[data-bookings-month="' + focusKey + '"]');
+      if (again) again.focus({ preventScroll: true });
+    }
   }
 
   function applyAccount(root, key) {
@@ -499,7 +541,8 @@
   }
 
   /* In-app bookings (D10): the payments, transfers and trades of the viewed account, from the shared state.
-     Executed ones go into the Today group (newest first), pending and recurring ones into their tab under a date label. */
+     Executed ones go into their day's group (renderBuiltIns), pending and recurring ones into their tab under a date
+     label. */
   function escapeHtml(text) {
     return String(text).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -589,7 +632,7 @@
    * next execution, unless an edit of that payment is stored (D10). Derived
    * each time, never stored. Into the group of that date if there is one. */
 
-  function instanceRow(pay, rule) {
+  function instanceRow(rule) {
     var row = document.createElement('button');
     row.type = 'button';
     row.className = 'booking-row';
@@ -608,42 +651,6 @@
         '<span class="booking-row__value">' + escapeHtml(rule.value) + '</span>' +
       '</span>';
     return row;
-  }
-
-  function rulesOf(root, pay, mine) {
-    var removed = pay.getState().removedBuiltIns || [];
-    var rules = [];
-    root.querySelectorAll('[data-all-bookings-panel="recurring"] [data-builtin-id]').forEach(function (row) {
-      var id = row.getAttribute('data-builtin-id');
-      if (removed.indexOf(id) !== -1 || !row.getAttribute('data-execute-on')) return;
-      var use = row.querySelector('.booking-row__icon use');
-      var cur = row.querySelector('.booking-row__currency');
-      var val = row.querySelector('.booking-row__value');
-      var name = row.querySelector('.booking-row__name');
-      rules.push({
-        id: id,
-        date: row.getAttribute('data-execute-on'),
-        type: row.getAttribute('data-type') || 'payment',
-        icon: use ? use.getAttribute('href').replace(/^#/, '') : 'i-corner-up-right',
-        name: name ? name.textContent : '',
-        currency: cur ? cur.textContent : 'CHF',
-        value: val ? val.textContent : ''
-      });
-    });
-    mine.forEach(function (b) {
-      if (b.status !== 'recurring' || !b.executeOn) return;
-      var look = pay.bookingRowLook(b);
-      rules.push({
-        id: b.id,
-        date: b.executeOn,
-        type: look.type,
-        icon: look.icon,
-        name: b.recipientName,
-        currency: b.currency,
-        value: (b.direction === 'in' ? '+' : '-') + pay.formatMoney(b.amount)
-      });
-    });
-    return rules;
   }
 
   /* The group of that date in the panel, or a new one in date order (roadmap 24, D12) */
@@ -677,14 +684,13 @@
     return group;
   }
 
-  function renderInstances(root, pay, mine) {
+  function renderInstances(root, accountKey) {
     var panel = root.querySelector('[data-all-bookings-panel="pending"]');
-    if (!panel) return;
-    var all = pay.getState().bookings || [];
-    rulesOf(root, pay, mine).forEach(function (rule) {
-      var edited = all.some(function (b) { return b.ruleId === rule.id && b.occurrence === rule.date; });
-      if (edited) return;
-      dateGroup(panel, 'Execute on ', rule.date).appendChild(instanceRow(pay, rule));
+    var list = window.UZBankBuiltInBookings;
+    if (!panel || !list) return;
+    /* The derivation the Account details' pending line shares (roadmap 62, D15) */
+    list.nextPayments(accountKey).forEach(function (rule) {
+      dateGroup(panel, 'Execute on ', rule.date).appendChild(instanceRow(rule));
     });
   }
 
@@ -697,28 +703,7 @@
       return (b.accountKey || 'household') === accountKey;
     });
 
-    var today = root.querySelector('[data-all-bookings-panel="executed"] .booking-group[data-day="today"]');
-    if (today) {
-      var header = today.querySelector('.booking-group__header');
-      var executed = mine.filter(function (b) { return (b.status || 'executed') === 'executed'; });
-      var after = header;
-      for (var i = executed.length - 1; i >= 0; i--) {
-        var row = buildRow(pay, executed[i]);
-        after.parentNode.insertBefore(row, after.nextSibling);
-        after = row;
-      }
-      /* The Today header follows the bookings: its static figure plus what moved today. */
-      var value = today.querySelector('.booking-group__balance-value');
-      /* Household's header is the running balance data-render.js sets, as on Account details (roadmap 56, D6) */
-      if (value && !value.hasAttribute('data-day-balance')) {
-        if (!value.hasAttribute('data-base')) value.setAttribute('data-base', value.textContent.replace(/'/g, ''));
-        /* Plus what the bookings dropped by the limit had moved (roadmap 14 D10). */
-        var carried = (pay.getState().carried || {})[accountKey] || 0;
-        var net = executed.reduce(function (sum, b) { return sum + (b.direction === 'in' ? b.amount : -b.amount); }, carried);
-        value.textContent = pay.formatMoney(Math.round((parseFloat(value.getAttribute('data-base')) + net) * 100) / 100);
-      }
-    }
-
+    /* Executed bookings made in the app are drawn with the built-in ones, on their day (renderBuiltIns, D12) */
     [['pending', 'Execute on '], ['recurring', 'Next on ']].forEach(function (def) {
       var panel = root.querySelector('[data-all-bookings-panel="' + def[0] + '"]');
       if (!panel) return;
@@ -735,7 +720,89 @@
       });
     });
 
-    renderInstances(root, pay, mine);
+    renderInstances(root, accountKey);
+  }
+
+  /* ── The lists from the built-in list (roadmap 62, D1, D2, D8, D12) ─────
+   * Every render draws the three panels anew: Executed day by day, newest
+   * first, each day's balance worked out from the bookings, the ones made in
+   * the app on their own day; Pending and Recurring by date. The first group
+   * of each month carries data-bookings-month-start for its band and chip. */
+
+  function newGroup(accountKey, label, balance, day) {
+    var group = document.createElement('div');
+    group.className = 'booking-group';
+    group.setAttribute('data-account', accountKey);
+    if (day) group.setAttribute('data-day', day);
+    group.innerHTML = '<header class="booking-group__header"><span class="booking-group__label">' + escapeHtml(label) + '</span>' +
+      (balance != null
+        ? '<span class="booking-group__balance"><span class="booking-group__balance-currency">CHF</span>' +
+          '<span class="booking-group__balance-value">' + escapeHtml(balance) + '</span></span>'
+        : '') +
+      '</header>';
+    return group;
+  }
+
+  function newDivider(accountKey) {
+    var divider = document.createElement('div');
+    divider.className = 'divider';
+    divider.setAttribute('data-account', accountKey);
+    return divider;
+  }
+
+  function fillPanel(panel, groups, accountKey) {
+    var end = panel.querySelector(':scope > [data-bookings-empty]');
+    Array.prototype.slice.call(panel.children).forEach(function (el) {
+      if (el !== end) el.remove();
+    });
+    groups.forEach(function (g, i) {
+      if (i > 0) panel.insertBefore(newDivider(accountKey), end);
+      panel.insertBefore(g, end);
+    });
+  }
+
+  function renderBuiltIns(root, accountKey) {
+    var list = window.UZBankBuiltInBookings;
+    var pay = window.UZBankPayState;
+    if (!list || !pay) return;
+    var t = list.today();
+
+    var executed = root.querySelector('[data-all-bookings-panel="executed"]');
+    if (executed) {
+      var month = null;
+      fillPanel(executed, list.days(accountKey, t).map(function (d) {
+        var label = list.dayLabel(d.date, t);
+        var group = newGroup(accountKey, label, pay.formatMoney(d.balance),
+          label === 'Today' ? 'today' : label === 'Yesterday' ? 'yesterday' : d.day);
+        if (d.day.slice(0, 7) !== month) {
+          month = d.day.slice(0, 7);
+          group.setAttribute('data-bookings-month-start', month);
+        }
+        d.stored.forEach(function (b) {
+          var row = buildRow(pay, b);
+          /* Not 'state': renderBookings clears those before it draws Pending and Recurring */
+          row.setAttribute('data-source', 'day');
+          group.appendChild(row);
+        });
+        d.builtIn.forEach(function (b) { group.appendChild(list.row(b)); });
+        return group;
+      }), accountKey);
+    }
+
+    [['pending', 'Execute on ', list.pending(accountKey, t)], ['recurring', 'Next on ', list.standingOrders(accountKey, t)]].forEach(function (def) {
+      var panel = root.querySelector('[data-all-bookings-panel="' + def[0] + '"]');
+      if (!panel) return;
+      var groups = [];
+      var byLabel = {};
+      def[2].forEach(function (b) {
+        if (!byLabel[b.label]) {
+          byLabel[b.label] = newGroup(accountKey, def[1] + b.label, null, null);
+          groups.push(byLabel[b.label]);
+        }
+        byLabel[b.label].appendChild(list.row(b));
+      });
+      fillPanel(panel, groups, accountKey);
+    });
   }
 
   function init() {
@@ -743,11 +810,6 @@
     if (!root) return;
 
     var key = accountKeyFromQuery();
-    /* Each account lists its own built-in rows: the other account's groups, dividers and month chips go before
-       anything else reads the list (roadmap 56, D1, D11) */
-    document.querySelectorAll('[data-account]').forEach(function (el) {
-      if (el.getAttribute('data-account') !== key && el.closest('[data-view="all-bookings"]')) el.remove();
-    });
     applyAccount(root, key);
     document.addEventListener('uzbank:state-changed', function () { applyAccount(root, key); });
     window.__UZ_ACTIVE_ACCOUNT__ = key;
@@ -755,11 +817,12 @@
     var search = bindSearch(root);
     bindTabs(root, search);
     function refreshBookings() {
-      /* The built-in dates first, so in-app groups sort among them (roadmap 53, D14) */
-      if (window.UZBankBuiltInRows && window.UZBankBuiltInRows.date) window.UZBankBuiltInRows.date(root);
+      /* The account's own built-in rows, dated from today, first, so in-app groups sort among them (roadmap 62, D1) */
+      renderBuiltIns(root, key);
       renderBookings(root, key);
-      /* Before the month bands, so a month with no row left gets none (roadmap 42, D5) */
+      /* Before the chips and the bands, so a month with no row left gets neither (roadmap 42, D5) */
       if (window.UZBankBuiltInRows) window.UZBankBuiltInRows.sync(root);
+      renderMonthChips(root);
       renderMonthSeparators(root);
       if (search) {
         search.index();

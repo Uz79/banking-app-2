@@ -3,9 +3,15 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 7f3f8b6e1c9021e5d3b43b001587f38048726e3e -->
+<!-- changelog: last-commit 6b358bb111282de4f854d80c4ba0b85bd72102c8 -->
 
 ### Changed
+- **The example bookings move with the real date** (roadmap 62). "Today" and "Yesterday" are right whenever the app is opened, and every example booking is dated from today: Rent on the 1st, Netflix and Internet & Phone on the 5th, Salary on the 25th (a weekend moved to Monday), the rest scattered over the current month and the four before it. The month chips come from the months listed, with the year when the list crosses one. Household has five months of its own again, with CHF 1'500 from Savings each month. On Account details each account shows its two newest days.
+- **Every day's balance adds up.** Each day's balance is worked out from the bookings, so the newest day always ends at the account's balance; Savings' list said 25'320.00 under a card of 25'000.00. A payment you make goes under the day you made it.
+- **A pending payment counts nowhere until it runs** (roadmap 69). Household read 9'900.00 because the pending Apple (-100) was already taken off, while its list ended at 10'000.00; now the balance is 10'000.00 on Overview, Account details, All bookings and Pay, and the Overview total is 100 higher.
+- **"Pending payments" on Account details is real.** It said "until 31.05.2026" with a fixed CHF 2'500.00; now it adds up what the account's Pending tab lists, on Household and Savings, and hides when nothing is pending.
+- **A booking's sheet shows the row's amount.** Internet & Phone's sheet said -60.00 under a -59.00 row; Salary's message no longer names May. "Transfer from Savings" opens from Savings to Household.
+- Spec: `specs/2026-11-06-demo-data-dates/`.
 - **Booking rows say who and what, not how** (roadmap 43). A row's icon now names the counterparty: money out, money in, or for a transfer between your own accounts the other account (Household's home, Savings' anchor). A small chip after the name says "Pending" for a booking not executed yet, or how often a standing order runs ("Monthly"), also on each executed payment of one; a one-off payment has none. The repeat icon no longer marks recurring rows. On All bookings and Account details, for the built-in bookings and the ones you make. Recurring payments made in the app are monthly for now. The Chip component gains a tonal variant for this.
 - **Built-in bookings open with their real status** (roadmap 43). Pending and recurring ones on All bookings read "Executed" in their sheet; now they read "Pending". Rent no longer opens as a transfer between accounts. Built-in bookings show no Edit until an edit of one can last past a reload (roadmap 42).
 - Spec: `specs/2026-11-05-booking-chips/`.
