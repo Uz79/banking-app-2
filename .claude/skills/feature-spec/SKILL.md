@@ -1,6 +1,6 @@
 ---
 name: feature-spec
-description: Start the next UZ Bank feature the spec-driven way. Finds the next item in the roadmap, interviews before writing anything.
+description: Start the next UZ Bank feature the spec-driven way. Finds the first item under Next in the roadmap, interviews before writing anything.
 ---
 
 # Feature spec
@@ -11,7 +11,7 @@ Turns the next roadmap item (or a requested change) into a reviewed spec on its 
 
 Read these before asking anything, so the questions are specific:
 
-- `specs/roadmap.md`: the next item is the first one not marked done. If the user asked for a specific change, that is the item.
+- `specs/roadmap.md`: it has four sections, Next (in order), Later (not scheduled, smallest first), Parked (waiting on Klaudiusz) and Done. The next item is the first one under Next. If the user asked for a specific change, that is the item, wherever it sits; never start a Parked item without being asked. If Next is empty, ask which Later item to take.
 - `specs/mission.md` (principles, audience) and `specs/tech-spec.md` (stack, pages, the "Not using" list, the Decisions table).
 - `AGENTS.md`, especially:
   - Protect the presentable state: `main` deploys on every push.
@@ -65,7 +65,7 @@ Respect the standing rules: vanilla JS and CSS, no new runtime dependency withou
 
 ### plan.md
 
-Task groups with `- [ ]` checkboxes, naming the files to touch. Each group ends with something visible in the browser, so it can be reviewed on its own. End with a wrap-up group: `npm run build`, the validation pass, the baseline smoke test, and the docs (mark the roadmap item done, `CHANGELOG.md` under `Unreleased`, `tech-spec.md` if pages, systems or decisions changed, `apps/web/README.md` if storage keys or files changed).
+Task groups with `- [ ]` checkboxes, naming the files to touch. Each group ends with something visible in the browser, so it can be reviewed on its own. End with a wrap-up group: `npm run build`, the validation pass, the baseline smoke test, and the docs (mark the roadmap item "(done)" and move it to the Done section, `CHANGELOG.md` under `Unreleased`, `tech-spec.md` if pages, systems or decisions changed, `apps/web/README.md` if storage keys or files changed).
 
 ### validation.md
 
@@ -75,7 +75,7 @@ End the file with a dated line recording when and how it was actually checked, e
 
 ### Also update
 
-`specs/roadmap.md`: link the new spec folder against the item, and fix anything stale you found.
+`specs/roadmap.md`: link the new spec folder against the item, and fix anything stale you found. If the item was not already under Next, say where it sat.
 
 ## 5. Hand back
 
