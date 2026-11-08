@@ -3,9 +3,11 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit ad28c085229258beae343ddd6feee45251e64b61 -->
+<!-- changelog: last-commit 0b3566aed7cd8bfd533df7f1f66d5337fcbf09d2 -->
 
 ### Changed
+- **Buy and Sell sheet: the price and the account labels** (roadmap 55, 65). "Price" always shows the market price; typing a limit used to overwrite it (389.22 became 100.00). "Expected total price" still uses the typed limit. In Buy, "Available in" names the chosen account ("Available in Savings account") and follows the account picker; it said Household whatever was chosen. In Sell, the "Available in" line is gone, and the account field and its picker read "Credit account".
+- Spec: `specs/2026-11-08-trade-sheet-account-and-price/`.
 - **Every form field has the same anatomy and height** (roadmap 64). A 24dp label row, a 4dp gap, the control, a 4dp gap and a 16dp text row that always exists and holds the helper or the error, so a field is 88dp (80dp Small) empty, with a helper and with an error. Buy's Limit no longer pushes the order-duration control down when its error shows. Applies to Pay, the transfer, Buy and Sell, the admin sign-in and the Profile preview. The error's markup and ARIA are unchanged. Fields are about 4dp shorter than before, so sheets gain room. Buy's zero-limit message is shortened to "Enter a price above 0." so it fits the half-width Limit field at Large type.
 - **A Form field specimen on the Components page** shows the anatomy with its 24 / 4 / 16 marks, empty, with a helper and with an error.
 - **The month band on All bookings is a faint tint** (roadmap 63). It is `--color-bg` under the new `--color-separator-subtle` (the neutral ink at 5%), so contrast does not depend on what is behind it. The month label is now `--color-fg` at the small text size: 8.02:1 and 10.56:1 in the sage Multi-color theme (Light, Dark), 13.49:1 and 13.40:1 in the plain look. It was 3.73:1 in Multi-color Light.
