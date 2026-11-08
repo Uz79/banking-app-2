@@ -32,9 +32,9 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 5. Wrap-up
 
-- [ ] `npm run build` in `apps/web` succeeds with no new warnings
-- [ ] Every item of `validation.md`, then the baseline smoke test (copied into it)
-- [ ] `specs/roadmap.md`: 63 and 64 marked done, with what was settled and found
-- [ ] `specs/tech-spec.md`: the "Field errors" row gains the anatomy; a new row for `--color-separator-subtle` and where the engine, generator and boot script carry it
-- [ ] `CHANGELOG.md` under `Unreleased` (run `/changelog` and tidy)
-- [ ] `apps/web/README.md`: no storage key or file list changes expected; check
+- [x] `npm run build` in `apps/web` succeeds with no new warnings
+- [ ] Every item of `validation.md`, then the baseline smoke test (copied into it) (run; the items not run are unticked there)
+- [x] `specs/roadmap.md`: 63 and 64 marked done, with what was settled and found
+- [x] `specs/tech-spec.md`: the "Field errors" row gains the anatomy; a new row for `--color-separator-subtle` and where the engine, generator and boot script carry it
+- [x] `CHANGELOG.md` under `Unreleased` (run `/changelog` and tidy)
+- [x] `apps/web/README.md`: no storage key or file list changes expected; check

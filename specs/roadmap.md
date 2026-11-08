@@ -383,17 +383,17 @@ Klaudiusz, 2026-11-06. Every built-in booking is dated relative to today, so "To
 
 Spec: `specs/2026-11-06-demo-data-dates/` (branch `feature/demo-data-dates`), with 69. Settled in its interview: every built-in booking moves into one JS list that both pages draw from, each day's balance worked out from it; calendar days (standing items on their day, the current month and the four before it); a dev-only `?today=` on localhost to check other dates. Found in the build: the old sheet maps' fixed amounts contradicted the rows, so a row's sheet takes its amount from the row (D20); a standing order's next date now picks its first working-day occurrence after today (D19). Built 2026-11-06.
 
-## 63. Month band background: a separator ink at 5%
+## 63. Month band background: a separator ink at 5% (done)
 
 Klaudiusz, 2026-11-06. The month bands on All bookings (24) use the solid secondary background. They should use a separator-style ink at 5% opacity, as a token with Light and Dark values (and the Multi-color themes). 10% stays for strokes. To settle in its spec: the token's name and place in the pipeline, and the theme engine.
 
-Spec: `specs/2026-11-08-field-anatomy-and-band-ink/` (branch `feature/field-anatomy-and-band-ink`), with 64. Settled in its interview: the token is `--color-separator-subtle`, derived by the theme engine and emitted by the token generator (no Figma import); the band's label stays as it is, its contrast checked in every theme.
+Spec: `specs/2026-11-08-field-anatomy-and-band-ink/` (branch `feature/field-anatomy-and-band-ink`), with 64. Settled in its interview: the token is `--color-separator-subtle`, derived by the theme engine and emitted by the token generator (no Figma import); the band's label stays as it is, its contrast checked in every theme. Found in the build: the label at 70% secondary ink measured 3.73:1 in Multi-color Light, so the band is two layers (`--color-bg` under the 5% ink) and the label is `--color-fg` at `--fs-text-sm` (8.02 to 13.49:1 in Light, 10.56 and 13.40 in Dark); older theme caches get the token through a one-time migration. Built 2026-11-08.
 
-## 64. Form fields keep their height with or without the helper or error row
+## 64. Form fields keep their height with or without the helper or error row (done)
 
 Klaudiusz, 2026-11-06, a design system rule. In Buy and Sell, Limit grows when its error shows and pushes the order-duration control down. A field reserves its helper or error row whether or not it shows. To settle in its spec: the reserved height, a field with a two-line error, and a pass over every field with an error (Pay, the transfer, Buy and Sell, the admin sign-in).
 
-Spec: `specs/2026-11-08-field-anatomy-and-band-ink/` (branch `feature/field-anatomy-and-band-ink`), with 63. Anatomy from Klaudiusz's Figma: a 24dp label row, 4dp gaps, the control, a 16dp text row that holds the helper or the error. Cause found in the code: the row is `min-height: 1rem` but its text line is taller, so an error grows the field. Settled in its interview: the whole anatomy on every form field (the label row too), a message fits one line, an audit of every field, a Form field specimen on the Components page, the error's markup and ARIA untouched so no VoiceOver gate.
+Spec: `specs/2026-11-08-field-anatomy-and-band-ink/` (branch `feature/field-anatomy-and-band-ink`), with 63. Anatomy from Klaudiusz's Figma: a 24dp label row, 4dp gaps, the control, a 16dp text row that holds the helper or the error. Cause found in the code: the row is `min-height: 1rem` but its text line is taller, so an error grows the field. Settled in its interview: the whole anatomy on every form field (the label row too), a message fits one line, an audit of every field, a Form field specimen on the Components page, the error's markup and ARIA untouched so no VoiceOver gate. Found in the build: every text field is 88dp empty, with a helper and with an error (80dp Small); display-only value rows and account picker cards are not text fields and are left to roadmap 71; Buy's half-width Limit message wraps at Large type on a 390px phone (accepted, D7). Built 2026-11-08.
 
 ## 65. Sell: "Available in" and the account picker's label
 
