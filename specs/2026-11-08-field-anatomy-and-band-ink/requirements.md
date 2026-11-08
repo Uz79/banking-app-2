@@ -67,3 +67,5 @@ Checked against `tech-spec.md`: no new dependency, system or page. The "Field er
 - ReadOnly fields (Account and Share information): they have no helper or error row in Figma's ReadOnly cases, so they are expected to keep their layout; the audit confirms it.
 - Whether 5% over the plain look's navy (`#00157E` at 5%) and a Multi-color theme's neutral ink reads as a band at all on `--color-bg`; judged in task group 1 against Klaudiusz's 5% and, if it is too faint, raised with him rather than changed here.
 - Where the new token is documented for readers (the Components page shows the band's use; a colour token list, if one exists, gets the row).
+
+- 2026-11-08, after the build: Klaudiusz asked for the wrapping message to be shortened. Buy's zero-limit message is now "Enter a price above 0." (was "Enter a limit price above 0."), so nothing wraps at Large on a 390px phone by length (22 characters, the same as "Enter an amount above 0." which fits the Pay field). The message in `specs/2026-11-05-amount-errors/` D8 is superseded.
