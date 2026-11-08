@@ -5914,6 +5914,7 @@ a.btn-primary {
 .account-information__fields .form-field--readonly .form-field__label {
   flex: 0 0 auto;
   display: block;
+  min-height: 0; /* these rows have their own 88dp grid (roadmap 64 leaves them as they were) */
 }
 
 .account-information__fields .form-field--readonly .form-field__row {
@@ -6088,6 +6089,7 @@ a.btn-primary {
 .share-information__fields .form-field--readonly .form-field__label {
   flex: 0 0 auto;
   display: block;
+  min-height: 0; /* these rows have their own 88dp grid (roadmap 64 leaves them as they were) */
 }
 
 .share-information__fields .form-field--readonly .form-field__row {

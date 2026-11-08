@@ -20,10 +20,10 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 3. The audit and the copy (D7, D8)
 
-- [ ] A script (kept in the scratchpad, not the repo) that, for every form field on every page and flow, measures the field's height empty, with a helper and with an error, in Light and Dark at 390px and desktop and at Regular and Large type; the three must be equal. Lists any message that wraps
-- [ ] Shorten any message that wraps at Regular on 390px (config or the flow's own file; no em dashes); list what still wraps at Large in `validation.md`
-- [ ] Check that the sheets that must fit still do (Buy, Sell, Pay, the transfer; the fridge and the opening's fixed-height steps), since every label row is now 24dp
-- [ ] Check: every flow's forms by eye at 390px and desktop in Light and Dark
+- [x] A script (kept in the scratchpad, not the repo) that, for every form field on every page and flow, measures the field's height empty, with a helper and with an error, in Light and Dark at 390px and desktop and at Regular and Large type; the three must be equal. Lists any message that wraps
+- [x] Shorten any message that wraps at Regular on 390px (config or the flow's own file; no em dashes); list what still wraps at Large in `validation.md`
+- [x] Check that the sheets that must fit still do (Buy, Sell, Pay, the transfer; the fridge and the opening's fixed-height steps), since every label row is now 24dp
+- [x] Check: every flow's forms by eye at 390px and desktop in Light and Dark
 
 ## 4. The Components specimen (D9)
 

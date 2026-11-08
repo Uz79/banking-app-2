@@ -23,6 +23,7 @@ Roadmap items 63 and 64 (`specs/roadmap.md`), both from Klaudiusz on 2026-11-06,
 - Chip tokens (48), the Motion specimens' Dark sample (66)
 - Changing what any error says or when it shows (54's rules stay); only copy that does not fit one line is shortened (D7)
 - Anything in the field's error markup or ARIA (D6)
+- The account picker cards and the display-only value rows (IBAN, Recipient, Bank Name), which are not text fields and show no helper or error: roadmap 71
 
 ## Decisions
 
@@ -56,6 +57,8 @@ Checked against `tech-spec.md`: no new dependency, system or page. The "Field er
 ## Found in the build
 
 - Task group 1: with the label in `--color-fg-secondary` at 70% the contrast was low before the band did anything: 3.89:1 on `--color-bg` in the saved Multi-color theme in Light (sage), 3.73:1 on the band. Klaudiusz settled it at review: the band in two layers and the label in `--color-fg` (D3), now 8.02:1 in that theme.
+
+- Task group 3, the audit (2026-11-08, Chrome on the agent's server, desktop 1728px and a 390px frame; script in the session scratchpad). Every text field in Pay (on Overview's, Payments', Account details' and All bookings' copies), the transfer, Buy (Limit, Market, Execute until) and the admin sign-in is 88dp empty, with a helper row and with an error, and the next control does not move. At Large it is 88.58dp in all three states (the row follows the small text size, D13). No message wraps at Regular on a phone (the Pay sheet's, the trade sheet's including the half-width Limit field, the admin's), so no copy changed. **At Large on a 390px phone, "Enter a limit price above 0." wraps in Buy's half-width Limit field** (2 lines, the field grows 16dp); accepted by D7 and listed in `validation.md`. Not text fields, so not part of the rule: the account picker cards (`.debit-account`: Debit account, Credit account, from, to, Custody account) are 101dp and would grow by 20 if they showed an error, which they never do; the display-only underlined value rows (`.form-field__row`: IBAN, Recipient, Bank Name in Pay's recipient step) are 89 or 81dp, with no helper or error either (roadmap 71). The Account and Share information rows keep their own 88dp grid and 4dp gap: their label takes `min-height: 0` so they look as before (checked: 88dp, grid, 4px gap). Not driven: the Select-Field in Profile's colour theme preview (it needs the theme flow open; same CSS as the others), Sell (same sheet and CSS as Buy), the Execute on date field's error (it has none), and Light/Dark and Multi-color, since heights do not depend on the theme. The fridge and the opening have no `.form-field`.
 
 ## Open questions
 
