@@ -2334,8 +2334,11 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
 .all-bookings__month {
   margin: var(--space-2) 0 0;
   padding: var(--space-2) var(--space-3);
-  background-color: var(--color-bg-secondary);
-  color: var(--color-fg-secondary);
+  /* Two layers (roadmap 63): the page background underneath, the 5% ink over it, so the contrast
+     of the label never depends on what is behind the band. */
+  background-color: var(--color-bg);
+  background-image: linear-gradient(var(--color-separator-subtle), var(--color-separator-subtle));
+  color: var(--color-fg);
   font-size: var(--fs-text-sm);
   font-weight: var(--fw-medium);
   line-height: var(--lh-text);
@@ -3247,22 +3250,34 @@ a.show-all-btn {
   gap: var(--space-3); /* 16dp — designs/screens/payment-flow-recipient */
 }
 
+/* Figma TextField anatomy (roadmap 64): a label row of 24dp (it may hold a regular 24dp icon), 4dp, the control,
+   4dp, and a text row of 16dp (it holds the small 16dp icon): 88dp with the 40dp control, 80dp with Small's 32dp.
+   The text row is the same row whether it is empty, shows the helper or shows the error, so a field never changes
+   height. No --space-* step is 4dp, so the gap is its own value. At Large type the row follows the small text size
+   (never under 16dp), and the empty row, the helper and the error all follow it together. The three values are
+   on :root so the Components page can draw the anatomy from the same numbers. */
+:root {
+  --form-field-gap: 0.25rem;
+  --form-field-label-row: 1.5rem;
+  --form-field-note-row: max(1rem, var(--fs-text-sm));
+}
+
 .form-field {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--form-field-gap);
 }
 
-/* Interactive fields reserve 16dp under the control for helper/error text (Figma 88dp frame). */
+/* Interactive fields reserve the text row under the control for helper/error text, by CSS only (no text in it). */
 .form-field:not(.form-field--readonly):not(.form-field--no-footer):not(:has(.debit-account)):not(:has(.form-field__optional-row)):not(:has(.form-field__error-row:not([hidden]))):not(:has(.form-field__footer))::after {
   content: "";
   display: block;
-  min-height: 1rem;
+  min-height: var(--form-field-note-row, 1rem);
   flex-shrink: 0;
 }
 
 .form-field__footer {
-  min-height: 1rem;
+  min-height: var(--form-field-note-row, 1rem);
   margin: 0;
   flex-shrink: 0;
 }
@@ -3272,13 +3287,16 @@ a.show-all-btn {
   align-items: flex-start;
   gap: var(--space-1);
   margin: 0;
-  min-height: 1rem;
+  min-height: var(--form-field-note-row, 1rem);
   font-size: var(--fs-text-sm);
-  line-height: var(--lh-text);
+  line-height: var(--form-field-note-row, 1rem);
   color: var(--color-fg-error, #ff0095);
 }
 
 .form-field__label {
+  display: flex;
+  align-items: center;
+  min-height: var(--form-field-label-row, 1.5rem);
   font-size: var(--fs-text-sm);
   line-height: var(--lh-text);
   color: var(--color-fg-label);
@@ -3546,9 +3564,9 @@ button.form-field__date-wrap:disabled:active {
   align-items: flex-start;
   gap: var(--space-1);
   margin: 0;
-  min-height: 1rem;
+  min-height: var(--form-field-note-row, 1rem);
   font-size: var(--fs-text-sm);
-  line-height: var(--lh-text);
+  line-height: var(--form-field-note-row, 1rem);
   color: var(--color-fg-secondary);
 }
 
@@ -3556,7 +3574,7 @@ button.form-field__date-wrap:disabled:active {
   flex-shrink: 0;
   width: 1rem;
   height: 1rem;
-  margin-top: 0.125rem;
+  margin-top: 0;
   color: var(--color-btn-primary-bg);
 }
 
@@ -5900,6 +5918,7 @@ a.btn-primary {
 .account-information__fields .form-field--readonly .form-field__label {
   flex: 0 0 auto;
   display: block;
+  min-height: 0; /* these rows have their own 88dp grid (roadmap 64 leaves them as they were) */
 }
 
 .account-information__fields .form-field--readonly .form-field__row {
@@ -6074,6 +6093,7 @@ a.btn-primary {
 .share-information__fields .form-field--readonly .form-field__label {
   flex: 0 0 auto;
   display: block;
+  min-height: 0; /* these rows have their own 88dp grid (roadmap 64 leaves them as they were) */
 }
 
 .share-information__fields .form-field--readonly .form-field__row {
@@ -9787,7 +9807,7 @@ html.is-admin .admin-access__signed-out {
   width: 1rem;
   height: 1rem;
   flex-shrink: 0;
-  margin-top: 0.125rem;
+  margin-top: 0;
 }
 
 /* Error state (Figma TextField, Case = Error): error stroke on the control, icon and message in the row under it.

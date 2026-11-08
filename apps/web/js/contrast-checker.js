@@ -152,6 +152,7 @@
 
       // Alpha-derived (semi-transparent FG)
       'color-separator':          fgAlpha(0.10),
+      'color-separator-subtle':   fgAlpha(0.05),
       'color-show-all-bg':        fgAlpha(0.10),
       'color-nav-item-active-bg': fgAlpha(0.10),
       'color-segmented-track-bg': fgAlpha(isDark ? 0.08 : 0.05),
@@ -204,7 +205,7 @@
   var DERIVED_NAMES = [
     'color-bg', 'color-bg-secondary', 'color-bg-sidebar',
     'color-fg', 'color-fg-secondary', 'color-fg-label', 'color-fg-disabled',
-    'color-separator', 'color-show-all-bg', 'color-nav-item-active-bg', 'color-segmented-track-bg',
+    'color-separator', 'color-separator-subtle', 'color-show-all-bg', 'color-nav-item-active-bg', 'color-segmented-track-bg',
     'color-input-stroke', 'color-input-stroke-focus',
     'color-icon-circle-fill',
     'color-btn-primary-bg', 'color-btn-primary-fg', 'color-btn-primary-hover', 'color-btn-primary-pressed',

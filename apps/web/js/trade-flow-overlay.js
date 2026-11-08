@@ -254,7 +254,7 @@
   function limitProblem() {
     if (!limitInput || !limitField || limitField.hidden) return null;
     if (!String(limitInput.value || '').trim()) return 'Enter a limit price.';
-    if (parseMoneyInput(limitInput.value) <= 0) return 'Enter a limit price above 0.';
+    if (parseMoneyInput(limitInput.value) <= 0) return 'Enter a price above 0.';
     return null;
   }
 

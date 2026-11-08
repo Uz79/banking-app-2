@@ -3,9 +3,14 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 6b358bb111282de4f854d80c4ba0b85bd72102c8 -->
+<!-- changelog: last-commit ad28c085229258beae343ddd6feee45251e64b61 -->
 
 ### Changed
+- **Every form field has the same anatomy and height** (roadmap 64). A 24dp label row, a 4dp gap, the control, a 4dp gap and a 16dp text row that always exists and holds the helper or the error, so a field is 88dp (80dp Small) empty, with a helper and with an error. Buy's Limit no longer pushes the order-duration control down when its error shows. Applies to Pay, the transfer, Buy and Sell, the admin sign-in and the Profile preview. The error's markup and ARIA are unchanged. Fields are about 4dp shorter than before, so sheets gain room. Buy's zero-limit message is shortened to "Enter a price above 0." so it fits the half-width Limit field at Large type.
+- **A Form field specimen on the Components page** shows the anatomy with its 24 / 4 / 16 marks, empty, with a helper and with an error.
+- **The month band on All bookings is a faint tint** (roadmap 63). It is `--color-bg` under the new `--color-separator-subtle` (the neutral ink at 5%), so contrast does not depend on what is behind it. The month label is now `--color-fg` at the small text size: 8.02:1 and 10.56:1 in the sage Multi-color theme (Light, Dark), 13.49:1 and 13.40:1 in the plain look. It was 3.73:1 in Multi-color Light.
+- **New token `--color-separator-subtle`.** Derived by the theme engine, emitted by the token generator, carried by the boot script (a one-time migration, `uzBankWebSeparatorSubtle_v1`, adds it to saved themes) and listed in the contrast checker.
+- Spec: `specs/2026-11-08-field-anatomy-and-band-ink/`.
 - **The example bookings move with the real date** (roadmap 62). "Today" and "Yesterday" are right whenever the app is opened, and every example booking is dated from today: Rent on the 1st, Netflix and Internet & Phone on the 5th, Salary on the 25th (a weekend moved to Monday), the rest scattered over the current month and the four before it. The month chips come from the months listed, with the year when the list crosses one. Household has five months of its own again, with CHF 1'500 from Savings each month. On Account details each account shows its two newest days.
 - **Every day's balance adds up.** Each day's balance is worked out from the bookings, so the newest day always ends at the account's balance; Savings' list said 25'320.00 under a card of 25'000.00. A payment you make goes under the day you made it.
 - **A pending payment counts nowhere until it runs** (roadmap 69). Household read 9'900.00 because the pending Apple (-100) was already taken off, while its list ended at 10'000.00; now the balance is 10'000.00 on Overview, Account details, All bookings and Pay, and the Overview total is 100 higher.
