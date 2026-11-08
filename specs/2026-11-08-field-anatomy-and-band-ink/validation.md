@@ -11,10 +11,10 @@ Branch: `feature/field-anatomy-and-band-ink`. Run on the agent's server (port 51
 ## 2. The month band (63, D1 to D4, D10)
 
 - [ ] All bookings, Executed, Pending and Recurring: each band is a faint 5% tint with its label, no solid secondary background
-- [ ] Light, Dark, and a Multi-color theme in each: the band reads as a band, never as a hole or a box
+- [ ] Light, Dark, and a Multi-color theme in each: the band reads as a band, never as a hole or a box; its two layers (`--color-bg` under the 5% ink) show in the computed style
 - [ ] Saving a Multi-color theme and reloading keeps the band's colour from the first paint (boot script); "UZ Bank" restores the default look exactly
 - [ ] First visit (nothing in `localStorage`): the band shows in the plain look
-- [ ] Contrast of the label (`--color-fg-secondary`) on the band over `--color-bg`, recorded as ratios: Light ___, Dark ___, Multi-color Light ___, Multi-color Dark ___ (each at least 4.5:1, or noted)
+- [x] Contrast of the label (`--color-fg`, no opacity) on the band (the 5% ink over `--color-bg`), measured 2026-11-08 from the rendered tokens: Multi-color (sage) Light 8.02, Dark 10.56; plain UZ Bank Light 13.49, Dark 13.40. All at least 4.5:1
 - [ ] The strokes and dividers that use `--color-separator` are unchanged (still 10% in the plain look)
 - [ ] 390px: the bands and the docked month chips look as before apart from the tint
 
