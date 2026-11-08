@@ -63,6 +63,7 @@
     .ds-field-anatomy__mark--label { height: var(--form-field-label-row); }
     .ds-field-anatomy__mark--control { height: 2.5rem; }
     .ds-field-anatomy__mark--note { height: var(--form-field-note-row); }
+    .ds-field-anatomy__mark--fill { flex: 1 1 auto; }
     @media (max-width: 40rem) { .ds-field-anatomy__marks { display: none; } } /* the fields wrap there, so the marks would sit beside nothing */
     .ds-float-demo { position: relative; height: 15rem; border-radius: var(--radius-regular); overflow: hidden; margin-bottom: var(--space-3); }
     .ds-float-demo--phone { max-width: 20rem; height: 17rem; }
@@ -2516,6 +2517,49 @@
         </div>
       </div>
     </div>
+    <div class="ds-row" style="align-items: stretch;">
+      <div class="ds-field-anatomy__marks" aria-hidden="true">
+        <span class="ds-field-anatomy__mark ds-field-anatomy__mark--label">Label row 24</span>
+        <span class="ds-field-anatomy__mark ds-field-anatomy__mark--control">Value row 40</span>
+        <span class="ds-field-anatomy__mark ds-field-anatomy__mark--note">Text row 16</span>
+      </div>
+      <div class="ds-field-demo">
+        <div class="form-field">
+          <span class="form-field__label">Display-only value</span>
+          <div class="form-field__row">
+            <span class="form-field__value">CH35 0900 0000 2560 0696 0</span>
+            <button class="form-field__edit" type="button" aria-label="Change the value">
+              <svg class="form-field__edit-icon" aria-hidden="true" focusable="false"><use href="#i-edit-2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="ds-field-anatomy__marks" aria-hidden="true">
+        <span class="ds-field-anatomy__mark ds-field-anatomy__mark--label">Label row 24</span>
+        <span class="ds-field-anatomy__mark ds-field-anatomy__mark--fill">Account card</span>
+        <span class="ds-field-anatomy__mark ds-field-anatomy__mark--note">Text row 16</span>
+      </div>
+      <div class="ds-field-demo" style="width: 24rem;">
+        <div class="form-field">
+          <span class="form-field__label">Debit account</span>
+          <div class="debit-account">
+            <svg class="debit-account__icon" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
+            <div class="debit-account__info">
+              <span class="debit-account__name">Household</span>
+              <span class="debit-account__iban">CH35 0900 0000 2470 2920 1</span>
+            </div>
+            <div class="debit-account__end">
+              <span class="debit-account__amount">
+                <span class="debit-account__amount-currency">CHF</span>
+                <span class="debit-account__amount-value">10'000.00</span>
+              </span>
+              <svg class="debit-account__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="ds-note">A display-only value is Figma's ReadOnly field: a 40dp row with its underline inside, so it is 88dp too. An account card keeps its own height; the label row above it and the reserved text row under it are the same, so an error there would not move what follows.</p>
     <p class="ds-note">The marks on the left use the same custom properties as the fields, with the 4dp gap between them. At Large type the text row follows the small text size, and the empty row, the helper and the error follow it together. Classes: <code>.form-field</code>, <code>.form-field__label</code>, <code>.form-field__optional-row</code> (the helper, with a 16dp icon), <code>.form-field__error-row</code> and <code>.form-field--error</code>; set by <code>UZBankFieldError.show</code> and <code>clear</code> (<code>js/field-error.js</code>). Custom properties: <code>--form-field-gap</code> (4dp), <code>--form-field-label-row</code> (24dp) and <code>--form-field-note-row</code> (16dp). The empty row is reserved by CSS, with no text in it.</p>
   </section>
 
