@@ -14,9 +14,9 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 2. The field anatomy (D5 to D7)
 
-- [ ] Read Figma's TextField (Regular and Small, Default, Informative, Error) for the anatomy and the Small case (open question)
-- [ ] `apps/web/css/styles.css`: `.form-field__label` as a 24dp row; the gaps 4dp; `.form-field__optional-row` and `.form-field__error-row` exactly 16dp with the 16dp icon and the text trimmed to the row; the empty-row `::after` spacer the same 16dp (still CSS only, no markup or ARIA change, no change to `js/field-error.js`)
-- [ ] Check in Buy: Limit's error shows and clears with the duration control not moving by a pixel (measure the control's top before and after); the same in Sell, Pay's amount, the transfer's amount and the admin sign-in
+- [x] Read Figma's TextField (Regular and Small, Default, Informative, Error) for the anatomy and the Small case (open question)
+- [x] `apps/web/css/styles.css`: `.form-field__label` as a 24dp row; the gaps 4dp; `.form-field__optional-row` and `.form-field__error-row` exactly 16dp with the 16dp icon and the text trimmed to the row; the empty-row `::after` spacer the same 16dp (still CSS only, no markup or ARIA change, no change to `js/field-error.js`)
+- [x] Check in Buy (done; Pay's amount with the shared helper, Pay's and the transfer's real flows and the admin sign-in in the group 3 audit): Limit's error shows and clears with the duration control not moving by a pixel (measure the control's top before and after); the same in Sell, Pay's amount, the transfer's amount and the admin sign-in
 
 ## 3. The audit and the copy (D7, D8)
 

@@ -40,6 +40,7 @@ Roadmap items 63 and 64 (`specs/roadmap.md`), both from Klaudiusz on 2026-11-06,
 | D10 | **Contrast of the band's label is checked in every theme** (interview): `--color-fg` on the band (`--color-bg` under the 5% ink), in Light, Dark and one Multi-color theme in each, with the ratios recorded in `validation.md` | The band is paler than the secondary background it replaces; the numbers say the label still holds |
 | D11 | **No VoiceOver gate** (interview), as long as D6 holds. **No new dependency**; the only storage key is D12's version marker | Markup and ARIA do not change |
 | D12 | **A colour token cache saved before the token gets it from the boot script** (found in task group 1): `js/theme-boot.js` adds `color-separator-subtle` to each shell of a stored `uzBankWebColorTokens` that lacks it, as the neutral ink (`color-fg`) at 5%, once, marked by `uzBankWebSeparatorSubtle_v1` (listed in `apps/web/README.md`). The baked default tokens carry it | The boot script applies only what the cache holds, and an existing visitor's cache predates the token, so their band would have had no fill until they re-saved a theme. It follows the migrations already there (tonal wash, action circle) |
+| D13 | **The gap is its own 4dp value, `--form-field-gap: 0.25rem`** (found in task group 2): no `--space-*` step is 4dp (`--space-1` is 8dp), so a field's gaps were 8dp and its label a taller text line, 92dp in all. The text row is `max(1rem, var(--fs-text-sm))`, so it is 16dp at Regular and follows the small text size at Large; the empty row, the helper and the error use the same value, so they stay equal at every size. Every field is now 88dp (Small would be 80dp) | Figma's 4dp, with the precedent of `--section-card-header-gap-to-body: 0.25rem`. Fields get 4dp shorter, so the sheets that must fit gain room |
 
 Checked against `tech-spec.md`: no new dependency, system or page. The "Field errors" Decisions row (reserved row) gains the anatomy, and a new row records the token, both at wrap-up.
 
@@ -58,7 +59,7 @@ Checked against `tech-spec.md`: no new dependency, system or page. The "Field er
 
 ## Open questions
 
-- Whether Figma's Small TextField variants (TextField, Small) use the same 24 / 4 / 16 anatomy; to read from Figma in task group 2 before touching the `--small` fields.
+- ~~Whether Figma's Small TextField uses the same anatomy~~: settled in task group 2 from the local export in `designs/components/form-field/text-field/`: Regular is 88dp, Small 80dp, so the same 24 / 4 / 16 around a 32dp control. The app has no Small field today (no `form-field--small` in CSS or markup), so nothing to change for it.
 - ReadOnly fields (Account and Share information): they have no helper or error row in Figma's ReadOnly cases, so they are expected to keep their layout; the audit confirms it.
 - Whether 5% over the plain look's navy (`#00157E` at 5%) and a Multi-color theme's neutral ink reads as a band at all on `--color-bg`; judged in task group 1 against Klaudiusz's 5% and, if it is too faint, raised with him rather than changed here.
 - Where the new token is documented for readers (the Components page shows the band's use; a colour token list, if one exists, gets the row).
