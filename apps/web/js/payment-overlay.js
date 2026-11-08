@@ -71,6 +71,7 @@
   /** The id of the built-in row an edit replaces once committed (roadmap 42, D4). */
   var editingStaticRow  = null;
   var editingInstance   = null; /* a standing order's next payment: { ruleId, occurrence } (roadmap 47, D10) */
+  var droppedEdits      = [];   /* dates of the edited next payments an edit of the standing order replaced (roadmap 68, D4) */
 
   /* ── DATA WIRING (added in _10) ─────────────────────────────────────
    * Each modal__step block is templated HTML. We track the "live" payment
@@ -310,6 +311,13 @@
         : status === 'recurring'
           ? (mode === 'Standing order' ? 'Your standing order' : 'Your recurring payment') + to + ' starts on ' + live.dateLabel + '.'
           : 'Your payment' + to + ' will be made on ' + live.dateLabel + '.';
+    }
+    /* An edit of a standing order replaces its edited next payments; say so (roadmap 68, D4) */
+    var note = dlg.querySelector('.confirmation-dialog__note');
+    if (note) {
+      var dates = droppedEdits.filter(Boolean);
+      note.textContent = dates.length ? 'The earlier change to the payment on ' + dates.join(', ') + ' was replaced.' : '';
+      note.hidden = !dates.length;
     }
   }
 
@@ -1152,8 +1160,9 @@
           executeOn: live.dateLabel,
           accountKey: live.debitKey
         };
+        droppedEdits = [];
         if (editingBookingId && window.UZBankPayState && window.UZBankPayState.updatePayment) {
-          window.UZBankPayState.updatePayment(editingBookingId, payData);
+          droppedEdits = window.UZBankPayState.updatePayment(editingBookingId, payData) || [];
         } else if (window.UZBankPayState && window.UZBankPayState.commitPayment) {
           /* An edit of a built-in row: the new booking replaces it, also after a reload (roadmap 42, D4) */
           if (editingStaticRow) payData.replacesBuiltIn = editingStaticRow;
@@ -1162,7 +1171,7 @@
             payData.ruleId = editingInstance.ruleId;
             payData.occurrence = editingInstance.occurrence;
           }
-          window.UZBankPayState.commitPayment(payData);
+          droppedEdits = window.UZBankPayState.commitPayment(payData) || [];
         }
         editingBookingId = null;
         editingStaticRow = null;
