@@ -6,11 +6,11 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 1. The token and the band (D1 to D4, D10)
 
-- [ ] `apps/web/scripts/theme-engine/lib/themeColors.ts`: `color-separator-subtle` in `DERIVED_NAMES` and in the returned tokens (neutral ink at 5%, Light and Dark); rebuild `apps/web/js/theme-engine.js` as `scripts/theme-engine/README.md` says (never edit the output)
-- [ ] `apps/web/scripts/generate-tokens-css.mjs`: emit `--color-separator-subtle` for Light and Dark (the mapped separator colour at 5% alpha); run `npm run tokens:build`
-- [ ] `apps/web/js/theme-boot.js` (default tokens and the applied list) and `apps/web/js/contrast-checker.js` (both lists) learn the token
-- [ ] `apps/web/css/styles.css`: `.all-bookings__month` fills with `var(--color-separator-subtle)`; its label stays `--color-fg-secondary`
-- [ ] Check: All bookings (all three tabs) in Light, Dark and a Multi-color theme: the band is a faint tint, readable, the label legible; saving a theme and reloading keeps it (the boot script); the UZ Bank card restores the default look; the contrast numbers noted for the wrap-up (D10)
+- [x] `apps/web/scripts/theme-engine/lib/themeColors.ts`: `color-separator-subtle` in `DERIVED_NAMES` and in the returned tokens (neutral ink at 5%, Light and Dark); rebuild `apps/web/js/theme-engine.js` as `scripts/theme-engine/README.md` says (never edit the output)
+- [x] `apps/web/scripts/generate-tokens-css.mjs`: emit `--color-separator-subtle` for Light and Dark (the mapped separator colour at 5% alpha); run `npm run tokens:build`
+- [x] `apps/web/js/theme-boot.js` (default tokens and the applied list) and `apps/web/js/contrast-checker.js` (both lists) learn the token
+- [x] `apps/web/css/styles.css`: `.all-bookings__month` fills with `var(--color-separator-subtle)`; its label stays `--color-fg-secondary`
+- [x] Check: All bookings (all three tabs) in Light, Dark and a Multi-color theme: the band is a faint tint, readable, the label legible; saving a theme and reloading keeps it (the boot script); the UZ Bank card restores the default look; the contrast numbers noted for the wrap-up (D10)
 
 ## 2. The field anatomy (D5 to D7)
 

@@ -384,6 +384,7 @@ var UZBankThemeEngine = (() => {
     "color-fg-label",
     "color-fg-disabled",
     "color-separator",
+    "color-separator-subtle",
     "color-show-all-bg",
     "color-nav-item-active-bg",
     "color-segmented-track-bg",
@@ -1639,6 +1640,8 @@ var UZBankThemeEngine = (() => {
       "color-fg-label": secondaryFgHex,
       "color-fg-disabled": isDark ? "rgba(255, 255, 255, 0.4)" : "rgba(8, 10, 16, 0.4)",
       "color-separator": separatorWash,
+      /* BANKING: month bands (roadmap 63): the neutral ink at 5%, the strokes keep separatorWash. */
+      "color-separator-subtle": hexAlpha(neutralInk, 0.05),
       "color-show-all-bg": tonalBg,
       "color-nav-item-active-bg": tonalBg,
       "color-segmented-track-bg": tonalBg,

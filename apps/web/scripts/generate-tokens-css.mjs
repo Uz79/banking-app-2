@@ -362,6 +362,13 @@ function mappedColor(map, dottedPath) {
   return resolveTokenString(node?.value);
 }
 
+/** The same colour at another alpha: rgba(r, g, b, a) in, rgba(r, g, b, alpha) out (roadmap 63). */
+function withAlpha(color, alpha) {
+  const m = /^rgba\(\s*(\d+),\s*(\d+),\s*(\d+),\s*[\d.]+\s*\)$/.exec(color);
+  if (!m) throw new Error(`withAlpha: expected rgba(), got ${color}`);
+  return `rgba(${m[1]}, ${m[2]}, ${m[3]}, ${alpha})`;
+}
+
 function hexToRgb(hex) {
   const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   if (!m) return null;
@@ -454,6 +461,7 @@ function themeBlock(map, mode) {
   --color-fg-label: ${fgLabel};
   --color-fg-disabled: ${fgDisabled};
   --color-separator: ${separator};
+  --color-separator-subtle: ${withAlpha(separator, 0.05)};
 
   --color-btn-primary-bg: ${btnPrimaryBg};
   --color-btn-primary-fg: ${btnPrimaryFg};

@@ -2334,7 +2334,7 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
 .all-bookings__month {
   margin: var(--space-2) 0 0;
   padding: var(--space-2) var(--space-3);
-  background-color: var(--color-bg-secondary);
+  background-color: var(--color-separator-subtle);
   color: var(--color-fg-secondary);
   font-size: var(--fs-text-sm);
   font-weight: var(--fw-medium);

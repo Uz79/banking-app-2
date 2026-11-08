@@ -38,7 +38,8 @@ Roadmap items 63 and 64 (`specs/roadmap.md`), both from Klaudiusz on 2026-11-06,
 | D8 | **Every form field is covered** (interview): the shared CSS is fixed once, and a scripted audit measures each field's height with the text row empty, with a helper and with an error: Pay, the transfer, Buy and Sell, the admin sign-in, the profile forms, the picker and form sheets, the opening's and the fridge's fields. The three heights must be equal | A rule that holds for one flow and drifts in another is what 64 is about |
 | D9 | **The Components page gets a Form field specimen of the anatomy** (interview): the 24 / 4 / 16 rows labelled, shown empty, with a helper and with an error, at the same height | The design system documents the rule, not only the CSS (mission principle 2) |
 | D10 | **Contrast of the band's label is checked in every theme** (interview): `--color-fg-secondary` on `--color-separator-subtle` over `--color-bg`, in Light, Dark and one Multi-color theme in each, with the ratios recorded in `validation.md` | The band gets paler (5% instead of the secondary background), but the label is `--color-fg-secondary`, 70% ink; the numbers say whether it still holds |
-| D11 | **No VoiceOver gate** (interview), as long as D6 holds. **No new storage key, no new dependency** | Markup and ARIA do not change |
+| D11 | **No VoiceOver gate** (interview), as long as D6 holds. **No new dependency**; the only storage key is D12's version marker | Markup and ARIA do not change |
+| D12 | **A colour token cache saved before the token gets it from the boot script** (found in task group 1): `js/theme-boot.js` adds `color-separator-subtle` to each shell of a stored `uzBankWebColorTokens` that lacks it, as the neutral ink (`color-fg`) at 5%, once, marked by `uzBankWebSeparatorSubtle_v1` (listed in `apps/web/README.md`). The baked default tokens carry it | The boot script applies only what the cache holds, and an existing visitor's cache predates the token, so their band would have had no fill until they re-saved a theme. It follows the migrations already there (tonal wash, action circle) |
 
 Checked against `tech-spec.md`: no new dependency, system or page. The "Field errors" Decisions row (reserved row) gains the anatomy, and a new row records the token, both at wrap-up.
 
@@ -50,6 +51,10 @@ Checked against `tech-spec.md`: no new dependency, system or page. The "Field er
 - Error users: `js/field-error.js` (`show`, `clear`), called from `js/payment-overlay.js`, `js/iat-overlay.js` and `js/trade-flow-overlay.js`; the admin sign-in builds its own row in `js/admin.js` (line 46).
 - Buy and Sell: the Limit field (`#uz-trade-limit-field` in `details-of-position.html`) sits above the duration control and has no helper row, so only the `::after` spacer keeps its height.
 - Found while reading: `apps/web/scripts/generate-tokens-css 2.mjs` is a tracked file with non-code text appended after the generator (roadmap 70). The build reads `generate-tokens-css.mjs`, not this copy.
+
+## Found in the build
+
+- Task group 1: the label's contrast is low before the band does anything. `--color-fg-secondary` on `--color-bg` is 3.89:1 in the saved Multi-color theme in Light (sage), and the band takes it to 3.73:1; the other themes are well above 4.5. The ratios are in `validation.md`. The label colour is not part of 63, so it stays (D3), and the low Multi-color Light value is raised with Klaudiusz at review.
 
 ## Open questions
 

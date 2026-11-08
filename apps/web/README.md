@@ -52,6 +52,7 @@ Persisted in `localStorage` (see `js/storage-migrate.js` for legacy key migratio
 | `uzBankWebTheme` | `light` / `dark` |
 | `uzBankWebColorOverride_v2` | Profile > Theme: committed colour theme (see `scripts/theme-engine/`) |
 | `uzBankWebColorTokens` | Finished `--color-*` tokens for Light and Dark, applied by the boot script on every page |
+| `uzBankWebSeparatorSubtle_v1` | Set once by the boot script after it adds `--color-separator-subtle` (the month band's ink, roadmap 63) to a colour token cache saved before it existed |
 | `uzBankWebAppearance` | Profile legibility / persona scale |
 | `uzBankWebPersonaProfile` | Profile > User Type slider values (financial knowledge, banking products, digital affinity) |
 | `uzBankWebPaymentState` | Demo payment balances and bookings: JSON `{ schemaVersion, bookings, positions, mandates, carried, removedBuiltIns }`; at most 100 bookings, the oldest dropped, and `carried` `{ household, savings, householdOut }` keeps what the dropped executed bookings had moved (roadmap 14); `removedBuiltIns` lists the `data-builtin-id` of built-in rows an edit replaced or a delete removed (roadmap 42) |
