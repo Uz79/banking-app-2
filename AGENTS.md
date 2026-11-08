@@ -40,8 +40,8 @@ These are the app's unwritten rules, written down. Most bugs in this repo came f
 - Every change to the product goes through the spec-driven workflow. There is no lighter path for small or visual-only changes: technically, every change is a feature. No implementation starts without a dated `specs/<YYYY-MM-DD>-<kebab-case-name>/` folder, created via `/feature-spec`, holding `requirements.md`, `plan.md` and `validation.md`. Date the folder to when the work starts. (`specs/baseline/` predates this rule and is undated.)
 - If the work is a small follow-up to the latest dated spec folder, add a task group and new decisions to that folder instead of starting a new one. `/feature-spec` checks this.
 - Exempt from the spec requirement: edits to `AGENTS.md`, to files under `specs/` that only describe (mission, tech-spec, roadmap), and to files under `.claude/skills/`. They are edited directly and reviewed as a diff, and still need an explicit ask before committing to `main`.
-- Follow `specs/roadmap.md`'s order unless told otherwise.
-- Ideas found during a feature go onto `specs/roadmap.md` as a new item, committed on the current feature branch as their own commit, with a one-line pointer in the current spec's out-of-scope list. Don't widen the current spec to include them, and don't commit them to main directly.
+- Follow `specs/roadmap.md`'s order unless told otherwise: the items under Next, top to bottom. Later is not scheduled, Parked waits on Klaudiusz (don't start a Parked item unless asked), Done is the record.
+- Ideas found during a feature go onto `specs/roadmap.md` as a new item under Later, committed on the current feature branch as their own commit, with a one-line pointer in the current spec's out-of-scope list. Don't widen the current spec to include them, and don't commit them to main directly.
 - Add an entry to `CHANGELOG.md` under `Unreleased` for any user-visible or structural change.
 
 ## Checking work
