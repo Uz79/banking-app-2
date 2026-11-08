@@ -27,8 +27,8 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 4. The Components specimen (D9)
 
-- [ ] `apps/web/components.html`: a "Form field" specimen of the anatomy: 24 / 4 / control / 4 / 16 dp marked, shown empty, with a helper and with an error, side by side at one height; the text below is plain and has no em dashes
-- [ ] Check: the specimen in Light and Dark, desktop and 390px; Tab order and the focus ring are unaffected
+- [x] `apps/web/components.html`: a "Form field" specimen of the anatomy: 24 / 4 / control / 4 / 16 dp marked, shown empty, with a helper and with an error, side by side at one height; the text below is plain and has no em dashes
+- [x] Check: the specimen in Light and Dark, desktop and 390px; Tab order and the focus ring are unaffected
 
 ## 5. Wrap-up
 

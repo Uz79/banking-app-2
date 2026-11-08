@@ -36,9 +36,9 @@ Branch: `feature/field-anatomy-and-band-ink`. Run on the agent's server (port 51
 
 ## 4. The Components specimen (D9)
 
-- [ ] The Form field specimen shows the anatomy with its 24 / 4 / 16 marks, empty, with a helper and with an error, all at one height
-- [ ] Light, Dark, desktop and 390px; the text has no em dashes
-- [ ] The admin guard: the Components page still asks for admin
+- [x] The Form field specimen shows the anatomy with its 24 / 4 / 16 marks, empty, with a helper and with an error, all at one height (88dp each, the marks aligned to the pixel with the rows; also at Large and Small type)
+- [ ] Light, Dark, desktop and 390px; the text has no em dashes (Light and Dark seen on desktop, no em dash; 390px measured in a frame, no overflow, marks hidden there, not yet looked at)
+- [x] The admin guard: the Components page still asks for admin (signed out, it redirects to Profile's admin sign-in)
 
 ## 5. Baseline smoke test
 

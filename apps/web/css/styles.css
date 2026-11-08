@@ -3254,11 +3254,15 @@ a.show-all-btn {
    4dp, and a text row of 16dp (it holds the small 16dp icon): 88dp with the 40dp control, 80dp with Small's 32dp.
    The text row is the same row whether it is empty, shows the helper or shows the error, so a field never changes
    height. No --space-* step is 4dp, so the gap is its own value. At Large type the row follows the small text size
-   (never under 16dp), and the empty row, the helper and the error all follow it together. */
-.form-field {
+   (never under 16dp), and the empty row, the helper and the error all follow it together. The three values are
+   on :root so the Components page can draw the anatomy from the same numbers. */
+:root {
   --form-field-gap: 0.25rem;
   --form-field-label-row: 1.5rem;
   --form-field-note-row: max(1rem, var(--fs-text-sm));
+}
+
+.form-field {
   display: flex;
   flex-direction: column;
   gap: var(--form-field-gap);

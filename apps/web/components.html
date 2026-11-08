@@ -57,6 +57,13 @@
     .ds-qa-demo--invite .assistant__title { font-size: var(--fs-text-lg); margin-bottom: var(--space-3); }
     .ds-qa-demo--invite .assistant__quiet { margin-inline: auto; }
     .ds-qa-demo--nudge .opening__action-row > .uz-btn--tonal { flex: none; }
+    .ds-field-demo { width: 16rem; max-width: 100%; }
+    .ds-field-anatomy__marks { display: flex; flex-direction: column; gap: var(--form-field-gap); }
+    .ds-field-anatomy__mark { display: flex; align-items: center; padding-inline: var(--space-1); border-radius: var(--radius-small); background: var(--color-separator-subtle); color: var(--color-fg); font-size: var(--fs-text-xs); line-height: 1; white-space: nowrap; box-sizing: border-box; }
+    .ds-field-anatomy__mark--label { height: var(--form-field-label-row); }
+    .ds-field-anatomy__mark--control { height: 2.5rem; }
+    .ds-field-anatomy__mark--note { height: var(--form-field-note-row); }
+    @media (max-width: 40rem) { .ds-field-anatomy__marks { display: none; } } /* the fields wrap there, so the marks would sit beside nothing */
     .ds-float-demo { position: relative; height: 15rem; border-radius: var(--radius-regular); overflow: hidden; margin-bottom: var(--space-3); }
     .ds-float-demo--phone { max-width: 20rem; height: 17rem; }
     .ds-float-demo__scene { position: absolute; inset: 0; background: repeating-linear-gradient(-45deg, var(--color-fg-interactive) 0 0.75rem, var(--color-bg) 0.75rem 1.5rem), var(--color-bg); opacity: 0.85; }
@@ -2477,6 +2484,39 @@
       <button type="button" class="btn-primary">Confirm</button>
     </div>
     <p class="ds-note">Payment flow modals use <code>uz-btn uz-btn--primary uz-btn--md uz-btn--block</code> (Figma Regular). Sizes: <code>uz-btn--sm</code> / <code>--md</code> / <code>--lg</code>.</p>
+  </section>
+
+  <section class="ds-section" aria-labelledby="ds-form-field-heading">
+    <h2 id="ds-form-field-heading">Form field</h2>
+    <p class="ds-caption">A label row of 24dp, 4dp, the control (40dp), 4dp, and a text row of 16dp: 88dp in all. The text row is the same row whether it is empty, shows a helper or shows an error, so a field never changes height and nothing below it moves. Messages are written to fit one line.</p>
+    <div class="ds-row" style="align-items: flex-start;">
+      <div class="ds-field-anatomy__marks" aria-hidden="true">
+        <span class="ds-field-anatomy__mark ds-field-anatomy__mark--label">Label row 24</span>
+        <span class="ds-field-anatomy__mark ds-field-anatomy__mark--control">Control 40</span>
+        <span class="ds-field-anatomy__mark ds-field-anatomy__mark--note">Text row 16</span>
+      </div>
+      <div class="ds-field-demo">
+        <div class="form-field">
+          <label class="form-field__label" for="ds-ff-empty">Empty</label>
+          <div class="form-field__text-wrap"><input class="form-field__input" id="ds-ff-empty" type="text" autocomplete="off" value="Hans Meyer" /></div>
+        </div>
+      </div>
+      <div class="ds-field-demo">
+        <div class="form-field">
+          <label class="form-field__label" for="ds-ff-helper">With a helper</label>
+          <div class="form-field__text-wrap"><input class="form-field__input" id="ds-ff-helper" type="text" autocomplete="off" value="Hans Meyer" aria-describedby="ds-ff-helper-text" /></div>
+          <p class="form-field__optional-row" id="ds-ff-helper-text"><svg class="form-field__optional-icon" aria-hidden="true" focusable="false"><use href="#i-info"/></svg><span>As on the bank statement.</span></p>
+        </div>
+      </div>
+      <div class="ds-field-demo">
+        <div class="form-field form-field--error">
+          <label class="form-field__label" for="ds-ff-error">With an error</label>
+          <div class="form-field__text-wrap"><input class="form-field__input" id="ds-ff-error" type="text" autocomplete="off" value="" aria-invalid="true" aria-describedby="ds-ff-error-text" /></div>
+          <p class="form-field__error-row" id="ds-ff-error-text"><svg width="16" height="16" aria-hidden="true" focusable="false" style="fill:none"><use href="#i-alert-triangle"/></svg><span>Enter a name.</span></p>
+        </div>
+      </div>
+    </div>
+    <p class="ds-note">The marks on the left use the same custom properties as the fields, with the 4dp gap between them. At Large type the text row follows the small text size, and the empty row, the helper and the error follow it together. Classes: <code>.form-field</code>, <code>.form-field__label</code>, <code>.form-field__optional-row</code> (the helper, with a 16dp icon), <code>.form-field__error-row</code> and <code>.form-field--error</code>; set by <code>UZBankFieldError.show</code> and <code>clear</code> (<code>js/field-error.js</code>). Custom properties: <code>--form-field-gap</code> (4dp), <code>--form-field-label-row</code> (24dp) and <code>--form-field-note-row</code> (16dp). The empty row is reserved by CSS, with no text in it.</p>
   </section>
 
   <section class="ds-section" aria-labelledby="ds-float-panel-heading">
