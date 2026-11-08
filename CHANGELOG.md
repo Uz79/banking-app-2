@@ -3,9 +3,11 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 471ba3a4264483ed23eb8b77a85209f8a9fb8958 -->
+<!-- changelog: last-commit beee6e2fb3be923b4ea4efeadfec5d63663a54ca -->
 
 ### Changed
+- **Editing a standing order replaces its edited next payment** (roadmap 68). Edit Rent's next payment to 1'700, then the Rent standing order to 1'750: Pending listed both on the same date. Now it lists one payment, 1'750, and the Pay confirmation says "The earlier change to the payment on 01.12.2026 was replaced." (only when something was replaced). The same on Household and for a standing order made in the app. An edited payment is dropped by whatever removes its order, kept in `js/payment-state.js`; the app has no Delete for a standing order yet.
+- Spec: `specs/2026-11-08-standing-order-edit-exception/`.
 - **Display-only rows and account cards follow the field anatomy** (roadmap 71). The read-only value rows on Pay's and the transfer's recipient steps (IBAN, Bank Name, Recipient) are Figma's ReadOnly field, 88dp like every other field; they were 89dp or 81dp. The account cards (Pay's Debit account, the transfer's From and To) keep their size and reserve the 16dp text row under them, so a later error would not move what follows. The trade sheet's account fields are unchanged. The Components page's Form field section shows both.
 - Spec: `specs/2026-11-08-display-rows-and-account-cards/`.
 - **Buy and Sell sheet: the price and the account labels** (roadmap 55, 65). "Price" always shows the market price; typing a limit used to overwrite it (389.22 became 100.00). "Expected total price" still uses the typed limit. In Buy, "Available in" names the chosen account ("Available in Savings account") and follows the account picker; it said Household whatever was chosen. In Sell, the "Available in" line is gone, and the account field and its picker read "Credit account".
