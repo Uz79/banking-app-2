@@ -51,6 +51,9 @@
   var priceEl = document.getElementById('uz-trade-price');
   var totalEl = document.getElementById('uz-trade-total');
   var availableEl = document.getElementById('uz-trade-available');
+  var availableRowEl = document.getElementById('uz-trade-available-row');
+  var availableLabelEl = document.getElementById('uz-trade-available-label');
+  var debtorLabelEl = document.getElementById('uz-trade-debtor-label');
   var inDepotEl = document.getElementById('uz-trade-in-depot');
   var durationGroup = document.getElementById('uz-trade-duration');
   var untilField = document.getElementById('uz-trade-until-field');
@@ -322,11 +325,19 @@
 
     var totals = orderTotals();
 
-    if (priceEl) priceEl.textContent = 'CHF ' + formatMoney(totals.unitPrice);
+    /* 65 D1: Price is the market's, whatever limit is typed; the total (D2) uses the limit */
+    if (priceEl) priceEl.textContent = 'CHF ' + formatMoney(live.marketPrice);
     if (totalEl) totalEl.textContent = 'CHF ' + formatMoney(totals.total);
 
     var debtor = debtorAccountWithBalance(live.debtorKey);
     if (availableEl) availableEl.textContent = debtor.currency + ' ' + debtor.balance;
+    /* 55 D5: the label names the chosen account; 65 D3: selling has no "available" line */
+    if (availableLabelEl) availableLabelEl.textContent = 'Available in ' + debtor.name.replace(/ account$/i, '') + ' account';
+    if (availableRowEl) availableRowEl.hidden = live.side === 'sell';
+    /* 65 D4: in Sell the account receives the proceeds */
+    var credit = live.side === 'sell';
+    if (debtorLabelEl) debtorLabelEl.textContent = credit ? 'Credit account' : 'Debit account';
+    if (debtorBtn) debtorBtn.setAttribute('aria-label', credit ? 'Select credit account' : 'Select debit account');
     if (inDepotEl) inDepotEl.textContent = sharesLabel(live.heldQuantity);
   }
 
@@ -577,7 +588,7 @@
       return accountToSheet(acc);
     });
     window.UZBankFormSheet.openAccountPickerSheet(triggerEl, {
-      title: role === 'depot' ? 'Custody account' : 'Debit account',
+      title: role === 'depot' ? 'Custody account' : (live.side === 'sell' ? 'Credit account' : 'Debit account'),
       accounts: sheetAccounts,
       onSelect: function (acc) {
         if (!acc || !acc.key) return;
