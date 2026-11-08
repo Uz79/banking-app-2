@@ -343,6 +343,8 @@ Spec: `specs/2026-11-05-amount-errors/` (branch `feature/amount-errors`). Found 
 
 Found during 54 (2026-11-05). The trade sheet's summary reads "Available in Household account" (`details-of-position.html`, a fixed label) also when Savings account is the debit account; the amount next to it may not match the account either. To settle in its spec: the label and amount from `live.debtorKey` (`js/trade-flow-overlay.js`), updated when the account picker changes it.
 
+Spec: `specs/2026-11-08-trade-sheet-account-and-price/` (branch `feature/trade-sheet-account-and-price`), with 65. Settled in its interview: the label names the chosen account ("Available in Savings account") and follows the picker; the amount already followed it.
+
 ## 56. All bookings: every account lists the same built-in rows, and edits land on Household (done)
 
 Found during 47 (2026-11-06). All bookings shows the same built-in Executed, Pending and Recurring rows for every account (`?account=savings`, the default, and `?account=household`), while Pay always books to Household (`commitPayment` in `js/payment-state.js`). Editing a built-in row on the Savings view hides it there, and the edited payment shows only on Household's view. To settle in its spec: which built-in rows belong to which account, and the debit account an edit keeps.
@@ -398,6 +400,8 @@ Spec: `specs/2026-11-08-field-anatomy-and-band-ink/` (branch `feature/field-anat
 ## 65. Sell: "Available in" and the account picker's label
 
 Klaudiusz, 2026-11-06. In Sell, "Available in <account>" goes, and the account picker reads "Credit account", not "Debit account". Also check: in Buy, "Price" changes to the typed limit (389.22 to 100.00); the market price shouldn't follow it. Relates to 55. To settle in its spec: what Buy shows as Price and as the expected total with a limit, and whether 55 is still needed once Sell drops the line.
+
+Spec: `specs/2026-11-08-trade-sheet-account-and-price/` (branch `feature/trade-sheet-account-and-price`), with 55. Settled in its interview: 55 is still needed, because Buy keeps the line; Price always shows the market price and the total uses the typed limit; Sell's change is the label and the picker title only.
 
 ## 66. Motion specimens: Focus-mode choreography's sample stays white in Dark
 
