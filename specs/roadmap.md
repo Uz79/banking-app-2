@@ -420,3 +420,7 @@ Spec: `specs/2026-11-06-demo-data-dates/` (branch `feature/demo-data-dates`), wi
 ## 70. A stray copy of the token generator is tracked in git
 
 Found while writing 63 and 64's spec (2026-11-08). `apps/web/scripts/generate-tokens-css 2.mjs` is tracked, is not run by `tokens:build` (which reads `generate-tokens-css.mjs`), and carries non-code text after the generator's end. To settle in its spec: whether anything reads it (it looks like an accidental copy), then remove it, and check the other `* 2.*` files in the repo for the same.
+
+## 71. Display-only rows and account pickers against the TextField anatomy
+
+Found during 64's audit (2026-11-08). Two kinds of `.form-field` are not text fields and don't follow the 24 / 4 / control / 4 / 16 anatomy: the display-only underlined value rows (`.form-field__row` without `--bordered`: IBAN, Recipient and Bank Name in Pay's recipient step) are 89dp, or 81dp for a single line, and the account picker cards (`.debit-account`: Debit account, Credit account, from, to, Custody account) are 101dp, with no reserved text row. Neither shows a helper or an error today, so nothing jumps. To settle in its spec: which Figma case each one is (the ReadOnly TextField, the account card), what height they should have, and whether the picker cards should reserve the text row for a future error.
