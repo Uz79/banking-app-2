@@ -339,9 +339,11 @@ Found 2026-11-05. In Buy, Confirm with an empty or zero amount does nothing: the
 
 Spec: `specs/2026-11-05-amount-errors/` (branch `feature/amount-errors`). Found while writing it: Pay's amount step has no check (0 goes on and the confirmation shows with nothing recorded), the transfer goes on with its last amount when the field is emptied, Sell accepts more shares than held, and "pcs." is also in the Custody account list and a trade booking's message. Settled in its interview: all four flows; over the balance is an error for what runs now (Pay and the transfer at Execute, back to the amount step); the error shows on leaving a field that was typed into, clears live, and Confirm checks every field; closing never shows one; VoiceOver in the merge gate. Found in the build: the trade sheet opened with 100 shares, invalid at once, so it opens with 1; after Execute finds the amount over the balance, the amount step checks the balance too; the trade's "Available in Household account" line doesn't follow the debit account (55). Built 2026-11-06.
 
-## 55. Buy and Sell: "Available in Household account" doesn't follow the debit account
+## 55. Buy and Sell: "Available in Household account" doesn't follow the debit account (done)
 
 Found during 54 (2026-11-05). The trade sheet's summary reads "Available in Household account" (`details-of-position.html`, a fixed label) also when Savings account is the debit account; the amount next to it may not match the account either. To settle in its spec: the label and amount from `live.debtorKey` (`js/trade-flow-overlay.js`), updated when the account picker changes it.
+
+Spec: `specs/2026-11-08-trade-sheet-account-and-price/` (branch `feature/trade-sheet-account-and-price`), with 65. Settled in its interview: the label names the chosen account ("Available in Savings account") and follows the picker; the amount already followed it. Built 2026-11-08.
 
 ## 56. All bookings: every account lists the same built-in rows, and edits land on Household (done)
 
@@ -395,9 +397,11 @@ Klaudiusz, 2026-11-06, a design system rule. In Buy and Sell, Limit grows when i
 
 Spec: `specs/2026-11-08-field-anatomy-and-band-ink/` (branch `feature/field-anatomy-and-band-ink`), with 63. Anatomy from Klaudiusz's Figma: a 24dp label row, 4dp gaps, the control, a 16dp text row that holds the helper or the error. Cause found in the code: the row is `min-height: 1rem` but its text line is taller, so an error grows the field. Settled in its interview: the whole anatomy on every form field (the label row too), a message fits one line, an audit of every field, a Form field specimen on the Components page, the error's markup and ARIA untouched so no VoiceOver gate. Found in the build: every text field is 88dp empty, with a helper and with an error (80dp Small); display-only value rows and account picker cards are not text fields and are left to roadmap 71; Buy's half-width Limit message wraps at Large type on a 390px phone (accepted, D7). Built 2026-11-08.
 
-## 65. Sell: "Available in" and the account picker's label
+## 65. Sell: "Available in" and the account picker's label (done)
 
 Klaudiusz, 2026-11-06. In Sell, "Available in <account>" goes, and the account picker reads "Credit account", not "Debit account". Also check: in Buy, "Price" changes to the typed limit (389.22 to 100.00); the market price shouldn't follow it. Relates to 55. To settle in its spec: what Buy shows as Price and as the expected total with a limit, and whether 55 is still needed once Sell drops the line.
+
+Spec: `specs/2026-11-08-trade-sheet-account-and-price/` (branch `feature/trade-sheet-account-and-price`), with 55. Settled in its interview: 55 is still needed, because Buy keeps the line; Price always shows the market price and the total uses the typed limit; Sell's change is the label and the picker title only. Built 2026-11-08.
 
 ## 66. Motion specimens: Focus-mode choreography's sample stays white in Dark
 
