@@ -3,9 +3,11 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 0b3566aed7cd8bfd533df7f1f66d5337fcbf09d2 -->
+<!-- changelog: last-commit 471ba3a4264483ed23eb8b77a85209f8a9fb8958 -->
 
 ### Changed
+- **Display-only rows and account cards follow the field anatomy** (roadmap 71). The read-only value rows on Pay's and the transfer's recipient steps (IBAN, Bank Name, Recipient) are Figma's ReadOnly field, 88dp like every other field; they were 89dp or 81dp. The account cards (Pay's Debit account, the transfer's From and To) keep their size and reserve the 16dp text row under them, so a later error would not move what follows. The trade sheet's account fields are unchanged. The Components page's Form field section shows both.
+- Spec: `specs/2026-11-08-display-rows-and-account-cards/`.
 - **Buy and Sell sheet: the price and the account labels** (roadmap 55, 65). "Price" always shows the market price; typing a limit used to overwrite it (389.22 became 100.00). "Expected total price" still uses the typed limit. In Buy, "Available in" names the chosen account ("Available in Savings account") and follows the account picker; it said Household whatever was chosen. In Sell, the "Available in" line is gone, and the account field and its picker read "Credit account".
 - Spec: `specs/2026-11-08-trade-sheet-account-and-price/`.
 - **Every form field has the same anatomy and height** (roadmap 64). A 24dp label row, a 4dp gap, the control, a 4dp gap and a 16dp text row that always exists and holds the helper or the error, so a field is 88dp (80dp Small) empty, with a helper and with an error. Buy's Limit no longer pushes the order-duration control down when its error shows. Applies to Pay, the transfer, Buy and Sell, the admin sign-in and the Profile preview. The error's markup and ARIA are unchanged. Fields are about 4dp shorter than before, so sheets gain room. Buy's zero-limit message is shortened to "Enter a price above 0." so it fits the half-width Limit field at Large type.
