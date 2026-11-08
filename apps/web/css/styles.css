@@ -3268,8 +3268,9 @@ a.show-all-btn {
   gap: var(--form-field-gap);
 }
 
-/* Interactive fields reserve the text row under the control for helper/error text, by CSS only (no text in it). */
-.form-field:not(.form-field--readonly):not(.form-field--no-footer):not(:has(.debit-account)):not(:has(.form-field__optional-row)):not(:has(.form-field__error-row:not([hidden]))):not(:has(.form-field__footer))::after {
+/* Interactive fields reserve the text row under the control for helper/error text, by CSS only (no text in it).
+   An account card reserves it too (roadmap 71); a field marked --no-footer opts out. */
+.form-field:not(.form-field--readonly):not(.form-field--no-footer):not(:has(.form-field__optional-row)):not(:has(.form-field__error-row:not([hidden]))):not(:has(.form-field__footer))::after {
   content: "";
   display: block;
   min-height: var(--form-field-note-row, 1rem);
@@ -3307,6 +3308,15 @@ a.show-all-btn {
   align-items: center;
   padding-bottom: var(--space-1);
   border-bottom: 0.0625rem solid var(--color-separator);
+}
+
+/* A display-only value row is Figma's ReadOnly TextField (roadmap 71): the 40dp value row with its underline inside,
+   so with the 24dp label and the reserved 16dp text row the field is 88dp like every other. The readonly grids of
+   Account and Share information keep their own layout. */
+.form-field:not(.form-field--readonly) > .form-field__row:not(.form-field__row--bordered):not(.form-field__row--multiline) {
+  box-sizing: border-box;
+  min-height: 2.5rem;
+  padding-bottom: 0;
 }
 
 .form-field__date-wrap,
