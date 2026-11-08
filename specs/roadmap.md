@@ -1,57 +1,70 @@
 # Roadmap
 
-## 1. Baseline (done)
+The order below is the order of work. Items keep their numbers (specs, commits and the changelog cite them), so an item moves between sections but is never renumbered. `/feature-spec` takes the first item under Next. Reordered 2026-11-08.
 
-- The presentable app as built before the spec-driven process: see `specs/baseline/`
-- Tagged `v1-presentable`
-- `AGENTS.md`, `specs/mission.md`, `specs/tech-spec.md`, this roadmap, `CHANGELOG.md`, and the `/feature-spec` and `/changelog` skills in place (2026-10-19)
+# Next
 
-## 2. Playground: "Payday run" (done)
+In order. The first is what `/feature-spec` starts.
 
-A small 3D game on its own design system page, showing what the character kit can do beyond the app.
+## 68. Editing a standing order after its next payment leaves two payments
 
-Spec: `specs/2026-10-19-payday-run/` (branch `feature/payday-run`). Built in 13 task groups; merged status is recorded in the changelog. Interview outcome: the whole story is in v1, the result screen has a breakdown and a kept best run (`uzBankWebPlaygroundBest`), no sound, touch uses two on-screen buttons.
+Found during 59 (2026-11-06). Edit a standing order's next payment (stored as a one-off with the rule's id and date, 47 D10), then Edit the rule itself: the edited rule is a new booking that replaces the old one, so Pending lists both the earlier one-off and the new rule's next payment on the same date (seen with Rent on Savings: 1'700 and 1'750 on 01.12). Not from 59; the same on Household. To settle in its spec: whether an edit of the rule carries over or drops an edited next payment, and what the customer is told.
 
-What was agreed before the spec (confirmed in the interview, not re-opened):
+## 40. Pay: picking a date overrides As soon as possible
 
-- **Placement:** a fourth card on `design-system.html`, under Character kit, admin only. The page goes full screen (no sidebar or header) and opens as a sheet that slides up like the flow screens; a close button top right (and Escape) slides it back down to the Design system page. Also a "Try it in the Playground" link at the end of `character-kit.html`.
-- **Player:** the persona character, not a car. Its recipe comes from User Type; the profile sets the pace (Beat jogs, Lena runs, Max sprints).
-- **Mechanics:** in the style of Shopify's Horizon Drive: a spline track (no physics library, no raycasts), steer left and right within the track width, a chase camera, instanced effects. Keyboard and touch.
-- **Story:** "Payday run". Salary lands (coin burst at the start), the runner collects coins through a small town and passes gates for rent, groceries and bills, deposits what's left in a savings chest, then runs into a forest where trees grow along the track (compound growth). The finish shows the result as a balance in the app's CHF format; the best run is kept.
-- **Look:** the world takes the active colour theme, like the character (monochrome plus one accent).
-- **Assets:** KayKit City Builder Bits 1.0 (free) and Forest Nature Pack 1.0 (free), CC0, already downloaded to `~/Documents/Projects/AI Portfolio Projects/Banking App/_resources/`. Copy only the models used into `apps/web/assets/3d/`.
-- **Tuning:** speed curves, camera lag and effect sizes live in one config object with starting values, so feel is tuned by changing numbers.
-- **Performance:** 60 fps on a mid-range phone; few draw calls; reduced motion gives a calm, still alternative.
+Added 2026-11-05. In Pay's schedule step (single payment), the Execute on field always opens the calendar, also while "As soon as possible" is on. Picking a later date switches the toggle off; picking the next possible day keeps it on; switching the toggle back on resets the date to the next possible day. The field is never locked or greyed in Pay. Screen readers hear the toggle's change. The internal transfer stays as it is (its toggle shows and hides the field). Revises 28's D4 for Pay, where the field opens nothing while the toggle is on. To settle in its spec: what "the next possible day" is while the toggle is on (today, as "as soon as possible" executes now, or the next working day), whether the calendar can offer that day (28's D2 makes today unpickable), how the toggle's change is announced, and whether Recurring and Standing order follow the same rule.
 
-Later, as follow-ups: sound (item 5).
+## 49. Banking sheets don't close on Escape
 
-## 3. Playground easter egg (later)
+Found during 32 (2026-11-05). Pay, the transfer, Buy and Sell, and a booking's sheet ignore Escape: only their close button closes them. The fridge, the opening and the Playground close on Escape (`js/fridge-advisor-sheet.js`, `js/investment-opening.js`, `js/playground-sheet.js`). To settle in its spec: Escape on every banking sheet, with the flows asking their "Discard …?" prompt first as their close button does, what Escape does while a picker, the calendar or a confirmation is open over a sheet, and focus after the close.
 
-An entry from the 3D character on the main screens (for example a double tap on Overview) that opens the Playground. Only once the game itself feels good.
+## 37. Pending payments and transfers execute on their date
 
-## 4. Mobile Light/Dark toggle (done)
+Split from 28 (2026-11-04). A payment or transfer set for a later date stays pending forever: nothing executes it when its date arrives, so its money never moves, and a recurring one never repeats. To settle in its spec: when it runs (on load, against the device date), what an executed one looks like in the bookings and balances, how a recurring or standing order repeats, and what the status message says.
 
-A sun or moon button in the top left of the top bar on the four main screens, under 1280px, that swaps Light and Dark. Requested directly on 2026-10-20.
+## 48. Chip: its own tokens, as in Figma
 
-Spec: `specs/2026-10-20-mobile-mode-toggle/` (branch `feature/mobile-mode-toggle`).
+Added 2026-11-05. `.chip--tonal` (43) uses `--color-btn-tonal-*`. Figma's Chip has its own Case=FilledTonal, bound to `chip/filled tonal/*` (background, border, foreground, hover, pressed; Des-Sys-Test, Component Library > Chip, node 769:106445). Those tokens are in `designs/tokens/_NEW/260617_tokens` but not in `designs/tokens/mapped`. Bring them into the token pipeline as `--color-chip-filled-tonal-*`, make the theme engine emit them for Multi-color themes, and point the chip at them. Settle the class name against Figma's "FilledTonal", and document the Secondary case in `designs/components/chip/chip.md` too.
 
-## 5. Playground sound: footsteps and coins (done)
+# Later
 
-Two sounds only, recorded CC0 samples from Kenney played through the Web Audio API (no library): footsteps (hard ground in the town, grass in the forest) and a coin pickup. A mute button in the HUD, remembered. This is the sound follow-up promised under item 2.
+Not scheduled, smallest first (an estimate of size, not of value).
 
-Spec: `specs/2026-10-22-playground-sound/`.
+## 70. A stray copy of the token generator is tracked in git
 
-## 6. Playground gameplay: lanes, jumping, a second coin, a trophy
+Found while writing 63 and 64's spec (2026-11-08). `apps/web/scripts/generate-tokens-css 2.mjs` is tracked, is not run by `tokens:build` (which reads `generate-tokens-css.mjs`), and carries non-code text after the generator's end. To settle in its spec: whether anything reads it (it looks like an accidental copy), then remove it, and check the other `* 2.*` files in the repo for the same.
 
-Acceleration lanes, jumping (the rig has jump clips), a second coin type and a trophy. The plot is defined by Klaudiusz first; no spec until then.
+## 66. Motion specimens: Focus-mode choreography's sample stays white in Dark
 
-## 7. Playground settings dialog (done)
+Klaudiusz, 2026-11-06. On Motion specimens, the Focus-mode choreography sample's right column keeps a white background in Dark. It needs a surface token.
 
-A settings button in the Playground HUD that pauses the run and opens a settings dialog with sections, so changes happen while nothing moves. First two sections: **Visual parameters** (which ones to be defined in the spec interview) and **Theme** (the current Light/Dark choice, so the one-off recolour of the world and character happens behind the dialog). Resume closes it; Escape means Resume. Reuses the confirmation dialog component (payday-run D24).
+## 67. The status message's timing
 
-Spec: `specs/2026-10-25-playground-settings-dialog/` (branch `feature/playground-settings-dialog`). Decided in its interview: the four visual parameters are render quality, camera distance, effects and fog distance; Sound moves into the dialog from the HUD; Theme is Light and Dark only (Multi-color themes stay in Profile); the visual parameters are remembered in `uzBankWebPlaygroundSettings`. Still to do first: measure the paused theme switch on a throttled CPU (below).
+Klaudiusz, 2026-11-06. The "Open payment!" message appears after about 9 s; the baseline smoke test and `js/status-feed.js`'s comment say 12 s (8 s was measured on 2026-11-05). To settle: what the timer actually counts from, then align the code or the baseline.
 
-Original open questions: which visual parameters (for example render quality or pixel ratio, camera distance), whether Sound moves into the dialog from the HUD, and whether Multi-color themes are picked here or stay in Profile. Measure the paused theme switch on a throttled CPU first: a mid-run switch on a desktop cost about one extra frame, a phone is untested.
+## 58. Legibility doesn't reach the Playground
+
+Found while writing 34's spec (2026-11-06). The Playground (`playground.html`, admin only, opened as a full-screen sheet) loads neither `js/app-mp.js` nor, since 34, `js/appearance.js`, so Legibility's type and spacing scale, Typeface and Font don't apply there. To settle in its spec: loading `js/appearance.js` as the fridge and the opening do, and a check of the Playground's layouts at Small and Large, desktop and phone.
+
+## 50. Built-in transfers can read as a transfer to the same account
+
+Found during 46 (2026-11-05). All bookings shows the same built-in rows for Household and Savings, and a built-in transfer's sheet takes the page's account as its debit (`buildAllBookingsRowData` in `js/payment-details.js`, from `ACCOUNT_SNAPSHOTS`). So on Household's All bookings "Transfer to Household" reads "from Household to Household", and on Savings' "Transfer to Savings" reads "from Savings account to Savings account". The two lists also name Savings differently ("Savings account" in the built-in snapshots, "Savings Account" in the transfer's). To settle in its spec: per-account built-in rows, or a debit account in each transfer row's data, and one name for Savings.
+
+## 39. Pay: a recipient's details typed on the recipient step are lost
+
+Found while writing 29's spec (2026-11-04). The recipient step fills Recipient name, Street and City from the chosen recipient, but nothing reads the inputs back (`js/payment-overlay.js`, the `input` handler only syncs the clear buttons). A name changed there is ignored: the schedule step, the summary, the confirmation and the stored booking keep the name picked from the list. To settle in its spec: whether the typed details update the flow's recipient (and the stored booking), whether a changed name makes a new recipient or edits the saved one, and what an emptied name does on Next.
+
+## 44. Booking sheet: an executed instance names its standing order
+
+Added 2026-11-05, out of 43's scope. An executed booking that is an instance of a standing order (Rent, Internet & Phone) shows a line "Standing order: <frequency>" in its sheet, linking to the order in the Recurring tab. To settle in its spec: how an instance points to its order (built-in data and the payment state), what the link opens (the order's sheet, or the Recurring tab scrolled to it), and how it reads on a phone and to a screen reader.
+
+## 45. Pay and the transfer: choose a frequency
+
+Found while writing 43's spec (2026-11-05). Pay's and the transfer's Recurring and Standing order have no frequency choice, so a recurring booking made in the app stores Monthly (43, D9). To settle in its spec: the choices (weekly, monthly, quarterly, yearly), where the field sits in the schedule step, what an edit shows, and the confirmation's wording.
+
+## 51. Booking sheet: Edit and Copy for a pending transfer
+
+Found during 42 (2026-11-05). A pending transfer made in the app gets Delete in its sheet; Edit and Copy are left out, as the transfer flow (`js/iat-overlay.js`) has no way to open with an amount, accounts and a schedule filled in. To settle in its spec: a prefill path for the transfer like Pay's edit context, whether Edit updates both legs in place, what Copy of an executed transfer opens, and whether built-in transfers get Copy (they need 50 first).
 
 ## 8. "How much should I invest?": the fridge advisor (8a, 8c, 8d and 8e done)
 
@@ -96,6 +109,67 @@ Split:
 - **9g. Personalisation** (later): thematic focus, alternative investments, regional focus. Not a step of the flow, which people found too long (intervention map, row 9g): if built, an opt-in from the summary ("Personalise your strategy (optional)"), so the flow gets no longer for those who skip it.
 
 Not part of item 9: the avatar acting in the fridge (8b). The fridge as a film (8d) comes between 9a and 9b.
+
+# Parked
+
+Waiting on Klaudiusz.
+
+## 3. Playground easter egg (later)
+
+An entry from the 3D character on the main screens (for example a double tap on Overview) that opens the Playground. Only once the game itself feels good.
+
+## 6. Playground gameplay: lanes, jumping, a second coin, a trophy
+
+Acceleration lanes, jumping (the rig has jump clips), a second coin type and a trophy. The plot is defined by Klaudiusz first; no spec until then.
+
+# Done
+
+Finished work, and duplicates closed in favour of another item, in number order.
+
+## 1. Baseline (done)
+
+- The presentable app as built before the spec-driven process: see `specs/baseline/`
+- Tagged `v1-presentable`
+- `AGENTS.md`, `specs/mission.md`, `specs/tech-spec.md`, this roadmap, `CHANGELOG.md`, and the `/feature-spec` and `/changelog` skills in place (2026-10-19)
+
+## 2. Playground: "Payday run" (done)
+
+A small 3D game on its own design system page, showing what the character kit can do beyond the app.
+
+Spec: `specs/2026-10-19-payday-run/` (branch `feature/payday-run`). Built in 13 task groups; merged status is recorded in the changelog. Interview outcome: the whole story is in v1, the result screen has a breakdown and a kept best run (`uzBankWebPlaygroundBest`), no sound, touch uses two on-screen buttons.
+
+What was agreed before the spec (confirmed in the interview, not re-opened):
+
+- **Placement:** a fourth card on `design-system.html`, under Character kit, admin only. The page goes full screen (no sidebar or header) and opens as a sheet that slides up like the flow screens; a close button top right (and Escape) slides it back down to the Design system page. Also a "Try it in the Playground" link at the end of `character-kit.html`.
+- **Player:** the persona character, not a car. Its recipe comes from User Type; the profile sets the pace (Beat jogs, Lena runs, Max sprints).
+- **Mechanics:** in the style of Shopify's Horizon Drive: a spline track (no physics library, no raycasts), steer left and right within the track width, a chase camera, instanced effects. Keyboard and touch.
+- **Story:** "Payday run". Salary lands (coin burst at the start), the runner collects coins through a small town and passes gates for rent, groceries and bills, deposits what's left in a savings chest, then runs into a forest where trees grow along the track (compound growth). The finish shows the result as a balance in the app's CHF format; the best run is kept.
+- **Look:** the world takes the active colour theme, like the character (monochrome plus one accent).
+- **Assets:** KayKit City Builder Bits 1.0 (free) and Forest Nature Pack 1.0 (free), CC0, already downloaded to `~/Documents/Projects/AI Portfolio Projects/Banking App/_resources/`. Copy only the models used into `apps/web/assets/3d/`.
+- **Tuning:** speed curves, camera lag and effect sizes live in one config object with starting values, so feel is tuned by changing numbers.
+- **Performance:** 60 fps on a mid-range phone; few draw calls; reduced motion gives a calm, still alternative.
+
+Later, as follow-ups: sound (item 5).
+
+## 4. Mobile Light/Dark toggle (done)
+
+A sun or moon button in the top left of the top bar on the four main screens, under 1280px, that swaps Light and Dark. Requested directly on 2026-10-20.
+
+Spec: `specs/2026-10-20-mobile-mode-toggle/` (branch `feature/mobile-mode-toggle`).
+
+## 5. Playground sound: footsteps and coins (done)
+
+Two sounds only, recorded CC0 samples from Kenney played through the Web Audio API (no library): footsteps (hard ground in the town, grass in the forest) and a coin pickup. A mute button in the HUD, remembered. This is the sound follow-up promised under item 2.
+
+Spec: `specs/2026-10-22-playground-sound/`.
+
+## 7. Playground settings dialog (done)
+
+A settings button in the Playground HUD that pauses the run and opens a settings dialog with sections, so changes happen while nothing moves. First two sections: **Visual parameters** (which ones to be defined in the spec interview) and **Theme** (the current Light/Dark choice, so the one-off recolour of the world and character happens behind the dialog). Resume closes it; Escape means Resume. Reuses the confirmation dialog component (payday-run D24).
+
+Spec: `specs/2026-10-25-playground-settings-dialog/` (branch `feature/playground-settings-dialog`). Decided in its interview: the four visual parameters are render quality, camera distance, effects and fog distance; Sound moves into the dialog from the HUD; Theme is Light and Dark only (Multi-color themes stay in Profile); the visual parameters are remembered in `uzBankWebPlaygroundSettings`. Still to do first: measure the paused theme switch on a throttled CPU (below).
+
+Original open questions: which visual parameters (for example render quality or pixel ratio, camera distance), whether Sound moves into the dialog from the HUD, and whether Multi-color themes are picked here or stay in Profile. Measure the paused theme switch on a throttled CPU first: a mid-run switch on a desktop cost about one extra frame, a phone is untested.
 
 ## 10. All bookings: the Search button does nothing (done)
 
@@ -251,21 +325,9 @@ Found during 35 (2026-11-04). With the macOS Reduce motion setting on, the forwa
 
 Spec: `specs/2026-11-06-arrow-nudge-reduced-motion/` (branch `feature/arrow-nudge-reduced-motion`). Settled in its interview: the nudge loops are set only under `prefers-reduced-motion: no-preference`, so no reduce rule has to win; disabled arrows, outweighed the same way, are fixed here; the check covers every arrow and the proceed button with the real setting; standard gate. Found in the build: the proceed button's own rule already held; Motion specimens No. 009's code sample follows the new rule. Built 2026-11-06.
 
-## 37. Pending payments and transfers execute on their date
-
-Split from 28 (2026-11-04). A payment or transfer set for a later date stays pending forever: nothing executes it when its date arrives, so its money never moves, and a recurring one never repeats. To settle in its spec: when it runs (on load, against the device date), what an executed one looks like in the bookings and balances, how a recurring or standing order repeats, and what the status message says.
-
 ## 38. Pay: the schedule step always names Hans Meyer (duplicate of 29)
 
 Found during 28 (2026-11-04). Pay's schedule step shows "Recipient: Hans Meyer" whoever was picked: `paintScheduleStep` in `js/payment-overlay.js` never writes the recipient's name, so the markup's placeholder stays (the amount step and the summary are right). Also on `main`. The same bug as 29, closed on 2026-11-04 and built there; its look at the other steps' placeholders is 29's D3.
-
-## 39. Pay: a recipient's details typed on the recipient step are lost
-
-Found while writing 29's spec (2026-11-04). The recipient step fills Recipient name, Street and City from the chosen recipient, but nothing reads the inputs back (`js/payment-overlay.js`, the `input` handler only syncs the clear buttons). A name changed there is ignored: the schedule step, the summary, the confirmation and the stored booking keep the name picked from the list. To settle in its spec: whether the typed details update the flow's recipient (and the stored booking), whether a changed name makes a new recipient or edits the saved one, and what an emptied name does on Next.
-
-## 40. Pay: picking a date overrides As soon as possible
-
-Added 2026-11-05. In Pay's schedule step (single payment), the Execute on field always opens the calendar, also while "As soon as possible" is on. Picking a later date switches the toggle off; picking the next possible day keeps it on; switching the toggle back on resets the date to the next possible day. The field is never locked or greyed in Pay. Screen readers hear the toggle's change. The internal transfer stays as it is (its toggle shows and hides the field). Revises 28's D4 for Pay, where the field opens nothing while the toggle is on. To settle in its spec: what "the next possible day" is while the toggle is on (today, as "as soon as possible" executes now, or the next working day), whether the calendar can offer that day (28's D2 makes today unpickable), how the toggle's change is announced, and whether Recurring and Standing order follow the same rule.
 
 ## 41. Confirmation dialogs are not modal (done)
 
@@ -285,14 +347,6 @@ Found during 31 (2026-11-05). On All bookings, every built-in row opens a sheet 
 
 Spec: `specs/2026-11-05-booking-chips/` (branch `feature/booking-chips`, from `feature/bookings-edit`). Direction settled before the interview: a row's icon names the counterparty, a tonal chip names "Pending" or the frequency, the booking type is row data, not the icon (which also made Rent and Account details' Pizza open as transfers). Settled in its interview: Edit stays off on built-in rows until 42; All bookings and Account details adopt it now; recurring bookings made in the app store Monthly, and a frequency choice in Pay is item 45. An executed instance's "Standing order" line is item 44. Found in the build: Pizza on Account details is a transfer in its data, so it stays one; trades appear in these lists and keep their buy and sell icons; a transfer made in the app opens as a payment on All bookings (46, from 31's setup). Built 2026-11-05.
 
-## 44. Booking sheet: an executed instance names its standing order
-
-Added 2026-11-05, out of 43's scope. An executed booking that is an instance of a standing order (Rent, Internet & Phone) shows a line "Standing order: <frequency>" in its sheet, linking to the order in the Recurring tab. To settle in its spec: how an instance points to its order (built-in data and the payment state), what the link opens (the order's sheet, or the Recurring tab scrolled to it), and how it reads on a phone and to a screen reader.
-
-## 45. Pay and the transfer: choose a frequency
-
-Found while writing 43's spec (2026-11-05). Pay's and the transfer's Recurring and Standing order have no frequency choice, so a recurring booking made in the app stores Monthly (43, D9). To settle in its spec: the choices (weekly, monthly, quarterly, yearly), where the field sits in the schedule step, what an edit shows, and the confirmation's wording.
-
 ## 46. All bookings: a transfer made in the app opens as a payment (done)
 
 Found during 43 (2026-11-05). On All bookings, the sheet of a transfer made in the app reads "Domestic Payment": `buildDataFromStateBooking` in `js/payment-details.js` takes the accounts from `window.__UZ_IAT_ACCOUNTS__`, which `js/iat-overlay.js` sets, and All bookings doesn't load it, so the transfer falls back to the payment sheet. Account details shows the same booking as an "Internal Account Transfer". To settle in its spec: where the accounts' details come from on a page without the transfer flow (a shared account list, or loading the transfer there too).
@@ -304,22 +358,6 @@ Spec: `specs/2026-11-05-transfer-status/` (branch `feature/transfer-status`), wi
 Added 2026-11-05. A standing order is a rule; its executions are bookings. Today tapping Rent in Recurring opens a payment sheet with Status "Pending". The rule gets a third variant of the booking sheet, next to Domestic Payment and Internal Account Transfer (not a new page): Status "Active", Frequency, Next execution; its Edit changes all future payments. An instance keeps its Pending or Executed sheet, and Edit on a pending instance changes that payment only (relates to 44). The Pending tab lists each standing order's next instance with the "Pending" chip (Rent, Netflix and Internet & Phone are missing there today). The built-in "Next on" dates are stale (01.11.2026 is past): derive them from today or move them into the future. Later, not in this item: "Skip this payment", pausing or deleting a standing order, a "Recent payments" list in the standing order's sheet.
 
 Spec: `specs/2026-11-06-standing-orders/` (branch `feature/standing-orders`), with 53. Settled in its interview: the next instance is derived from the rule each time a list renders, and an edit of it is stored as a one-off pending payment for that date; the rule and a pending instance both get Edit and Copy, no Delete; standard gate. Out of the branch: 44, 45, 37. Found in the build: All bookings lists the same built-in rows for every account while Pay books to Household (56). Built 2026-11-06.
-
-## 48. Chip: its own tokens, as in Figma
-
-Added 2026-11-05. `.chip--tonal` (43) uses `--color-btn-tonal-*`. Figma's Chip has its own Case=FilledTonal, bound to `chip/filled tonal/*` (background, border, foreground, hover, pressed; Des-Sys-Test, Component Library > Chip, node 769:106445). Those tokens are in `designs/tokens/_NEW/260617_tokens` but not in `designs/tokens/mapped`. Bring them into the token pipeline as `--color-chip-filled-tonal-*`, make the theme engine emit them for Multi-color themes, and point the chip at them. Settle the class name against Figma's "FilledTonal", and document the Secondary case in `designs/components/chip/chip.md` too.
-
-## 49. Banking sheets don't close on Escape
-
-Found during 32 (2026-11-05). Pay, the transfer, Buy and Sell, and a booking's sheet ignore Escape: only their close button closes them. The fridge, the opening and the Playground close on Escape (`js/fridge-advisor-sheet.js`, `js/investment-opening.js`, `js/playground-sheet.js`). To settle in its spec: Escape on every banking sheet, with the flows asking their "Discard …?" prompt first as their close button does, what Escape does while a picker, the calendar or a confirmation is open over a sheet, and focus after the close.
-
-## 50. Built-in transfers can read as a transfer to the same account
-
-Found during 46 (2026-11-05). All bookings shows the same built-in rows for Household and Savings, and a built-in transfer's sheet takes the page's account as its debit (`buildAllBookingsRowData` in `js/payment-details.js`, from `ACCOUNT_SNAPSHOTS`). So on Household's All bookings "Transfer to Household" reads "from Household to Household", and on Savings' "Transfer to Savings" reads "from Savings account to Savings account". The two lists also name Savings differently ("Savings account" in the built-in snapshots, "Savings Account" in the transfer's). To settle in its spec: per-account built-in rows, or a debit account in each transfer row's data, and one name for Savings.
-
-## 51. Booking sheet: Edit and Copy for a pending transfer
-
-Found during 42 (2026-11-05). A pending transfer made in the app gets Delete in its sheet; Edit and Copy are left out, as the transfer flow (`js/iat-overlay.js`) has no way to open with an amount, accounts and a schedule filled in. To settle in its spec: a prefill path for the transfer like Pay's edit context, whether Edit updates both legs in place, what Copy of an executed transfer opens, and whether built-in transfers get Copy (they need 50 first).
 
 ## 52. Booking rows can't be reached with the keyboard (duplicate of 33)
 
@@ -356,10 +394,6 @@ Spec: `specs/2026-11-06-bookings-per-account/` (branch `feature/bookings-per-acc
 Found during 33 (2026-11-06). On Household's All bookings, the sheet of a standing order's next payment in Pending (Internet & Phone, seen by keyboard) names "Savings account" as the debit account, although since 56 the standing orders are Household's. Not changed by 33. To settle in its spec: where the instance's sheet takes its debit account (`instanceData` and `buildAllBookingsRowData` in `js/payment-details.js`, `ACCOUNT_SNAPSHOTS`), and the same check for the rule's own sheet in Recurring and for Rent and Netflix.
 
 Taken into 59 (`specs/2026-11-06-savings-standing-orders/`).
-
-## 58. Legibility doesn't reach the Playground
-
-Found while writing 34's spec (2026-11-06). The Playground (`playground.html`, admin only, opened as a full-screen sheet) loads neither `js/app-mp.js` nor, since 34, `js/appearance.js`, so Legibility's type and spacing scale, Typeface and Font don't apply there. To settle in its spec: loading `js/appearance.js` as the fridge and the opening do, and a check of the Playground's layouts at Small and Large, desktop and phone.
 
 ## 59. Savings lost its standing orders (done)
 
@@ -403,27 +437,11 @@ Klaudiusz, 2026-11-06. In Sell, "Available in <account>" goes, and the account p
 
 Spec: `specs/2026-11-08-trade-sheet-account-and-price/` (branch `feature/trade-sheet-account-and-price`), with 55. Settled in its interview: 55 is still needed, because Buy keeps the line; Price always shows the market price and the total uses the typed limit; Sell's change is the label and the picker title only. Built 2026-11-08.
 
-## 66. Motion specimens: Focus-mode choreography's sample stays white in Dark
-
-Klaudiusz, 2026-11-06. On Motion specimens, the Focus-mode choreography sample's right column keeps a white background in Dark. It needs a surface token.
-
-## 67. The status message's timing
-
-Klaudiusz, 2026-11-06. The "Open payment!" message appears after about 9 s; the baseline smoke test and `js/status-feed.js`'s comment say 12 s (8 s was measured on 2026-11-05). To settle: what the timer actually counts from, then align the code or the baseline.
-
-## 68. Editing a standing order after its next payment leaves two payments
-
-Found during 59 (2026-11-06). Edit a standing order's next payment (stored as a one-off with the rule's id and date, 47 D10), then Edit the rule itself: the edited rule is a new booking that replaces the old one, so Pending lists both the earlier one-off and the new rule's next payment on the same date (seen with Rent on Savings: 1'700 and 1'750 on 01.12). Not from 59; the same on Household. To settle in its spec: whether an edit of the rule carries over or drops an edited next payment, and what the customer is told.
-
 ## 69. All bookings: Household's card and the list's last balance disagree (done)
 
 Found in Klaudiusz's check of 61 (2026-11-06). After the demo reset, Household's card on All bookings reads CHF 9'900.00 while the list's newest day (Yesterday) ends at 10'000.00, likely because the pending Apple (-100) is already subtracted from the card. To settle in its spec: whether the card shows the booked or the available balance, and a label when the two differ, the same on Account details and Overview.
 
 Spec: `specs/2026-11-06-demo-data-dates/` (branch `feature/demo-data-dates`), with 62. Settled in its interview: the cards show the booked balance; a pending payment, Apple included, counts nowhere until it executes, so no label is needed. Built 2026-11-06.
-
-## 70. A stray copy of the token generator is tracked in git
-
-Found while writing 63 and 64's spec (2026-11-08). `apps/web/scripts/generate-tokens-css 2.mjs` is tracked, is not run by `tokens:build` (which reads `generate-tokens-css.mjs`), and carries non-code text after the generator's end. To settle in its spec: whether anything reads it (it looks like an accidental copy), then remove it, and check the other `* 2.*` files in the repo for the same.
 
 ## 71. Display-only rows and account pickers against the TextField anatomy (done)
 
