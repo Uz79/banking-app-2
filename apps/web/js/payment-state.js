@@ -29,6 +29,8 @@
  *   deleteBooking(id)           → removes a booking made in the app; a transfer loses both legs (roadmap 42, D11)
  *   removeBuiltIn(id)           → a built-in example row (data-builtin-id) an edit replaced or a delete removed;
  *                               it stays hidden until the reset (roadmap 42)
+ *   instanceEditsOf(ruleId)     → the dates of a standing order's edited next payments (roadmap 47, D10); they go
+ *                               when the order is edited or deleted, which also return those dates (roadmap 68)
  *   reset()                     → wipe storage, restore initial state (and the opening's session draft)
  *   formatMoney(n)              → "10'000.00" Swiss style
  *   STORAGE_KEY                 → string constant (for boot-script reuse)
@@ -492,11 +494,16 @@
     state.bookings.push(booking);
     trimBookings(state);
     /* An edit of a built-in row: the new booking takes its place for good (roadmap 42, D4) */
-    if (payment.replacesBuiltIn) markBuiltInRemoved(payment.replacesBuiltIn);
+    var dropped = [];
+    if (payment.replacesBuiltIn) {
+      markBuiltInRemoved(payment.replacesBuiltIn);
+      dropped = dropInstanceEdits(payment.replacesBuiltIn); /* a built-in standing order's edited next payments (roadmap 68, D2) */
+    }
     // NOTE: We deliberately do NOT decrement state.household here.
     // It is the registered balance before anything made in the app and
     // stays fixed; the running balance is derived in getState() instead.
     dispatchChange();
+    return dropped;
   }
 
   /**
@@ -559,6 +566,27 @@
     dispatchChange();
   }
 
+  /* An edited next payment belongs to its standing order: a stored booking carrying the rule's id (roadmap 47, D10).
+     When the order is edited or deleted its edited payments go with it, so Pending never lists one of them next to
+     the new rule's payment or after the rule is gone (roadmap 68, D1, D5, D6). */
+  function instanceEditsOf(ruleId) {
+    if (!ruleId) return [];
+    return state.bookings.filter(function (b) { return b.ruleId === ruleId; }).map(function (b) {
+      return b.occurrence || b.executeOn || '';
+    });
+  }
+
+  function dropInstanceEdits(ruleId) {
+    var dates = instanceEditsOf(ruleId);
+    if (dates.length) state.bookings = state.bookings.filter(function (b) { return b.ruleId !== ruleId; });
+    return dates;
+  }
+
+  /* A stored standing order: recurring, and not itself an edit of one of another order's payments */
+  function isStoredRule(b) {
+    return !!b && b.status === 'recurring' && !b.ruleId;
+  }
+
   /**
    * Update an existing booking in-place (used by the edit flow so
    * re-submitting a pending payment replaces it rather than duplicating it).
@@ -571,7 +599,8 @@
     for (var i = 0; i < state.bookings.length; i++) {
       if (state.bookings[i].id === id) { idx = i; break; }
     }
-    if (idx < 0) return; // booking not found — no-op
+    if (idx < 0) return []; // booking not found — no-op
+    var wasRule = isStoredRule(state.bookings[idx]);
     var booking = Object.assign({}, state.bookings[idx]);
     if (updates.recipient && updates.recipient.name) booking.recipientName = updates.recipient.name;
     if (updates.currency) booking.currency = updates.currency;
@@ -592,7 +621,10 @@
       booking.dateISO = updates.dateISO || new Date().toISOString();
     }
     state.bookings[idx] = booking;
+    /* Editing the standing order itself: its edited next payments are replaced (roadmap 68, D2) */
+    var dropped = wasRule ? dropInstanceEdits(id) : [];
     dispatchChange();
+    return dropped;
   }
 
   /**
@@ -685,9 +717,12 @@
     if (!id) return;
     var suffix = transferSuffix(id);
     var before = state.bookings.length;
+    var rule = state.bookings.filter(function (b) { return b.id === id; })[0];
     state.bookings = state.bookings.filter(function (b) {
       return b.id !== id && !(suffix && transferSuffix(b.id) === suffix);
     });
+    /* A deleted standing order takes its edited next payments with it (roadmap 68, D3) */
+    if (isStoredRule(rule)) dropInstanceEdits(id);
     if (state.bookings.length !== before) dispatchChange();
   }
 
@@ -700,6 +735,7 @@
   function removeBuiltIn(id) {
     if (!id || isBuiltInRemoved(id)) return;
     markBuiltInRemoved(id);
+    dropInstanceEdits(id); /* a built-in standing order's edited next payments go with it (roadmap 68, D3) */
     dispatchChange();
   }
 
@@ -751,6 +787,7 @@
     commitTradeOrder:    commitTradeOrder,
     commitMandate:       commitMandate,
     updatePayment:       updatePayment,
+    instanceEditsOf:     instanceEditsOf,
     removeBuiltIn:       removeBuiltIn,
     deleteBooking:       deleteBooking,
     reset:               reset,

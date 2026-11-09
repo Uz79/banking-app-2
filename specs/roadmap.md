@@ -6,10 +6,6 @@ The order below is the order of work. Items keep their numbers (specs, commits a
 
 In order. The first is what `/feature-spec` starts.
 
-## 68. Editing a standing order after its next payment leaves two payments
-
-Found during 59 (2026-11-06). Edit a standing order's next payment (stored as a one-off with the rule's id and date, 47 D10), then Edit the rule itself: the edited rule is a new booking that replaces the old one, so Pending lists both the earlier one-off and the new rule's next payment on the same date (seen with Rent on Savings: 1'700 and 1'750 on 01.12). Not from 59; the same on Household. To settle in its spec: whether an edit of the rule carries over or drops an edited next payment, and what the customer is told.
-
 ## 40. Pay: picking a date overrides As soon as possible
 
 Added 2026-11-05. In Pay's schedule step (single payment), the Execute on field always opens the calendar, also while "As soon as possible" is on. Picking a later date switches the toggle off; picking the next possible day keeps it on; switching the toggle back on resets the date to the next possible day. The field is never locked or greyed in Pay. Screen readers hear the toggle's change. The internal transfer stays as it is (its toggle shows and hides the field). Revises 28's D4 for Pay, where the field opens nothing while the toggle is on. To settle in its spec: what "the next possible day" is while the toggle is on (today, as "as soon as possible" executes now, or the next working day), whether the calendar can offer that day (28's D2 makes today unpickable), how the toggle's change is announced, and whether Recurring and Standing order follow the same rule.
@@ -436,6 +432,12 @@ Spec: `specs/2026-11-08-field-anatomy-and-band-ink/` (branch `feature/field-anat
 Klaudiusz, 2026-11-06. In Sell, "Available in <account>" goes, and the account picker reads "Credit account", not "Debit account". Also check: in Buy, "Price" changes to the typed limit (389.22 to 100.00); the market price shouldn't follow it. Relates to 55. To settle in its spec: what Buy shows as Price and as the expected total with a limit, and whether 55 is still needed once Sell drops the line.
 
 Spec: `specs/2026-11-08-trade-sheet-account-and-price/` (branch `feature/trade-sheet-account-and-price`), with 55. Settled in its interview: 55 is still needed, because Buy keeps the line; Price always shows the market price and the total uses the typed limit; Sell's change is the label and the picker title only. Built 2026-11-08.
+
+## 68. Editing a standing order after its next payment leaves two payments (done)
+
+Found during 59 (2026-11-06). Edit a standing order's next payment (stored as a one-off with the rule's id and date, 47 D10), then Edit the rule itself: the edited rule is a new booking that replaces the old one, so Pending lists both the earlier one-off and the new rule's next payment on the same date (seen with Rent on Savings: 1'700 and 1'750 on 01.12). Not from 59; the same on Household. To settle in its spec: whether an edit of the rule carries over or drops an edited next payment, and what the customer is told.
+
+Spec: `specs/2026-11-08-standing-order-edit-exception/` (branch `feature/standing-order-edit-exception`). Settled in its interview: the rule's edit wins and the edited next payment is dropped; Delete of the rule drops it too; the customer is told in the Pay confirmation's note line and in the Delete prompt. Found in the build: the app offers no Delete for a standing order, so the Delete half is in the state only and was tested through its API, with no prompt wording. Built 2026-11-08.
 
 ## 69. All bookings: Household's card and the list's last balance disagree (done)
 
