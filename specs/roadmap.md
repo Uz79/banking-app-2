@@ -6,9 +6,9 @@ The order below is the order of work. Items keep their numbers (specs, commits a
 
 In order. The first is what `/feature-spec` starts.
 
-## 40. Pay: picking a date overrides As soon as possible
+## 40. Pay and the transfer: picking a date overrides the toggle
 
-Added 2026-11-05. In Pay's schedule step (single payment), the Execute on field always opens the calendar, also while "As soon as possible" is on. Picking a later date switches the toggle off; picking the next possible day keeps it on; switching the toggle back on resets the date to the next possible day. The field is never locked or greyed in Pay. Screen readers hear the toggle's change. The internal transfer stays as it is (its toggle shows and hides the field). Revises 28's D4 for Pay, where the field opens nothing while the toggle is on. To settle in its spec: what "the next possible day" is while the toggle is on (today, as "as soon as possible" executes now, or the next working day), whether the calendar can offer that day (28's D2 makes today unpickable), how the toggle's change is announced, and whether Recurring and Standing order follow the same rule.
+Added 2026-11-05, widened 2026-11-13. Spec: `specs/2026-11-13-pay-date-overrides-asap/`. In Pay's schedule step and in the internal transfer's, the toggle ("As soon as possible" / "Immediately") has "Execute on" always visible under it, and the field always opens the calendar. Pay's toggle date is the next working day (today stays unpickable), the transfer's is today (pickable, weekends too). Picking the toggle's own date keeps it on; any other date turns it off; switching it on resets the date. Screen readers hear the toggle's change. Recurring and Standing order follow the same rule. Revises 28's D2, D3 and D4. Pay's "executes now" status stays until 37.
 
 ## 49. Banking sheets don't close on Escape
 
