@@ -27,9 +27,9 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 5. Wrap-up
 
-- [ ] `npm run build` in `apps/web` succeeds with no new warnings
-- [ ] Every item of `validation.md`, then the baseline smoke test (copied into it)
-- [ ] `specs/roadmap.md`: 40 marked done and moved to Done; a note on 28's superseded decisions
-- [ ] `specs/tech-spec.md`: the Decisions table or the schedule step's row, if it describes 28's D4; check
-- [ ] `CHANGELOG.md` under `Unreleased` (run `/changelog` and tidy)
-- [ ] `apps/web/README.md`: no change expected (no storage keys); check
+- [x] `npm run build` in `apps/web` succeeds with no new warnings
+- [ ] Every item of `validation.md`, then the baseline smoke test (copied into it): not run in full, see its "Checked on" line
+- [x] `specs/roadmap.md`: 40 marked done and moved to Done; a note on 28's superseded decisions
+- [x] `specs/tech-spec.md`: the Decisions table or the schedule step's row, if it describes 28's D4; check
+- [x] `CHANGELOG.md` under `Unreleased` (run `/changelog` and tidy)
+- [x] `apps/web/README.md`: no change expected (no storage keys); check
