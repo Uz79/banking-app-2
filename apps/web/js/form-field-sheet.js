@@ -421,7 +421,7 @@
   }
 
   /** "Execute on" (roadmap 28, D1): the calendar from js/date-picker.js in this sheet, anchored under the field
-   *  from 1280 px, a bottom sheet below. options: { title, selected: Date, onPick(date) }. Picking closes the sheet;
+   *  from 1280 px, a bottom sheet below. options: { title, selected: Date, immediate (the transfer's range, roadmap 40), onPick(date) }. Picking closes the sheet;
    *  focus goes back to the field when it closes. */
   function openDateSheet(anchorEl, options) {
     if (!customMenusEnabled() || !window.UZBankDatePicker) return;
@@ -431,7 +431,7 @@
     listEl.removeAttribute('role'); /* the grid is not a listbox */
     var picker = window.UZBankDatePicker.render(listEl, {
       selected: options.selected,
-      range: window.UZBankDatePicker.executionRange(),
+      range: window.UZBankDatePicker.executionRange(null, options.immediate),
       onPick: function (date) {
         if (typeof options.onPick === 'function') options.onPick(date);
         closeSheet();

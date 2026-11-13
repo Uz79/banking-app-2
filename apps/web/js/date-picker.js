@@ -3,7 +3,8 @@
  * (js/form-field-sheet.js, `openDateSheet`) from "Execute on" in Pay and the internal transfer.
  *
  * Dates that can be picked (D3): Monday to Friday, from the next working day to the same date twelve months
- * ahead. Today has a ring but is "as soon as possible", so it can't be picked (D2).
+ * ahead. In Pay today has a ring but can't be picked. The transfer (`immediate`, roadmap 40, D3) also offers
+ * today and weekends.
  *
  * Keyboard (D8): one day in the grid takes focus (roving tabindex). Arrows move a day or a week, Page Up /
  * Page Down a month, Home / End to the start or end of the week; Enter or Space picks. Days that can't be
@@ -37,17 +38,27 @@
   }
 
   /* The dates "Execute on" allows (D3) */
-  function executionRange(today) {
+  function executionRange(today, immediate) {
     today = startOfDay(today || new Date());
-    var min = nextWorkingDay(today);
+    /* The transfer runs within minutes, so it offers today and weekends (roadmap 40, D3) */
+    var min = immediate ? today : nextWorkingDay(today);
     var max = addMonths(today, 12);
     return {
       today: today,
       min: min,
       max: max,
-      allows: function (d) { return !!d && d >= min && d <= max && !isWeekend(d); }
+      allows: function (d) { return !!d && d >= min && d <= max && (immediate || !isWeekend(d)); }
     };
   }
+
+  /* The toggle's own date (roadmap 40, D2): the next working day in Pay, today in the transfer */
+  function asapDate(immediate) {
+    return immediate ? startOfDay(new Date()) : nextWorkingDay(new Date());
+  }
+  function asapLabel(immediate) { return formatLabel(asapDate(immediate)); }
+
+  /* The date a turned-off toggle moves to when it still has the toggle's own date (D4) */
+  function offLabel(immediate) { return formatLabel(nextWorkingDay(asapDate(immediate))); }
 
   /* The flows keep the date as its DD.MM.YYYY label (D6) */
   function formatLabel(d) {
@@ -66,21 +77,22 @@
     return DAYS[weekdayIndex(d)] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
   }
 
-  /* The date a later payment or transfer runs on: the one it has while that is allowed, else the next working
-     day (D4), so turning "as soon as possible" off never leaves today */
-  function laterLabel(label) {
-    var range = executionRange();
+  /* The date a later payment or transfer runs on: the one it has while that is allowed and is not the toggle's
+     own date, else the next day that differs (roadmap 40, D4) */
+  function laterLabel(label, immediate) {
+    var range = executionRange(null, immediate);
     var d = parseLabel(label);
-    return formatLabel(range.allows(d) ? d : range.min);
+    if (range.allows(d) && formatLabel(d) !== asapLabel(immediate)) return formatLabel(d);
+    return offLabel(immediate);
   }
 
-  /* "Execute on" opens the calendar only for a later date; with "as soon as possible" on it shows today (D4, D8) */
-  function syncField(btn, label, later) {
+  /* "Execute on" always opens the calendar (roadmap 40, D1) */
+  function syncField(btn, label) {
     if (!btn) return;
-    btn.disabled = !later;
+    btn.disabled = false;
     var d = parseLabel(label);
     var spoken = d ? d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear() : label;
-    btn.setAttribute('aria-label', 'Execute on, ' + spoken + (later ? ', change date' : ''));
+    btn.setAttribute('aria-label', 'Execute on, ' + spoken + ', change date');
   }
 
   function icon(id) {
@@ -93,7 +105,7 @@
    * Returns { focusDay() } to put focus on the selected (or first allowed) day.
    */
   function render(container, options) {
-    var range = options.range || executionRange();
+    var range = options.range || executionRange(null, options.immediate);
     var selected = options.selected && range.allows(options.selected) ? startOfDay(options.selected) : range.min;
     var focusDate = selected;
     var view = new Date(focusDate.getFullYear(), focusDate.getMonth(), 1);
@@ -220,6 +232,9 @@
     render: render,
     executionRange: executionRange,
     nextWorkingDay: nextWorkingDay,
+    asapDate: asapDate,
+    asapLabel: asapLabel,
+    offLabel: offLabel,
     formatLabel: formatLabel,
     parseLabel: parseLabel,
     longLabel: longLabel,
