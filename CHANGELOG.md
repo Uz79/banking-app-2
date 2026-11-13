@@ -3,9 +3,11 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit beee6e2fb3be923b4ea4efeadfec5d63663a54ca -->
+<!-- changelog: last-commit 29c203c96b06e37b9b41c81f861902c547338c3c -->
 
 ### Changed
+- **The schedule step's date overrides its toggle, in Pay and the transfer** (roadmap 40). "Execute on" is always visible and always opens the calendar. In Pay, "As soon as possible" shows the next working day (today stays unpickable); in the transfer, "Immediately" shows today, and today and weekends can be picked. Picking the toggle's own date keeps it on, any other date turns it off, and switching it on resets the date. Recurring and Standing order follow the same rule. A screen reader hears the toggle's change. Pay's confirmation for "As soon as possible" now says "will be executed on" the next working day.
+- Spec: `specs/2026-11-13-pay-date-overrides-asap/`.
 - **Editing a standing order replaces its edited next payment** (roadmap 68). Edit Rent's next payment to 1'700, then the Rent standing order to 1'750: Pending listed both on the same date. Now it lists one payment, 1'750, and the Pay confirmation says "The earlier change to the payment on 01.12.2026 was replaced." (only when something was replaced). The same on Household and for a standing order made in the app. An edited payment is dropped by whatever removes its order, kept in `js/payment-state.js`; the app has no Delete for a standing order yet.
 - Spec: `specs/2026-11-08-standing-order-edit-exception/`.
 - **Display-only rows and account cards follow the field anatomy** (roadmap 71). The read-only value rows on Pay's and the transfer's recipient steps (IBAN, Bank Name, Recipient) are Figma's ReadOnly field, 88dp like every other field; they were 89dp or 81dp. The account cards (Pay's Debit account, the transfer's From and To) keep their size and reserve the 16dp text row under them, so a later error would not move what follows. The trade sheet's account fields are unchanged. The Components page's Form field section shows both.

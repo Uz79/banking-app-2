@@ -6,10 +6,6 @@ The order below is the order of work. Items keep their numbers (specs, commits a
 
 In order. The first is what `/feature-spec` starts.
 
-## 40. Pay and the transfer: picking a date overrides the toggle
-
-Added 2026-11-05, widened 2026-11-13. Spec: `specs/2026-11-13-pay-date-overrides-asap/`. In Pay's schedule step and in the internal transfer's, the toggle ("As soon as possible" / "Immediately") has "Execute on" always visible under it, and the field always opens the calendar. Pay's toggle date is the next working day (today stays unpickable), the transfer's is today (pickable, weekends too). Picking the toggle's own date keeps it on; any other date turns it off; switching it on resets the date. Screen readers hear the toggle's change. Recurring and Standing order follow the same rule. Revises 28's D2, D3 and D4. Pay's "executes now" status stays until 37.
-
 ## 49. Banking sheets don't close on Escape
 
 Found during 32 (2026-11-05). Pay, the transfer, Buy and Sell, and a booking's sheet ignore Escape: only their close button closes them. The fridge, the opening and the Playground close on Escape (`js/fridge-advisor-sheet.js`, `js/investment-opening.js`, `js/playground-sheet.js`). To settle in its spec: Escape on every banking sheet, with the flows asking their "Discard …?" prompt first as their close button does, what Escape does while a picker, the calendar or a confirmation is open over a sheet, and focus after the close.
@@ -324,6 +320,12 @@ Spec: `specs/2026-11-06-arrow-nudge-reduced-motion/` (branch `feature/arrow-nudg
 ## 38. Pay: the schedule step always names Hans Meyer (duplicate of 29)
 
 Found during 28 (2026-11-04). Pay's schedule step shows "Recipient: Hans Meyer" whoever was picked: `paintScheduleStep` in `js/payment-overlay.js` never writes the recipient's name, so the markup's placeholder stays (the amount step and the summary are right). Also on `main`. The same bug as 29, closed on 2026-11-04 and built there; its look at the other steps' placeholders is 29's D3.
+
+## 40. Pay and the transfer: picking a date overrides the toggle (done)
+
+Added 2026-11-05, widened 2026-11-13. Spec: `specs/2026-11-13-pay-date-overrides-asap/`. In Pay's schedule step and in the internal transfer's, the toggle ("As soon as possible" / "Immediately") has "Execute on" always visible under it, and the field always opens the calendar. Pay's toggle date is the next working day (today stays unpickable), the transfer's is today (pickable, weekends too). Picking the toggle's own date keeps it on; any other date turns it off; switching it on resets the date. Screen readers hear the toggle's change. Recurring and Standing order follow the same rule. Revises 28's D2, D3 and D4. Pay's "executes now" status stays until 37.
+
+Spec: `specs/2026-11-13-pay-date-overrides-asap/` (branch `feature/pay-date-overrides-asap`). Settled in its interview: the field shows the next working day in Pay (today stays unpickable) and today in the transfer (today and weekends pickable); Recurring, Standing order and Recurring execution follow the same rule; a live region announces the toggle; an "As soon as possible" payment stays executed now, with the confirmation naming the next working day (the copy and the balance disagree until 37). Supersedes 28's D2, D3 and D4. Built 2026-11-13. Not checked: Light, reduced motion, a weekend device date, an edited payment, and most of the baseline smoke test.
 
 ## 41. Confirmation dialogs are not modal (done)
 
