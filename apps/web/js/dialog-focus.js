@@ -147,7 +147,27 @@
     } catch (err) { /* ignore */ }
   }
 
-  window.UZBankSheetFocus = { open: openSheet, close: closeSheet, handOn: handOn };
+  /* ── Escape on a sheet, roadmap 49 ─────────────────────────────────────
+   * A sheet names what its Escape does (what its close button does). Only the topmost sheet answers, and only
+   * when no native dialog is open over it: a picker or the calendar closes itself, a Discard prompt keeps the
+   * flow (D3). */
+  var escapes = new WeakMap();
+
+  function onEscape(overlay, fn) {
+    if (overlay && typeof fn === 'function') escapes.set(overlay, fn);
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape' || e.defaultPrevented || e.isComposing) return;
+    if (document.querySelector('dialog[open]')) return;
+    var top = stack[stack.length - 1];
+    var fn = top && escapes.get(top);
+    if (!fn) return;
+    e.preventDefault();
+    fn();
+  });
+
+  window.UZBankSheetFocus = { open: openSheet, close: closeSheet, handOn: handOn, onEscape: onEscape };
 
   /* ── A confirmation over its sheet keeps focus, roadmap 41 ─────────────
    * The dialog sits beside the sheet's .modal-shell in the same overlay. While
