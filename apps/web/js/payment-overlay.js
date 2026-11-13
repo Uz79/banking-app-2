@@ -92,11 +92,17 @@
     return dd + '.' + mm + '.' + yyyy;
   }
 
+  /* The toggle's own date: the next working day (roadmap 40, D2) */
+  function asapLabel() {
+    var picker = window.UZBankDatePicker;
+    return picker ? picker.asapLabel(false) : formatTodayDate();
+  }
+
   var live = {
     recipient: null,
     amount: DEFAULT_AMOUNT,
     currency: DEFAULT_CURRENCY,
-    dateLabel: formatTodayDate(),  // default execute-on = today (toggle ON)
+    dateLabel: asapLabel(),  // default execute-on = the next working day (toggle ON, roadmap 40, D2)
     debitKey: 'household'         // the account it books from: Household, or an edited row's own (roadmap 59, D4)
   };
 
@@ -186,7 +192,7 @@
   function resetPaymentDefaults() {
     live.amount = DEFAULT_AMOUNT;
     live.currency = DEFAULT_CURRENCY;
-    live.dateLabel = formatTodayDate();
+    live.dateLabel = asapLabel();
     live.debitKey = 'household';
     resetScheduleToggleOn();
     var firstMode = $step('schedule') && $step('schedule').querySelectorAll('.segmented__option');
@@ -228,12 +234,10 @@
     syncAmountInputClearVisibility();
   }
 
-  /** Schedule step — the chosen recipient's name (roadmap 29). When the "as soon as possible" toggle is ON, the
-   *  Execute on field shows today's date and opens nothing. When OFF, it
-   *  shows the later date (the next working day unless one was picked or
-   *  carried in) and opens the calendar (roadmap 28, D4). The displayed
-   *  date is also propagated into live.dateLabel so summary + confirmation
-   *  pick it up. */
+  /** Schedule step: the chosen recipient's name (roadmap 29). The toggle and the Execute on field follow each other
+   *  (roadmap 40): with "as soon as possible" on, the field shows the next working day; off, the later date (the one
+   *  picked or carried in, else the next day that differs). The field always opens the calendar. The displayed date
+   *  is also propagated into live.dateLabel so summary + confirmation pick it up. */
   function paintScheduleStep() {
     var step = $step('schedule'); if (!step) return;
     var recipName = step.querySelector('.form-field .form-field__value');
@@ -241,12 +245,35 @@
     var toggle = step.querySelector('.toggle');
     var isAsap = toggle ? toggle.classList.contains('toggle--active') : true;
     var picker = window.UZBankDatePicker;
-    if (isAsap) live.dateLabel = formatTodayDate();
-    else if (picker) live.dateLabel = picker.laterLabel(live.dateLabel);
+    if (isAsap) live.dateLabel = asapLabel();
+    else if (picker) live.dateLabel = picker.laterLabel(live.dateLabel, false);
+    if (toggle) {
+      toggle.setAttribute('role', 'switch');
+      toggle.setAttribute('aria-checked', isAsap ? 'true' : 'false');
+      toggle.setAttribute('aria-label', 'As soon as possible');
+    }
     var dateBtn = step.querySelector('[data-execute-on]');
     var dateValue = dateBtn && dateBtn.querySelector('.form-field__value');
     if (dateValue) dateValue.textContent = live.dateLabel;
-    if (picker) picker.syncField(dateBtn, live.dateLabel, !isAsap);
+    if (picker) picker.syncField(dateBtn, live.dateLabel);
+  }
+
+  /** Say the toggle's state and date to a screen reader (roadmap 40, D7). Called on a change, not on first paint. */
+  function announceSchedule() {
+    var step = $step('schedule'); if (!step) return;
+    var toggle = step.querySelector('.toggle');
+    var row = toggle && toggle.closest('.toggle-row');
+    if (!row) return;
+    var live_ = step.querySelector('[data-schedule-live]');
+    if (!live_) {
+      live_ = document.createElement('p');
+      live_.className = 'visually-hidden';
+      live_.setAttribute('aria-live', 'polite');
+      live_.setAttribute('data-schedule-live', '');
+      row.insertAdjacentElement('afterend', live_);
+    }
+    var on = toggle.classList.contains('toggle--active');
+    live_.textContent = 'As soon as possible ' + (on ? 'on' : 'off') + ', executes on ' + live.dateLabel;
   }
 
   /** Force the schedule step's "as soon as possible" toggle into the ON
@@ -274,7 +301,7 @@
     var thumb = step.querySelector('.toggle__thumb');
     if (toggle) toggle.classList.toggle('toggle--active', !later);
     if (thumb) thumb.classList.toggle('toggle__thumb--active', !later);
-    live.dateLabel = later && executeOn ? executeOn : formatTodayDate();
+    live.dateLabel = later && executeOn ? executeOn : asapLabel();
   }
 
   /** Summary step — amount, date, recipient, debit account (its balance also follows data-render.js) */
@@ -307,7 +334,7 @@
     var mode = active ? active.textContent.trim() : 'Single';
     var to = live.recipient && live.recipient.name ? ' to ' + live.recipient.name : '';
     if (message) {
-      message.textContent = status === 'executed' ? 'Your payment' + to + ' is done.'
+      message.textContent = status === 'executed' ? 'Your payment' + to + ' will be executed on ' + live.dateLabel + '.'
         : status === 'recurring'
           ? (mode === 'Standing order' ? 'Your standing order' : 'Your recurring payment') + to + ' starts on ' + live.dateLabel + '.'
           : 'Your payment' + to + ' will be made on ' + live.dateLabel + '.';
@@ -731,7 +758,7 @@
     if (!toggle) return;
     var step = toggle.closest('.modal__step[data-step="schedule"]');
     if (!step) return;
-    setTimeout(paintScheduleStep, 0);
+    setTimeout(function () { paintScheduleStep(); announceSchedule(); }, 0);
   });
 
   /** "Execute on" opens the calendar for a later payment (roadmap 28, D1, D4). */
@@ -741,8 +768,18 @@
     window.UZBankFormSheet.openDateSheet(btn, {
       selected: window.UZBankDatePicker.parseLabel(live.dateLabel),
       onPick: function (date) {
-        live.dateLabel = window.UZBankDatePicker.formatLabel(date);
+        /* The toggle's own date keeps it on, any other turns it off (roadmap 40, D4) */
+        var picker = window.UZBankDatePicker;
+        var label = picker.formatLabel(date);
+        var step = $step('schedule');
+        var toggle = step && step.querySelector('.toggle');
+        var thumb = step && step.querySelector('.toggle__thumb');
+        var on = label === picker.asapLabel(false);
+        if (toggle) toggle.classList.toggle('toggle--active', on);
+        if (thumb) thumb.classList.toggle('toggle__thumb--active', on);
+        live.dateLabel = label;
         paintScheduleStep();
+        announceSchedule();
       }
     });
   });
