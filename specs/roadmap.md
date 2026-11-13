@@ -8,6 +8,8 @@ In order. The first is what `/feature-spec` starts.
 
 ## 49. Banking sheets don't close on Escape
 
+Spec: `specs/2026-11-13-escape-closes-banking-sheets/`. Settled in its interview: Escape does what the close button does (the Discard prompt first); a Discard prompt's Escape means keep going; the booking sheet closes at once; topmost layer only.
+
 Found during 32 (2026-11-05). Pay, the transfer, Buy and Sell, and a booking's sheet ignore Escape: only their close button closes them. The fridge, the opening and the Playground close on Escape (`js/fridge-advisor-sheet.js`, `js/investment-opening.js`, `js/playground-sheet.js`). To settle in its spec: Escape on every banking sheet, with the flows asking their "Discard …?" prompt first as their close button does, what Escape does while a picker, the calendar or a confirmation is open over a sheet, and focus after the close.
 
 ## 37. Pending payments and transfers execute on their date
