@@ -291,11 +291,11 @@
 
   function paintScheduleStep() {
     var picker = window.UZBankDatePicker;
-    /* A later transfer runs on the next working day unless another was picked (roadmap 28, D4) */
+    /* Immediately shows today; a later transfer runs on the next day unless another was picked (roadmap 40, D2, D4) */
     if (live.immediately) live.dateLabel = formatTodayDate();
-    else if (picker) live.dateLabel = picker.laterLabel(live.dateLabel);
+    else if (picker) live.dateLabel = picker.laterLabel(live.dateLabel, true);
     if (dateValue) dateValue.textContent = live.dateLabel;
-    if (picker) picker.syncField(executeOnField && executeOnField.querySelector('[data-execute-on]'), live.dateLabel, !live.immediately);
+    if (picker) picker.syncField(executeOnField && executeOnField.querySelector('[data-execute-on]'), live.dateLabel);
     /* Sync toggle visual */
     if (immediatelyToggle) {
       immediatelyToggle.classList.toggle('toggle--active', live.immediately);
@@ -303,8 +303,23 @@
       var thumb = immediatelyToggle.querySelector('.toggle__thumb');
       if (thumb) thumb.classList.toggle('toggle__thumb--active', live.immediately);
     }
-    /* Date field: show/hide based on immediately */
-    if (executeOnField) executeOnField.hidden = live.immediately;
+    /* The date field is always shown and always opens the calendar (roadmap 40, D1) */
+    if (executeOnField) executeOnField.hidden = false;
+  }
+
+  /* Say the switch's state and date to a screen reader (roadmap 40, D7); on a change, not on first paint */
+  function announceSchedule() {
+    var row = immediatelyToggle && immediatelyToggle.closest('.iat-toggle-row');
+    if (!row) return;
+    var el = overlay.querySelector('[data-schedule-live]');
+    if (!el) {
+      el = document.createElement('p');
+      el.className = 'visually-hidden';
+      el.setAttribute('aria-live', 'polite');
+      el.setAttribute('data-schedule-live', '');
+      row.insertAdjacentElement('afterend', el);
+    }
+    el.textContent = 'Immediately ' + (live.immediately ? 'on, executes today' : 'off, executes on ' + live.dateLabel);
   }
 
   function paintSummaryStep() {
@@ -625,7 +640,7 @@
       live.immediately = !live.immediately;
       /* After the app-wide toggle handler (app-mp.js) has flipped the class, so the paint has the last word and
          the switch shows what it is (found in roadmap 28) */
-      setTimeout(paintScheduleStep, 0);
+      setTimeout(function () { paintScheduleStep(); announceSchedule(); }, 0);
     });
   }
 
@@ -636,9 +651,14 @@
       if (executeOnBtn.disabled || !window.UZBankFormSheet || !window.UZBankFormSheet.openDateSheet) return;
       window.UZBankFormSheet.openDateSheet(executeOnBtn, {
         selected: window.UZBankDatePicker.parseLabel(live.dateLabel),
+        immediate: true,
         onPick: function (date) {
-          live.dateLabel = window.UZBankDatePicker.formatLabel(date);
+          /* Today keeps Immediately on, any other date turns it off (roadmap 40, D4) */
+          var label = window.UZBankDatePicker.formatLabel(date);
+          live.immediately = label === window.UZBankDatePicker.asapLabel(true);
+          live.dateLabel = label;
           paintScheduleStep();
+          announceSchedule();
         }
       });
     });
