@@ -573,7 +573,8 @@
         title: 'Discard order?',
         message: 'You have not finished this order. If you exit now your entries will not be submitted.',
         leaveLabel: 'Discard',
-        stayLabel: 'Continue order'
+        stayLabel: 'Continue order',
+        escapeStays: true
       });
     } else {
       closeOverlay();
@@ -635,6 +636,14 @@
   });
 
   if (closeBtn) closeBtn.addEventListener('click', promptExit);
+
+  /* Escape does what the close button does; on the confirmation after Execute, what Done does (roadmap 49, D1, D4) */
+  if (window.UZBankSheetFocus && window.UZBankSheetFocus.onEscape) {
+    window.UZBankSheetFocus.onEscape(overlay, function () {
+      if (confOverlay && confOverlay.classList.contains('confirmation-overlay--visible') && confBtn) confBtn.click();
+      else promptExit();
+    });
+  }
 
   if (confirmBtn) {
     confirmBtn.addEventListener('click', function () {
