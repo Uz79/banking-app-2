@@ -1276,12 +1276,14 @@
       title:      'Discard changes?',
       message:    'Your pending edits will not be saved if you exit now.',
       leaveLabel: 'Discard',
-      stayLabel:  'Continue editing'
+      stayLabel:  'Continue editing',
+      escapeStays: true
     } : {
       title:      'Discard payment?',
       message:    'You have not finished this payment. If you exit now your entries will not be submitted.',
       leaveLabel: 'Discard',
-      stayLabel:  'Continue payment'
+      stayLabel:  'Continue payment',
+      escapeStays: true
     });
   }
 
@@ -1299,6 +1301,16 @@
         return;
       }
       promptExitFlow(runExitFromFlow);
+    });
+  }
+
+  /* Escape does what the close button does; on the confirmation after Execute, what Done does (roadmap 49, D1, D4) */
+  if (window.UZBankSheetFocus && window.UZBankSheetFocus.onEscape) {
+    window.UZBankSheetFocus.onEscape(modalOverlay, function () {
+      var done = confirmationOverlay && confirmationOverlay.classList.contains('confirmation-overlay--visible')
+        ? confirmationOverlay.querySelector('[data-action="done"]') : null;
+      if (done) done.click();
+      else if (modalClose) modalClose.click();
     });
   }
 
