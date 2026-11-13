@@ -6,35 +6,35 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 ## 1. The Discard prompt and the guard (D3, D4, D6)
 
-- [ ] `apps/web/js/payment-overlay.js`, `iat-overlay.js`, `trade-flow-overlay.js`: pass `escapeStays: true` to their Discard prompts
-- [ ] Read the confirmation after Execute (open question); decide the guard (`defaultPrevented`, `dialog[open]`, active, not closing) and where it lives
-- [ ] Check: Escape on a Discard prompt keeps the flow; a second Escape asks again
+- [x] `apps/web/js/dialog-focus.js`: `UZBankSheetFocus.onEscape`; `payment-overlay.js`, `iat-overlay.js`, `trade-flow-overlay.js`: pass `escapeStays: true` to their Discard prompts
+- [x] The confirmation is a div overlay (`.confirmation-overlay--visible`), not a native dialog; the guard lives once in `js/dialog-focus.js` on the sheet stack (the shared helper D6 allowed)
+- [x] Check: Escape on a Discard prompt keeps the flow; a second Escape asks again
 
 ## 2. Pay (D1, D3, D4, D5)
 
-- [ ] `apps/web/js/payment-overlay.js`: a keydown for Escape runs the close button's path; recipient search closes at once; Escape on the confirmation is Done
-- [ ] Check: Escape on each step asks "Discard payment?"; in an edit "Discard changes?"; with the calendar open it closes only the calendar; focus returns as the X does
+- [x] `apps/web/js/payment-overlay.js`: a keydown for Escape runs the close button's path; recipient search closes at once; Escape on the confirmation is Done
+- [x] Check: Escape on each step asks "Discard payment?"; in an edit "Discard changes?"; with the calendar open it closes only the calendar; focus returns as the X does
 
 ## 3. The transfer (D1, D3, D4, D5)
 
-- [ ] `apps/web/js/iat-overlay.js`: the same, with `promptExit`
-- [ ] Check: as Pay, "Discard transfer?"; an immediate transfer's confirmation closes on Escape
+- [x] `apps/web/js/iat-overlay.js`: the same, with `promptExit`
+- [x] Check: as Pay, "Discard transfer?"; an immediate transfer's confirmation closes on Escape
 
 ## 4. Buy and Sell (D1, D3, D5)
 
-- [ ] `apps/web/js/trade-flow-overlay.js`: the same, with `promptExit`
-- [ ] Check: Escape on Buy and on Sell asks "Discard order?"; an account picker over it closes alone
+- [x] `apps/web/js/trade-flow-overlay.js`: the same, with `promptExit`
+- [x] Check: Escape on Buy and on Sell asks "Discard order?"; an account picker over it closes alone
 
 ## 5. The booking sheet (D2, D5)
 
-- [ ] `apps/web/js/payment-details.js`: Escape closes it at once, ignored while the Delete prompt is open
-- [ ] Check: Escape closes the sheet and focus lands on the row; with Delete's prompt open Escape keeps the payment
+- [x] `apps/web/js/payment-details.js`: Escape closes it at once, ignored while the Delete prompt is open
+- [x] Check: Escape closes the sheet and focus lands on the row; with Delete's prompt open Escape keeps the payment
 
 ## 6. Wrap-up
 
-- [ ] `npm run build` in `apps/web` succeeds with no new warnings
-- [ ] Every item of `validation.md`, then the baseline smoke test (copied into it)
-- [ ] `specs/roadmap.md`: 49 marked done and moved to Done
-- [ ] `specs/tech-spec.md`: a Decisions row for Escape on sheets, if it lists sheet rules; check
-- [ ] `CHANGELOG.md` under `Unreleased` (run `/changelog` and tidy)
-- [ ] `apps/web/README.md`: no change expected (no storage keys); check
+- [x] `npm run build` in `apps/web` succeeds with no new warnings
+- [ ] Every item of `validation.md`, then the baseline smoke test (copied into it): not run in full, see its "Checked on" line
+- [x] `specs/roadmap.md`: 49 marked done and moved to Done
+- [x] `specs/tech-spec.md`: a Decisions row for Escape on sheets, if it lists sheet rules; check
+- [x] `CHANGELOG.md` under `Unreleased` (run `/changelog` and tidy)
+- [x] `apps/web/README.md`: no change expected (no storage keys); check
