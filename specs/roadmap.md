@@ -369,7 +369,7 @@ Spec: `specs/2026-11-13-escape-closes-banking-sheets/`. Settled in its interview
 
 Found during 32 (2026-11-05). Pay, the transfer, Buy and Sell, and a booking's sheet ignore Escape: only their close button closes them. The fridge, the opening and the Playground close on Escape (`js/fridge-advisor-sheet.js`, `js/investment-opening.js`, `js/playground-sheet.js`). To settle in its spec: Escape on every banking sheet, with the flows asking their "Discard …?" prompt first as their close button does, what Escape does while a picker, the calendar or a confirmation is open over a sheet, and focus after the close.
 
-Built 2026-11-13: one registry in `js/dialog-focus.js` (`UZBankSheetFocus.onEscape`) on the sheet stack, so the guard is written once; the Discard prompts got `escapeStays`. Found: Account and Share information are sheets too and still ignore Escape (out of scope here). Reduced motion and VoiceOver checked by Klaudiusz (2026-11-14). Not checked: 390px, Light, and most of the baseline smoke test.
+Built 2026-11-13: one registry in `js/dialog-focus.js` (`UZBankSheetFocus.onEscape`) on the sheet stack, so the guard is written once; the Discard prompts got `escapeStays`. Found: Account and Share information are sheets too and still ignore Escape (out of scope here). Reduced motion and VoiceOver checked by Klaudiusz (2026-11-14). 390px and Light seen for Pay only (a 386px frame). Not checked: the other sheets at phone width, and most of the baseline smoke test.
 
 ## 52. Booking rows can't be reached with the keyboard (duplicate of 33)
 
