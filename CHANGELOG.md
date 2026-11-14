@@ -3,9 +3,11 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 29c203c96b06e37b9b41c81f861902c547338c3c -->
+<!-- changelog: last-commit 0bff2aa77b05d30b3cc64ed8f093d17f286beb57 -->
 
 ### Changed
+- **Escape closes the banking sheets** (roadmap 49). On Pay, the transfer, Buy and Sell, Escape does what the close button does: it asks "Discard payment?", "Discard transfer?" or "Discard order?" first, and on a Discard prompt Escape means keep going. On the confirmation after Execute it is Done. A booking's sheet closes at once. With a picker or the calendar open over a sheet, Escape closes only that.
+- Spec: `specs/2026-11-13-escape-closes-banking-sheets/`.
 - **The schedule step's date overrides its toggle, in Pay and the transfer** (roadmap 40). "Execute on" is always visible and always opens the calendar. In Pay, "As soon as possible" shows the next working day (today stays unpickable); in the transfer, "Immediately" shows today, and today and weekends can be picked. Picking the toggle's own date keeps it on, any other date turns it off, and switching it on resets the date. Recurring and Standing order follow the same rule. A screen reader hears the toggle's change. Pay's confirmation for "As soon as possible" now says "will be executed on" the next working day.
 - Spec: `specs/2026-11-13-pay-date-overrides-asap/`.
 - **Editing a standing order replaces its edited next payment** (roadmap 68). Edit Rent's next payment to 1'700, then the Rent standing order to 1'750: Pending listed both on the same date. Now it lists one payment, 1'750, and the Pay confirmation says "The earlier change to the payment on 01.12.2026 was replaced." (only when something was replaced). The same on Household and for a standing order made in the app. An edited payment is dropped by whatever removes its order, kept in `js/payment-state.js`; the app has no Delete for a standing order yet.

@@ -934,6 +934,11 @@
   /* ── Close / Confirm buttons ─────────────────────────────────── */
 
   if (closeBtn)   closeBtn.addEventListener('click',   closeOverlay);
+
+  /* Escape closes the sheet at once, as its close button does; a Delete prompt over it keeps the payment (roadmap 49, D2) */
+  if (window.UZBankSheetFocus && window.UZBankSheetFocus.onEscape) {
+    window.UZBankSheetFocus.onEscape(overlay, function () { closeOverlay(); });
+  }
   if (confirmBtn) confirmBtn.addEventListener('click', closeOverlay);
 
   /* ── Edit buttons → open payment flow ───────────────────────── */

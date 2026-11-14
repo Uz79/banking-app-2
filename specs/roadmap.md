@@ -6,10 +6,6 @@ The order below is the order of work. Items keep their numbers (specs, commits a
 
 In order. The first is what `/feature-spec` starts.
 
-## 49. Banking sheets don't close on Escape
-
-Found during 32 (2026-11-05). Pay, the transfer, Buy and Sell, and a booking's sheet ignore Escape: only their close button closes them. The fridge, the opening and the Playground close on Escape (`js/fridge-advisor-sheet.js`, `js/investment-opening.js`, `js/playground-sheet.js`). To settle in its spec: Escape on every banking sheet, with the flows asking their "Discard …?" prompt first as their close button does, what Escape does while a picker, the calendar or a confirmation is open over a sheet, and focus after the close.
-
 ## 37. Pending payments and transfers execute on their date
 
 Split from 28 (2026-11-04). A payment or transfer set for a later date stays pending forever: nothing executes it when its date arrives, so its money never moves, and a recurring one never repeats. To settle in its spec: when it runs (on load, against the device date), what an executed one looks like in the bookings and balances, how a recurring or standing order repeats, and what the status message says.
@@ -366,6 +362,14 @@ Spec: `specs/2026-11-05-transfer-status/` (branch `feature/transfer-status`), wi
 Added 2026-11-05. A standing order is a rule; its executions are bookings. Today tapping Rent in Recurring opens a payment sheet with Status "Pending". The rule gets a third variant of the booking sheet, next to Domestic Payment and Internal Account Transfer (not a new page): Status "Active", Frequency, Next execution; its Edit changes all future payments. An instance keeps its Pending or Executed sheet, and Edit on a pending instance changes that payment only (relates to 44). The Pending tab lists each standing order's next instance with the "Pending" chip (Rent, Netflix and Internet & Phone are missing there today). The built-in "Next on" dates are stale (01.11.2026 is past): derive them from today or move them into the future. Later, not in this item: "Skip this payment", pausing or deleting a standing order, a "Recent payments" list in the standing order's sheet.
 
 Spec: `specs/2026-11-06-standing-orders/` (branch `feature/standing-orders`), with 53. Settled in its interview: the next instance is derived from the rule each time a list renders, and an edit of it is stored as a one-off pending payment for that date; the rule and a pending instance both get Edit and Copy, no Delete; standard gate. Out of the branch: 44, 45, 37. Found in the build: All bookings lists the same built-in rows for every account while Pay books to Household (56). Built 2026-11-06.
+
+## 49. Banking sheets don't close on Escape (done)
+
+Spec: `specs/2026-11-13-escape-closes-banking-sheets/`. Settled in its interview: Escape does what the close button does (the Discard prompt first); a Discard prompt's Escape means keep going; the booking sheet closes at once; topmost layer only.
+
+Found during 32 (2026-11-05). Pay, the transfer, Buy and Sell, and a booking's sheet ignore Escape: only their close button closes them. The fridge, the opening and the Playground close on Escape (`js/fridge-advisor-sheet.js`, `js/investment-opening.js`, `js/playground-sheet.js`). To settle in its spec: Escape on every banking sheet, with the flows asking their "Discard …?" prompt first as their close button does, what Escape does while a picker, the calendar or a confirmation is open over a sheet, and focus after the close.
+
+Built 2026-11-13: one registry in `js/dialog-focus.js` (`UZBankSheetFocus.onEscape`) on the sheet stack, so the guard is written once; the Discard prompts got `escapeStays`. Found: Account and Share information are sheets too and still ignore Escape (out of scope here). Reduced motion and VoiceOver checked by Klaudiusz (2026-11-14). 390px and Light seen for Pay only (a 386px frame). Not checked: the other sheets at phone width, and most of the baseline smoke test.
 
 ## 52. Booking rows can't be reached with the keyboard (duplicate of 33)
 

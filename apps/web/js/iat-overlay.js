@@ -602,7 +602,8 @@
         title: 'Discard transfer?',
         message: 'You have not finished this transfer. If you exit now your entries will not be submitted.',
         leaveLabel: 'Discard',
-        stayLabel: 'Continue transfer'
+        stayLabel: 'Continue transfer',
+        escapeStays: true
       });
     } else {
       closeOverlay();
@@ -610,6 +611,14 @@
   }
 
   if (closeBtn) closeBtn.addEventListener('click', promptExit);
+
+  /* Escape does what the close button does; on the confirmation after Execute, what Done does (roadmap 49, D1, D4) */
+  if (window.UZBankSheetFocus && window.UZBankSheetFocus.onEscape) {
+    window.UZBankSheetFocus.onEscape(overlay, function () {
+      if (confOverlay && confOverlay.classList.contains('confirmation-overlay--visible') && confBtn) confBtn.click();
+      else promptExit();
+    });
+  }
 
   /* Confirm / Execute / Next */
   if (confirmBtn) confirmBtn.addEventListener('click', nextStep);
