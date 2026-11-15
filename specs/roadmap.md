@@ -8,6 +8,8 @@ In order. The first is what `/feature-spec` starts.
 
 ## 37. Pending payments and transfers execute on their date
 
+Spec: `specs/2026-11-15-pending-items-execute-on-date/`. Settled in its interview: runs on load and on return against the device date, dated its own day; monthly repeats, each due period executing (up to 12), the frequency one parameter of `nextDueDate` for 45; runs even when the balance is short; one info status message when something ran.
+
 Split from 28 (2026-11-04). A payment or transfer set for a later date stays pending forever: nothing executes it when its date arrives, so its money never moves, and a recurring one never repeats. To settle in its spec: when it runs (on load, against the device date), what an executed one looks like in the bookings and balances, how a recurring or standing order repeats, and what the status message says.
 
 ## 48. Chip: its own tokens, as in Figma
