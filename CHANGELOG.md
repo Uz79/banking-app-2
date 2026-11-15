@@ -3,9 +3,11 @@
 All notable changes to `apps/web` are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
-<!-- changelog: last-commit 0bff2aa77b05d30b3cc64ed8f093d17f286beb57 -->
+<!-- changelog: last-commit a44e89743dfbf6322191036cce34abfa46609047 -->
 
 ### Changed
+- **Pending payments and transfers run on their date** (roadmap 37). A payment or transfer set for a later date used to stay pending for ever. Now, when a page loads or the tab comes back, everything that is due runs: it becomes an executed booking dated its own day, the money moves from that day, and both legs of a transfer run together. A Recurring payment, Standing order or Recurring transfer books one payment for every month that has come due (up to 12 at once) and moves its next date on, on the same day of the month, a short month using its last day and a weekend moving to Monday. A payment that is bigger than the balance runs anyway. The status message names what ran ("Your payment to Hans Meyer ran on 16.11.2026." or "3 payments ran."). Deleting or editing a standing order keeps what it already paid. Test it with `?today=YYYY-MM-DD` on localhost.
+- Spec: `specs/2026-11-15-pending-items-execute-on-date/`.
 - **Escape closes the banking sheets** (roadmap 49). On Pay, the transfer, Buy and Sell, Escape does what the close button does: it asks "Discard payment?", "Discard transfer?" or "Discard order?" first, and on a Discard prompt Escape means keep going. On the confirmation after Execute it is Done. A booking's sheet closes at once. With a picker or the calendar open over a sheet, Escape closes only that.
 - Spec: `specs/2026-11-13-escape-closes-banking-sheets/`.
 - **The schedule step's date overrides its toggle, in Pay and the transfer** (roadmap 40). "Execute on" is always visible and always opens the calendar. In Pay, "As soon as possible" shows the next working day (today stays unpickable); in the transfer, "Immediately" shows today, and today and weekends can be picked. Picking the toggle's own date keeps it on, any other date turns it off, and switching it on resets the date. Recurring and Standing order follow the same rule. A screen reader hears the toggle's change. Pay's confirmation for "As soon as possible" now says "will be executed on" the next working day.

@@ -21,4 +21,37 @@
       info: { icon: 'info', title: 'New statement available', text: 'Your September statement for this account is ready to view.', since: '05.10.2026' }
     }
   });
+
+  /* Something ran on load or on return: one info message names it (roadmap 37, D8). payment-state.js loads first, so
+     its own return handlers have run by the time these do. A message of its own that is not dismissed by an
+     earlier one (unique id), and shown at once, replacing whatever shows, as `show` does. */
+  var ranCount = 0;
+  function announceRuns() {
+    var pay = window.UZBankPayState;
+    if (!pay || !pay.takeRunNotes) return;
+    var notes = pay.takeRunNotes();
+    if (!notes.length) return;
+    var text;
+    if (notes.length === 1) {
+      var n = notes[0];
+      var what = /^Transfer to /.test(n.name) ? 'transfer to ' + n.name.slice('Transfer to '.length) : 'payment to ' + n.name;
+      text = 'Your ' + what + ' ran on ' + n.label + '.';
+    } else {
+      text = notes.length + ' payments ran.';
+    }
+    window.UZStatusMessage.show({
+      id: 'pending-ran-' + Date.now() + '-' + (ranCount++),
+      state: 'info',
+      icon: 'info',
+      title: 'Scheduled payment',
+      text: text,
+      delay: 600,
+      force: true
+    });
+  }
+  announceRuns();
+  window.addEventListener('pageshow', announceRuns);
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') announceRuns();
+  });
 })();

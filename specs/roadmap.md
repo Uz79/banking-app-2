@@ -6,10 +6,6 @@ The order below is the order of work. Items keep their numbers (specs, commits a
 
 In order. The first is what `/feature-spec` starts.
 
-## 37. Pending payments and transfers execute on their date
-
-Split from 28 (2026-11-04). A payment or transfer set for a later date stays pending forever: nothing executes it when its date arrives, so its money never moves, and a recurring one never repeats. To settle in its spec: when it runs (on load, against the device date), what an executed one looks like in the bookings and balances, how a recurring or standing order repeats, and what the status message says.
-
 ## 48. Chip: its own tokens, as in Figma
 
 Added 2026-11-05. `.chip--tonal` (43) uses `--color-btn-tonal-*`. Figma's Chip has its own Case=FilledTonal, bound to `chip/filled tonal/*` (background, border, foreground, hover, pressed; Des-Sys-Test, Component Library > Chip, node 769:106445). Those tokens are in `designs/tokens/_NEW/260617_tokens` but not in `designs/tokens/mapped`. Bring them into the token pipeline as `--color-chip-filled-tonal-*`, make the theme engine emit them for Multi-color themes, and point the chip at them. Settle the class name against Figma's "FilledTonal", and document the Secondary case in `designs/components/chip/chip.md` too.
@@ -48,7 +44,7 @@ Added 2026-11-05, out of 43's scope. An executed booking that is an instance of 
 
 ## 45. Pay and the transfer: choose a frequency
 
-Found while writing 43's spec (2026-11-05). Pay's and the transfer's Recurring and Standing order have no frequency choice, so a recurring booking made in the app stores Monthly (43, D9). To settle in its spec: the choices (weekly, monthly, quarterly, yearly), where the field sits in the schedule step, what an edit shows, and the confirmation's wording.
+Found while writing 43's spec (2026-11-05). Pay's and the transfer's Recurring and Standing order have no frequency choice, so a recurring booking made in the app stores Monthly (43, D9). To settle in its spec: the choices (weekly, monthly, quarterly, yearly; the repeat itself is `nextDueDate(frequency, anchorDay, after)` in `js/payment-state.js` since 37, which only knows monthly), where the field sits in the schedule step, what an edit shows, and the confirmation's wording.
 
 ## 51. Booking sheet: Edit and Copy for a pending transfer
 
@@ -322,6 +318,14 @@ Taken before 28 (Klaudiusz, 2026-11-04). Spec: `specs/2026-11-04-sheet-close/` (
 Found during 35 (2026-11-04). With the macOS Reduce motion setting on, the forward arrows (Show all bookings, Details, Show all) keep their nudge loop. The reduced-motion rule in `css/styles.css` (the Arrow nudge block) uses the same selector as the forward rule but without its `:not(.uz-btn--proceed, .playground-touch__btn)`, so the forward rule outweighs it and the animation stays. The back arrows stop as they should. To settle in its spec: a reduced-motion rule that wins (matching selector or the same `:not`), and a check of the proceed button's nudge and pulse with the setting on.
 
 Spec: `specs/2026-11-06-arrow-nudge-reduced-motion/` (branch `feature/arrow-nudge-reduced-motion`). Settled in its interview: the nudge loops are set only under `prefers-reduced-motion: no-preference`, so no reduce rule has to win; disabled arrows, outweighed the same way, are fixed here; the check covers every arrow and the proceed button with the real setting; standard gate. Found in the build: the proceed button's own rule already held; Motion specimens No. 009's code sample follows the new rule. Built 2026-11-06.
+
+## 37. Pending payments and transfers execute on their date (done)
+
+Spec: `specs/2026-11-15-pending-items-execute-on-date/`. Settled in its interview: runs on load and on return against the device date, dated its own day; monthly repeats, each due period executing (up to 12), the frequency one parameter of `nextDueDate` for 45; runs even when the balance is short; one info status message when something ran.
+
+Split from 28 (2026-11-04). A payment or transfer set for a later date stays pending forever: nothing executes it when its date arrives, so its money never moves, and a recurring one never repeats. To settle in its spec: when it runs (on load, against the device date), what an executed one looks like in the bookings and balances, how a recurring or standing order repeats, and what the status message says.
+
+Built 2026-11-15, `js/payment-state.js` (`runDue`, `nextDueDate`, `takeRunNotes`) and `js/status-feed.js`. Found while building: a stored rule's executed occurrences carry `ranOf`, not `ruleId`, because `ruleId` goes with the rule when it is edited or deleted (68); an edited next payment of a standing order, once it runs, becomes such an occurrence too; the weekend-to-Monday rule means a date can land in the next month, which the date function handles. Item 45 adds its frequencies in `nextDueDate`. Not checked: the other sheets and viewports listed in `validation.md`, VoiceOver, reduced motion, and most of the baseline smoke test.
 
 ## 38. Pay: the schedule step always names Hans Meyer (duplicate of 29)
 
