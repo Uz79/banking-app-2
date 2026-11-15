@@ -412,6 +412,7 @@
         if (b.quantity != null) row.quantity = b.quantity;
         if (b.ruleId) row.ruleId = b.ruleId;
         if (b.occurrence) row.occurrence = b.occurrence;
+        if (b.ranOf) row.ranOf = b.ranOf; /* an executed occurrence of a standing order (roadmap 37, D6) */
         return row;
       })
     };
@@ -747,6 +748,156 @@
     dispatchChange();
   }
 
+
+  /* ── Pending items run on their date (roadmap 37) ──────────────────────
+   * On load and when the tab comes back, every stored pending item that is due (its date is today or earlier) is
+   * executed, dated its own day (D1, D2). A stored rule (Recurring, Standing order, Recurring transfer) books one
+   * executed occurrence per period that has come due, up to RUN_CAP, and moves its own date on (D4). The balance
+   * is not touched: executed bookings already count (D3). */
+
+  var RUN_CAP = 12;
+  var runNotes = [];
+
+  function pad2(n) { return String(n).padStart(2, '0'); }
+  function dateLabel(d) { return pad2(d.getDate()) + '.' + pad2(d.getMonth() + 1) + '.' + d.getFullYear(); }
+  function parseLabel(label) {
+    var m = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec(label || '');
+    if (!m) return null;
+    var d = new Date(+m[3], +m[2] - 1, +m[1]);
+    return d.getDate() === +m[1] && d.getMonth() === +m[2] - 1 ? d : null;
+  }
+  function dayStamp(d) { return d.getFullYear() + pad2(d.getMonth() + 1) + pad2(d.getDate()); }
+
+  /* ?today=YYYY-MM-DD on a dev host only, as the example bookings (js/built-in-bookings.js, 62's D16) */
+  function runToday() {
+    try {
+      var host = window.location.hostname;
+      if (host === 'localhost' || host === '127.0.0.1' || /\.local$/.test(host)) {
+        var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(new URLSearchParams(window.location.search).get('today') || '');
+        if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
+      }
+    } catch (_) {}
+    var n = new Date();
+    return new Date(n.getFullYear(), n.getMonth(), n.getDate());
+  }
+
+  /* The day of a month, a day past its end moved to its last day; a weekend moved to the Monday (D5) */
+  function monthlyOccurrence(year, month, anchorDay) {
+    var last = new Date(year, month + 1, 0).getDate();
+    var d = new Date(year, month, Math.min(anchorDay, last));
+    while (d.getDay() === 0 || d.getDay() === 6) d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
+    return d;
+  }
+
+  /* The first date after `after` a rule runs on (D4). Only 'monthly' so far: roadmap 45 adds the other cases here. */
+  function nextDueDate(frequency, anchorDay, after) {
+    if (frequency !== 'monthly') throw new Error('Unsupported frequency: ' + frequency);
+    var y = after.getFullYear();
+    var m = after.getMonth();
+    for (var i = 0; i < 3; i++) {
+      var d = monthlyOccurrence(y, m + i, anchorDay);
+      if (d > after) return d;
+    }
+    return monthlyOccurrence(y, m + 3, anchorDay);
+  }
+
+  function noonISO(d) {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0, 0).toISOString();
+  }
+
+  /* A transfer to a mandate has one leg; once it has run it adds to what the mandate holds (18's D5, D6) */
+  function fundMandate(b) {
+    if (b.kind !== 'iat' || b.direction === 'in') return;
+    var mandate = findMandate(b.toKey);
+    if (mandate) mandate.funded = Math.round(((mandate.funded || 0) + b.amount) * 100) / 100;
+  }
+
+  function noteRun(b, date) {
+    /* A transfer's in-leg is not a second thing that ran */
+    if (b.kind === 'iat' && b.direction === 'in') return;
+    runNotes.push({ name: b.recipientName, label: dateLabel(date) });
+  }
+
+  function runDue(t) {
+    t = t || runToday();
+    var changed = false;
+
+    /* One-offs, and an edited next payment of a standing order (it stands in for that occurrence) */
+    state.bookings.forEach(function (b) {
+      if (b.status !== 'pending') return;
+      var due = parseLabel(b.executeOn);
+      if (!due || due > t) return;
+      delete b.status;
+      delete b.executeOn;
+      b.dateISO = noonISO(due);
+      if (b.ruleId) {
+        b.ranOf = b.ruleId;
+        delete b.ruleId; /* ruleId marks an edit that goes with its rule; what ran must stay (D6) */
+        if (!b.occurrence) b.occurrence = dateLabel(due);
+      }
+      fundMandate(b);
+      noteRun(b, due);
+      changed = true;
+    });
+
+    /* Rules: one executed booking per period that has come due */
+    var rules = state.bookings.filter(isStoredRule);
+    rules.forEach(function (rule) {
+      var due = parseLabel(rule.executeOn);
+      if (!due || due > t) return;
+      var frequency = rule.frequency || 'monthly';
+      var anchor = rule.anchorDay || due.getDate();
+      rule.anchorDay = anchor;
+      var ran = 0;
+      while (due && due <= t && ran < RUN_CAP) {
+        var label = dateLabel(due);
+        var done = state.bookings.some(function (b) { return b.ranOf === rule.id && b.occurrence === label; });
+        if (!done) {
+          var stamp = dayStamp(due);
+          var suffix = transferSuffix(rule.id);
+          var copy = Object.assign({}, rule, {
+            id: suffix ? rule.id.replace(suffix, suffix + 'r' + stamp) : 'bk_run_' + rule.id + '_' + stamp,
+            dateISO: noonISO(due),
+            ranOf: rule.id,
+            occurrence: label,
+            frequency: frequency
+          });
+          delete copy.status;
+          delete copy.executeOn;
+          delete copy.anchorDay;
+          delete copy.ruleId;
+          state.bookings.push(copy);
+          fundMandate(copy);
+          noteRun(copy, due);
+        }
+        ran++;
+        due = nextDueDate(frequency, anchor, due);
+      }
+      /* Past the cap the rest of a long gap is skipped: the rule continues from the first date after today */
+      while (due <= t) due = nextDueDate(frequency, anchor, due);
+      rule.executeOn = dateLabel(due);
+      changed = true;
+    });
+
+    if (changed) {
+      trimBookings(state);
+      dispatchChange();
+    }
+    return changed;
+  }
+
+  /* What ran since the last call, for the status message (D8) */
+  function takeRunNotes() {
+    var out = runNotes;
+    runNotes = [];
+    return out;
+  }
+
+  window.addEventListener('pageshow', function () { runDue(); });
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') runDue();
+  });
+
   /* ── How a booking row looks (roadmap 43) ───────────────────────── */
 
   /* The icon names the counterparty, never the status (D4); the chip names the status or the frequency (D6) */
@@ -793,6 +944,11 @@
     reset:               reset,
     formatMoney:         formatMoney,
     bookingRowLook:      bookingRowLook,
-    frequencyLabel:      frequencyLabel
+    frequencyLabel:      frequencyLabel,
+    nextDueDate:         nextDueDate,
+    runDue:              runDue,
+    takeRunNotes:        takeRunNotes
   };
+
+  runDue();
 })();
