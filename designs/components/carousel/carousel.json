@@ -13,8 +13,7 @@
         "default": "variants/default-default/default.svg"
       },
       "bank-products": {
-        "default": "variants/bank-products/default.svg",
-        "default 2": "variants/bank-products/default 2.svg"
+        "default": "variants/bank-products/default.svg"
       }
     },
     "overview": "overview.png"

@@ -14,7 +14,8 @@ Each group ends with something to check in the browser on the agent's server (`c
 ## 2. Remove the duplicates (D1, D2, D9)
 
 - [ ] `git rm` the listed files under `apps/web` (outside `storybook-static`) and under `designs/`; empty `_finder-duplicates` folders disappear with them
-- [ ] Check: `git status` shows only deletions; the six in D3 are still there; `npm run build` in `apps/web` still succeeds
+- [ ] The 14 manifests and the 12 generated stories stop naming the removed files (D10): remove the `"<state> 2"` lines and the matching `<figure>` blocks; do not run `npm run storybook:sync` (it also changes unrelated stories)
+- [ ] Check: `git status` shows deletions plus those 26 edited files; the six in D3 are still there; `npm run build` in `apps/web` still succeeds
 
 ## 3. The sprite and its guard (D4, D5)
 

@@ -48,10 +48,6 @@ export const DesignExport = {
   <figcaption class="de-cap">grouped-top-country / hover</figcaption>
 </figure>
 <figure class="de-item">
-  <img class="de-img" src="/designs/components/list-item/selection-list-item/variants/grouped-top-country/pressed 2.svg" alt="grouped-top-country / pressed 2" loading="lazy" />
-  <figcaption class="de-cap">grouped-top-country / pressed 2</figcaption>
-</figure>
-<figure class="de-item">
   <img class="de-img" src="/designs/components/list-item/selection-list-item/variants/grouped-top-country/pressed.svg" alt="grouped-top-country / pressed" loading="lazy" />
   <figcaption class="de-cap">grouped-top-country / pressed</figcaption>
 </figure>

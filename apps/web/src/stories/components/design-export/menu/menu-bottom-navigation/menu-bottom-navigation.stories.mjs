@@ -48,10 +48,6 @@ export const DesignExport = {
   <figcaption class="de-cap">bottom-nav-selected / hover</figcaption>
 </figure>
 <figure class="de-item">
-  <img class="de-img" src="/designs/components/menu/menu-bottom-navigation/variants/bottom-nav-selected/pressed 2.svg" alt="bottom-nav-selected / pressed 2" loading="lazy" />
-  <figcaption class="de-cap">bottom-nav-selected / pressed 2</figcaption>
-</figure>
-<figure class="de-item">
   <img class="de-img" src="/designs/components/menu/menu-bottom-navigation/variants/bottom-nav-selected/pressed.svg" alt="bottom-nav-selected / pressed" loading="lazy" />
   <figcaption class="de-cap">bottom-nav-selected / pressed</figcaption>
 </figure>
@@ -69,10 +65,6 @@ export const DesignExport = {
 <figure class="de-item">
   <img class="de-img" src="/designs/components/menu/menu-bottom-navigation/variants/bottom-nav-unselected/hover.svg" alt="bottom-nav-unselected / hover" loading="lazy" />
   <figcaption class="de-cap">bottom-nav-unselected / hover</figcaption>
-</figure>
-<figure class="de-item">
-  <img class="de-img" src="/designs/components/menu/menu-bottom-navigation/variants/bottom-nav-unselected/pressed 2.svg" alt="bottom-nav-unselected / pressed 2" loading="lazy" />
-  <figcaption class="de-cap">bottom-nav-unselected / pressed 2</figcaption>
 </figure>
 <figure class="de-item">
   <img class="de-img" src="/designs/components/menu/menu-bottom-navigation/variants/bottom-nav-unselected/pressed.svg" alt="bottom-nav-unselected / pressed" loading="lazy" />
