@@ -13,8 +13,9 @@
   var TONAL_WASH_VER = 'uzBankWebTonalWash_v05';
   var ACTION_CIRCLE_VER = 'uzBankWebActionCircleWash_v1';
   var SEPARATOR_SUBTLE_VER = 'uzBankWebSeparatorSubtle_v1';
+  var CHIP_TOKENS_VER = 'uzBankWebChipTokens_v1';
   /* Custom 10 — tonal fills at 5% (0d), hover 10% (1a), pressed 20% (33). */
-  var DEFAULT_TOKENS = {"light":{"color-bg":"#ffffff","color-bg-secondary":"#f5f6f4","color-bg-sidebar":"#ffffff","color-fg":"#414e4d","color-fg-interactive":"#6b7e63","color-fg-secondary":"#414e4db3","color-fg-label":"#414e4db3","color-fg-disabled":"rgba(8, 10, 16, 0.4)","color-separator":"#414e4d24","color-separator-subtle":"#414e4d0d","color-show-all-bg":"#414e4d0d","color-nav-item-active-bg":"#414e4d0d","color-segmented-track-bg":"#414e4d0d","color-input-stroke":"#414e4db3","color-input-stroke-focus":"#6b7e63","color-input-surface":"#ffffff","color-icon-circle-fill":"#6b7e63","color-btn-primary-bg":"#6b7e63","color-btn-primary-fg":"#ffffff","color-btn-primary-hover":"#8c9a85","color-btn-primary-pressed":"#a4b09f","color-btn-secondary-bg":"#ffffff","color-btn-secondary-border":"#414e4d","color-btn-secondary-fg":"#414e4d","color-btn-secondary-hover":"#414e4d1a","color-btn-secondary-pressed":"#414e4d33","color-btn-tonal-bg":"#414e4d0d","color-btn-tonal-border":"#414e4d0d","color-btn-tonal-fg":"#414e4d","color-btn-tonal-hover":"#414e4d1a","color-btn-tonal-pressed":"#414e4d33","color-overlay-tint":"#414e4d","color-nav-elevated-shadow":"rgba(0, 0, 0, 0.06)","color-modal-elevated-shadow":"rgba(0, 0, 0, 0.12)","color-surface-state-hover":"#414e4d1a","color-surface-state-pressed":"#414e4d33","color-action-circle-state-hover":"#ffffff1f","color-action-circle-state-pressed":"#ffffff38"},"dark":{"color-bg":"#252c2f","color-bg-secondary":"#39433f","color-bg-sidebar":"#252c2f","color-fg":"#eaeeee","color-fg-interactive":"#7f9376","color-fg-secondary":"#eaeeeeb3","color-fg-label":"#eaeeeeb3","color-fg-disabled":"rgba(255, 255, 255, 0.4)","color-separator":"#eaeeee1a","color-separator-subtle":"#eaeeee0d","color-show-all-bg":"#eaeeee0d","color-nav-item-active-bg":"#eaeeee0d","color-segmented-track-bg":"#eaeeee0d","color-input-stroke":"#eaeeeeb3","color-input-stroke-focus":"#7f9376","color-input-surface":"#252c2f","color-icon-circle-fill":"#7f9376","color-btn-primary-bg":"#7f9376","color-btn-primary-fg":"#ffffff","color-btn-primary-hover":"#7a8d72","color-btn-primary-pressed":"#76886f","color-btn-secondary-bg":"#252c2f","color-btn-secondary-border":"#eaeeee","color-btn-secondary-fg":"#eaeeee","color-btn-secondary-hover":"#eaeeee1a","color-btn-secondary-pressed":"#eaeeee33","color-btn-tonal-bg":"#eaeeee0d","color-btn-tonal-border":"#eaeeee0d","color-btn-tonal-fg":"#eaeeee","color-btn-tonal-hover":"#eaeeee1a","color-btn-tonal-pressed":"#eaeeee33","color-overlay-tint":"#eaeeee","color-nav-elevated-shadow":"rgba(0, 0, 0, 0.35)","color-modal-elevated-shadow":"rgba(0, 0, 0, 0.45)","color-surface-state-hover":"#eaeeee1a","color-surface-state-pressed":"#eaeeee33","color-action-circle-state-hover":"#ffffff1f","color-action-circle-state-pressed":"#ffffff38"}};
+  var DEFAULT_TOKENS = {"light":{"color-bg":"#ffffff","color-bg-secondary":"#f5f6f4","color-bg-sidebar":"#ffffff","color-fg":"#414e4d","color-fg-interactive":"#6b7e63","color-fg-secondary":"#414e4db3","color-fg-label":"#414e4db3","color-fg-disabled":"rgba(8, 10, 16, 0.4)","color-separator":"#414e4d24","color-separator-subtle":"#414e4d0d","color-show-all-bg":"#414e4d0d","color-nav-item-active-bg":"#414e4d0d","color-segmented-track-bg":"#414e4d0d","color-input-stroke":"#414e4db3","color-input-stroke-focus":"#6b7e63","color-input-surface":"#ffffff","color-icon-circle-fill":"#6b7e63","color-btn-primary-bg":"#6b7e63","color-btn-primary-fg":"#ffffff","color-btn-primary-hover":"#8c9a85","color-btn-primary-pressed":"#a4b09f","color-btn-secondary-bg":"#ffffff","color-btn-secondary-border":"#414e4d","color-btn-secondary-fg":"#414e4d","color-btn-secondary-hover":"#414e4d1a","color-btn-secondary-pressed":"#414e4d33","color-btn-tonal-bg":"#414e4d0d","color-btn-tonal-border":"#414e4d0d","color-btn-tonal-fg":"#414e4d","color-btn-tonal-hover":"#414e4d1a","color-btn-tonal-pressed":"#414e4d33","color-overlay-tint":"#414e4d","color-nav-elevated-shadow":"rgba(0, 0, 0, 0.06)","color-modal-elevated-shadow":"rgba(0, 0, 0, 0.12)","color-surface-state-hover":"#414e4d1a","color-surface-state-pressed":"#414e4d33","color-action-circle-state-hover":"#ffffff1f","color-action-circle-state-pressed":"#ffffff38","color-chip-primary-bg":"#6b7e63","color-chip-primary-border":"#6b7e63","color-chip-primary-fg":"#ffffff","color-chip-primary-hover":"#ffffff1a","color-chip-primary-pressed":"#ffffff33","color-chip-secondary-bg":"#ffffff","color-chip-secondary-border":"#414e4d","color-chip-secondary-fg":"#414e4d","color-chip-secondary-hover":"#414e4d1a","color-chip-secondary-pressed":"#414e4d33","color-chip-filled-tonal-bg":"#414e4d0d","color-chip-filled-tonal-border":"#414e4d00","color-chip-filled-tonal-fg":"#414e4d","color-chip-filled-tonal-hover":"#414e4d1a","color-chip-filled-tonal-pressed":"#414e4d33"},"dark":{"color-bg":"#252c2f","color-bg-secondary":"#39433f","color-bg-sidebar":"#252c2f","color-fg":"#eaeeee","color-fg-interactive":"#7f9376","color-fg-secondary":"#eaeeeeb3","color-fg-label":"#eaeeeeb3","color-fg-disabled":"rgba(255, 255, 255, 0.4)","color-separator":"#eaeeee1a","color-separator-subtle":"#eaeeee0d","color-show-all-bg":"#eaeeee0d","color-nav-item-active-bg":"#eaeeee0d","color-segmented-track-bg":"#eaeeee0d","color-input-stroke":"#eaeeeeb3","color-input-stroke-focus":"#7f9376","color-input-surface":"#252c2f","color-icon-circle-fill":"#7f9376","color-btn-primary-bg":"#7f9376","color-btn-primary-fg":"#ffffff","color-btn-primary-hover":"#7a8d72","color-btn-primary-pressed":"#76886f","color-btn-secondary-bg":"#252c2f","color-btn-secondary-border":"#eaeeee","color-btn-secondary-fg":"#eaeeee","color-btn-secondary-hover":"#eaeeee1a","color-btn-secondary-pressed":"#eaeeee33","color-btn-tonal-bg":"#eaeeee0d","color-btn-tonal-border":"#eaeeee0d","color-btn-tonal-fg":"#eaeeee","color-btn-tonal-hover":"#eaeeee1a","color-btn-tonal-pressed":"#eaeeee33","color-overlay-tint":"#eaeeee","color-nav-elevated-shadow":"rgba(0, 0, 0, 0.35)","color-modal-elevated-shadow":"rgba(0, 0, 0, 0.45)","color-surface-state-hover":"#eaeeee1a","color-surface-state-pressed":"#eaeeee33","color-action-circle-state-hover":"#ffffff1f","color-action-circle-state-pressed":"#ffffff38","color-chip-primary-bg":"#7f9376","color-chip-primary-border":"#7f9376","color-chip-primary-fg":"#ffffff","color-chip-primary-hover":"#ffffff1a","color-chip-primary-pressed":"#ffffff33","color-chip-secondary-bg":"#252c2f","color-chip-secondary-border":"#eaeeee","color-chip-secondary-fg":"#eaeeee","color-chip-secondary-hover":"#eaeeee1a","color-chip-secondary-pressed":"#eaeeee33","color-chip-filled-tonal-bg":"#eaeeee1a","color-chip-filled-tonal-border":"#eaeeee00","color-chip-filled-tonal-fg":"#eaeeee","color-chip-filled-tonal-hover":"#eaeeee1a","color-chip-filled-tonal-pressed":"#eaeeee33"}};
   var DEFAULT_OVERRIDE = {"bg":"#ffffff","fg":"#6b7e63","neutral":"#414e4d","kind":"multicolor","neutralSeed":"#465453","primarySeed":"#a5b39f","bgIndex":0,"fgIndex":9,"primaryIndex":7,"contrastByShell":{"light":{"bgIndex":0,"fgIndex":9},"dark":{"bgIndex":3,"fgIndex":4}},"primaryByShell":{"light":7,"dark":6},"activeSavedThemeId":"t_da0fdc6c4b056_1a122a822ab"};
 
   var TONAL_FILL_KEYS = {
@@ -104,6 +105,33 @@
     return { light: shell(all.light), dark: shell(all.dark) };
   }
 
+  /** A cache saved before the chip's own tokens (roadmap 48) has none. Primary and secondary copy the matching button tokens; filled tonal is the neutral ink (`color-fg`) at 5% in Light and 10% in Dark, as the engine derives it. */
+  function migrateChipTokens(all) {
+    if (!all || typeof all !== 'object') return all;
+    function shell(tokens, tonalAlpha) {
+      if (!tokens || tokens['color-chip-filled-tonal-bg']) return tokens;
+      var fg = tokens['color-fg'];
+      if (typeof fg !== 'string' || !/^#[0-9a-fA-F]{6}$/.test(fg)) return tokens;
+      var out = {};
+      for (var k in tokens) {
+        if (!Object.prototype.hasOwnProperty.call(tokens, k)) continue;
+        out[k] = tokens[k];
+      }
+      ['primary', 'secondary'].forEach(function (c) {
+        ['bg', 'border', 'fg', 'hover', 'pressed'].forEach(function (p) {
+          if (tokens['color-btn-' + c + '-' + p]) out['color-chip-' + c + '-' + p] = tokens['color-btn-' + c + '-' + p];
+        });
+      });
+      out['color-chip-primary-border'] = tokens['color-btn-primary-bg'];
+      out['color-chip-filled-tonal-bg'] = fg + tonalAlpha;
+      out['color-chip-filled-tonal-border'] = fg + '00';
+      out['color-chip-filled-tonal-fg'] = fg;
+      out['color-chip-filled-tonal-hover'] = fg + '1a';
+      out['color-chip-filled-tonal-pressed'] = fg + '33';
+      return out;
+    }
+    return { light: shell(all.light, '0d'), dark: shell(all.dark, '1a') };
+  }
 
   try {
     var t = localStorage.getItem('uzBankWebTheme');
@@ -118,6 +146,7 @@
       localStorage.setItem(TONAL_WASH_VER, '1');
       localStorage.setItem(ACTION_CIRCLE_VER, '1');
       localStorage.setItem(SEPARATOR_SUBTLE_VER, '1');
+      localStorage.setItem(CHIP_TOKENS_VER, '1');
     }
     if (!raw) return;
     var all = JSON.parse(raw);
@@ -136,6 +165,11 @@
       all = migrateSeparatorSubtle(all);
       localStorage.setItem(TOKENS_KEY, JSON.stringify(all));
       localStorage.setItem(SEPARATOR_SUBTLE_VER, '1');
+    }
+    if (localStorage.getItem(CHIP_TOKENS_VER) !== '1') {
+      all = migrateChipTokens(all);
+      localStorage.setItem(TOKENS_KEY, JSON.stringify(all));
+      localStorage.setItem(CHIP_TOKENS_VER, '1');
     }
     var shell = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
     apply(all && all[shell]);
