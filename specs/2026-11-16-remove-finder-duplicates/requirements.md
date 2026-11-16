@@ -16,6 +16,7 @@ Roadmap item 70 (`specs/roadmap.md`), found while writing 63 and 64's spec (2026
 
 - The 355 duplicates inside `apps/web/storybook-static`, which is tracked build output (1591 files): a new roadmap item, 75, with the question of whether it should be tracked at all (D7)
 - Six files that look like duplicates but are not (D3)
+- `sync_icons_sprite.py`'s other steps (it also rewrites `js/storage-migrate.js` and embeds the sprite in two more pages when run): roadmap 76
 - Any behaviour change. The only visible effect is a smaller sprite (D8)
 
 ## Decisions

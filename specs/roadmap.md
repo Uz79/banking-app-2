@@ -18,6 +18,10 @@ Spec: `specs/2026-11-16-remove-finder-duplicates/` (branch `feature/remove-finde
 
 Found while writing 70's spec (2026-11-16). `apps/web/storybook-static` holds 1591 tracked files, 355 of them Finder duplicates (`name 2.ext`). To settle in its spec: whether it is tracked on purpose (a hosted Storybook, a deploy that serves it), and if not, untrack it and add it to `.gitignore`, which removes the duplicates with it; if it must stay, rebuild it from a clean state (`npm run build-storybook`) so the copies drop out.
 
+## 76. `sync_icons_sprite.py` does more than build the sprite
+
+Found while building 70 (2026-11-16). Running `apps/web/scripts/sync_icons_sprite.py` also rewrites `js/storage-migrate.js`'s legacy key table (the `keys:` step turns `uzBankWebApp10Theme`, `uzBankWebApp11Theme` and similar into `uzBankWebTheme`, so the table maps a key to itself) and embeds the whole sprite into `fridge-advisor.html` and `investment-opening.html`, which carry it differently today (about 1576 more lines each). 70 did not run it for those; it removed the junk symbols from the sprite and the pages by hand. To settle in its spec: split the script (sprite build; embedding; the one-off HTML migration; the key migration), drop the steps that were one-offs, and check how the fridge and opening pages get their icons.
+
 ## 66. Motion specimens: Focus-mode choreography's sample stays white in Dark
 
 Klaudiusz, 2026-11-06. On Motion specimens, the Focus-mode choreography sample's right column keeps a white background in Dark. It needs a surface token.
