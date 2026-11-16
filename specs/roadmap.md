@@ -6,10 +6,6 @@ The order below is the order of work. Items keep their numbers (specs, commits a
 
 In order. The first is what `/feature-spec` starts.
 
-## 48. Chip: its own tokens, as in Figma
-
-Spec: `specs/2026-11-15-chip-own-tokens/` (branch `feature/chip-own-tokens`; the chip group only, from 260617; the full promote is 73). Added 2026-11-05. `.chip--tonal` (43) uses `--color-btn-tonal-*`. Figma's Chip has its own Case=FilledTonal, bound to `chip/filled tonal/*` (background, border, foreground, hover, pressed; Des-Sys-Test, Component Library > Chip, node 769:106445). Those tokens are in `designs/tokens/_NEW/260617_tokens` but not in `designs/tokens/mapped`. Bring them into the token pipeline as `--color-chip-filled-tonal-*`, make the theme engine emit them for Multi-color themes, and point the chip at them. Settle the class name against Figma's "FilledTonal", and document the Secondary case in `designs/components/chip/chip.md` too.
-
 # Later
 
 Not scheduled, smallest first (an estimate of size, not of value).
@@ -370,6 +366,12 @@ Spec: `specs/2026-11-05-transfer-status/` (branch `feature/transfer-status`), wi
 Added 2026-11-05. A standing order is a rule; its executions are bookings. Today tapping Rent in Recurring opens a payment sheet with Status "Pending". The rule gets a third variant of the booking sheet, next to Domestic Payment and Internal Account Transfer (not a new page): Status "Active", Frequency, Next execution; its Edit changes all future payments. An instance keeps its Pending or Executed sheet, and Edit on a pending instance changes that payment only (relates to 44). The Pending tab lists each standing order's next instance with the "Pending" chip (Rent, Netflix and Internet & Phone are missing there today). The built-in "Next on" dates are stale (01.11.2026 is past): derive them from today or move them into the future. Later, not in this item: "Skip this payment", pausing or deleting a standing order, a "Recent payments" list in the standing order's sheet.
 
 Spec: `specs/2026-11-06-standing-orders/` (branch `feature/standing-orders`), with 53. Settled in its interview: the next instance is derived from the rule each time a list renders, and an edit of it is stored as a one-off pending payment for that date; the rule and a pending instance both get Edit and Copy, no Delete; standard gate. Out of the branch: 44, 45, 37. Found in the build: All bookings lists the same built-in rows for every account while Pay books to Household (56). Built 2026-11-06.
+
+## 48. Chip: its own tokens, as in Figma (done)
+
+Spec: `specs/2026-11-15-chip-own-tokens/` (branch `feature/chip-own-tokens`; the chip group only, from 260617; the full promote is 73). Settled in its interview: only the chip group is merged, all three cases, `.chip--tonal` keeps its name, the tonal chip follows Figma's look. Added 2026-11-05. `.chip--tonal` (43) uses `--color-btn-tonal-*`. Figma's Chip has its own Case=FilledTonal, bound to `chip/filled tonal/*` (background, border, foreground, hover, pressed; Des-Sys-Test, Component Library > Chip, node 769:106445). Those tokens are in `designs/tokens/_NEW/260617_tokens` but not in `designs/tokens/mapped`. Bring them into the token pipeline as `--color-chip-filled-tonal-*`, make the theme engine emit them for Multi-color themes, and point the chip at them. Settle the class name against Figma's "FilledTonal", and document the Secondary case in `designs/components/chip/chip.md` too.
+
+Built 2026-11-16: all three Figma cases (primary, secondary, filled tonal), 15 `--color-chip-*` tokens from the `chip` group copied verbatim from 260617 (the rest of that export waits for 73); the theme engine derives them for Multi-color themes, and older saved caches gain them once (`uzBankWebChipTokens_v1`). The class stays `.chip--tonal`; `.chip--secondary` is new; a Chip section on the Components page. Only the Dark tonal chip changed (5% to 10%). Found: in several Multi-color themes the primary chip is 3.3 to 4.4:1 and Custom 02's Light tonal and secondary chips are 3.8 and 4.0:1, all as before (the validation lists them). Not checked: the console, most of the baseline smoke test.
 
 ## 49. Banking sheets don't close on Escape (done)
 
