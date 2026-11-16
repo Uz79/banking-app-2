@@ -45,6 +45,10 @@
     {
       "path": "color.neutral.white-20pc",
       "reason": "Dark mode secondary button pressed state"
+    },
+    {
+      "path": "color.primary.900-5pc",
+      "reason": "Light mode filled tonal chip background (chip.filled tonal.background in mapped/light.json)"
     }
   ],
   "generatorRefs": [

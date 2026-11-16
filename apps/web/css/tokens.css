@@ -167,6 +167,24 @@ html[data-theme="light"] {
   --color-btn-tonal-hover: #E3E5F1;
   --color-btn-tonal-pressed: #C6CBE2;
 
+  --color-chip-primary-bg: #00157E;
+  --color-chip-primary-border: #00157E;
+  --color-chip-primary-fg: #FFFFFF;
+  --color-chip-primary-hover: rgba(255, 255, 255, 0.1);
+  --color-chip-primary-pressed: rgba(255, 255, 255, 0.2);
+
+  --color-chip-secondary-bg: #FFFFFF;
+  --color-chip-secondary-border: #00157E;
+  --color-chip-secondary-fg: #00157E;
+  --color-chip-secondary-hover: rgba(0, 21, 126, 0.1);
+  --color-chip-secondary-pressed: rgba(0, 21, 126, 0.2);
+
+  --color-chip-filled-tonal-bg: rgba(0, 21, 126, 0.05);
+  --color-chip-filled-tonal-border: rgba(0, 21, 126, 0);
+  --color-chip-filled-tonal-fg: #00157E;
+  --color-chip-filled-tonal-hover: rgba(0, 21, 126, 0.1);
+  --color-chip-filled-tonal-pressed: rgba(0, 21, 126, 0.2);
+
   --color-icon-circle-fill: var(--color-fg);
   --color-overlay-scrim: color-mix(in srgb, var(--color-overlay-tint) 45%, transparent);
   --color-nav-elevated-shadow: rgba(0, 0, 0, 0.06);
@@ -216,6 +234,24 @@ html[data-theme="dark"] {
   --color-btn-tonal-fg: #FFFFFF;
   --color-btn-tonal-hover: #5563A9;
   --color-btn-tonal-pressed: #1C2F8C;
+
+  --color-chip-primary-bg: #FFFFFF;
+  --color-chip-primary-border: #FFFFFF;
+  --color-chip-primary-fg: #00157E;
+  --color-chip-primary-hover: rgba(0, 21, 126, 0.1);
+  --color-chip-primary-pressed: rgba(0, 21, 126, 0.2);
+
+  --color-chip-secondary-bg: #00157E;
+  --color-chip-secondary-border: #FFFFFF;
+  --color-chip-secondary-fg: #FFFFFF;
+  --color-chip-secondary-hover: rgba(255, 255, 255, 0.1);
+  --color-chip-secondary-pressed: rgba(255, 255, 255, 0.2);
+
+  --color-chip-filled-tonal-bg: rgba(255, 255, 255, 0.1);
+  --color-chip-filled-tonal-border: rgba(255, 255, 255, 0);
+  --color-chip-filled-tonal-fg: #FFFFFF;
+  --color-chip-filled-tonal-hover: rgba(255, 255, 255, 0.1);
+  --color-chip-filled-tonal-pressed: rgba(255, 255, 255, 0.2);
 
   --color-icon-circle-fill: #FFFFFF;
   --color-overlay-scrim: color-mix(in srgb, var(--color-overlay-tint) 62%, transparent);
