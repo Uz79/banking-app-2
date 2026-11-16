@@ -1,0 +1,39 @@
+{
+  "name": "menu-sidebar-nav",
+  "category": "menu",
+  "description": "Desktop sidebar navigation, in a compressed icon rail and an extended labeled rail.",
+  "variants": [
+    "regular-compressed",
+    "regular-extended"
+  ],
+  "interactionStates": [
+    "default"
+  ],
+  "assets": {
+    "overview": "variants/regular-extended/default.svg",
+    "variants": {
+      "regular-compressed": {
+        "default": "variants/regular-compressed/default.svg"
+      },
+      "regular-extended": {
+        "default": "variants/regular-extended/default.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": [
+    "Type=regular, Case=compressed is the 80px icon rail.",
+    "Type=regular, Case=extended is the 256px labeled rail.",
+    "Variant slugs are Type-Case. Only the default state is exported."
+  ]
+}

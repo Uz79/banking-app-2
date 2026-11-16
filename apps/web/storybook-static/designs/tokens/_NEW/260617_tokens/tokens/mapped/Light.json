@@ -1,0 +1,2182 @@
+{
+  "background": {
+    "background": {
+      "value": "{color.neutral.white}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "background-secondary": {
+      "value": "{color.primary.50}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "background-hover": {
+      "value": "{color.neutral.white-70pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "background-disabled": {
+      "value": "{color.neutral.white-40pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "background-separator": {
+      "value": "{color.primary.900-5pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    }
+  },
+  "foreground": {
+    "foreground": {
+      "value": "{color.primary.900}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "foreground-secondary": {
+      "value": "{color.primary.900-70pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "foreground-hover": {
+      "value": "{color.primary.900-70pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "foreground-disabled": {
+      "value": "{color.primary.900-40pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "foreground-separator": {
+      "value": "{color.primary.900-20pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "foreground-on-primary": {
+      "value": "{color.neutral.white}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    }
+  },
+  "border": {
+    "border": {
+      "value": "{color.primary.900}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "border-secondary": {
+      "value": "{color.primary.900-70pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    }
+  },
+  "button": {
+    "primary": {
+      "background": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.neutral.white}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.neutral.white-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.neutral.white-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "secondary": {
+      "background": {
+        "value": "{color.neutral.white}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.primary.900-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.primary.900-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "filled tonal": {
+      "background": {
+        "value": "{color.primary.900-5pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900-0pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.primary.900-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.primary.900-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "icon-only glyph only": {
+      "background": {
+        "value": "{color.primary.900-0pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900-0pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.primary.900-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.primary.900-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "background disabled": {
+        "value": "{color.primary.900-0pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground disabled": {
+        "value": "{color.primary.900-40pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border disabled": {
+        "value": "{color.primary.900-0pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "icon-only primary": {
+      "background": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.neutral.white}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.neutral.white-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.neutral.white-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "icon-only filled tonal": {
+      "background": {
+        "value": "{color.primary.900-5pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.primary.900-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.primary.900-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900-0pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "circular primary": {
+      "background": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.neutral.white}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.neutral.white-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.neutral.white-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground label": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "circular filled tonal": {
+      "background": {
+        "value": "{color.primary.900-5pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900-0pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.primary.900-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.primary.900-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground label": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "circular secondary": {
+      "background": {
+        "value": "{color.neutral.white}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.primary.900-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.primary.900-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground label": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "txt-only": {
+      "background": {
+        "value": "{color.primary.900-0pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900-0pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.primary.900-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.primary.900-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "icon-only secondary": {
+      "background": {
+        "value": "{color.neutral.white}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.primary.900-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.primary.900-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "button-padding horizontal": {
+      "small": {
+        "value": "{space.2}",
+        "type": "number",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "regular": {
+        "value": "{space.3}",
+        "type": "number",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "large": {
+        "value": "{space.5}",
+        "type": "number",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "button-padding vertical": {
+      "small": {
+        "value": "{space.1}",
+        "type": "number",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "regular": {
+        "value": "{space.2}",
+        "type": "number",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "large": {
+        "value": "{space.3}",
+        "type": "number",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    }
+  },
+  "marker test": {
+    "value": "#ff00c3",
+    "type": "color",
+    "$extensions": {
+      "com.figma.scopes": [
+        "ALL_SCOPES"
+      ],
+      "com.figma.hiddenFromPublishing": false
+    }
+  },
+  "form field": {
+    "border focus": {
+      "value": "{color.primary.900}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "background": {
+      "value": "{color.neutral.white}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "border": {
+      "value": "{color.primary.900-70pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "foreground": {
+      "value": "{color.primary.900}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "foreground placeholder txt": {
+      "value": "{color.primary.900-40pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "background hover": {
+      "value": "{color.primary.900-10pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "border error": {
+      "value": "{color.secondary.900}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "border hover": {
+      "value": "{color.primary.900-70pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "foreground error": {
+      "value": "{color.secondary.900}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "border informative": {
+      "value": "{color.primary.900-70pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    }
+  },
+  "checkbox": {
+    "inactive": {
+      "border": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground label": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.primary.900-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.primary.900-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "background": {
+        "value": "{color.neutral.white}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "active": {
+      "background": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.neutral.white}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground label": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.neutral.white-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.neutral.white-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    }
+  },
+  "radio button": {
+    "inactive": {
+      "background": {
+        "value": "{color.neutral.white}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground label": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.primary.900-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.primary.900-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "active": {
+      "background": {
+        "value": "{color.neutral.white}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground label": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.primary.900-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.primary.900-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    }
+  },
+  "toggle switch": {
+    "inactive": {
+      "background": {
+        "value": "{color.neutral.white}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground label": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.primary.900-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.primary.900-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground separator": {
+        "value": "{color.primary.900-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "active": {
+      "background": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.neutral.white}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground label": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.neutral.white-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.neutral.white-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground separator": {
+        "value": "{color.primary.900-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    }
+  },
+  "account-picker": {
+    "background": {
+      "value": "{color.neutral.white}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "border": {
+      "value": "{color.primary.900-70pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "foreground": {
+      "value": "{color.primary.900}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "hover state": {
+      "value": "{color.primary.900-10pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "pressed state": {
+      "value": "{color.primary.900-20pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "foreground secondary": {
+      "value": "{color.primary.900-70pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "foreground error": {
+      "value": "{color.secondary.900}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "border error": {
+      "value": "{color.secondary.900}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    }
+  },
+  "list item": {
+    "background": {
+      "value": "{color.neutral.white}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "border": {
+      "value": "{color.primary.900}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "foreground": {
+      "value": "{color.primary.900}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "foreground secondary": {
+      "value": "{color.primary.900-70pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "hover state": {
+      "value": "{color.primary.900-10pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "pressed state": {
+      "value": "{color.primary.900-20pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "foreground separator": {
+      "value": "{color.primary.900-20pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    }
+  },
+  "row item": {
+    "background": {
+      "value": "{color.primary.900-0pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "border": {
+      "value": "{color.primary.900-0pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "foreground": {
+      "value": "{color.primary.900}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "hover state": {
+      "value": "{color.primary.900-10pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "pressed state": {
+      "value": "{color.primary.900-20pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "foreground separator": {
+      "value": "{color.primary.900-10pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "foreground secondary": {
+      "value": "{color.primary.900-70pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    }
+  },
+  "paginator": {
+    "background thumb inactive": {
+      "value": "{color.primary.900-40pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "border": {
+      "value": "{color.primary.900-0pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "foreground": {
+      "value": "{color.primary.900}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "background thumb active": {
+      "value": "{color.primary.900}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    }
+  },
+  "menu item": {
+    "unselected": {
+      "background": {
+        "value": "{color.primary.900-0pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900-0pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground label": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.primary.900-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.primary.900-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "selected": {
+      "background": {
+        "value": "{color.primary.900-5pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900-0pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground label": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.primary.900-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.primary.900-40pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    }
+  },
+  "tab control": {
+    "background": {
+      "value": "{color.primary.900-0pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "border active": {
+      "value": "{color.primary.900}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "foreground": {
+      "value": "{color.primary.900}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "hover state": {
+      "value": "{color.primary.900-10pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "pressed state": {
+      "value": "{color.primary.900-20pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "border inactive": {
+      "value": "{color.primary.900-0pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    }
+  },
+  "slider": {
+    "background": {
+      "value": "{color.primary.900-0pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "border": {
+      "value": "{color.primary.900-0pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "foreground": {
+      "value": "{color.primary.900}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "hover state": {
+      "value": "{color.primary.900-10pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "pressed state": {
+      "value": "{color.primary.900-20pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "track active": {
+      "value": "{color.primary.900}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "track inactive": {
+      "value": "{color.primary.900-40pc}",
+      "type": "color",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    }
+  },
+  "segmented control": {
+    "active": {
+      "border": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.neutral.white}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.neutral.white-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.neutral.white-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "background": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "inactive": {
+      "background": {
+        "value": "{color.primary.900-0pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900-0pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.primary.900-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.primary.900-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    }
+  },
+  "chip": {
+    "primary": {
+      "background": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.neutral.white}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.neutral.white-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.neutral.white-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "secondary": {
+      "background": {
+        "value": "{color.neutral.white}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.primary.900-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.primary.900-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "filled tonal": {
+      "background": {
+        "value": "{color.primary.900-5pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900-0pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.primary.900-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.primary.900-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    }
+  },
+  "Icon Name": {
+    "value": "String value",
+    "type": "text",
+    "$extensions": {
+      "com.figma.scopes": [
+        "ALL_SCOPES"
+      ],
+      "com.figma.hiddenFromPublishing": false
+    }
+  },
+  "section": {
+    "padding": {
+      "small": {
+        "value": "{space.4}",
+        "type": "number",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "main": {
+        "value": "{space.7}",
+        "type": "number",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "large": {
+        "value": "{space.9}",
+        "type": "number",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    }
+  }
+}

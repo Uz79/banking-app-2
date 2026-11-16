@@ -131,10 +131,12 @@
     function fgAlpha(a) { return 'rgba(' + fg.r + ', ' + fg.g + ', ' + fg.b + ', ' + a + ')'; }
     function rgbAlpha(c, a) { return 'rgba(' + c.r + ', ' + c.g + ', ' + c.b + ', ' + a + ')'; }
     function blackAlpha(a) { return 'rgba(0, 0, 0, ' + a + ')'; }
-    var scrimRgb = isDark ? bg : fg;
 
     var bgElev = isDark ? 0.22 : 0.07;
     var fgElev = isDark ? 0.06 : 0.22;
+    var brandPrimaryHex = isDark ? bgHex : fgHex;
+    var brandPrimaryRgb = isDark ? bg : fg;
+    var white = { r: 255, g: 255, b: 255 };
 
     return {
       // Surfaces
@@ -150,9 +152,10 @@
 
       // Alpha-derived (semi-transparent FG)
       'color-separator':          fgAlpha(0.10),
+      'color-separator-subtle':   fgAlpha(0.05),
       'color-show-all-bg':        fgAlpha(0.10),
       'color-nav-item-active-bg': fgAlpha(0.10),
-      'color-segmented-track-bg': fgAlpha(0.05),
+      'color-segmented-track-bg': fgAlpha(isDark ? 0.08 : 0.05),
 
       // Inputs — same semantics as tokens.css (stroke @ 70% FG; focus = solid FG)
       'color-input-stroke':       fgAlpha(0.7),
@@ -167,12 +170,12 @@
       'color-btn-primary-hover': mix(fg, bg, fgElev),
       'color-btn-primary-pressed': mix(fg, bg, Math.min(0.45, fgElev * 1.75)),
 
-      // Buttons — secondary (outline) + tonal (filled tint)
-      'color-btn-secondary-bg':     'transparent',
-      'color-btn-secondary-border': fgHex,
-      'color-btn-secondary-fg':     fgHex,
-      'color-btn-secondary-hover':  fgAlpha(0.1),
-      'color-btn-secondary-pressed': fgAlpha(0.2),
+      // Buttons — secondary: light = white chip + primary stroke; dark = primary fill + white stroke (Figma mapped/button/secondary)
+      'color-btn-secondary-bg':     isDark ? bgHex : '#ffffff',
+      'color-btn-secondary-border': isDark ? fgHex : brandPrimaryHex,
+      'color-btn-secondary-fg':     isDark ? fgHex : brandPrimaryHex,
+      'color-btn-secondary-hover':  isDark ? mix(bg, fg, 0.1) : mix(white, brandPrimaryRgb, 0.1),
+      'color-btn-secondary-pressed': isDark ? mix(bg, fg, 0.2) : mix(white, brandPrimaryRgb, 0.2),
 
       'color-btn-tonal-bg':     mix(bg, fg, isDark ? 0.28 : 0.08),
       'color-btn-tonal-border': mix(bg, fg, isDark ? 0.28 : 0.08),
@@ -180,8 +183,25 @@
       'color-btn-tonal-hover':  mix(bg, fg, isDark ? 0.38 : 0.14),
       'color-btn-tonal-pressed': mix(bg, fg, isDark ? 0.48 : 0.22),
 
+      // Chip (roadmap 48)
+      'color-chip-primary-bg': fgHex,
+      'color-chip-primary-border': fgHex,
+      'color-chip-primary-fg': bgHex,
+      'color-chip-primary-hover': fgAlpha(0.1),
+      'color-chip-primary-pressed': fgAlpha(0.2),
+      'color-chip-secondary-bg': isDark ? bgHex : '#ffffff',
+      'color-chip-secondary-border': isDark ? fgHex : brandPrimaryHex,
+      'color-chip-secondary-fg': isDark ? fgHex : brandPrimaryHex,
+      'color-chip-secondary-hover': fgAlpha(0.1),
+      'color-chip-secondary-pressed': fgAlpha(0.2),
+      'color-chip-filled-tonal-bg': fgAlpha(isDark ? 0.1 : 0.05),
+      'color-chip-filled-tonal-border': fgAlpha(0),
+      'color-chip-filled-tonal-fg': fgHex,
+      'color-chip-filled-tonal-hover': fgAlpha(0.1),
+      'color-chip-filled-tonal-pressed': fgAlpha(0.2),
+
       // Elevation — brand-tinted scrim; neutral shadows
-      'color-overlay-scrim':         rgbAlpha(scrimRgb, isDark ? 0.62 : 0.45),
+      'color-overlay-tint':         fgHex,
       'color-nav-elevated-shadow':   blackAlpha(isDark ? 0.35 : 0.06),
       'color-modal-elevated-shadow': blackAlpha(isDark ? 0.45 : 0.12),
 
@@ -202,7 +222,7 @@
   var DERIVED_NAMES = [
     'color-bg', 'color-bg-secondary', 'color-bg-sidebar',
     'color-fg', 'color-fg-secondary', 'color-fg-label', 'color-fg-disabled',
-    'color-separator', 'color-show-all-bg', 'color-nav-item-active-bg', 'color-segmented-track-bg',
+    'color-separator', 'color-separator-subtle', 'color-show-all-bg', 'color-nav-item-active-bg', 'color-segmented-track-bg',
     'color-input-stroke', 'color-input-stroke-focus',
     'color-icon-circle-fill',
     'color-btn-primary-bg', 'color-btn-primary-fg', 'color-btn-primary-hover', 'color-btn-primary-pressed',
@@ -210,7 +230,8 @@
     'color-btn-secondary-hover', 'color-btn-secondary-pressed',
     'color-btn-tonal-bg', 'color-btn-tonal-border', 'color-btn-tonal-fg',
     'color-btn-tonal-hover', 'color-btn-tonal-pressed',
-    'color-overlay-scrim', 'color-nav-elevated-shadow', 'color-modal-elevated-shadow',
+    'color-chip-primary-bg', 'color-chip-primary-border', 'color-chip-primary-fg', 'color-chip-primary-hover', 'color-chip-primary-pressed', 'color-chip-secondary-bg', 'color-chip-secondary-border', 'color-chip-secondary-fg', 'color-chip-secondary-hover', 'color-chip-secondary-pressed', 'color-chip-filled-tonal-bg', 'color-chip-filled-tonal-border', 'color-chip-filled-tonal-fg', 'color-chip-filled-tonal-hover', 'color-chip-filled-tonal-pressed',
+    'color-overlay-tint', 'color-nav-elevated-shadow', 'color-modal-elevated-shadow',
     'color-surface-state-hover', 'color-surface-state-pressed',
     'color-action-circle-state-hover', 'color-action-circle-state-pressed'
   ];

@@ -1,6 +1,7 @@
 /**
  * Internal Account Transfer flow overlay
  * Hash: #iat/recipient | #iat/schedule | #iat/summary | #iat/confirmation
+ *       #iat/fund/<mandateId> opens it prefilled to fund that mandate (roadmap 18, D10)
  *
  * Triggered by [data-action="iat"] buttons.
  * Steps live in #uz-iat-overlay .modal__step[data-iat-step="<name>"].
@@ -10,12 +11,20 @@
 
   /* ── Account catalogue ─────────────────────────────────────────── */
 
+  /* Household and Savings show the running balance from the shared state (the constant is the fallback). */
+  function liveBalance(key, fallback) {
+    var pay = window.UZBankPayState;
+    if (!pay || typeof pay.getState !== 'function') return fallback;
+    var amount = (pay.getState().accountBalances || {})[key];
+    return amount != null ? pay.formatMoney(amount) : fallback;
+  }
+
   var ACCOUNTS = {
     household: {
       key: 'household',
       name: 'Household',
       iban: 'CH35 0900 0000 2470 2920 1',
-      balance: "10'000.00",
+      get balance() { return liveBalance('household', "10'000.00"); },
       currency: 'CHF',
       icon: '#i-home'
     },
@@ -23,13 +32,13 @@
       key: 'savings',
       name: 'Savings Account',
       iban: 'CH35 0900 0000 2470 2920 2',
-      balance: "25'000.00",
+      get balance() { return liveBalance('savings', "25'000.00"); },
       currency: 'CHF',
       icon: '#i-anchor'
     },
     deposit: {
       key: 'deposit',
-      name: 'Deposit',
+      name: 'Custody account',
       iban: '123,456.78',
       balance: "20'000.00",
       currency: 'CHF',
@@ -38,6 +47,36 @@
   };
 
   window.__UZ_IAT_ACCOUNTS__ = ACCOUNTS;
+
+  /* The accounts a transfer can use. Custody account stays in the catalogue for the details of past bookings, but
+     its balance is fixed, so it is no target (roadmap 18, D11). */
+  var TRANSFER_KEYS = ['household', 'savings'];
+
+  /* Each asset management mandate is a credit account, keyed by its id (roadmap 18, D1 to D3). Read from the state
+     each time, so one opened in the Overview sheet is there without a reload. */
+  function mandateAccounts() {
+    var pay = window.UZBankPayState;
+    if (!pay || typeof pay.getState !== 'function') return [];
+    return (pay.getState().mandates || []).map(function (m) {
+      return {
+        key: m.id,
+        name: 'Asset management',
+        iban: m.strategyName || m.strategy,
+        balance: pay.formatMoney(m.funded || 0),
+        currency: 'CHF',
+        icon: '#i-trending-up',
+        mandate: true,
+        suggestedAmount: m.amount
+      };
+    });
+  }
+
+  function accountFor(key) {
+    if (ACCOUNTS[key]) return ACCOUNTS[key];
+    return mandateAccounts().find(function (a) { return a.key === key; }) || null;
+  }
+
+  window.__UZ_IAT_ACCOUNT_FOR__ = accountFor;
 
   /* ── Step order ────────────────────────────────────────────────── */
 
@@ -54,58 +93,58 @@
   if (!overlay) return;
 
   var shell         = overlay.querySelector('.modal-shell');
-  var titleEl       = document.getElementById('uz-iat-title');
-  var backBtn       = document.getElementById('uz-iat-back');
-  var closeBtn      = document.getElementById('uz-iat-close');
-  var confirmBtn    = document.getElementById('uz-iat-confirm-btn');
+  var modalCard     = overlay.querySelector('.modal.modal--iat-flow');
+  var titleEl       = overlay.querySelector('#uz-iat-title');
+  var backBtn       = overlay.querySelector('#uz-iat-back');
+  var closeBtn      = overlay.querySelector('#uz-iat-close');
+  var confirmBtn    = overlay.querySelector('#uz-iat-confirm-btn');
   var steps         = overlay.querySelectorAll('.modal__step[data-iat-step]');
 
-  /* Step 0 – recipient */
-  var amountInput   = document.getElementById('uz-iat-amount-input');
-  var amountClear   = document.getElementById('uz-iat-amount-clear');
-  var currencyLabel = document.getElementById('uz-iat-currency-label');
-  var fromIcon      = overlay.querySelector('#uz-iat-from-icon use');
-  var fromName      = document.getElementById('uz-iat-from-name');
-  var fromIban      = document.getElementById('uz-iat-from-iban');
-  var fromCurrency  = document.getElementById('uz-iat-from-currency');
-  var fromBalance   = document.getElementById('uz-iat-from-balance');
+  var iatScrollChrome =
+    modalCard && window.UZBankScrollEdgeChrome
+      ? window.UZBankScrollEdgeChrome.bind(modalCard, {
+          getScrollEl: function (root) {
+            return root.querySelector('.modal__step--active');
+          }
+        })
+      : null;
 
-  var toIcon        = overlay.querySelector('#uz-iat-to-icon use');
-  var toName        = document.getElementById('uz-iat-to-name');
-  var toIban        = document.getElementById('uz-iat-to-iban');
-  var toCurrency    = document.getElementById('uz-iat-to-currency');
-  var toBalance     = document.getElementById('uz-iat-to-balance');
+  function refreshIatScrollChrome() {
+    if (!iatScrollChrome) return;
+    requestAnimationFrame(function () {
+      iatScrollChrome.update();
+    });
+  }
+
+  /* Step 0 – recipient */
+  var amountInput   = overlay.querySelector('#uz-iat-amount-input');
+  var amountClear   = overlay.querySelector('#uz-iat-amount-clear');
+  var currencyLabel = overlay.querySelector('#uz-iat-currency-label');
+  var fromBtn       = overlay.querySelector('#uz-iat-from-btn');
+  var toBtn         = overlay.querySelector('#uz-iat-to-btn');
 
   /* Step 1 – schedule */
-  var immediatelyToggle = document.getElementById('uz-iat-immediately-toggle');
-  var dateValue         = document.getElementById('uz-iat-date-value');
-  var executeOnField    = document.getElementById('uz-iat-execute-on-field');
+  var immediatelyToggle = overlay.querySelector('#uz-iat-immediately-toggle');
+  var dateValue         = overlay.querySelector('#uz-iat-date-value');
+  var executeOnField    = overlay.querySelector('#uz-iat-execute-on-field');
 
   /* Step 2 – summary */
-  var summaryAmount      = document.getElementById('uz-iat-summary-amount');
-  var summaryDate        = document.getElementById('uz-iat-summary-date');
-  var summaryToIcon      = overlay.querySelector('#uz-iat-summary-to-icon use');
-  var summaryToName      = document.getElementById('uz-iat-summary-to-name');
-  var summaryToIban      = document.getElementById('uz-iat-summary-to-iban');
-  var summaryToCurrency  = document.getElementById('uz-iat-summary-to-currency');
-  var summaryToBalance   = document.getElementById('uz-iat-summary-to-balance');
-  var summaryFromIcon    = overlay.querySelector('#uz-iat-summary-from-icon use');
-  var summaryFromName    = document.getElementById('uz-iat-summary-from-name');
-  var summaryFromIban    = document.getElementById('uz-iat-summary-from-iban');
-  var summaryFromCurrency = document.getElementById('uz-iat-summary-from-currency');
-  var summaryFromBalance  = document.getElementById('uz-iat-summary-from-balance');
+  var summaryAmount      = overlay.querySelector('#uz-iat-summary-amount');
+  var summaryDate        = overlay.querySelector('#uz-iat-summary-date');
+  var summaryToBtn       = overlay.querySelector('[data-iat-step="summary"] [aria-label="Change recipient account"]');
+  var summaryFromBtn     = overlay.querySelector('[data-iat-step="summary"] [aria-label="Change debit account"]');
 
   /* Confirmation dialog */
   var confOverlay    = overlay.querySelector('.confirmation-overlay');
-  var confCurrency   = document.getElementById('uz-iat-conf-currency');
-  var confAmount     = document.getElementById('uz-iat-conf-amount');
-  var confRecipient  = document.getElementById('uz-iat-conf-recipient');
-  var confBtn        = document.getElementById('uz-iat-conf-btn');
-
-  var fromBtn        = document.getElementById('uz-iat-from-btn');
-  var toBtn          = document.getElementById('uz-iat-to-btn');
+  var confCurrency   = overlay.querySelector('#uz-iat-conf-currency');
+  var confAmount     = overlay.querySelector('#uz-iat-conf-amount');
+  var confMessage    = overlay.querySelector('#uz-iat-conf-message');
+  var confBtn        = overlay.querySelector('#uz-iat-conf-btn');
 
   /* ── Live state ────────────────────────────────────────────────── */
+
+  /* Set when Execute records the transfer, until the flow opens again (roadmap 41, D4) */
+  var transferConfirmed = false;
 
   var live = {
     currency: 'CHF',
@@ -142,7 +181,7 @@
   }
 
   function pickOtherKey(exclude) {
-    return Object.keys(ACCOUNTS).find(function (k) { return k !== exclude; }) || exclude;
+    return TRANSFER_KEYS.find(function (k) { return k !== exclude; }) || exclude;
   }
 
   function accountToSheet(acc) {
@@ -158,9 +197,10 @@
 
   function openAccountPicker(role, triggerEl) {
     if (!window.UZBankFormSheet || !window.UZBankFormSheet.openAccountPickerSheet || !triggerEl) return;
-    var sheetAccounts = Object.keys(ACCOUNTS).map(function (k) {
-      return accountToSheet(ACCOUNTS[k]);
-    });
+    /* Mandates are credit accounts only (D1), listed after Household and Savings in the order opened (D2) */
+    var list = TRANSFER_KEYS.map(function (k) { return ACCOUNTS[k]; });
+    if (role === 'to') list = list.concat(mandateAccounts());
+    var sheetAccounts = list.map(accountToSheet);
     window.UZBankFormSheet.openAccountPickerSheet(triggerEl, {
       title: role === 'from' ? 'Debit account' : 'Credit account',
       accounts: sheetAccounts,
@@ -171,20 +211,31 @@
           live.fromKey = acc.key;
           if (live.fromKey === live.toKey) live.toKey = pickOtherKey(live.fromKey);
         } else {
+          var wasMandate = !!(accountFor(live.toKey) || {}).mandate;
           live.toKey = acc.key;
+          /* Funding a mandate starts from Household; Savings can be picked after (D4) */
+          if ((accountFor(live.toKey) || {}).mandate && !wasMandate) live.fromKey = 'household';
           if (live.toKey === live.fromKey) live.fromKey = pickOtherKey(live.toKey);
         }
-        paintRecipientStep();
+        paintRecipientStep(true);
         paintSummaryStep();
+        recheckAmount();
       }
     });
+  }
+
+  /* What the schedule step chose: a recurring transfer, a later one ("immediately" off) or one that runs now. */
+  function scheduleStatus() {
+    var active = execTypeGroup && execTypeGroup.querySelector('.segmented__option--active');
+    if (active && active.getAttribute('data-exec') === 'recurring') return 'recurring';
+    return live.immediately ? 'executed' : 'pending';
   }
 
   function commitTransfer() {
     collectRecipientStep();
     if (live.fromKey === live.toKey || live.amount <= 0) return;
-    var from = ACCOUNTS[live.fromKey];
-    var to = ACCOUNTS[live.toKey];
+    var from = accountFor(live.fromKey);
+    var to = accountFor(live.toKey);
     if (!from || !to || !window.UZBankPayState || !window.UZBankPayState.commitInternalTransfer) return;
     window.UZBankPayState.commitInternalTransfer({
       fromKey: live.fromKey,
@@ -193,8 +244,24 @@
       toName: to.name,
       amount: live.amount,
       currency: live.currency,
-      dateISO: new Date().toISOString()
+      dateISO: new Date().toISOString(),
+      status: scheduleStatus(),
+      executeOn: live.dateLabel
     });
+  }
+
+  function stampDebitAccount(btn, acc) {
+    if (!btn || !acc) return;
+    var useIcon = btn.querySelector('.debit-account__icon use');
+    if (useIcon) useIcon.setAttribute('href', acc.icon);
+    var name = btn.querySelector('.debit-account__name');
+    if (name) name.textContent = acc.name;
+    var iban = btn.querySelector('.debit-account__iban');
+    if (iban) iban.textContent = acc.iban;
+    var cur = btn.querySelector('.debit-account__amount-currency');
+    var val = btn.querySelector('.debit-account__amount-value');
+    if (cur) cur.textContent = acc.currency;
+    if (val) val.textContent = acc.balance;
   }
 
   /* ── Paint functions ───────────────────────────────────────────── */
@@ -209,30 +276,26 @@
     }
   }
 
-  function paintRecipientStep() {
-    var from = ACCOUNTS[live.fromKey] || ACCOUNTS.savings;
-    var to   = ACCOUNTS[live.toKey]   || ACCOUNTS.household;
+  /* keepAmount: an account was picked, so the amount stays as typed (roadmap 54, D13) */
+  function paintRecipientStep(keepAmount) {
+    var from = accountFor(live.fromKey) || ACCOUNTS.savings;
+    var to   = accountFor(live.toKey)   || ACCOUNTS.household;
 
-    if (amountInput) amountInput.value = formatAmount(live.amount);
+    if (amountInput && !keepAmount) amountInput.value = formatAmount(live.amount);
     if (currencyLabel) currencyLabel.textContent = live.currency;
     syncIatAmountClearVisibility();
 
-    if (fromIcon)    fromIcon.setAttribute('href', from.icon);
-    if (fromName)    fromName.textContent  = from.name;
-    if (fromIban)    fromIban.textContent  = from.iban;
-    if (fromCurrency) fromCurrency.textContent = from.currency;
-    if (fromBalance) fromBalance.textContent   = from.balance;
-
-    if (toIcon)     toIcon.setAttribute('href', to.icon);
-    if (toName)     toName.textContent    = to.name;
-    if (toIban)     toIban.textContent    = to.iban;
-    if (toCurrency) toCurrency.textContent = to.currency;
-    if (toBalance)  toBalance.textContent  = to.balance;
+    stampDebitAccount(fromBtn, from);
+    stampDebitAccount(toBtn, to);
   }
 
   function paintScheduleStep() {
+    var picker = window.UZBankDatePicker;
+    /* Immediately shows today; a later transfer runs on the next day unless another was picked (roadmap 40, D2, D4) */
     if (live.immediately) live.dateLabel = formatTodayDate();
+    else if (picker) live.dateLabel = picker.laterLabel(live.dateLabel, true);
     if (dateValue) dateValue.textContent = live.dateLabel;
+    if (picker) picker.syncField(executeOnField && executeOnField.querySelector('[data-execute-on]'), live.dateLabel);
     /* Sync toggle visual */
     if (immediatelyToggle) {
       immediatelyToggle.classList.toggle('toggle--active', live.immediately);
@@ -240,35 +303,48 @@
       var thumb = immediatelyToggle.querySelector('.toggle__thumb');
       if (thumb) thumb.classList.toggle('toggle__thumb--active', live.immediately);
     }
-    /* Date field: show/hide based on immediately */
-    if (executeOnField) executeOnField.hidden = live.immediately;
+    /* The date field is always shown and always opens the calendar (roadmap 40, D1) */
+    if (executeOnField) executeOnField.hidden = false;
+  }
+
+  /* Say the switch's state and date to a screen reader (roadmap 40, D7); on a change, not on first paint */
+  function announceSchedule() {
+    var row = immediatelyToggle && immediatelyToggle.closest('.iat-toggle-row');
+    if (!row) return;
+    var el = overlay.querySelector('[data-schedule-live]');
+    if (!el) {
+      el = document.createElement('p');
+      el.className = 'visually-hidden';
+      el.setAttribute('aria-live', 'polite');
+      el.setAttribute('data-schedule-live', '');
+      row.insertAdjacentElement('afterend', el);
+    }
+    el.textContent = 'Immediately ' + (live.immediately ? 'on, executes today' : 'off, executes on ' + live.dateLabel);
   }
 
   function paintSummaryStep() {
-    var from = ACCOUNTS[live.fromKey] || ACCOUNTS.savings;
-    var to   = ACCOUNTS[live.toKey]   || ACCOUNTS.household;
+    var from = accountFor(live.fromKey) || ACCOUNTS.savings;
+    var to   = accountFor(live.toKey)   || ACCOUNTS.household;
 
     if (summaryAmount) summaryAmount.textContent = live.currency + '  ' + formatAmount(live.amount);
     if (summaryDate)   summaryDate.textContent    = live.dateLabel || formatTodayDate();
 
-    if (summaryToIcon)     summaryToIcon.setAttribute('href', to.icon);
-    if (summaryToName)     summaryToName.textContent     = to.name;
-    if (summaryToIban)     summaryToIban.textContent     = to.iban;
-    if (summaryToCurrency) summaryToCurrency.textContent = to.currency;
-    if (summaryToBalance)  summaryToBalance.textContent  = to.balance;
-
-    if (summaryFromIcon)     summaryFromIcon.setAttribute('href', from.icon);
-    if (summaryFromName)     summaryFromName.textContent     = from.name;
-    if (summaryFromIban)     summaryFromIban.textContent     = from.iban;
-    if (summaryFromCurrency) summaryFromCurrency.textContent = from.currency;
-    if (summaryFromBalance)  summaryFromBalance.textContent  = from.balance;
+    stampDebitAccount(summaryToBtn, to);
+    stampDebitAccount(summaryFromBtn, from);
   }
 
   function paintConfirmationDialog() {
-    var to = ACCOUNTS[live.toKey] || ACCOUNTS.household;
+    var to = accountFor(live.toKey) || ACCOUNTS.household;
     if (confCurrency)  confCurrency.textContent  = live.currency;
     if (confAmount)    confAmount.textContent     = formatAmount(live.amount);
-    if (confRecipient) confRecipient.textContent  = to.name;
+    /* Done now, made on a later date, or recurring from a date (roadmap 15), in one sentence (roadmap 41, D12) */
+    var status = scheduleStatus();
+    var date = live.dateLabel || formatTodayDate();
+    if (confMessage) {
+      confMessage.textContent = status === 'executed' ? 'Your transfer to ' + to.name + ' is done.'
+        : status === 'recurring' ? 'Your recurring transfer to ' + to.name + ' starts on ' + date + '.'
+          : 'Your transfer to ' + to.name + ' will be made on ' + date + '.';
+    }
   }
 
   function paintStep(name) {
@@ -279,11 +355,79 @@
 
   /* ── Step navigation ───────────────────────────────────────────── */
 
+  /* The amount as typed: an emptied field is 0, not the last amount (roadmap 54, D13) */
   function collectRecipientStep() {
     if (amountInput) {
-      var v = parseFloat(String(amountInput.value).replace(/'/g, ''));
-      if (!isNaN(v) && v > 0) live.amount = v;
+      var v = parseFloat(String(amountInput.value).replace(/'/g, '').replace(',', '.'));
+      live.amount = !isNaN(v) && v > 0 ? v : 0;
     }
+  }
+
+  /* ── Amount errors (roadmap 54) ────────────────────────────────────
+   * Checked when focus leaves the field after typing (D4), live once its error
+   * shows, and on Confirm (D5). The debit account's balance is checked at Execute
+   * for a transfer that runs now; from then on the first step checks it too (D10).
+   * Leaving the field by pressing close or back checks nothing (D6). */
+
+  var amountField = amountInput ? amountInput.closest('.form-field') : null;
+  var amountTyped = false;
+  var amountBalanceChecked = false;
+  var amountLeavePressed = false;
+
+  function fromBalance() {
+    var pay = window.UZBankPayState;
+    if (!pay || typeof pay.getState !== 'function') return null;
+    var amount = (pay.getState().accountBalances || {})[live.fromKey];
+    return typeof amount === 'number' ? amount : null;
+  }
+
+  /* D7, D8, D10, D14 */
+  function amountProblem() {
+    var trimmed = String(amountInput.value || '').trim();
+    if (!trimmed) return 'Enter an amount.';
+    var v = parseFloat(trimmed.replace(/'/g, '').replace(',', '.'));
+    if (isNaN(v) || v <= 0) return 'Enter an amount above 0.';
+    if (amountBalanceChecked && scheduleStatus() === 'executed') {
+      var balance = fromBalance();
+      var from = accountFor(live.fromKey);
+      if (balance !== null && from && v > balance) {
+        return 'You have CHF ' + formatAmount(balance) + ' in ' + from.name + '.';
+      }
+    }
+    return null;
+  }
+
+  function checkAmount(focus) {
+    var fe = window.UZBankFieldError;
+    if (!fe || !amountInput || !amountField) return true;
+    var msg = amountProblem();
+    if (msg) fe.show(amountField, amountInput, msg);
+    else fe.clear(amountField, amountInput);
+    if (msg && focus) {
+      try { amountInput.focus(); } catch (err) { /* ignore */ }
+    }
+    return !msg;
+  }
+
+  function recheckAmount() {
+    if (amountField && window.UZBankFieldError && window.UZBankFieldError.isShown(amountField)) checkAmount(false);
+  }
+
+  function clearAmountError() {
+    amountTyped = false;
+    amountBalanceChecked = false;
+    if (amountField && window.UZBankFieldError) window.UZBankFieldError.clear(amountField, amountInput);
+  }
+
+  /* Execute of a transfer that runs now and is over the debit account's balance: back to the first step (D10) */
+  function amountOverBalanceAtExecute() {
+    if (scheduleStatus() !== 'executed') return false;
+    var balance = fromBalance();
+    if (balance === null || !(live.amount > balance)) return false;
+    amountBalanceChecked = true;
+    goToStep('recipient');
+    checkAmount(true);
+    return true;
   }
 
   function goToStep(name, pushState) {
@@ -306,8 +450,10 @@
       confirmBtn.textContent = name === 'summary' ? 'Execute' : 'Confirm';
     }
 
-    /* Paint the step */
+    /* Paint the step; a shown amount error follows a schedule changed since (roadmap 54, D10) */
     paintStep(name);
+    if (name === 'recipient') recheckAmount();
+    refreshIatScrollChrome();
 
     /* History */
     if (pushState !== false) {
@@ -316,16 +462,21 @@
   }
 
   function nextStep() {
+    /* Execute stays focused behind the confirmation; a second press must not record again (D10) */
+    if (confOverlay && confOverlay.classList.contains('confirmation-overlay--visible')) return;
     var current = currentStepName();
     if (current === 'recipient') {
       collectRecipientStep();
-      if (live.amount <= 0 || live.fromKey === live.toKey) return;
+      if (!checkAmount(true) || live.amount <= 0 || live.fromKey === live.toKey) return;
     }
     var idx = STEPS.indexOf(current);
     if (idx < STEPS.length - 1) {
       goToStep(STEPS[idx + 1]);
     } else {
-      /* Last step (summary) → show confirmation */
+      /* Last step (summary) → Execute records the transfer, then the confirmation says so (roadmap 15, D10) */
+      if (amountOverBalanceAtExecute()) return;
+      commitTransfer();
+      transferConfirmed = true;
       showConfirmation();
     }
   }
@@ -342,18 +493,34 @@
 
   /* ── Open / close ──────────────────────────────────────────────── */
 
-  function openOverlay() {
+  /* prefill (optional): { toKey, fromKey, amount }, e.g. to fund a mandate (roadmap 18, D9, D10). An unknown account
+     is ignored, so the transfer opens as usual. */
+  function openOverlay(prefill) {
+    if (!prefill || typeof prefill !== 'object' || prefill instanceof Event) prefill = null;
     /* Default debit account = currently active carousel account */
     var activeAccount = window.__UZ_ACTIVE_ACCOUNT__ || 'savings';
     /* Can't transfer to yourself — pick the next account as credit */
-    var allKeys = Object.keys(ACCOUNTS);
-    live.fromKey = allKeys.indexOf(activeAccount) >= 0 ? activeAccount : 'savings';
-    live.toKey = allKeys.find(function (k) { return k !== live.fromKey; }) || 'household';
+    live.fromKey = TRANSFER_KEYS.indexOf(activeAccount) >= 0 ? activeAccount : 'savings';
+    live.toKey = pickOtherKey(live.fromKey);
     live.amount = 500.00;
+    if (prefill && prefill.toKey && accountFor(prefill.toKey)) {
+      live.toKey = prefill.toKey;
+      live.fromKey = TRANSFER_KEYS.indexOf(prefill.fromKey) >= 0 ? prefill.fromKey : 'household';
+      if (live.fromKey === live.toKey) live.fromKey = pickOtherKey(live.toKey);
+      if (typeof prefill.amount === 'number' && prefill.amount > 0) live.amount = prefill.amount;
+    }
     live.immediately = true;
     live.dateLabel = formatTodayDate();
+    transferConfirmed = false;
+    if (execTypeGroup) {
+      execTypeGroup.querySelectorAll('.segmented__option').forEach(function (b) {
+        b.classList.toggle('segmented__option--active', b.getAttribute('data-exec') === 'single');
+      });
+    }
 
-    /* Reset to first step */
+    /* Reset to first step; goToStep reads the amount back from the field, so the field shows it first */
+    if (amountInput) amountInput.value = formatAmount(live.amount);
+    clearAmountError();
     goToStep('recipient', false);
 
     /* Slide in */
@@ -362,10 +529,12 @@
     shell.classList.remove('modal-shell--closing');
     shell.classList.add('modal-shell--offscreen', 'modal-shell--no-transition');
     document.body.classList.add('body--iat-open');
+    if (window.UZBankSheetFocus) window.UZBankSheetFocus.open(overlay);
 
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
         shell.classList.remove('modal-shell--offscreen', 'modal-shell--no-transition');
+        refreshIatScrollChrome();
       });
     });
 
@@ -373,15 +542,18 @@
   }
 
   function closeOverlay(replaceState) {
+    /* At the start of the slide: the end waits for a transition that reduced motion may not run */
+    if (window.UZBankSheetFocus) window.UZBankSheetFocus.close(overlay);
+    overlay.classList.add('modal-overlay--closing');
     shell.classList.add('modal-shell--closing');
-    shell.addEventListener('transitionend', function onEnd() {
-      shell.removeEventListener('transitionend', onEnd);
+    /* Ends on the slide, a fallback timer, or at once with reduced motion (roadmap 35) */
+    window.UZBankAfterSheetClose(shell, function () {
       shell.classList.remove('modal-shell--closing');
       shell.classList.add('modal-shell--offscreen', 'modal-shell--no-transition');
       overlay.setAttribute('aria-hidden', 'true');
-      overlay.classList.remove('modal-overlay--active');
+      overlay.classList.remove('modal-overlay--active', 'modal-overlay--closing');
       document.body.classList.remove('body--iat-open');
-    }, { once: true });
+    });
 
     if (replaceState !== false) {
       history.replaceState(null, '', location.pathname + location.search);
@@ -395,6 +567,8 @@
     if (confOverlay) {
       confOverlay.setAttribute('aria-hidden', 'false');
       confOverlay.classList.add('confirmation-overlay--visible');
+      /* The sheet behind goes inert and Done takes focus (roadmap 41, D1, D2) */
+      if (window.UZBankConfirmFocus) window.UZBankConfirmFocus.open(confOverlay, confBtn);
     }
   }
 
@@ -402,6 +576,7 @@
     if (confOverlay) {
       confOverlay.classList.remove('confirmation-overlay--visible');
       confOverlay.setAttribute('aria-hidden', 'true');
+      if (window.UZBankConfirmFocus) window.UZBankConfirmFocus.close(confOverlay);
     }
   }
 
@@ -426,7 +601,9 @@
       window.UZBankPaymentExitPrompt(function () { closeOverlay(); }, {
         title: 'Discard transfer?',
         message: 'You have not finished this transfer. If you exit now your entries will not be submitted.',
-        leaveLabel: 'Discard'
+        leaveLabel: 'Discard',
+        stayLabel: 'Continue transfer',
+        escapeStays: true
       });
     } else {
       closeOverlay();
@@ -435,12 +612,19 @@
 
   if (closeBtn) closeBtn.addEventListener('click', promptExit);
 
+  /* Escape does what the close button does; on the confirmation after Execute, what Done does (roadmap 49, D1, D4) */
+  if (window.UZBankSheetFocus && window.UZBankSheetFocus.onEscape) {
+    window.UZBankSheetFocus.onEscape(overlay, function () {
+      if (confOverlay && confOverlay.classList.contains('confirmation-overlay--visible') && confBtn) confBtn.click();
+      else promptExit();
+    });
+  }
+
   /* Confirm / Execute / Next */
   if (confirmBtn) confirmBtn.addEventListener('click', nextStep);
 
-  /* Confirmation dialog: Confirm records transfer + closes */
+  /* Confirmation dialog: Done closes (the transfer was recorded on Execute) */
   if (confBtn) confBtn.addEventListener('click', function () {
-    commitTransfer();
     hideConfirmation();
     closeOverlay();
   });
@@ -463,12 +647,34 @@
   if (immediatelyToggle) {
     immediatelyToggle.addEventListener('click', function () {
       live.immediately = !live.immediately;
-      paintScheduleStep();
+      /* After the app-wide toggle handler (app-mp.js) has flipped the class, so the paint has the last word and
+         the switch shows what it is (found in roadmap 28) */
+      setTimeout(function () { paintScheduleStep(); announceSchedule(); }, 0);
+    });
+  }
+
+  /* "Execute on" opens the calendar (roadmap 28, D1) */
+  var executeOnBtn = executeOnField && executeOnField.querySelector('[data-execute-on]');
+  if (executeOnBtn) {
+    executeOnBtn.addEventListener('click', function () {
+      if (executeOnBtn.disabled || !window.UZBankFormSheet || !window.UZBankFormSheet.openDateSheet) return;
+      window.UZBankFormSheet.openDateSheet(executeOnBtn, {
+        selected: window.UZBankDatePicker.parseLabel(live.dateLabel),
+        immediate: true,
+        onPick: function (date) {
+          /* Today keeps Immediately on, any other date turns it off (roadmap 40, D4) */
+          var label = window.UZBankDatePicker.formatLabel(date);
+          live.immediately = label === window.UZBankDatePicker.asapLabel(true);
+          live.dateLabel = label;
+          paintScheduleStep();
+          announceSchedule();
+        }
+      });
     });
   }
 
   /* Segmented control: Single / Recurring execution */
-  var execTypeGroup = document.getElementById('uz-iat-exec-type');
+  var execTypeGroup = overlay.querySelector('#uz-iat-exec-type');
   if (execTypeGroup) {
     execTypeGroup.addEventListener('click', function (e) {
       var btn = e.target.closest('.segmented__option');
@@ -494,13 +700,37 @@
     amountInput.addEventListener('blur', function () {
       setTimeout(syncIatAmountClearVisibility, 0);
     });
-    amountInput.addEventListener('input', syncIatAmountClearVisibility);
+    amountInput.addEventListener('input', function () {
+      amountTyped = true;
+      recheckAmount();
+      syncIatAmountClearVisibility();
+    });
+    /* The whole field, with its clear button, is left (D4); not when close or back took the focus (D6) */
+    var amountWrap = amountInput.closest('.amount-input');
+    if (amountWrap) amountWrap.addEventListener('focusout', function (e) {
+      var to = e.relatedTarget;
+      if (!amountTyped || (to && (amountWrap.contains(to) || to === closeBtn || to === backBtn))) return;
+      requestAnimationFrame(function () {
+        if (amountLeavePressed || !overlay.classList.contains('modal-overlay--active')) return;
+        if (overlay.classList.contains('modal-overlay--closing') || currentStepName() !== 'recipient') return;
+        if (amountWrap.contains(document.activeElement)) return;
+        checkAmount(false);
+      });
+    });
+    [closeBtn, backBtn].forEach(function (btn) {
+      if (btn) btn.addEventListener('pointerdown', function () {
+        amountLeavePressed = true;
+        window.setTimeout(function () { amountLeavePressed = false; }, 400);
+      });
+    });
   }
   if (amountClear && amountInput) {
     amountClear.addEventListener('click', function (e) {
       e.preventDefault();
       amountInput.value = '';
       live.amount = 0;
+      amountTyped = true;
+      recheckAmount();
       amountInput.focus();
       syncIatAmountClearVisibility();
     });
@@ -517,21 +747,49 @@
   /* Browser back button */
   window.addEventListener('popstate', function (e) {
     if (!e.state || !e.state.iat) {
+      hideConfirmation();
       if (overlay.getAttribute('aria-hidden') !== 'true') closeOverlay(false);
+      return;
+    }
+    /* After Execute, a step's history entry closes the flow, as Done does, so Back can't record again (roadmap 41, D4) */
+    if (transferConfirmed) {
+      hideConfirmation();
+      if (overlay.getAttribute('aria-hidden') !== 'true') closeOverlay();
+      else history.replaceState(null, '', location.pathname + location.search);
       return;
     }
     var step = e.state.iat;
     if (STEPS.indexOf(step) >= 0) goToStep(step, false);
   });
 
-  /* Hash on page load (deep link) */
-  (function () {
+  /* Hash on page load (deep link) — after payment overlay init so step active state is not cleared */
+  function tryOpenFromHash() {
     var hash = location.hash;
+    /* #iat/fund/<mandateId>: from Household to that mandate, its amount (D10); the hash is replaced, so back does
+       not open it again */
+    var fund = hash.match(/^#iat\/fund\/([\w-]+)$/);
+    if (fund) {
+      history.replaceState(null, '', location.pathname + location.search);
+      var mandate = accountFor(fund[1]);
+      openOverlay(mandate && mandate.mandate
+        ? { toKey: mandate.key, fromKey: 'household', amount: mandate.suggestedAmount }
+        : null);
+      return;
+    }
     var m = hash.match(/^#iat\/(\w+)$/);
     if (m && STEPS.indexOf(m[1]) >= 0) {
       openOverlay();
       goToStep(m[1], false);
     }
-  })();
+  }
+
+  (window.onDocumentReady || function (fn) {
+    document.addEventListener('DOMContentLoaded', fn);
+  })(tryOpenFromHash);
+
+  /* The fund link can also arrive on a page already open */
+  window.addEventListener('hashchange', function () {
+    if (/^#iat\/fund\//.test(location.hash)) tryOpenFromHash();
+  });
 
 })();

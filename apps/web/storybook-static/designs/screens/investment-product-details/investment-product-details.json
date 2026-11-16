@@ -1,0 +1,46 @@
+{
+  "name": "investment-product-details",
+  "category": "shell",
+  "description": "Investment product details shell screen with persona-driven layout variants (performance + positions).",
+  "interactionStates": [
+    "default"
+  ],
+  "assets": {
+    "variants": {
+      "a": {
+        "desktop-default": "variants/a/desktop-default/default.svg",
+        "mobile-default": "variants/a/mobile-default/default.svg"
+      },
+      "b": {
+        "desktop-default": "variants/b/desktop-default/default.svg",
+        "mobile-default": "variants/b/mobile-default/default.svg"
+      }
+    }
+  },
+  "tokens": {
+    "radius": "alias.radius.regular",
+    "modes": {
+      "light": {
+        "foreground": "mapped/light.foreground.foreground"
+      },
+      "dark": {
+        "foreground": "mapped/dark.foreground.foreground"
+      }
+    }
+  },
+  "notes": [
+    "Figma exports: Screen Size=desktop|mobile, Variant=A|B.",
+    "Normalized paths: variants/<a|b>/<desktop-default|mobile-default>/default.svg.",
+    "Variant a \u2192 Persona A (Beatrice Mueller, data-persona=beatrice); variant b \u2192 Persona B (Max Maximus, data-persona=max)."
+  ],
+  "personaVariants": {
+    "a": {
+      "persona": "beatrice",
+      "label": "Persona A (Beatrice Mueller)"
+    },
+    "b": {
+      "persona": "max",
+      "label": "Persona B (Max Maximus)"
+    }
+  }
+}

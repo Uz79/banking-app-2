@@ -1,0 +1,23 @@
+{
+  "name": "sort",
+  "category": "icon",
+  "description": "Up-and-down arrow used for sorting.",
+  "variants": [
+    "default"
+  ],
+  "interactionStates": [
+    "default"
+  ],
+  "assets": {
+    "overview": "variants/default/default.svg",
+    "variants": {
+      "default": {
+        "default": "variants/default/default.svg"
+      }
+    }
+  },
+  "notes": [
+    "24px stroke icon. Arrow up on top, arrow down below.",
+    "App sprite: assets/icons/icon24-sort.svg, symbol id i-sort."
+  ]
+}

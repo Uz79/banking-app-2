@@ -1,11 +1,18 @@
-# Profile — persona
+# Profile — persona (user type)
 
-Persona / avatar selection.
+User type / persona selection on the Profile screen.
 
 ## Variants
 
-- `default-default` — Vector snapshot + overview PNG.
+| Variant | Figma | Path |
+|---------|-------|------|
+| `desktop-default` | Profile - User Type - Desktop | `variants/desktop-default/default.svg` (+ png) |
+| `mobile-default` | Profile - User Type - Mobile | `variants/mobile-default/default.svg` (+ png) |
 
 ## States
 
-- `default`: exported snapshot from Figma (see also `interactionStates` in JSON).
+- `default` — resting snapshot
+
+## Notes
+
+- Figma export name is **User Type**; screen folder stays `profile-persona`.

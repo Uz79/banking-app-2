@@ -74,7 +74,7 @@
     },
     "secondary": {
       "background": {
-        "value": "{color.primary.900-0pc}",
+        "value": "{color.neutral.white}",
         "type": "color"
       },
       "border": {
@@ -134,6 +134,164 @@
       "large": {
         "value": "{space.4}",
         "type": "spacing"
+      }
+    }
+  },
+  "chip": {
+    "primary": {
+      "background": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.neutral.white}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.neutral.white-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.neutral.white-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "secondary": {
+      "background": {
+        "value": "{color.neutral.white}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.primary.900-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.primary.900-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      }
+    },
+    "filled tonal": {
+      "background": {
+        "value": "{color.primary.900-5pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "border": {
+        "value": "{color.primary.900-0pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "foreground": {
+        "value": "{color.primary.900}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "hover state": {
+        "value": "{color.primary.900-10pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
+      },
+      "pressed state": {
+        "value": "{color.primary.900-20pc}",
+        "type": "color",
+        "$extensions": {
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.hiddenFromPublishing": false
+        }
       }
     }
   }

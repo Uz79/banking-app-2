@@ -8,8 +8,11 @@
   "assets": {
     "overview": "overview.png",
     "variants": {
-      "default-default": {
-        "default": "variants/default-default/default.svg"
+      "desktop-default": {
+        "default": "variants/desktop-default/default.svg"
+      },
+      "mobile-default": {
+        "default": "variants/mobile-default/default.svg"
       }
     }
   },
@@ -24,5 +27,7 @@
       }
     }
   },
-  "notes": []
+  "notes": [
+    "Figma: Profile - Theme - Desktop|Mobile → variants/<desktop|mobile>-default/default.svg (+ png)."
+  ]
 }

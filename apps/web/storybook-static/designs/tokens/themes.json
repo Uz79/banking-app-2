@@ -2,41 +2,21 @@
   {
     "id": "light-desktop",
     "name": "Light / Desktop",
-    "selectedTokenSets": {
-      "brand": "source",
-      "alias": "enabled",
-      "mapped/light": "enabled",
-      "responsive/desktop": "enabled"
-    }
+    "selectedTokenSets": {}
   },
   {
     "id": "light-mobile",
     "name": "Light / Mobile",
-    "selectedTokenSets": {
-      "brand": "source",
-      "alias": "enabled",
-      "mapped/light": "enabled",
-      "responsive/mobile": "enabled"
-    }
+    "selectedTokenSets": {}
   },
   {
     "id": "dark-desktop",
     "name": "Dark / Desktop",
-    "selectedTokenSets": {
-      "brand": "source",
-      "alias": "enabled",
-      "mapped/dark": "enabled",
-      "responsive/desktop": "enabled"
-    }
+    "selectedTokenSets": {}
   },
   {
     "id": "dark-mobile",
     "name": "Dark / Mobile",
-    "selectedTokenSets": {
-      "brand": "source",
-      "alias": "enabled",
-      "mapped/dark": "enabled",
-      "responsive/mobile": "enabled"
-    }
+    "selectedTokenSets": {}
   }
 ]

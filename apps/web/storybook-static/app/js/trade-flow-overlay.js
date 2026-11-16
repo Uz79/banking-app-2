@@ -1,0 +1,778 @@
+/**
+ * Trade flow step 1 — buy/sell order entry modal
+ * Hash: #trade/buy | #trade/sell
+ * Trigger: [data-trade-action="buy|sell"] on details-of-position
+ */
+(function () {
+  'use strict';
+
+  var DEPOT_ACCOUNTS = {
+    depot1: {
+      key: 'depot1',
+      name: 'Custody account',
+      iban: '123.456.78',
+      balance: "20'000.00",
+      currency: 'CHF',
+      icon: '#i-life-buoy'
+    }
+  };
+
+  var DEBTOR_ACCOUNTS = {
+    household: {
+      key: 'household',
+      name: 'Household',
+      iban: 'CH35 0900 0000 2470 2920 1',
+      balance: "10'000.00",
+      currency: 'CHF',
+      icon: '#i-home'
+    },
+    savings: {
+      key: 'savings',
+      name: 'Savings Account',
+      iban: 'CH35 0900 0000 2470 2920 2',
+      balance: "25'000.00",
+      currency: 'CHF',
+      icon: '#i-anchor'
+    }
+  };
+
+  var overlay = document.getElementById('uz-trade-overlay');
+  if (!overlay) return;
+
+  var shell = overlay.querySelector('.modal-shell');
+  var modal = overlay.querySelector('.modal--trade-flow');
+  var titleEl = document.getElementById('uz-trade-title');
+  var metaEl = document.getElementById('uz-trade-meta');
+  var amountInput = document.getElementById('uz-trade-amount');
+  var limitInput = document.getElementById('uz-trade-limit');
+  var limitField = document.getElementById('uz-trade-limit-field');
+  var orderRow = document.getElementById('uz-trade-order-row');
+  var orderTypeSelect = document.getElementById('uz-trade-order-type');
+  var priceEl = document.getElementById('uz-trade-price');
+  var totalEl = document.getElementById('uz-trade-total');
+  var availableEl = document.getElementById('uz-trade-available');
+  var availableRowEl = document.getElementById('uz-trade-available-row');
+  var availableLabelEl = document.getElementById('uz-trade-available-label');
+  var debtorLabelEl = document.getElementById('uz-trade-debtor-label');
+  var inDepotEl = document.getElementById('uz-trade-in-depot');
+  var durationGroup = document.getElementById('uz-trade-duration');
+  var untilField = document.getElementById('uz-trade-until-field');
+  var untilDateEl = document.getElementById('uz-trade-until-date');
+  var depotBtn = document.getElementById('uz-trade-depot-btn');
+  var debtorBtn = document.getElementById('uz-trade-debtor-btn');
+  var closeBtn = document.getElementById('uz-trade-close');
+  var confirmBtn = document.getElementById('uz-trade-confirm');
+  var confOverlay = document.getElementById('uz-trade-confirmation');
+  var confMessageEl = document.getElementById('uz-trade-conf-message');
+  var confAmountEl = document.getElementById('uz-trade-conf-amount');
+  var confCurrencyEl = document.getElementById('uz-trade-conf-currency');
+  var confTermsEl = document.getElementById('uz-trade-conf-terms');
+  var confBtn = document.getElementById('uz-trade-conf-btn');
+
+  var live = {
+    side: 'buy',
+    depotKey: 'depot1',
+    debtorKey: 'household',
+    duration: 'daily',
+    untilDateLabel: '',
+    marketPrice: 1008.5,
+    heldQuantity: 5
+  };
+
+  var isClosing = false;
+
+  var scrollChrome =
+    modal && window.UZBankScrollEdgeChrome
+      ? window.UZBankScrollEdgeChrome.bind(modal, {
+          getScrollEl: function (root) {
+            return root.querySelector('.modal__body');
+          },
+          footer: '.modal__footer'
+        })
+      : null;
+
+  function refreshScrollChrome() {
+    if (!scrollChrome) return;
+    requestAnimationFrame(function () {
+      scrollChrome.update();
+    });
+  }
+
+  function formatMoney(n) {
+    if (window.UZBankPayState && window.UZBankPayState.formatMoney) {
+      return window.UZBankPayState.formatMoney(n);
+    }
+    if (typeof n !== 'number' || isNaN(n)) return '0.00';
+    var sign = n < 0 ? '-' : '';
+    var absStr = Math.abs(n).toFixed(2);
+    var parts = absStr.split('.');
+    return sign + parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "'") + '.' + parts[1];
+  }
+
+  function parseQuantity(str) {
+    var n = parseInt(String(str || '').replace(/[^\d]/g, ''), 10);
+    return isNaN(n) ? 0 : n;
+  }
+
+  function parseMoneyInput(str) {
+    var n = parseFloat(String(str || '').replace(/[^\d.]/g, ''));
+    return isNaN(n) ? 0 : n;
+  }
+
+  function formatTodayDate() {
+    var d = new Date();
+    var dd = String(d.getDate()).padStart(2, '0');
+    var mm = String(d.getMonth() + 1).padStart(2, '0');
+    var yyyy = String(d.getFullYear());
+    return dd + '.' + mm + '.' + yyyy;
+  }
+
+  function paintOrderTypeLayout() {
+    var isLimit = orderTypeSelect && orderTypeSelect.value === 'limit';
+    if (limitField) limitField.hidden = !isLimit;
+    if (orderRow) orderRow.classList.toggle('trade-flow__order-row--single', !isLimit);
+  }
+
+  function paintDurationLayout() {
+    var showUntil = live.duration === 'until';
+    if (untilField) untilField.hidden = !showUntil;
+    if (showUntil && untilDateEl && !live.untilDateLabel) {
+      live.untilDateLabel = formatTodayDate();
+    }
+    if (untilDateEl && live.untilDateLabel) {
+      untilDateEl.textContent = live.untilDateLabel;
+    }
+  }
+
+  function positionSnapshot() {
+    var pos = window.__UZ_POSITION__;
+    if (!pos) return null;
+    return {
+      symbol: pos.symbol || 'ABB',
+      name: pos.name || 'ABB Ltd',
+      isin: pos.isin || 'CH0012221711',
+      exchange: pos.exchange || 'SWX',
+      price: typeof pos.price === 'number' ? pos.price : live.marketPrice,
+      quantity: typeof pos.quantity === 'number' ? pos.quantity : live.heldQuantity
+    };
+  }
+
+  function positionMetaLine(pos) {
+    return pos.name + ' | ' + pos.isin + ' | ' + pos.exchange;
+  }
+
+  function debtorAccountWithBalance(key) {
+    var acc = DEBTOR_ACCOUNTS[key] || DEBTOR_ACCOUNTS.household;
+    var copy = Object.assign({}, acc);
+    if (window.UZBankPayState && typeof window.UZBankPayState.getState === 'function') {
+      var state = window.UZBankPayState.getState();
+      var balances = state.accountBalances || {};
+      if (balances[key] != null) {
+        copy.balance = formatMoney(balances[key]);
+      }
+    }
+    return copy;
+  }
+
+  function stampDebitAccount(btn, acc) {
+    if (!btn || !acc) return;
+    var useIcon = btn.querySelector('.debit-account__icon use');
+    if (useIcon) useIcon.setAttribute('href', acc.icon);
+    var name = btn.querySelector('.debit-account__name');
+    if (name) name.textContent = acc.name;
+    var iban = btn.querySelector('.debit-account__iban');
+    if (iban) iban.textContent = acc.iban;
+    var cur = btn.querySelector('.debit-account__amount-currency');
+    var val = btn.querySelector('.debit-account__amount-value');
+    if (cur) cur.textContent = acc.currency;
+    if (val) val.textContent = acc.balance;
+  }
+
+  function accountToSheet(acc) {
+    return {
+      key: acc.key,
+      icon: String(acc.icon || '').replace(/^#/, ''),
+      name: acc.name,
+      iban: acc.iban,
+      sheetCur: acc.currency,
+      sheetVal: acc.balance
+    };
+  }
+
+  function effectiveLimitPrice() {
+    if (orderTypeSelect && orderTypeSelect.value === 'market') {
+      return live.marketPrice;
+    }
+    var limit = parseMoneyInput(limitInput && limitInput.value);
+    return limit > 0 ? limit : live.marketPrice;
+  }
+
+  function orderTotals() {
+    var qty = parseQuantity(amountInput && amountInput.value);
+    var unitPrice = effectiveLimitPrice();
+    return {
+      quantity: qty,
+      unitPrice: unitPrice,
+      total: qty * unitPrice
+    };
+  }
+
+  /* ── Field errors (roadmap 54) ────────────────────────────────────
+   * A field typed into is checked when focus leaves it (D4), live once its
+   * error shows, and every field on Confirm (D5). Leaving it by pressing the
+   * close button checks nothing (D6). */
+
+  var amountField = amountInput ? amountInput.closest('.form-field') : null;
+  var typed = { amount: false, limit: false };
+  var closePressed = false;
+
+  function sharesLabel(n) {
+    return n + (n === 1 ? ' share' : ' shares');
+  }
+
+  function debtorBalance() {
+    var pay = window.UZBankPayState;
+    if (!pay || typeof pay.getState !== 'function') return null;
+    var amount = (pay.getState().accountBalances || {})[live.debtorKey];
+    return typeof amount === 'number' ? amount : null;
+  }
+
+  /* D7 to D10, D14: empty, zero, more than held, over the debit account's balance */
+  function amountProblem() {
+    if (!String(amountInput.value || '').trim()) return 'Enter an amount.';
+    var qty = parseQuantity(amountInput.value);
+    if (qty <= 0) return 'Enter at least 1 share.';
+    if (live.side === 'sell') {
+      if (qty > live.heldQuantity) return 'You hold ' + sharesLabel(live.heldQuantity) + '.';
+      return null;
+    }
+    var balance = debtorBalance();
+    if (balance !== null && qty * effectiveLimitPrice() > balance) {
+      var acc = DEBTOR_ACCOUNTS[live.debtorKey] || DEBTOR_ACCOUNTS.household;
+      return 'You have CHF ' + formatMoney(balance) + ' in ' + acc.name + '.';
+    }
+    return null;
+  }
+
+  function limitProblem() {
+    if (!limitInput || !limitField || limitField.hidden) return null;
+    if (!String(limitInput.value || '').trim()) return 'Enter a limit price.';
+    if (parseMoneyInput(limitInput.value) <= 0) return 'Enter a price above 0.';
+    return null;
+  }
+
+  var checks = [
+    { key: 'amount', input: amountInput, field: amountField, problem: amountProblem },
+    { key: 'limit', input: limitInput, field: limitField, problem: limitProblem }
+  ];
+
+  function checkField(c) {
+    var fe = window.UZBankFieldError;
+    if (!fe || !c.input || !c.field) return true;
+    var msg = c.problem();
+    if (msg) fe.show(c.field, c.input, msg);
+    else fe.clear(c.field, c.input);
+    return !msg;
+  }
+
+  /* Once an error shows, it follows the value (D4) */
+  function recheckShown() {
+    if (!window.UZBankFieldError) return;
+    checks.forEach(function (c) {
+      if (window.UZBankFieldError.isShown(c.field)) checkField(c);
+    });
+  }
+
+  function clearFieldErrors() {
+    typed.amount = false;
+    typed.limit = false;
+    if (!window.UZBankFieldError) return;
+    checks.forEach(function (c) { window.UZBankFieldError.clear(c.field, c.input); });
+  }
+
+  /* Confirm: every field, focus on the first error (D5) */
+  function checkAllFields() {
+    var first = null;
+    checks.forEach(function (c) {
+      if (!checkField(c) && !first) first = c.input;
+    });
+    if (first) {
+      try { first.focus(); } catch (err) { /* ignore */ }
+    }
+    return !first;
+  }
+
+  function syncAmountClearVisibility(wrap) {
+    if (!wrap) return;
+    var input = wrap.querySelector('.amount-input__value');
+    var btn = wrap.querySelector('.amount-input__clear');
+    if (!input || !btn) return;
+    var focused = wrap.contains(document.activeElement);
+    if (focused && input.value.length > 0) btn.classList.remove('amount-input__clear--hidden');
+    else btn.classList.add('amount-input__clear--hidden');
+  }
+
+  function syncTradeAmountClears() {
+    overlay.querySelectorAll('.amount-input').forEach(syncAmountClearVisibility);
+  }
+
+  function paintSummary() {
+    var pos = positionSnapshot();
+    if (pos) {
+      live.marketPrice = pos.price;
+      live.heldQuantity = pos.quantity;
+    }
+
+    var totals = orderTotals();
+
+    /* 65 D1: Price is the market's, whatever limit is typed; the total (D2) uses the limit */
+    if (priceEl) priceEl.textContent = 'CHF ' + formatMoney(live.marketPrice);
+    if (totalEl) totalEl.textContent = 'CHF ' + formatMoney(totals.total);
+
+    var debtor = debtorAccountWithBalance(live.debtorKey);
+    if (availableEl) availableEl.textContent = debtor.currency + ' ' + debtor.balance;
+    /* 55 D5: the label names the chosen account; 65 D3: selling has no "available" line */
+    if (availableLabelEl) availableLabelEl.textContent = 'Available in ' + debtor.name.replace(/ account$/i, '') + ' account';
+    if (availableRowEl) availableRowEl.hidden = live.side === 'sell';
+    /* 65 D4: in Sell the account receives the proceeds */
+    var credit = live.side === 'sell';
+    if (debtorLabelEl) debtorLabelEl.textContent = credit ? 'Credit account' : 'Debit account';
+    if (debtorBtn) debtorBtn.setAttribute('aria-label', credit ? 'Select credit account' : 'Select debit account');
+    if (inDepotEl) inDepotEl.textContent = sharesLabel(live.heldQuantity);
+  }
+
+  function paintAccounts() {
+    stampDebitAccount(depotBtn, DEPOT_ACCOUNTS[live.depotKey] || DEPOT_ACCOUNTS.depot1);
+    stampDebitAccount(debtorBtn, debtorAccountWithBalance(live.debtorKey));
+    paintSummary();
+  }
+
+  function paintForm() {
+    var pos = positionSnapshot();
+    var sideLabel = live.side === 'sell' ? 'Sell' : 'Buy';
+
+    if (titleEl) titleEl.textContent = sideLabel;
+    if (metaEl && pos) metaEl.textContent = positionMetaLine(pos);
+
+    if (limitInput && pos) {
+      limitInput.value = formatMoney(pos.price);
+    }
+
+    paintOrderTypeLayout();
+    paintDurationLayout();
+    paintAccounts();
+  }
+
+  function resetForm(side) {
+    live.side = side === 'sell' ? 'sell' : 'buy';
+    live.depotKey = 'depot1';
+    live.debtorKey = 'household';
+    live.duration = 'daily';
+    live.untilDateLabel = formatTodayDate();
+
+    /* 1 share: the old 100 was over Household's balance and above the holding (roadmap 54, D15) */
+    if (amountInput) amountInput.value = '1';
+    if (orderTypeSelect) orderTypeSelect.value = 'limit';
+
+    if (durationGroup) {
+      durationGroup.querySelectorAll('.segmented__option').forEach(function (btn) {
+        var active = btn.getAttribute('data-duration') === 'daily';
+        btn.classList.toggle('segmented__option--active', active);
+      });
+    }
+
+    hideConfirmation();
+    paintForm();
+    clearFieldErrors();
+  }
+
+  function paintConfirmationDialog() {
+    var pos = positionSnapshot();
+    var totals = orderTotals();
+    /* One sentence, shares counted in words (roadmap 41, D13). Every position is an equity today; funds and ETFs
+       would say unit or units, bonds a nominal amount. */
+    if (confMessageEl) {
+      var what = pos ? ' ' + totals.quantity + ' ' + pos.name + (totals.quantity === 1 ? ' share' : ' shares') : '';
+      confMessageEl.textContent = 'Your order to ' + (live.side === 'sell' ? 'sell' : 'buy') + what + ' has been placed.';
+    }
+    if (confCurrencyEl) confCurrencyEl.textContent = 'CHF';
+    if (confAmountEl) confAmountEl.textContent = formatMoney(totals.total);
+    /* An order is placed, not executed: say so, with the limit and how long it runs (roadmap 15, D6). */
+    if (confTermsEl) {
+      if (orderTypeSelect && orderTypeSelect.value === 'market') {
+        confTermsEl.textContent = 'At the market price';
+      } else {
+        var valid = live.duration === 'gtc' ? 'valid until cancelled'
+          : (live.duration === 'until' ? 'valid until ' + (live.untilDateLabel || formatTodayDate()) : 'valid today');
+        confTermsEl.textContent = 'Limit CHF ' + formatMoney(effectiveLimitPrice()) + ', ' + valid;
+      }
+    }
+  }
+
+  function showConfirmation() {
+    paintConfirmationDialog();
+    if (confOverlay) {
+      confOverlay.setAttribute('aria-hidden', 'false');
+      confOverlay.classList.add('confirmation-overlay--visible');
+      /* The sheet behind goes inert and Done takes focus (roadmap 41, D1, D2) */
+      if (window.UZBankConfirmFocus) window.UZBankConfirmFocus.open(confOverlay, confBtn);
+    }
+  }
+
+  function hideConfirmation() {
+    if (confOverlay) {
+      confOverlay.classList.remove('confirmation-overlay--visible');
+      confOverlay.setAttribute('aria-hidden', 'true');
+      if (window.UZBankConfirmFocus) window.UZBankConfirmFocus.close(confOverlay);
+    }
+  }
+
+  function commitOrder() {
+    var pos = positionSnapshot();
+    if (!pos) return;
+    var totals = orderTotals();
+    if (totals.quantity <= 0 || totals.total <= 0) return;
+    if (!window.UZBankPayState || typeof window.UZBankPayState.commitTradeOrder !== 'function') return;
+
+    window.UZBankPayState.commitTradeOrder({
+      side: live.side,
+      symbol: pos.symbol,
+      name: pos.name,
+      isin: pos.isin,
+      exchange: pos.exchange,
+      quantity: totals.quantity,
+      totalAmount: totals.total,
+      debtorKey: live.debtorKey,
+      currency: 'CHF'
+    });
+
+    if (window.UZBankAnalytics && typeof window.UZBankAnalytics.track === 'function') {
+      window.UZBankAnalytics.track('trade_flow_confirm', {
+        side: live.side,
+        quantity: totals.quantity,
+        total: totals.total,
+        orderType: orderTypeSelect ? orderTypeSelect.value : 'limit',
+        duration: live.duration
+      });
+    }
+  }
+
+  function parseTradeRoute() {
+    var h = location.hash || '';
+    var m = h.match(/^#trade\/(buy|sell)$/);
+    return m ? m[1] : null;
+  }
+
+  function tradeHash(side) {
+    return '#trade/' + (side === 'sell' ? 'sell' : 'buy');
+  }
+
+  function notifyScreen() {
+    if (window.UZBankAnalytics && typeof window.UZBankAnalytics.screen === 'function') {
+      window.UZBankAnalytics.screen();
+    }
+  }
+
+  function isOtherFlowOpen() {
+    var overlays = document.querySelectorAll('.modal-overlay');
+    for (var i = 0; i < overlays.length; i++) {
+      var el = overlays[i];
+      if (el === overlay) continue;
+      if (el.classList.contains('modal-overlay--active')) return true;
+    }
+    return false;
+  }
+
+  function openOverlay(side, opts) {
+    opts = opts || {};
+    isClosing = false;
+    resetForm(side);
+
+    var modalBody = modal ? modal.querySelector('.modal__body') : null;
+    if (modalBody) modalBody.scrollTop = 0;
+
+    if (shell) {
+      shell.classList.remove('modal-shell--closing');
+      shell.classList.add('modal-shell--offscreen', 'modal-shell--no-transition');
+    }
+    overlay.classList.remove('modal-overlay--closing');
+    overlay.classList.add('modal-overlay--active');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('body--trade-open');
+    if (window.UZBankSheetFocus) window.UZBankSheetFocus.open(overlay);
+
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        if (!shell) return;
+        shell.classList.remove('modal-shell--no-transition');
+        shell.offsetHeight;
+        shell.classList.remove('modal-shell--offscreen');
+        refreshScrollChrome();
+      });
+    });
+
+    refreshScrollChrome();
+
+    if (!opts.skipRoute) {
+      var expected = tradeHash(live.side);
+      if ((location.hash || '') !== expected) {
+        try {
+          history.pushState({ uzTrade: true, side: live.side }, '', location.pathname + location.search + expected);
+        } catch (_e) {
+          location.hash = expected.slice(1);
+        }
+        notifyScreen();
+      }
+    }
+  }
+
+  function finishClose(fromRoute) {
+    fromRoute = fromRoute === true;
+    isClosing = false;
+    hideConfirmation();
+    overlay.classList.remove('modal-overlay--active', 'modal-overlay--closing');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('body--trade-open');
+    if (shell) {
+      shell.classList.remove('modal-shell--closing');
+      shell.classList.add('modal-shell--offscreen', 'modal-shell--no-transition');
+    }
+    if (window.UZBankSheetFocus) window.UZBankSheetFocus.close(overlay);
+    if (!fromRoute) {
+      try {
+        history.replaceState(history.state || null, '', location.pathname + location.search);
+      } catch (_e) {}
+      notifyScreen();
+    }
+  }
+
+  function closeOverlay(fromRoute) {
+    fromRoute = fromRoute === true;
+    if (isClosing || !overlay.classList.contains('modal-overlay--active')) {
+      finishClose(fromRoute);
+      return;
+    }
+    isClosing = true;
+    overlay.classList.add('modal-overlay--closing');
+
+    if (shell) {
+      shell.classList.remove('modal-shell--offscreen', 'modal-shell--no-transition');
+      shell.offsetHeight;
+      shell.classList.add('modal-shell--closing');
+
+      /* Ends on the slide, a fallback timer, or at once with reduced motion (roadmap 35) */
+      window.UZBankAfterSheetClose(shell, function () { finishClose(fromRoute); });
+    } else {
+      finishClose(fromRoute);
+    }
+  }
+
+  function promptExit() {
+    if (typeof window.UZBankPaymentExitPrompt === 'function') {
+      window.UZBankPaymentExitPrompt(function () { closeOverlay(); }, {
+        title: 'Discard order?',
+        message: 'You have not finished this order. If you exit now your entries will not be submitted.',
+        leaveLabel: 'Discard',
+        stayLabel: 'Continue order',
+        escapeStays: true
+      });
+    } else {
+      closeOverlay();
+    }
+  }
+
+  function openAccountPicker(role, triggerEl) {
+    if (!window.UZBankFormSheet || !window.UZBankFormSheet.openAccountPickerSheet || !triggerEl) return;
+    var catalogue = role === 'depot' ? DEPOT_ACCOUNTS : DEBTOR_ACCOUNTS;
+    var sheetAccounts = Object.keys(catalogue).map(function (k) {
+      var acc = role === 'depot' ? catalogue[k] : debtorAccountWithBalance(k);
+      return accountToSheet(acc);
+    });
+    window.UZBankFormSheet.openAccountPickerSheet(triggerEl, {
+      title: role === 'depot' ? 'Custody account' : (live.side === 'sell' ? 'Credit account' : 'Debit account'),
+      accounts: sheetAccounts,
+      onSelect: function (acc) {
+        if (!acc || !acc.key) return;
+        if (role === 'depot') live.depotKey = acc.key;
+        else live.debtorKey = acc.key;
+        paintAccounts();
+        recheckShown();
+      }
+    });
+  }
+
+  function applyTradeRoute() {
+    var side = parseTradeRoute();
+    if (/^#pay\//.test(location.hash || '') || /^#iat\//.test(location.hash || '')) {
+      if (overlay.classList.contains('modal-overlay--active') && !isClosing) closeOverlay(true);
+      return;
+    }
+    if (/^#payment-details\//.test(location.hash || '')) {
+      if (overlay.classList.contains('modal-overlay--active') && !isClosing) closeOverlay(true);
+      return;
+    }
+
+    if (side) {
+      if (isOtherFlowOpen()) return;
+      if (!overlay.classList.contains('modal-overlay--active')) {
+        openOverlay(side, { skipRoute: true });
+      }
+      return;
+    }
+
+    if (overlay.classList.contains('modal-overlay--active') && !isClosing) {
+      closeOverlay(true);
+    }
+  }
+
+  window.__UZ_TRADE_OPEN = function (side) {
+    openOverlay(side === 'sell' ? 'sell' : 'buy');
+  };
+
+  document.querySelectorAll('[data-trade-action]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      openOverlay(btn.getAttribute('data-trade-action'));
+    });
+  });
+
+  if (closeBtn) closeBtn.addEventListener('click', promptExit);
+
+  /* Escape does what the close button does; on the confirmation after Execute, what Done does (roadmap 49, D1, D4) */
+  if (window.UZBankSheetFocus && window.UZBankSheetFocus.onEscape) {
+    window.UZBankSheetFocus.onEscape(overlay, function () {
+      if (confOverlay && confOverlay.classList.contains('confirmation-overlay--visible') && confBtn) confBtn.click();
+      else promptExit();
+    });
+  }
+
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', function () {
+      if (!checkAllFields()) return;
+      var totals = orderTotals();
+      if (totals.quantity <= 0 || totals.total <= 0) return;
+      /* The order button stays focused behind the confirmation; a second press must not record again */
+      if (confOverlay && confOverlay.classList.contains('confirmation-overlay--visible')) return;
+      /* The order button records the order, then the confirmation says so (roadmap 15, D10) */
+      commitOrder();
+      showConfirmation();
+    });
+  }
+
+  if (confBtn) {
+    confBtn.addEventListener('click', function () {
+      hideConfirmation();
+      closeOverlay();
+    });
+  }
+
+  if (amountInput) {
+    amountInput.addEventListener('input', function () {
+      typed.amount = true;
+      paintSummary();
+      recheckShown();
+      syncAmountClearVisibility(amountInput.closest('.amount-input'));
+    });
+  }
+
+  if (limitInput) {
+    limitInput.addEventListener('input', function () {
+      typed.limit = true;
+      paintSummary();
+      recheckShown();
+      syncAmountClearVisibility(limitInput.closest('.amount-input'));
+    });
+  }
+
+  overlay.addEventListener('focusin', function (e) {
+    var wrap = e.target.closest && e.target.closest('.amount-input');
+    if (!wrap || !overlay.contains(wrap)) return;
+    syncAmountClearVisibility(wrap);
+  });
+
+  overlay.addEventListener('focusout', function (e) {
+    var wrap = e.target.closest && e.target.closest('.amount-input');
+    if (!wrap || !overlay.contains(wrap)) return;
+    setTimeout(function () { syncAmountClearVisibility(wrap); }, 0);
+    /* A field typed into is checked once focus has left it (its input and its clear button), unless the close
+       button took it (D4, D6) */
+    var c = checks.filter(function (x) { return x.input && wrap.contains(x.input); })[0];
+    if (!c || !typed[c.key] || e.relatedTarget === closeBtn) return;
+    if (e.relatedTarget && wrap.contains(e.relatedTarget)) return;
+    requestAnimationFrame(function () {
+      if (closePressed || isClosing || !overlay.classList.contains('modal-overlay--active')) return;
+      if (wrap.contains(document.activeElement)) return;
+      checkField(c);
+    });
+  });
+
+  if (closeBtn) {
+    closeBtn.addEventListener('pointerdown', function () {
+      closePressed = true;
+      window.setTimeout(function () { closePressed = false; }, 400);
+    });
+  }
+
+  overlay.addEventListener('click', function (e) {
+    var clearBtn = e.target.closest && e.target.closest('.amount-input__clear');
+    if (!clearBtn || !overlay.contains(clearBtn)) return;
+    var wrap = clearBtn.closest('.amount-input');
+    var input = wrap && wrap.querySelector('.amount-input__value');
+    if (!input) return;
+    e.preventDefault();
+    input.value = '';
+    if (input === amountInput) typed.amount = true;
+    if (input === limitInput) typed.limit = true;
+    input.focus();
+    paintSummary();
+    recheckShown();
+    syncAmountClearVisibility(wrap);
+  });
+
+  if (orderTypeSelect) {
+    orderTypeSelect.addEventListener('change', function () {
+      paintOrderTypeLayout();
+      paintSummary();
+      /* Market hides the limit price and its error */
+      if (limitField && limitField.hidden && window.UZBankFieldError) window.UZBankFieldError.clear(limitField, limitInput);
+      recheckShown();
+    });
+  }
+
+  if (durationGroup) {
+    durationGroup.addEventListener('click', function (e) {
+      var btn = e.target.closest('.segmented__option');
+      if (!btn || !durationGroup.contains(btn)) return;
+      live.duration = btn.getAttribute('data-duration') || 'daily';
+      durationGroup.querySelectorAll('.segmented__option').forEach(function (opt) {
+        opt.classList.toggle('segmented__option--active', opt === btn);
+      });
+      paintDurationLayout();
+      refreshScrollChrome();
+    });
+  }
+
+  if (depotBtn) {
+    depotBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      openAccountPicker('depot', depotBtn);
+    });
+  }
+  if (debtorBtn) {
+    debtorBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      openAccountPicker('debtor', debtorBtn);
+    });
+  }
+
+  document.addEventListener('uzbank:state-changed', function () {
+    if (!overlay.classList.contains('modal-overlay--active')) return;
+    paintAccounts();
+  });
+
+  window.addEventListener('hashchange', applyTradeRoute);
+  window.addEventListener('popstate', applyTradeRoute);
+
+  if (parseTradeRoute()) applyTradeRoute();
+})();

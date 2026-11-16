@@ -18,3 +18,4 @@ Place new Figma exports in the variant folders as `default.svg` / `default.png` 
 ## Related components
 
 - `designs/components/card/section-card/variants/bookings/` — bookings card on this screen.
+- `designs/screens/all-bookings-and-payments` — full history (`Show all bookings`); flow `designs/flows/all-bookings-and-payments.png`.

@@ -219,14 +219,6 @@
         "paragraphSpacing": {
           "value": "14",
           "type": "paragraphSpacing"
-        },
-        "trimTop": {
-          "value": "{trim.primary-trim-top}",
-          "type": "other"
-        },
-        "trimBottom": {
-          "value": "{trim.primary-trim-bottom}",
-          "type": "other"
         }
       },
       "x-sm": {
@@ -249,14 +241,6 @@
         "paragraphSpacing": {
           "value": "12",
           "type": "paragraphSpacing"
-        },
-        "trimTop": {
-          "value": "{trim.primary-trim-top}",
-          "type": "other"
-        },
-        "trimBottom": {
-          "value": "{trim.primary-trim-bottom}",
-          "type": "other"
         }
       }
     },

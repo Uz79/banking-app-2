@@ -83,7 +83,7 @@
       currency: 'CHF',
       to: 'Employer AG\nTechnikumstrasse 1\n8401 Winterthur',
       status: 'executed',
-      message: 'Salary May 2026'
+      message: 'Salary'
     },
     'rent': {
       type: 'domestic',
@@ -144,7 +144,7 @@
       status: 'executed',
       message: 'Interest credit Q2 2026'
     },
-    'deposit top-up': {
+    'custody account top-up': {
       type: 'internal',
       title: 'Internal Account Transfer',
       amount: '+5\'000.00',
@@ -156,15 +156,160 @@
         icon: '#i-anchor'
       },
       credit: {
-        name: 'Deposit',
+        name: 'Custody account',
         iban: '123,456.78',
         balance: "CHF 20'000.00",
         icon: '#i-life-buoy'
       },
       status: 'executed',
-      message: 'Monthly deposit top-up'
+      message: 'Monthly Custody account top-up'
     }
   };
+
+  var ACCOUNT_SNAPSHOTS = {
+    household: {
+      name: 'Household',
+      iban: 'CH35 0900 0000 2470 2920 1',
+      balance: "CHF 10'000.00",
+      icon: '#i-home'
+    },
+    savings: {
+      name: 'Savings account',
+      iban: 'CH35 0900 0000 2470 2920 2',
+      balance: "CHF 25'000.00",
+      icon: '#i-anchor'
+    },
+    deposit: {
+      name: 'Custody account',
+      iban: '123,456.78',
+      balance: "CHF 20'000.00",
+      icon: '#i-life-buoy'
+    }
+  };
+
+  function isAllBookingsScreen() {
+    return document.body.getAttribute('data-screen') === 'all-bookings';
+  }
+
+  function findAccountSnapshotByLabel(label) {
+    if (!label) return null;
+    var needle = label.toLowerCase().trim();
+    var keys = Object.keys(ACCOUNT_SNAPSHOTS);
+    for (var i = 0; i < keys.length; i++) {
+      var snap = ACCOUNT_SNAPSHOTS[keys[i]];
+      if ((snap.name || '').toLowerCase().trim() === needle) return snap;
+    }
+    if (needle.indexOf('household') >= 0) return ACCOUNT_SNAPSHOTS.household;
+    if (needle.indexOf('saving') >= 0) return ACCOUNT_SNAPSHOTS.savings;
+    if (needle.indexOf('deposit') >= 0 || needle.indexOf('custody') >= 0) return ACCOUNT_SNAPSHOTS.deposit;
+    return null;
+  }
+
+  /* The row's data says what it is; icons only name the counterparty (roadmap 43, D5) */
+  function isInternalTransferRow(row) {
+    return row.getAttribute('data-type') === 'transfer';
+  }
+
+  /* A built-in row's status and date come from its markup (roadmap 43, D1, D2), and so does its amount: the maps'
+     fixed amounts would contradict the list's rows (roadmap 62, D20) */
+  function rowSchedule(row) {
+    var value = row.querySelector('.booking-row__value');
+    var out = {
+      status: row.getAttribute('data-status') || 'executed',
+      executeOn: row.getAttribute('data-execute-on') || null,
+      frequency: row.getAttribute('data-frequency') || null
+    };
+    if (value && row.getAttribute('data-mock-booking') === 'static') out.amount = value.textContent.trim();
+    return out;
+  }
+
+  function buildAllBookingsRowData(row, displayName) {
+    var curEl = row.querySelector('.booking-row__currency');
+    var valEl = row.querySelector('.booking-row__value');
+    var amount = valEl ? valEl.textContent.trim() : '';
+    var currency = curEl ? curEl.textContent.trim() : 'CHF';
+    var accountKey = window.__UZ_ACTIVE_ACCOUNT__ || 'savings';
+    var debit = ACCOUNT_SNAPSHOTS[accountKey] || ACCOUNT_SNAPSHOTS.savings;
+
+    var schedule = rowSchedule(row);
+
+    if (isInternalTransferRow(row)) {
+      /* A built-in transfer that names both accounts reads them (roadmap 62, D18) */
+      var fromKey = row.getAttribute('data-from');
+      var toKey = row.getAttribute('data-to');
+      if (ACCOUNT_SNAPSHOTS[fromKey] && ACCOUNT_SNAPSHOTS[toKey]) {
+        return {
+          type: 'internal',
+          title: 'Internal Account Transfer',
+          amount: amount,
+          currency: currency,
+          debit: ACCOUNT_SNAPSHOTS[fromKey],
+          credit: ACCOUNT_SNAPSHOTS[toKey],
+          status: schedule.status,
+          executeOn: schedule.executeOn,
+          frequency: schedule.frequency,
+          message: null
+        };
+      }
+      var targetLabel = displayName.replace(/^Transfer to /i, '').trim();
+      var credit = findAccountSnapshotByLabel(targetLabel) || {
+        name: targetLabel,
+        iban: 'CH35 0900 0000 2470 2920 0',
+        balance: "CHF 0.00",
+        icon: '#i-home'
+      };
+
+      return {
+        type: 'internal',
+        title: 'Internal Account Transfer',
+        amount: amount,
+        currency: currency,
+        debit: debit,
+        credit: credit,
+        status: schedule.status,
+        executeOn: schedule.executeOn,
+        frequency: schedule.frequency,
+        message: null
+      };
+    }
+
+    var recipient = findRecipientByName(displayName);
+    var toStr = recipient
+      ? recipient.name + '\n' + recipient.street + '\n' + recipient.city
+      : displayName;
+
+    return {
+      type: 'domestic',
+      title: 'Domestic Payment',
+      amount: amount,
+      currency: currency,
+      to: toStr,
+      status: schedule.status,
+      executeOn: schedule.executeOn,
+      frequency: schedule.frequency,
+      message: null
+    };
+  }
+
+  /* The account a row belongs to (roadmap 59, D4, D8): a stored booking's own, a rule's next payment its rule's,
+     a built-in row its group's (All bookings) or panel's (Account details), else the page's */
+  function rowAccountKey(row) {
+    var key = null;
+    if (row) {
+      var stored = getStateBooking(row.getAttribute('data-booking-id') || row.getAttribute('data-rule-id'));
+      if (stored) key = stored.accountKey || 'household';
+      if (!key && row.hasAttribute('data-rule-id')) {
+        var rule = document.querySelector('[data-builtin-id="' + row.getAttribute('data-rule-id') + '"]');
+        if (rule) row = rule;
+      }
+      if (!key) {
+        var host = row.closest('[data-account], [data-account-bookings]');
+        if (host) key = host.getAttribute('data-account') || host.getAttribute('data-account-bookings');
+      }
+    }
+    key = key || window.__UZ_ACTIVE_ACCOUNT__;
+    return key === 'savings' ? 'savings' : 'household';
+  }
 
   function getBookingMap() {
     var account = window.__UZ_ACTIVE_ACCOUNT__ || 'household';
@@ -203,16 +348,36 @@
   var furtherToggle  = document.getElementById('uz-pd-further-toggle');
   var furtherContent = document.getElementById('uz-pd-further-content');
   var messageValEl   = document.getElementById('uz-pd-message-value');
+  var frequencyValEl = document.getElementById('uz-pd-frequency-value');
+  var nextValEl      = document.getElementById('uz-pd-next-value');
 
   var closeBtn    = overlay.querySelector('.uz-pd-close');
   var confirmBtn  = overlay.querySelector('.uz-pd-confirm');
 
   var isClosing = false;
   var pendingEditStep = null;
+  var pendingCopy = false; /* Copy opens Pay as a new payment, through the edit's path (roadmap 42, D14) */
   var currentPaymentData = null; /* snapshot of the last openOverlay() call */
   var currentBookingId       = null; /* data-booking-id of the tapped row, or null for static mocks */
   var currentBookingRouteId  = null; /* slug/id used in #payment-details/<type>/<id> */
   var currentRow             = null; /* the actual .booking-row DOM node that was tapped */
+
+  var pdScrollChrome =
+    modal && window.UZBankScrollEdgeChrome
+      ? window.UZBankScrollEdgeChrome.bind(modal, {
+          getScrollEl: function (root) {
+            return root.querySelector('.modal__body');
+          },
+          footer: '.modal__footer'
+        })
+      : null;
+
+  function refreshPaymentDetailsScrollChrome() {
+    if (!pdScrollChrome) return;
+    requestAnimationFrame(function () {
+      pdScrollChrome.update();
+    });
+  }
 
   /* ── Balance string helpers ──────────────────────────────────── */
 
@@ -259,8 +424,11 @@
 
   function iatAccountSnapshot(key) {
     var accounts = window.__UZ_IAT_ACCOUNTS__;
-    if (!accounts || !key || !accounts[key]) return null;
-    var acc = accounts[key];
+    /* A mandate's id resolves through the transfer's lookup (roadmap 18) */
+    var acc = accounts && key && accounts[key]
+      ? accounts[key]
+      : (key && typeof window.__UZ_IAT_ACCOUNT_FOR__ === 'function' ? window.__UZ_IAT_ACCOUNT_FOR__(key) : null);
+    if (!acc) return null;
     return {
       name: acc.name,
       iban: acc.iban,
@@ -331,12 +499,50 @@
         currency: booking.currency || 'CHF',
         debit: debit,
         credit: credit,
-        status: 'executed',
+        /* Its own schedule, as a payment's (roadmap 32, D1); a recurring one is a rule (roadmap 47, D2) */
+        status: booking.status || 'executed',
+        executeOn: booking.executeOn || null,
+        frequency: booking.frequency || null,
         message: null
       };
     }
 
+    if (booking.kind === 'trade') {
+      var fmtTrade = window.UZBankPayState && window.UZBankPayState.formatMoney
+        ? window.UZBankPayState.formatMoney
+        : function (n) { return String(n); };
+      var tradeSign = booking.direction === 'in' ? '+' : '-';
+      var pos = booking.symbol && window.UZBankPayState && window.UZBankPayState.getPosition
+        ? window.UZBankPayState.getPosition(booking.symbol)
+        : null;
+      var tradeTo = pos && pos.name
+        ? pos.name + (pos.isin ? '\n' + pos.isin : '')
+        : (booking.recipientName || booking.symbol || '');
+
+      return {
+        type: 'domestic',
+        title: 'Trade',
+        amount: tradeSign + fmtTrade(booking.amount),
+        currency: booking.currency || 'CHF',
+        to: tradeTo,
+        status: 'executed',
+        message: booking.quantity ? booking.quantity + (booking.quantity === 1 ? ' share' : ' shares') : null
+      };
+    }
+
     return null;
+  }
+
+  /* A standing order's next payment: its rule's payment or transfer, pending on its date (roadmap 47, D7, D8) */
+  function instanceData(row, displayName) {
+    var rule = getStateBooking(row.getAttribute('data-rule-id'));
+    var data = rule ? buildDataFromStateBooking(rule, row) : null;
+    if (!data) data = buildAllBookingsRowData(row, displayName);
+    return Object.assign({}, data, {
+      status: 'pending',
+      executeOn: row.getAttribute('data-occurrence'),
+      frequency: null
+    });
   }
 
   /* ── Booking route id (Maze / analytics) ─────────────────────── */
@@ -439,7 +645,7 @@
 
     var h = location.hash || '';
 
-    if (/^#pay\//.test(h) || /^#iat\//.test(h)) {
+    if (/^#pay\//.test(h) || /^#iat\//.test(h) || /^#trade\//.test(h)) {
       if (overlay.classList.contains('modal-overlay--active') && !isClosing) {
         closeOverlay(true);
       }
@@ -460,8 +666,14 @@
         var wantType = route.type === 'internal' ? 'internal' : 'domestic';
         var dataType = currentPaymentData.type === 'internal' ? 'internal' : 'domestic';
         var idMatches = !route.bookingId || route.bookingId === currentBookingRouteId;
-        if (wantType === dataType && idMatches && !overlay.classList.contains('modal-overlay--active')) {
-          openOverlay(currentPaymentData, { skipRoute: true });
+        if (wantType === dataType && idMatches) {
+          if (!overlay.classList.contains('modal-overlay--active')) {
+            openOverlay(currentPaymentData, { skipRoute: true });
+          } else {
+            /* Route sync after pushState — cancel a stale close and restore scrim. */
+            isClosing = false;
+            overlay.classList.remove('modal-overlay--closing');
+          }
         }
       }
       return;
@@ -472,15 +684,69 @@
     }
   }
 
+  /* ── What a booking allows (roadmap 42, D6 to D8) ───────────────── */
+
+  var fnEditBtn   = overlay.querySelector('.payment-details__function-bar [data-pd-edit]');
+  var fnDeleteBtn = overlay.querySelector('[data-pd-action="delete"]');
+  var fnCopyBtn   = overlay.querySelector('[data-pd-action="copy"]');
+  var currentActions = { edit: false, del: false, copy: false };
+
+  /* Pending payment: Edit, Delete, Copy; executed payment out: Copy; pending transfer: Delete; a standing order's
+     rule: Edit (all future payments) and Copy (roadmap 47, D6); trades and money in have none. A built-in row needs
+     its id, so what it does lasts past a reload. */
+  function bookingActions(data) {
+    var none = { edit: false, del: false, copy: false };
+    var status = data.status || 'executed';
+    if (data.title === 'Trade') return none;
+    if (data.type === 'internal') {
+      return { edit: false, del: status === 'pending' && !!currentBookingId, copy: false };
+    }
+    if (/^\+/.test(String(data.amount || '').trim())) return none;
+    if (status === 'executed') return { edit: false, del: false, copy: true };
+    /* A standing order's next payment: Edit (this one only) and Copy; skipping it is later (roadmap 47, D6, D10) */
+    if (currentRow && currentRow.hasAttribute('data-rule-id')) return { edit: true, del: false, copy: true };
+    var lasting = !!currentBookingId || !!(currentRow && currentRow.hasAttribute('data-builtin-id'));
+    if (status === 'recurring') return { edit: lasting, del: false, copy: true };
+    return { edit: lasting, del: lasting, copy: true };
+  }
+
+  function applyActions(data) {
+    var a = bookingActions(data);
+    currentActions = a;
+    if (modal) {
+      modal.classList.toggle('pd--has-actions', a.edit || a.del || a.copy);
+      modal.classList.toggle('pd--can-edit', a.edit);
+    }
+    var noun = data.status === 'recurring' ? 'standing order' : 'payment';
+    if (fnEditBtn) {
+      fnEditBtn.hidden = !a.edit;
+      fnEditBtn.setAttribute('aria-label', 'Edit ' + noun);
+    }
+    if (fnDeleteBtn) {
+      fnDeleteBtn.hidden = !a.del;
+      fnDeleteBtn.setAttribute('aria-label', data.type === 'internal' ? 'Delete transfer' : 'Delete payment');
+    }
+    if (fnCopyBtn) {
+      fnCopyBtn.hidden = !a.copy;
+      fnCopyBtn.setAttribute('aria-label', 'Copy ' + noun);
+    }
+  }
+
   /* ── Open / close ─────────────────────────────────────────────── */
 
   function openOverlay(data, opts) {
     opts = opts || {};
     isClosing = false;
+    pendingCopy = false;
     currentPaymentData = data; // remember for edit-context export
 
+    /* A recurring booking is the rule of a standing order (roadmap 47, D1, D2) */
+    var isRule = data.status === 'recurring';
+
     // Title
-    if (titleEl) titleEl.textContent = data.title || 'Payment details';
+    if (titleEl) {
+      titleEl.textContent = isRule && data.type !== 'internal' ? 'Standing order' : (data.title || 'Payment details');
+    }
 
     // Amount + currency
     if (amountEl)   amountEl.textContent   = data.amount   || '';
@@ -514,27 +780,40 @@
       if (creditBalValueEl) creditBalValueEl.textContent = creditParts.value;
     }
 
-    // Status chip
+    // Status chip: a rule is Active, with its frequency and next execution (roadmap 47, D2)
     var isPending = data.status !== 'executed';
-    if (statusIconUse) statusIconUse.setAttribute('href', isPending ? '#i-clock' : '#i-check');
-    if (statusTextEl)  statusTextEl.textContent = isPending ? 'Pending' : 'Executed';
+    if (statusIconUse) statusIconUse.setAttribute('href', isRule ? '#i-repeat' : isPending ? '#i-clock' : '#i-check');
+    if (statusTextEl)  statusTextEl.textContent = isRule ? 'Active' : isPending ? 'Pending' : 'Executed';
+    if (frequencyValEl) {
+      var pay = window.UZBankPayState;
+      frequencyValEl.textContent = isRule && pay && pay.frequencyLabel ? pay.frequencyLabel(data.frequency) : '';
+    }
+    if (nextValEl) nextValEl.textContent = isRule ? (data.executeOn || '') : '';
 
-    // Show edit buttons only for pending payments
-    if (modal) modal.classList.toggle('pd--pending', isPending);
+    if (modal) {
+      modal.classList.toggle('pd--pending', isPending && !isRule);
+      modal.classList.toggle('pd--rule', isRule);
+    }
+    applyActions(data);
 
     // Further options / message — always starts collapsed per design
     if (furtherToggle)  furtherToggle.setAttribute('aria-expanded', 'false');
     if (furtherContent) furtherContent.hidden = true;
     if (messageValEl)   messageValEl.textContent = data.message || '';
 
-    // Slide overlay in
+    var modalBody = modal ? modal.querySelector('.modal__body') : null;
+    if (modalBody) modalBody.scrollTop = 0;
+
+    // Slide overlay in (mirror payment-overlay.js — clear stale close state on overlay + shell)
     if (shell) {
       shell.classList.remove('modal-shell--closing');
       shell.classList.add('modal-shell--offscreen', 'modal-shell--no-transition');
     }
+    overlay.classList.remove('modal-overlay--closing');
     overlay.classList.add('modal-overlay--active');
     overlay.setAttribute('aria-hidden', 'false');
     document.body.classList.add('body--payment-open');
+    if (window.UZBankSheetFocus) window.UZBankSheetFocus.open(overlay);
 
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
@@ -542,8 +821,11 @@
         shell.classList.remove('modal-shell--no-transition');
         shell.offsetHeight; // force reflow
         shell.classList.remove('modal-shell--offscreen');
+        refreshPaymentDetailsScrollChrome();
       });
     });
+
+    refreshPaymentDetailsScrollChrome();
 
     if (!opts.skipRoute && currentBookingRouteId) {
       var pdType = data.type === 'internal' ? 'internal' : 'domestic';
@@ -553,6 +835,7 @@
       } else {
         notifyScreen();
       }
+      applyPaymentDetailsRoute();
     }
   }
 
@@ -562,28 +845,15 @@
       finishClose(fromRoute); return;
     }
     isClosing = true;
+    overlay.classList.add('modal-overlay--closing');
 
     if (shell) {
       shell.classList.remove('modal-shell--offscreen', 'modal-shell--no-transition');
       shell.offsetHeight;
       shell.classList.add('modal-shell--closing');
 
-      var resolved = false;
-      function onTransitionEnd(e) {
-        if (e.target !== shell || e.propertyName !== 'transform') return;
-        if (resolved) return;
-        resolved = true;
-        shell.removeEventListener('transitionend', onTransitionEnd);
-        finishClose(fromRoute);
-      }
-      shell.addEventListener('transitionend', onTransitionEnd);
-      // Fallback in case transitionend doesn't fire
-      window.setTimeout(function () {
-        if (resolved) return;
-        resolved = true;
-        shell.removeEventListener('transitionend', onTransitionEnd);
-        finishClose(fromRoute);
-      }, 300);
+      // Ends on the slide, a fallback timer, or at once with reduced motion (roadmap 35)
+      window.UZBankAfterSheetClose(shell, function () { finishClose(fromRoute); });
     } else {
       isClosing = false;
       finishClose(fromRoute);
@@ -593,18 +863,22 @@
   function finishClose(fromRoute) {
     fromRoute = fromRoute === true;
     isClosing = false;
-    overlay.classList.remove('modal-overlay--active');
+    overlay.classList.remove('modal-overlay--active', 'modal-overlay--closing');
     overlay.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('body--payment-open');
     if (shell) {
       shell.classList.remove('modal-shell--closing');
       shell.classList.add('modal-shell--offscreen', 'modal-shell--no-transition');
     }
+    /* Before the edit opens Pay, which takes this sheet's opener on (sheet focus D6) */
+    if (window.UZBankSheetFocus) window.UZBankSheetFocus.close(overlay);
     // If an edit button triggered the close, write edit context then open
     // the payment flow at the correct step.
     if (pendingEditStep) {
       var step = pendingEditStep;
+      var copy = pendingCopy;
       pendingEditStep = null;
+      pendingCopy = false;
 
       // Export current payment data so payment-overlay.js can pre-seed live.*
       if (currentPaymentData) {
@@ -620,12 +894,17 @@
         var fullRecipient = findRecipientByName(recipientName);
 
         window.__UZ_PD_EDIT_CONTEXT__ = {
-          bookingId:     currentBookingId,       // null for static mocks
-          staticRow:     currentBookingId ? null : currentRow, // hide after commit
+          bookingId:     copy ? null : currentBookingId,       // null for static mocks and a copy
+          builtInId:     copy || currentBookingId || !currentRow ? null : currentRow.getAttribute('data-builtin-id'), // replaced on commit (roadmap 42, D4)
+          ruleId:        copy || !currentRow ? null : currentRow.getAttribute('data-rule-id'),     // a standing order's next payment (roadmap 47, D10)
+          occurrence:    copy || !currentRow ? null : currentRow.getAttribute('data-occurrence'),
+          accountKey:    rowAccountKey(currentRow), // an edit or a copy books from the row's account (roadmap 59, D4, D5)
           recipientName: recipientName,
           recipient:     fullRecipient || null,  // full catalog record if found
           amount:        amtNum,
           currency:      d.currency || 'CHF',
+          status:        copy ? 'executed' : (d.status || 'executed'),  // the schedule step opens on it (roadmap 23, D3); a copy as soon as possible
+          executeOn:     copy ? null : (d.executeOn || null),
           targetStep:    step
         };
       }
@@ -648,12 +927,18 @@
       var expanded = furtherToggle.getAttribute('aria-expanded') === 'true';
       furtherToggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
       furtherContent.hidden = expanded;
+      refreshPaymentDetailsScrollChrome();
     });
   }
 
   /* ── Close / Confirm buttons ─────────────────────────────────── */
 
   if (closeBtn)   closeBtn.addEventListener('click',   closeOverlay);
+
+  /* Escape closes the sheet at once, as its close button does; a Delete prompt over it keeps the payment (roadmap 49, D2) */
+  if (window.UZBankSheetFocus && window.UZBankSheetFocus.onEscape) {
+    window.UZBankSheetFocus.onEscape(overlay, function () { closeOverlay(); });
+  }
   if (confirmBtn) confirmBtn.addEventListener('click', closeOverlay);
 
   /* ── Edit buttons → open payment flow ───────────────────────── */
@@ -665,6 +950,108 @@
     pendingEditStep = editBtn.getAttribute('data-pd-edit');
     closeOverlay();
   });
+
+  /* ── Delete: ask first, then remove (roadmap 42, D10 to D13) ──────── */
+
+  /* What Delete did is said with the focus move, not in a live region: VoiceOver reads the row taking focus and
+     drops a polite update made meanwhile (roadmap 60, D7). The element that takes focus after the sheet closes
+     (the next row, or the tab when none is left) is described by this note until it loses focus. */
+  var deleteNote = document.createElement('span');
+  deleteNote.id = 'uz-pd-delete-note';
+  deleteNote.hidden = true;
+  document.body.appendChild(deleteNote);
+
+  function describeOnce(el, text) {
+    if (!el || !el.setAttribute) return;
+    deleteNote.textContent = text;
+    var ids = (el.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+    if (ids.indexOf(deleteNote.id) === -1) ids.push(deleteNote.id);
+    el.setAttribute('aria-describedby', ids.join(' '));
+    el.addEventListener('blur', function () {
+      var left = (el.getAttribute('aria-describedby') || '').split(/\s+/).filter(function (id) { return id && id !== deleteNote.id; });
+      if (left.length) el.setAttribute('aria-describedby', left.join(' '));
+      else el.removeAttribute('aria-describedby');
+    }, { once: true });
+  }
+
+  /* The sheet's close hands focus on through this row's pick (roadmap 33); the pick's choice gets the note */
+  function announceOnFocus(row, text) {
+    if (!row || !window.UZBankSheetFocus || !window.UZBankSheetFocus.handOn) return;
+    var pick = focusAfterRow(row);
+    window.UZBankSheetFocus.handOn(row, function () {
+      var target = pick();
+      describeOnce(target, text);
+      return target;
+    });
+  }
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-pd-action="delete"]');
+    if (!btn || !overlay.contains(btn)) return;
+    if (!overlay.classList.contains('modal-overlay--active') || !currentActions.del) return;
+    var pay = window.UZBankPayState;
+    if (!pay || !window.UZBankPaymentExitPrompt) return;
+    var transfer = currentPaymentData && currentPaymentData.type === 'internal';
+    var bookingId = currentBookingId;
+    var builtInId = !bookingId && currentRow ? currentRow.getAttribute('data-builtin-id') : null;
+    var noun = transfer ? 'transfer' : 'payment';
+    var row = currentRow;
+    window.UZBankPaymentExitPrompt(function () {
+      announceOnFocus(row, transfer ? 'Transfer deleted.' : 'Payment deleted.');
+      if (bookingId) pay.deleteBooking(bookingId);
+      else if (builtInId) pay.removeBuiltIn(builtInId);
+      closeOverlay();
+    }, {
+      title:       'Delete ' + noun + '?',
+      message:     'This ' + noun + ' will not be made. You can\'t undo it.',
+      leaveLabel:  'Delete',
+      stayLabel:   'Keep ' + noun,
+      escapeStays: true
+    });
+  });
+
+  /* ── Copy → Pay with the recipient and amount (roadmap 42, D14) ── */
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-pd-action="copy"]');
+    if (!btn || !overlay.contains(btn)) return;
+    if (!overlay.classList.contains('modal-overlay--active') || !currentActions.copy) return;
+    pendingCopy = true;
+    pendingEditStep = 'amount';
+    closeOverlay();
+  });
+
+  /* ── Focus when the row is gone (roadmap 33, D6) ───────────────
+   * A Delete, or an edit that replaces the row, leaves the sheet's opener
+   * hidden or rebuilt. Focus goes to the row again if its list was rebuilt,
+   * else the next row, the one before, else the list's tab or Show all. */
+
+  function rowSelector(r) {
+    var id = r.getAttribute('data-booking-id');
+    if (id) return '.booking-row[data-booking-id="' + id + '"]';
+    id = r.getAttribute('data-builtin-id');
+    if (id) return '.booking-row[data-builtin-id="' + id + '"]';
+    id = r.getAttribute('data-rule-id');
+    if (id) return '.booking-row[data-rule-id="' + id + '"][data-occurrence="' + r.getAttribute('data-occurrence') + '"]';
+    return null;
+  }
+
+  function focusAfterRow(row) {
+    var scope = row.closest('[role="tabpanel"]') || row.closest('[data-account-bookings]') || document;
+    var rows = Array.prototype.slice.call(scope.querySelectorAll('.booking-row'));
+    var i = rows.indexOf(row);
+    var order = [row].concat(rows.slice(i + 1), rows.slice(0, Math.max(i, 0)).reverse()).map(function (r) {
+      return { el: r, sel: rowSelector(r) };
+    });
+    return function () {
+      for (var k = 0; k < order.length; k++) {
+        var el = order[k].el.isConnected ? order[k].el : (order[k].sel ? scope.querySelector(order[k].sel) : null);
+        if (el && el.getClientRects().length) return el;
+      }
+      var tab = scope.getAttribute && document.getElementById(scope.getAttribute('aria-labelledby') || '');
+      return tab || (scope.querySelector && scope.querySelector('.show-all-btn'));
+    };
+  }
 
   /* ── Tap a booking row to open the overlay ───────────────────── */
 
@@ -681,13 +1068,30 @@
     // Track the row and booking ID so the edit flow can update in-place
     // (or hide this static row after a new booking is committed)
     currentRow       = row;
+    if (window.UZBankSheetFocus && window.UZBankSheetFocus.handOn) window.UZBankSheetFocus.handOn(row, focusAfterRow(row));
     currentBookingId = row.getAttribute('data-booking-id') || null;
     currentBookingRouteId = resolveBookingRouteId(row, currentBookingId);
 
-    // Dynamic rows (data-booking-id present) always use live DOM values — never
-    // the static BOOKING_MAP, even if the recipient name happens to match a key
-    // (e.g. a dynamically-committed "Apple" payment after editing the mock row).
-    var data = currentBookingId ? null : getBookingMap()[name];
+    var displayName = nameEl ? nameEl.textContent.trim() : '';
+    var data = null;
+
+    if (row.hasAttribute('data-rule-id')) {
+      data = instanceData(row, displayName);
+    } else if (isAllBookingsScreen() && row.getAttribute('data-mock-booking') === 'static') {
+      /* Household's rows open the sheet they have on Account details, with the row's status (roadmap 56, D7) */
+      var accountRow = window.__UZ_ACTIVE_ACCOUNT__ === 'household' ? BOOKING_MAP_HOUSEHOLD[name] : null;
+      data = accountRow ? Object.assign({}, accountRow, rowSchedule(row)) : buildAllBookingsRowData(row, displayName);
+    } else {
+      data = currentBookingId ? null : getBookingMap()[name];
+      /* Account details' built-in rows: the row's status wins over the map's (roadmap 43, D1) */
+      if (data && row.hasAttribute('data-status')) {
+        data = Object.assign({}, data, rowSchedule(row));
+      }
+      /* A built-in row the map doesn't know (the list's, roadmap 62) opens from its own data, as on All bookings */
+      if (!data && !currentBookingId && row.getAttribute('data-mock-booking') === 'static') {
+        data = buildAllBookingsRowData(row, displayName);
+      }
+    }
 
     if (!data && currentBookingId) {
       data = buildDataFromStateBooking(getStateBooking(currentBookingId), row);
@@ -705,14 +1109,19 @@
         ? fullRecipient.name + '\n' + fullRecipient.street + '\n' + fullRecipient.city
         : recipientName;
 
+      // A stored payment shows its own status and schedule (roadmap 23, D5)
+      var stored = getStateBooking(currentBookingId);
+
       data = {
-        type:     'domestic',
-        title:    'Domestic Payment',
-        amount:   valEl  ? valEl.textContent.trim()  : '',
-        currency: curEl  ? curEl.textContent.trim()  : 'CHF',
-        to:       toStr,
-        status:   'pending',
-        message:  null
+        type:      'domestic',
+        title:     'Domestic Payment',
+        amount:    valEl  ? valEl.textContent.trim()  : '',
+        currency:  curEl  ? curEl.textContent.trim()  : 'CHF',
+        to:        toStr,
+        status:    stored ? (stored.status || 'executed') : 'pending',
+        executeOn: stored && stored.executeOn ? stored.executeOn : null,
+        frequency: stored && stored.frequency ? stored.frequency : null,
+        message:   null
       };
     }
 

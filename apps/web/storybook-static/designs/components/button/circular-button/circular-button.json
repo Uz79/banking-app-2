@@ -21,11 +21,6 @@
         "hover": "variants/regular-secondary/hover.svg",
         "pressed": "variants/regular-secondary/pressed.svg"
       },
-      "regular-filled-tonal": {
-        "focus": "variants/regular-filled-tonal/focus.svg",
-        "default": "variants/regular-filled-tonal/default.svg",
-        "hover": "variants/regular-filled-tonal/hover.svg"
-      },
       "regular-primary": {
         "focus": "variants/regular-primary/focus.svg",
         "default": "variants/regular-primary/default.svg",

@@ -1,0 +1,16 @@
+{
+  "date": "2026-06-08",
+  "screen": "all-bookings-and-payments",
+  "variantsAdded": [
+    "mobile-content-indication",
+    "desktop-default",
+    "desktop-content-indication"
+  ],
+  "variantsUpdated": [
+    "mobile-default"
+  ],
+  "archivedPaths": [
+    "_archive/2026-06-08/raw-exports/",
+    "_archive/2026-06-08/variants/mobile-default/"
+  ]
+}
