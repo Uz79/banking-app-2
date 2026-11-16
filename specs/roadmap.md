@@ -12,7 +12,11 @@ Not scheduled, smallest first (an estimate of size, not of value).
 
 ## 70. A stray copy of the token generator is tracked in git
 
-Found while writing 63 and 64's spec (2026-11-08). `apps/web/scripts/generate-tokens-css 2.mjs` is tracked, is not run by `tokens:build` (which reads `generate-tokens-css.mjs`), and carries non-code text after the generator's end. To settle in its spec: whether anything reads it (it looks like an accidental copy), then remove it, and check the other `* 2.*` files in the repo for the same.
+Spec: `specs/2026-11-16-remove-finder-duplicates/` (branch `feature/remove-finder-duplicate-files`). It sat under Later; taken on 2026-11-16 because Next was empty. Found while speccing: not one stray file but 686 Finder duplicates in git (131 in `apps/web` source, about 200 in `designs/`, 355 in tracked `storybook-static`); the 126 icon copies leak into the sprite as junk symbols. The spec covers all but `storybook-static` (75). Original note: Found while writing 63 and 64's spec (2026-11-08). `apps/web/scripts/generate-tokens-css 2.mjs` is tracked, is not run by `tokens:build` (which reads `generate-tokens-css.mjs`), and carries non-code text after the generator's end. To settle in its spec: whether anything reads it (it looks like an accidental copy), then remove it, and check the other `* 2.*` files in the repo for the same.
+
+## 75. `storybook-static` is tracked build output
+
+Found while writing 70's spec (2026-11-16). `apps/web/storybook-static` holds 1591 tracked files, 355 of them Finder duplicates (`name 2.ext`). To settle in its spec: whether it is tracked on purpose (a hosted Storybook, a deploy that serves it), and if not, untrack it and add it to `.gitignore`, which removes the duplicates with it; if it must stay, rebuild it from a clean state (`npm run build-storybook`) so the copies drop out.
 
 ## 66. Motion specimens: Focus-mode choreography's sample stays white in Dark
 
