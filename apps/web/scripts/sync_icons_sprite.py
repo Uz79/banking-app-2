@@ -53,12 +53,21 @@ def namespace_fragment_ids(fragment: str, sym_id: str) -> str:
     return fragment
 
 
+ICON_NAME = re.compile(r"icon24-[a-z0-9-]+\.svg")
+
+
+def icon_files() -> list[Path]:
+    """icon24-<name>.svg only. A stray Finder copy ("icon24-home 2.svg") has a space and is skipped,
+    so it can never become a sprite symbol (roadmap 70)."""
+    return sorted(p for p in ICONS_DIR.glob("icon24-*.svg") if ICON_NAME.fullmatch(p.name))
+
+
 def build_sprite() -> None:
     parts: list[str] = [
         '<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="0" height="0" '
         'style="position:absolute;overflow:hidden;pointer-events:none">',
     ]
-    for path in sorted(ICONS_DIR.glob("icon24-*.svg")):
+    for path in icon_files():
         raw = path.read_text(encoding="utf-8")
         m = re.search(r'viewBox="([^"]+)"', raw, re.I)
         viewbox = m.group(1) if m else "0 0 24 24"
@@ -73,7 +82,7 @@ def build_sprite() -> None:
         parts.append("</symbol>")
     parts.append("</svg>")
     SPRITE_PATH.write_text("\n".join(parts) + "\n", encoding="utf-8")
-    print(f"Wrote {SPRITE_PATH.relative_to(ROOT)} ({len(list(ICONS_DIR.glob('icon24-*.svg')))} symbols)")
+    print(f"Wrote {SPRITE_PATH.relative_to(ROOT)} ({len(icon_files())} symbols)")
 
 
 def img_to_svg_use(m: re.Match[str]) -> str:

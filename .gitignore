@@ -143,3 +143,7 @@ dist
 
 # Claude Code / MCP, per machine
 .mcp.json
+
+# Finder copies ("name 2.ext", roadmap 70): never track them
+* [2-9]
+* [2-9].*

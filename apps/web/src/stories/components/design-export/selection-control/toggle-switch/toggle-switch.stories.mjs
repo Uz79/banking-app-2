@@ -41,10 +41,6 @@ export const DesignExport = {
   <figcaption class="de-cap">regular-inactive / hover</figcaption>
 </figure>
 <figure class="de-item">
-  <img class="de-img" src="/designs/components/selection-control/toggle-switch/variants/regular-inactive/pressed 2.svg" alt="regular-inactive / pressed 2" loading="lazy" />
-  <figcaption class="de-cap">regular-inactive / pressed 2</figcaption>
-</figure>
-<figure class="de-item">
   <img class="de-img" src="/designs/components/selection-control/toggle-switch/variants/regular-inactive/pressed.svg" alt="regular-inactive / pressed" loading="lazy" />
   <figcaption class="de-cap">regular-inactive / pressed</figcaption>
 </figure>
@@ -62,10 +58,6 @@ export const DesignExport = {
 <figure class="de-item">
   <img class="de-img" src="/designs/components/selection-control/toggle-switch/variants/regular-active/hover.svg" alt="regular-active / hover" loading="lazy" />
   <figcaption class="de-cap">regular-active / hover</figcaption>
-</figure>
-<figure class="de-item">
-  <img class="de-img" src="/designs/components/selection-control/toggle-switch/variants/regular-active/pressed 2.svg" alt="regular-active / pressed 2" loading="lazy" />
-  <figcaption class="de-cap">regular-active / pressed 2</figcaption>
 </figure>
 <figure class="de-item">
   <img class="de-img" src="/designs/components/selection-control/toggle-switch/variants/regular-active/pressed.svg" alt="regular-active / pressed" loading="lazy" />

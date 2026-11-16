@@ -18,7 +18,7 @@ Open `http://localhost:5173/overview.html`.
 
 ## Icons workflow
 
-1. **Add or edit** a source file under `assets/icons/` named `icon24-{name}.svg` (24×24 viewBox).
+1. **Add or edit** a source file under `assets/icons/` named `icon24-{name}.svg` (24×24 viewBox) with lowercase letters, digits and hyphens in `{name}`, and no spaces: the script skips anything else, such as a Finder copy `icon24-home 2.svg`.
 2. **Regenerate the sprite**:
 
    ```bash
