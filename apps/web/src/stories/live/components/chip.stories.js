@@ -17,3 +17,17 @@ export const StatusChips = {
     </div>
   `,
 };
+
+export const Cases = {
+  name: 'Primary, secondary, filled tonal',
+  render: () => `
+    <div style="padding:1.5rem;display:flex;flex-wrap:wrap;gap:1rem;align-items:center;">
+      <span class="chip chip--md"><span class="chip__label">Primary</span></span>
+      <span class="chip chip--md chip--secondary"><span class="chip__label">Secondary</span></span>
+      <span class="chip chip--md chip--tonal"><span class="chip__label">Filled tonal</span></span>
+      <span class="chip chip--sm"><span class="chip__label">Primary</span></span>
+      <span class="chip chip--sm chip--secondary"><span class="chip__label">Secondary</span></span>
+      <span class="chip chip--sm chip--tonal"><span class="chip__label">Filled tonal</span></span>
+    </div>
+  `,
+};

@@ -417,6 +417,18 @@ function themeBlock(map, mode) {
     ? resolveTokenString("{color.primary.200}")
     : resolveTokenString("{color.primary.800}");
 
+  /* Chip: its own Figma tokens (roadmap 48): primary, secondary and filled tonal */
+  const chip = (c) => ({
+    bg: mappedColor(map, `chip.${c}.background`),
+    border: mappedColor(map, `chip.${c}.border`),
+    fg: mappedColor(map, `chip.${c}.foreground`),
+    hover: mappedColor(map, `chip.${c}.hover state`),
+    pressed: mappedColor(map, `chip.${c}.pressed state`),
+  });
+  const chipPrimary = chip("primary");
+  const chipSecondary = chip("secondary");
+  const chipTonal = chip("filled tonal");
+
   const navItemActiveBg = isLight
     ? "var(--color-bg-secondary)"
     : resolveTokenString("{color.neutral.white-10pc}");
@@ -479,6 +491,24 @@ function themeBlock(map, mode) {
   --color-btn-tonal-fg: ${btnTonalFg};
   --color-btn-tonal-hover: ${btnTonalHover};
   --color-btn-tonal-pressed: ${btnTonalPressed};
+
+  --color-chip-primary-bg: ${chipPrimary.bg};
+  --color-chip-primary-border: ${chipPrimary.border};
+  --color-chip-primary-fg: ${chipPrimary.fg};
+  --color-chip-primary-hover: ${chipPrimary.hover};
+  --color-chip-primary-pressed: ${chipPrimary.pressed};
+
+  --color-chip-secondary-bg: ${chipSecondary.bg};
+  --color-chip-secondary-border: ${chipSecondary.border};
+  --color-chip-secondary-fg: ${chipSecondary.fg};
+  --color-chip-secondary-hover: ${chipSecondary.hover};
+  --color-chip-secondary-pressed: ${chipSecondary.pressed};
+
+  --color-chip-filled-tonal-bg: ${chipTonal.bg};
+  --color-chip-filled-tonal-border: ${chipTonal.border};
+  --color-chip-filled-tonal-fg: ${chipTonal.fg};
+  --color-chip-filled-tonal-hover: ${chipTonal.hover};
+  --color-chip-filled-tonal-pressed: ${chipTonal.pressed};
 
   --color-icon-circle-fill: ${iconCircleFill};
   --color-overlay-scrim: ${overlayScrim};

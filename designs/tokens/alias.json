@@ -53,6 +53,10 @@
         "value": "rgba(0, 21, 126, 0.1)",
         "type": "color"
       },
+      "900-5pc": {
+        "value": "rgba(0, 21, 126, 0.05)",
+        "type": "color"
+      },
       "900-0pc": {
         "value": "rgba(0, 21, 126, 0)",
         "type": "color"

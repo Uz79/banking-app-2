@@ -2478,6 +2478,30 @@
     <p class="ds-note">Primary has no toggled state — it is already the strongest appearance.</p>
   </section>
 
+  <section class="ds-section" aria-labelledby="ds-chip-heading">
+    <h2 id="ds-chip-heading">Chip</h2>
+    <p class="ds-caption">A pill for a status or a selection, on its own tokens (<code>--color-chip-primary-*</code>, <code>--color-chip-secondary-*</code>, <code>--color-chip-filled-tonal-*</code>). Primary is the default, <code>.chip--secondary</code> is outlined, <code>.chip--tonal</code> is Figma's FilledTonal, the quiet label after a booking's name. With an icon and a dismiss button on the right.</p>
+    <p class="ds-caption">Regular</p>
+    <div class="ds-row">
+      <span class="chip chip--md"><span class="chip__label">Primary</span></span>
+      <span class="chip chip--md chip--secondary"><span class="chip__label">Secondary</span></span>
+      <span class="chip chip--md chip--tonal"><span class="chip__label">Filled tonal</span></span>
+      <span class="chip chip--md"><svg class="chip__icon" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg><span class="chip__label">Primary</span><button type="button" class="chip__dismiss" aria-label="Remove Primary"><svg class="chip__icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg></button></span>
+      <span class="chip chip--md chip--secondary"><svg class="chip__icon" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg><span class="chip__label">Secondary</span><button type="button" class="chip__dismiss" aria-label="Remove Secondary"><svg class="chip__icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg></button></span>
+      <span class="chip chip--md chip--tonal"><svg class="chip__icon" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg><span class="chip__label">Filled tonal</span><button type="button" class="chip__dismiss" aria-label="Remove Filled tonal"><svg class="chip__icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg></button></span>
+    </div>
+    <p class="ds-caption">Small</p>
+    <div class="ds-row">
+      <span class="chip chip--sm"><span class="chip__label">Primary</span></span>
+      <span class="chip chip--sm chip--secondary"><span class="chip__label">Secondary</span></span>
+      <span class="chip chip--sm chip--tonal"><span class="chip__label">Filled tonal</span></span>
+      <span class="chip chip--sm"><svg class="chip__icon" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg><span class="chip__label">Primary</span><button type="button" class="chip__dismiss" aria-label="Remove Primary"><svg class="chip__icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg></button></span>
+      <span class="chip chip--sm chip--secondary"><svg class="chip__icon" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg><span class="chip__label">Secondary</span><button type="button" class="chip__dismiss" aria-label="Remove Secondary"><svg class="chip__icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg></button></span>
+      <span class="chip chip--sm chip--tonal"><svg class="chip__icon" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg><span class="chip__label">Filled tonal</span><button type="button" class="chip__dismiss" aria-label="Remove Filled tonal"><svg class="chip__icon" aria-hidden="true" focusable="false"><use href="#i-x"/></svg></button></span>
+    </div>
+    <p class="ds-note">Hover and pressed tokens exist for each case; no chip in the app is interactive yet, so only the default state is built.</p>
+  </section>
+
   <section class="ds-section" aria-labelledby="ds-legacy-heading">
     <h2 id="ds-legacy-heading">Shell modal (legacy class)</h2>
     <p class="ds-caption"><code>.btn-primary</code> — legacy alias for <strong>Regular</strong> primary (<code>.uz-btn--md</code>); full width in demos</p>

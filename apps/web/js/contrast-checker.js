@@ -183,6 +183,23 @@
       'color-btn-tonal-hover':  mix(bg, fg, isDark ? 0.38 : 0.14),
       'color-btn-tonal-pressed': mix(bg, fg, isDark ? 0.48 : 0.22),
 
+      // Chip (roadmap 48)
+      'color-chip-primary-bg': fgHex,
+      'color-chip-primary-border': fgHex,
+      'color-chip-primary-fg': bgHex,
+      'color-chip-primary-hover': fgAlpha(0.1),
+      'color-chip-primary-pressed': fgAlpha(0.2),
+      'color-chip-secondary-bg': isDark ? bgHex : '#ffffff',
+      'color-chip-secondary-border': isDark ? fgHex : brandPrimaryHex,
+      'color-chip-secondary-fg': isDark ? fgHex : brandPrimaryHex,
+      'color-chip-secondary-hover': fgAlpha(0.1),
+      'color-chip-secondary-pressed': fgAlpha(0.2),
+      'color-chip-filled-tonal-bg': fgAlpha(isDark ? 0.1 : 0.05),
+      'color-chip-filled-tonal-border': fgAlpha(0),
+      'color-chip-filled-tonal-fg': fgHex,
+      'color-chip-filled-tonal-hover': fgAlpha(0.1),
+      'color-chip-filled-tonal-pressed': fgAlpha(0.2),
+
       // Elevation — brand-tinted scrim; neutral shadows
       'color-overlay-tint':         fgHex,
       'color-nav-elevated-shadow':   blackAlpha(isDark ? 0.35 : 0.06),
@@ -213,6 +230,7 @@
     'color-btn-secondary-hover', 'color-btn-secondary-pressed',
     'color-btn-tonal-bg', 'color-btn-tonal-border', 'color-btn-tonal-fg',
     'color-btn-tonal-hover', 'color-btn-tonal-pressed',
+    'color-chip-primary-bg', 'color-chip-primary-border', 'color-chip-primary-fg', 'color-chip-primary-hover', 'color-chip-primary-pressed', 'color-chip-secondary-bg', 'color-chip-secondary-border', 'color-chip-secondary-fg', 'color-chip-secondary-hover', 'color-chip-secondary-pressed', 'color-chip-filled-tonal-bg', 'color-chip-filled-tonal-border', 'color-chip-filled-tonal-fg', 'color-chip-filled-tonal-hover', 'color-chip-filled-tonal-pressed',
     'color-overlay-tint', 'color-nav-elevated-shadow', 'color-modal-elevated-shadow',
     'color-surface-state-hover', 'color-surface-state-pressed',
     'color-action-circle-state-hover', 'color-action-circle-state-pressed'
