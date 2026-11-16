@@ -1376,9 +1376,9 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
   gap: var(--space-2);
   max-width: 100%;
   border-radius: 9999px;
-  border: 0.0625rem solid var(--color-btn-primary-bg);
-  background-color: var(--color-btn-primary-bg);
-  color: var(--color-btn-primary-fg);
+  border: 0.0625rem solid var(--color-chip-primary-border);
+  background-color: var(--color-chip-primary-bg);
+  color: var(--color-chip-primary-fg);
   font-family: var(--font-family);
   font-weight: var(--fw-medium);
   line-height: var(--lh-text);
@@ -1399,11 +1399,18 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
   font-size: var(--fs-text-xs);
 }
 
-/* Tonal: a quiet status label, on the tonal button's colours (roadmap 43, D10) */
+/* Tonal (Figma's FilledTonal): a quiet status label on the chip's own tokens (roadmap 43, D10; 48) */
 .chip--tonal {
-  border-color: var(--color-btn-tonal-border);
-  background-color: var(--color-btn-tonal-bg);
-  color: var(--color-btn-tonal-fg);
+  border-color: var(--color-chip-filled-tonal-border);
+  background-color: var(--color-chip-filled-tonal-bg);
+  color: var(--color-chip-filled-tonal-fg);
+}
+
+/* Secondary: an outlined chip (roadmap 48). Hover and pressed tokens exist for an interactive chip; none is built yet */
+.chip--secondary {
+  border-color: var(--color-chip-secondary-border);
+  background-color: var(--color-chip-secondary-bg);
+  color: var(--color-chip-secondary-fg);
 }
 
 .chip__icon {
@@ -1438,15 +1445,15 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
 }
 
 .chip__dismiss:hover {
-  background-color: color-mix(in srgb, var(--color-btn-primary-fg) 15%, transparent);
+  background-color: color-mix(in srgb, currentColor 15%, transparent);
 }
 
 .chip__dismiss:active {
-  background-color: color-mix(in srgb, var(--color-btn-primary-fg) 25%, transparent);
+  background-color: color-mix(in srgb, currentColor 25%, transparent);
 }
 
 .chip__dismiss:focus-visible {
-  outline: 0.125rem solid var(--color-btn-primary-fg);
+  outline: 0.125rem solid var(--color-fg-interactive);
   outline-offset: 0.125rem;
 }
 
