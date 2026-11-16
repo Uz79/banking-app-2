@@ -8,7 +8,7 @@ In order. The first is what `/feature-spec` starts.
 
 ## 48. Chip: its own tokens, as in Figma
 
-Added 2026-11-05. `.chip--tonal` (43) uses `--color-btn-tonal-*`. Figma's Chip has its own Case=FilledTonal, bound to `chip/filled tonal/*` (background, border, foreground, hover, pressed; Des-Sys-Test, Component Library > Chip, node 769:106445). Those tokens are in `designs/tokens/_NEW/260617_tokens` but not in `designs/tokens/mapped`. Bring them into the token pipeline as `--color-chip-filled-tonal-*`, make the theme engine emit them for Multi-color themes, and point the chip at them. Settle the class name against Figma's "FilledTonal", and document the Secondary case in `designs/components/chip/chip.md` too.
+Spec: `specs/2026-11-15-chip-own-tokens/` (branch `feature/chip-own-tokens`; the chip group only, from 260617; the full promote is 73). Added 2026-11-05. `.chip--tonal` (43) uses `--color-btn-tonal-*`. Figma's Chip has its own Case=FilledTonal, bound to `chip/filled tonal/*` (background, border, foreground, hover, pressed; Des-Sys-Test, Component Library > Chip, node 769:106445). Those tokens are in `designs/tokens/_NEW/260617_tokens` but not in `designs/tokens/mapped`. Bring them into the token pipeline as `--color-chip-filled-tonal-*`, make the theme engine emit them for Multi-color themes, and point the chip at them. Settle the class name against Figma's "FilledTonal", and document the Secondary case in `designs/components/chip/chip.md` too.
 
 # Later
 
@@ -59,6 +59,10 @@ Found 2026-11-13. The "Pending payments" row above the booking list (`bookings-c
 - **The total:** `pendingTotal` (`js/built-in-bookings.js` 354) sums money out as a positive number ("money out counts up", 62's D15) and the line shows `Math.abs(total)` (`js/data-render.js` 142), so it never has a sign, while booking rows show `-amount`. For Household the built-in pending items alone are 1'654.80 (Apple 100, Swisscom 89.90, Helvetia 245, Tax office 1'200, Netflix 19.90); a total of 2'654.80 means 1'000 more from payments made in the app or standing orders. The total adds all of them, so a single -10.00 row beside it does not mean the total is wrong; confirm which rows the screen showed.
 
 To settle in its spec: the total's sign (money out as "-"), open or closed by default (closed), `aria-expanded` and `aria-controls` and the keyboard, reduced motion, the empty state (the row is already hidden when nothing is pending), whether the grouped rows reuse the All bookings Pending group markup, and a link to All bookings > Pending when there are many.
+
+## 73. Promote the full 260617 token export
+
+Found while writing 48's spec (2026-11-15). `designs/tokens/_NEW/260617_tokens` carries the Figma tokens of every component (checkbox, slider, paginator, tab control, toggle switch, segmented control, form field, list item, row item, menu item, radio button and more), while `designs/tokens/mapped` holds only the older, thinner set; 48 copies in the `chip` group alone. To settle in its spec: run `npm run tokens:promote -- 260617_tokens` on a branch, list every `--color-*` and layout token that changes in `css/tokens.css`, and check every component it touches in Light, Dark and a Multi-color theme, desktop and 390px, before anything merges; the chip group from 48 then comes from the promote and the copy is dropped.
 
 ## 8. "How much should I invest?": the fridge advisor (8a, 8c, 8d and 8e done)
 
