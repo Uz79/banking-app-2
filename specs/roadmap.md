@@ -10,18 +10,6 @@ In order. The first is what `/feature-spec` starts.
 
 Not scheduled, smallest first (an estimate of size, not of value).
 
-## 70. A stray copy of the token generator is tracked in git
-
-Spec: `specs/2026-11-16-remove-finder-duplicates/` (branch `feature/remove-finder-duplicate-files`). It sat under Later; taken on 2026-11-16 because Next was empty. Found while speccing: not one stray file but 686 Finder duplicates in git (131 in `apps/web` source, about 200 in `designs/`, 355 in tracked `storybook-static`); the 126 icon copies leak into the sprite as junk symbols. The spec covers all but `storybook-static` (75). Original note: Found while writing 63 and 64's spec (2026-11-08). `apps/web/scripts/generate-tokens-css 2.mjs` is tracked, is not run by `tokens:build` (which reads `generate-tokens-css.mjs`), and carries non-code text after the generator's end. To settle in its spec: whether anything reads it (it looks like an accidental copy), then remove it, and check the other `* 2.*` files in the repo for the same.
-
-## 75. `storybook-static` is tracked build output
-
-Found while writing 70's spec (2026-11-16). `apps/web/storybook-static` holds 1591 tracked files, 355 of them Finder duplicates (`name 2.ext`). To settle in its spec: whether it is tracked on purpose (a hosted Storybook, a deploy that serves it), and if not, untrack it and add it to `.gitignore`, which removes the duplicates with it; if it must stay, rebuild it from a clean state (`npm run build-storybook`) so the copies drop out.
-
-## 76. `sync_icons_sprite.py` does more than build the sprite
-
-Found while building 70 (2026-11-16). Running `apps/web/scripts/sync_icons_sprite.py` also rewrites `js/storage-migrate.js`'s legacy key table (the `keys:` step turns `uzBankWebApp10Theme`, `uzBankWebApp11Theme` and similar into `uzBankWebTheme`, so the table maps a key to itself) and embeds the whole sprite into `fridge-advisor.html` and `investment-opening.html`, which carry it differently today (about 1576 more lines each). 70 did not run it for those; it removed the junk symbols from the sprite and the pages by hand. To settle in its spec: split the script (sprite build; embedding; the one-off HTML migration; the key migration), drop the steps that were one-offs, and check how the fridge and opening pages get their icons.
-
 ## 66. Motion specimens: Focus-mode choreography's sample stays white in Dark
 
 Klaudiusz, 2026-11-06. On Motion specimens, the Focus-mode choreography sample's right column keeps a white background in Dark. It needs a surface token.
@@ -482,6 +470,20 @@ Spec: `specs/2026-11-08-standing-order-edit-exception/` (branch `feature/standin
 Found in Klaudiusz's check of 61 (2026-11-06). After the demo reset, Household's card on All bookings reads CHF 9'900.00 while the list's newest day (Yesterday) ends at 10'000.00, likely because the pending Apple (-100) is already subtracted from the card. To settle in its spec: whether the card shows the booked or the available balance, and a label when the two differ, the same on Account details and Overview.
 
 Spec: `specs/2026-11-06-demo-data-dates/` (branch `feature/demo-data-dates`), with 62. Settled in its interview: the cards show the booked balance; a pending payment, Apple included, counts nowhere until it executes, so no label is needed. Built 2026-11-06.
+
+## 70. A stray copy of the token generator is tracked in git (done)
+
+Spec: `specs/2026-11-16-remove-finder-duplicates/` (branch `feature/remove-finder-duplicate-files`). It sat under Later; taken on 2026-11-16 because Next was empty. Found while speccing: not one stray file but 686 Finder duplicates in git (131 in `apps/web` source, about 200 in `designs/`, 355 in tracked `storybook-static`); the 126 icon copies leak into the sprite as junk symbols. The spec covers all but `storybook-static` (75). Original note: Found while writing 63 and 64's spec (2026-11-08). `apps/web/scripts/generate-tokens-css 2.mjs` is tracked, is not run by `tokens:build` (which reads `generate-tokens-css.mjs`), and carries non-code text after the generator's end. To settle in its spec: whether anything reads it (it looks like an accidental copy), then remove it, and check the other `* 2.*` files in the repo for the same.
+
+## 75. `storybook-static` is tracked build output
+
+Found while writing 70's spec (2026-11-16). `apps/web/storybook-static` holds 1591 tracked files, 355 of them Finder duplicates (`name 2.ext`). To settle in its spec: whether it is tracked on purpose (a hosted Storybook, a deploy that serves it), and if not, untrack it and add it to `.gitignore`, which removes the duplicates with it; if it must stay, rebuild it from a clean state (`npm run build-storybook`) so the copies drop out.
+
+## 76. `sync_icons_sprite.py` does more than build the sprite
+
+Found while building 70 (2026-11-16). Running `apps/web/scripts/sync_icons_sprite.py` also rewrites `js/storage-migrate.js`'s legacy key table (the `keys:` step turns `uzBankWebApp10Theme`, `uzBankWebApp11Theme` and similar into `uzBankWebTheme`, so the table maps a key to itself) and embeds the whole sprite into `fridge-advisor.html` and `investment-opening.html`, which carry it differently today (about 1576 more lines each). 70 did not run it for those; it removed the junk symbols from the sprite and the pages by hand. To settle in its spec: split the script (sprite build; embedding; the one-off HTML migration; the key migration), drop the steps that were one-offs, and check how the fridge and opening pages get their icons.
+
+Built 2026-11-16: 325 tracked Finder duplicates removed (131 in `apps/web` source, 194 in `designs/`), the 14 design manifests and 12 generated stories stop naming them, the sprite and 17 pages lose 126 junk symbols (`i-crosshair 2` and the like), `sync_icons_sprite.py` reads only `icon24-<name>.svg`, and `.gitignore` ignores `name 2.ext`. Kept: six files that are not duplicates. Found: `storybook-static` has 355 more (75); the sprite script also rewrites `js/storage-migrate.js` and embeds the sprite in two more pages (76), so the junk symbols were removed from the pages by a targeted edit, not by running it. Not checked: Storybook itself (started), most of the baseline smoke test.
 
 ## 71. Display-only rows and account pickers against the TextField anatomy (done)
 
