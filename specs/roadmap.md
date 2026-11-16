@@ -477,7 +477,11 @@ Spec: `specs/2026-11-16-remove-finder-duplicates/` (branch `feature/remove-finde
 
 ## 75. `storybook-static` is tracked build output
 
-Found while writing 70's spec (2026-11-16). `apps/web/storybook-static` holds 1591 tracked files, 355 of them Finder duplicates (`name 2.ext`). To settle in its spec: whether it is tracked on purpose (a hosted Storybook, a deploy that serves it), and if not, untrack it and add it to `.gitignore`, which removes the duplicates with it; if it must stay, rebuild it from a clean state (`npm run build-storybook`) so the copies drop out.
+Found while writing 70's spec (2026-11-16). `apps/web/storybook-static` holds 1591 tracked files, 355 of them Finder duplicates (`name 2.ext`). It is tracked on purpose for now: it is live at `banking-app-2-bay.vercel.app/storybook-static/`, served because Vercel serves `apps/web` as it is. Spec: `specs/2026-11-16-rebuild-storybook-static/` (branch `feature/rebuild-storybook-static`), taken 2026-11-16 from Later because Next was empty: rebuild it clean with `npm run build-storybook` so the copies drop out and it matches the current stories. It stays here until 77 ends the tracking.
+
+## 77. Vercel builds Storybook on deploy
+
+Added 2026-11-16, out of 75's scope. `storybook-static` is tracked build output (28 MB) that goes stale and collects Finder copies. To settle in its spec: where the build runs (`build-storybook` into the deploy output after `npm run build`, or a Vercel project of its own for Storybook), what the deploy command becomes (today `npm run build && rm -rf dist node_modules`, with `apps/web` served as it is), how the hosted URL `/storybook-static/` is kept or redirected, and the preview deploys; then untrack `storybook-static` and add it to `.gitignore`. Closes 75.
 
 ## 76. `sync_icons_sprite.py` does more than build the sprite
 
