@@ -1,11 +1,14 @@
 # Profile — theme
 
-Theme / colour mode settings.
+Theme preferences on the Profile screen.
 
 ## Variants
 
-- `default-default` — Vector snapshot + overview PNG.
+| Variant | Figma | Path |
+|---------|-------|------|
+| `desktop-default` | Profile - Theme - Desktop | `variants/desktop-default/default.svg` (+ png) |
+| `mobile-default` | Profile - Theme - Mobile | `variants/mobile-default/default.svg` (+ png) |
 
 ## States
 
-- `default`: exported snapshot from Figma (see also `interactionStates` in JSON).
+- `default` — resting snapshot

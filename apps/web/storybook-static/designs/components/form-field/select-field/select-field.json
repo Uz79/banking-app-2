@@ -4,6 +4,7 @@
   "description": "Select field for choosing a value from a predefined list.",
   "variants": [
     "default",
+    "small",
     "readonly"
   ],
   "states": [
@@ -16,9 +17,14 @@
   "assets": {
     "variants": {
       "default-default": {
-        "focus": "variants/default-default/focus.svg",
         "default": "variants/default-default/default.svg",
-        "hover": "variants/default-default/hover.svg"
+        "hover": "variants/default-default/hover.svg",
+        "focus": "variants/default-default/focus.svg"
+      },
+      "small-default": {
+        "default": "variants/small-default/default.svg",
+        "hover": "variants/small-default/hover.svg",
+        "focus": "variants/small-default/focus.svg"
       }
     },
     "overview": "overview.png"

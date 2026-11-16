@@ -8,27 +8,27 @@
     "focus"
   ],
   "assets": {
-    "overview": "overview.png",
     "variants": {
       "default-booking": {
+        "focus": "variants/default-booking/focus.svg",
         "default": "variants/default-booking/default.svg",
         "hover": "variants/default-booking/hover.svg",
-        "focus": "variants/default-booking/focus.svg",
         "pressed": "variants/default-booking/pressed.svg"
-      },
-      "default-header": {
-        "default": "variants/default-header/default.svg"
-      },
-      "default-compact-summary": {
-        "default": "variants/default-compact-summary/default.svg"
       },
       "default-chip": {
         "default": "variants/default-chip/default.svg"
       },
       "default-action": {
         "default": "variants/default-action/default.svg"
+      },
+      "default-compact-summary": {
+        "default": "variants/default-compact-summary/default.svg"
+      },
+      "default-header": {
+        "default": "variants/default-header/default.svg"
       }
-    }
+    },
+    "overview": "overview.png"
   },
   "tokens": {
     "radius": "alias.radius.regular",

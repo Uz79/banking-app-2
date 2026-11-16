@@ -6,7 +6,7 @@
  * - Debit account (.debit-account)
  * - Main view “More functions” ([data-more-functions-trigger] on Overview / Account details)
  *
- * Uses <dialog> + ::backdrop (`--color-overlay-scrim`, same as modals). Backdrop and bottom sheet animate together on open (~0.45s);
+ * Uses <dialog> + ::backdrop (`--color-overlay-scrim` from `--color-overlay-tint`, same as modals). Backdrop and bottom sheet animate together on open (~0.45s);
  * close exits in ~0.28s ease-in before `dialog.close()`.
  * Esc uses the `cancel` event (preventDefault + animated close). Reduces to instant close when
  * `prefers-reduced-motion: reduce`.
@@ -34,7 +34,7 @@
     },
     {
       icon: 'i-trending-up',
-      name: 'Deposit',
+      name: 'Custody account',
       iban: '123,456,78',
       amount: "CHF 20'000.00",
       sheetCur: 'CHF',
@@ -61,7 +61,7 @@
    * + designs/screens/flows/main-view-contextual-menu-navigation-flow.png (journey reference).
    */
   var MORE_FUNCTIONS_ITEMS = [
-    { icon: 'i-repeat', label: 'Internal account transfer', action: 'internal-account-transfer' },
+    { icon: 'i-arrow-right', label: 'Show all bookings', action: 'show-all-bookings' },
     { icon: 'i-edit-2', label: 'Change category', action: 'change-category' },
     { icon: 'i-eye', label: 'Show account information', action: 'show-account-information' }
   ];
@@ -96,13 +96,18 @@
     var overlays = document.querySelectorAll('.modal-overlay');
     for (var i = 0; i < overlays.length; i++) {
       if (overlays[i].id === 'uz-iat-overlay') continue;
+      if (overlays[i].id === 'uz-trade-overlay') continue;
       if (overlays[i].querySelector('.modal--payment-flow')) return overlays[i];
     }
-    return document.querySelector('.modal-overlay');
+    return null;
   }
 
   function getIatOverlay() {
     return document.getElementById('uz-iat-overlay');
+  }
+
+  function getTradeOverlay() {
+    return document.getElementById('uz-trade-overlay');
   }
 
   function getModal() {
@@ -185,6 +190,7 @@
     dialog.className = 'form-sheet';
     dialog.setAttribute('role', 'dialog');
     dialog.setAttribute('aria-modal', 'true');
+    dialog.setAttribute('tabindex', '-1');
     dialog.innerHTML =
       '<div class="form-sheet__panel">' +
       '<h2 class="form-sheet__heading-sr" id="form-sheet-heading">' +
@@ -232,7 +238,10 @@
       clearAnchoredSheetLayout();
       sheetAnchor = null;
       uninstallFormSheetOverflowListeners();
-      if (listEl) listEl.innerHTML = '';
+      if (listEl) {
+        listEl.innerHTML = '';
+        listEl.setAttribute('role', 'listbox'); /* the calendar takes the role away (openDateSheet) */
+      }
       clearPreview();
       document.querySelectorAll('[data-more-functions-trigger][aria-expanded="true"]').forEach(function (el) {
         el.setAttribute('aria-expanded', 'false');
@@ -386,6 +395,9 @@
     dialog.setAttribute('data-form-sheet-type', sheetFlags.sheetType || 'generic');
     clearAnchoredSheetLayout();
     dialog.showModal();
+    if (window.UZBankDialogFocus) {
+      window.UZBankDialogFocus.suppressInitialFocus(dialog);
+    }
     window.requestAnimationFrame(function () {
       window.requestAnimationFrame(function () {
         positionFormSheet();
@@ -398,11 +410,34 @@
         /* One extra frame so max-height/layout from positionFormSheet is committed before comparing scroll metrics. */
         window.requestAnimationFrame(function () {
           syncFormSheetListOverflow();
-          var first = listEl.querySelector('button');
-          if (first) first.focus();
+          if (window.UZBankDialogFocus && window.UZBankDialogFocus.prefersKeyboardFocus()) {
+            if (typeof sheetFlags.focus === 'function') { sheetFlags.focus(); return; }
+            var first = listEl.querySelector('button');
+            if (first) first.focus();
+          }
         });
       });
     });
+  }
+
+  /** "Execute on" (roadmap 28, D1): the calendar from js/date-picker.js in this sheet, anchored under the field
+   *  from 1280 px, a bottom sheet below. options: { title, selected: Date, immediate (the transfer's range, roadmap 40), onPick(date) }. Picking closes the sheet;
+   *  focus goes back to the field when it closes. */
+  function openDateSheet(anchorEl, options) {
+    if (!customMenusEnabled() || !window.UZBankDatePicker) return;
+    options = options || {};
+    ensureDialog();
+    listEl.innerHTML = '';
+    listEl.removeAttribute('role'); /* the grid is not a listbox */
+    var picker = window.UZBankDatePicker.render(listEl, {
+      selected: options.selected,
+      range: window.UZBankDatePicker.executionRange(null, options.immediate),
+      onPick: function (date) {
+        if (typeof options.onPick === 'function') options.onPick(date);
+        closeSheet();
+      }
+    });
+    openDialog(options.title || 'Execute on', anchorEl, { sheetType: 'date', focus: picker.focusDay });
   }
 
   function getTitleForSelect(sel) {
@@ -429,14 +464,19 @@
     /** designs/components/menu/menu-countries — flat list (same order as <option>). */
     var isCountry = id === 'recipient-country';
 
+    var isFontSelect = selectEl.id === 'profileFontFamily' || selectEl.hasAttribute('data-font-select');
+
     function appendOptionRow(opt) {
       var btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'form-sheet__row form-sheet__row--country';
+      btn.className =
+        'form-sheet__row ' + (isFontSelect ? 'form-sheet__row--font' : 'form-sheet__row--country');
       btn.setAttribute('role', 'option');
       btn.setAttribute('aria-selected', opt.selected ? 'true' : 'false');
       btn.textContent = opt.textContent;
       btn.dataset.value = opt.value;
+      var sampleFont = opt.getAttribute('data-font-family');
+      if (sampleFont) btn.style.fontFamily = sampleFont;
       btn.addEventListener('click', function () {
         selectEl.value = opt.value;
         selectEl.dispatchEvent(new Event('input', { bubbles: true }));
@@ -767,7 +807,7 @@
 
     var card = e.target.closest && e.target.closest('.debit-account');
     if (!card || !root.contains(card)) return;
-    if (root.id === 'uz-iat-overlay') return;
+    if (root.id === 'uz-iat-overlay' || root.id === 'uz-trade-overlay') return;
     e.preventDefault();
     e.stopPropagation();
     openDebitSheet(card);
@@ -788,15 +828,39 @@
     }
   }
 
+  function bindPageSelects() {
+    if (!customMenusEnabled()) return;
+    document.querySelectorAll('select.form-field__select').forEach(function (sel) {
+      var wrap = sel.closest('.form-field__select-wrap');
+      if (!wrap) return;
+      bindSelectNativeBlock(sel);
+      if (wrap.querySelector('.form-field__select-sheet-trigger')) return;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'form-field__select-sheet-trigger';
+      btn.setAttribute('aria-haspopup', 'listbox');
+      btn.setAttribute('aria-label', 'Choose ' + getTitleForSelect(sel));
+      wrap.appendChild(btn);
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        openSelectSheet(sel);
+      });
+    });
+  }
+
   function init() {
     initOverlay(getPaymentModal());
     initOverlay(getIatOverlay());
+    initOverlay(getTradeOverlay());
+    bindPageSelects();
   }
 
   bindMoreFunctionsSheet();
 
   window.UZBankFormSheet = {
-    openAccountPickerSheet: openAccountPickerSheet
+    openAccountPickerSheet: openAccountPickerSheet,
+    openDateSheet: openDateSheet
   };
 
   if (document.readyState === 'loading') {

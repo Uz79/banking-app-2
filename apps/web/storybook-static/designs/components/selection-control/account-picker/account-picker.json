@@ -25,6 +25,8 @@
   },
   "tokens": {
     "radius": "alias.radius.regular",
+    "stroke": "mapped.border.border-secondary",
+    "strokeFocus": "mapped.border.border",
     "modes": {
       "light": {
         "foreground": "mapped/light.foreground.foreground"

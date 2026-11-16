@@ -15,6 +15,12 @@
       },
       "regular-right-active": {
         "default": "variants/regular-right-active/default.svg"
+      },
+      "small-left-active": {
+        "default": "variants/small-left-active/default.svg"
+      },
+      "small-right-active": {
+        "default": "variants/small-right-active/default.svg"
       }
     }
   },
@@ -34,6 +40,8 @@
     "keyboardFocusable": true
   },
   "notes": [
-    "Figma exports `Pressed` are stored as `focus.svg` for consistency."
+    "Figma Type=Regular → 44dp track; Type=Small → 36dp track (used in app toolbar / theme switch).",
+    "Case=Left Active | Right Active — which segment is selected in the export snapshot.",
+    "Figma exports `Pressed` are stored as `focus.svg` when present."
   ]
 }

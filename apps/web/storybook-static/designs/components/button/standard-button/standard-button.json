@@ -16,11 +16,6 @@
         "hover": "variants/small-secondary/hover.svg",
         "pressed": "variants/small-secondary/pressed.svg"
       },
-      "large-filled-tonal": {
-        "focus": "variants/large-filled-tonal/focus.svg",
-        "default": "variants/large-filled-tonal/default.svg",
-        "hover": "variants/large-filled-tonal/hover.svg"
-      },
       "regular-filledtonal": {
         "default": "variants/regular-filledtonal/default.svg",
         "hover": "variants/regular-filledtonal/hover.svg",
@@ -31,11 +26,6 @@
         "default": "variants/regular-secondary/default.svg",
         "hover": "variants/regular-secondary/hover.svg",
         "pressed": "variants/regular-secondary/pressed.svg"
-      },
-      "small-filled-tonal": {
-        "focus": "variants/small-filled-tonal/focus.svg",
-        "default": "variants/small-filled-tonal/default.svg",
-        "hover": "variants/small-filled-tonal/hover.svg"
       },
       "small-primary": {
         "focus": "variants/small-primary/focus.svg",
@@ -54,11 +44,6 @@
         "default": "variants/large-secondary/default.svg",
         "hover": "variants/large-secondary/hover.svg",
         "pressed": "variants/large-secondary/pressed.svg"
-      },
-      "regular-filled-tonal": {
-        "focus": "variants/regular-filled-tonal/focus.svg",
-        "default": "variants/regular-filled-tonal/default.svg",
-        "hover": "variants/regular-filled-tonal/hover.svg"
       },
       "regular-txt-only": {
         "focus": "variants/regular-txt-only/focus.svg",

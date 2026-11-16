@@ -1,0 +1,23 @@
+{
+  "name": "uz-logo",
+  "category": "logo",
+  "description": "Circular UZ mark used in the sidebar.",
+  "variants": [
+    "circle"
+  ],
+  "interactionStates": [
+    "default"
+  ],
+  "assets": {
+    "overview": "variants/circle/default.svg",
+    "variants": {
+      "circle": {
+        "default": "variants/circle/default.svg"
+      }
+    }
+  },
+  "notes": [
+    "24px circular mark. The lettering is cut out of the disc.",
+    "App sprite: assets/icons/icon24-uz-logo.svg, symbol id i-uz-logo."
+  ]
+}

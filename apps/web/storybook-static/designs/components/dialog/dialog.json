@@ -8,7 +8,6 @@
     "focus"
   ],
   "assets": {
-    "overview": "overview.png",
     "variants": {
       "default-default": {
         "default": "variants/default-default/default.svg"
@@ -19,7 +18,8 @@
       "confirmation": {
         "default": "variants/confirmation/default.svg"
       }
-    }
+    },
+    "overview": "overview.png"
   },
   "tokens": {
     "radius": "alias.radius.regular",

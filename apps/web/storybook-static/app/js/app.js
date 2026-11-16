@@ -394,14 +394,33 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  document.addEventListener('click', function (e) {
+    var bookingsBtn = e.target.closest('[data-action="show-all-bookings"]');
+    if (!bookingsBtn) return;
+    document.dispatchEvent(
+      new CustomEvent('uz:more-functions-action', {
+        bubbles: true,
+        detail: { action: 'show-all-bookings' }
+      })
+    );
+  });
+
   document.addEventListener('uz:more-functions-action', function (e) {
     var d = e.detail || {};
     var action = d.action;
     if (!action) return;
-    if (action === 'internal-account-transfer') {
-      if (typeof window.__UZ_IAT_OPEN === 'function') {
-        window.__UZ_IAT_OPEN();
-      }
+    if (action === 'show-all-bookings') {
+      var accountKey = window.__UZ_ACTIVE_ACCOUNT__ || 'savings';
+      var bookingsPrefix = '';
+      try {
+        if ((window.location.pathname || '').replace(/\\/g, '/').indexOf('/payment/') !== -1) {
+          bookingsPrefix = '../';
+        }
+      } catch (_e) {}
+      window.location.href =
+        bookingsPrefix +
+        'all-bookings-and-payments.html?account=' +
+        encodeURIComponent(accountKey);
       return;
     }
     if (action === 'change-category') {

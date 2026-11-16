@@ -11,7 +11,7 @@ Overflow actions from the primary action row on **Overview** and **Account detai
 
 | Order | Label | Icon id |
 | ----- | ----- | ------- |
-| 1 | Internal account transfer | `i-repeat` |
+| 1 | Show all bookings | `i-arrow-right` |
 | 2 | Change category | `i-edit-2` |
 | 3 | Show account information | `i-eye` |
 
