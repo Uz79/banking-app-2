@@ -10,10 +10,6 @@ In order. The first is what `/feature-spec` starts.
 
 Not scheduled, smallest first (an estimate of size, not of value).
 
-## 66. Motion specimens: Focus-mode choreography's sample stays white in Dark
-
-Klaudiusz, 2026-11-06. On Motion specimens, the Focus-mode choreography sample's right column keeps a white background in Dark. It needs a surface token.
-
 ## 67. The status message's timing
 
 Klaudiusz, 2026-11-06. The "Open payment!" message appears after about 9 s; the baseline smoke test and `js/status-feed.js`'s comment say 12 s (8 s was measured on 2026-11-05). To settle: what the timer actually counts from, then align the code or the baseline.
@@ -458,6 +454,12 @@ Spec: `specs/2026-11-08-field-anatomy-and-band-ink/` (branch `feature/field-anat
 Klaudiusz, 2026-11-06. In Sell, "Available in <account>" goes, and the account picker reads "Credit account", not "Debit account". Also check: in Buy, "Price" changes to the typed limit (389.22 to 100.00); the market price shouldn't follow it. Relates to 55. To settle in its spec: what Buy shows as Price and as the expected total with a limit, and whether 55 is still needed once Sell drops the line.
 
 Spec: `specs/2026-11-08-trade-sheet-account-and-price/` (branch `feature/trade-sheet-account-and-price`), with 55. Settled in its interview: 55 is still needed, because Buy keeps the line; Price always shows the market price and the total uses the typed limit; Sell's change is the label and the picker title only. Built 2026-11-08.
+
+## 66. Motion specimens: Focus-mode choreography loses its panel in Dark (done)
+
+Klaudiusz, 2026-11-06, corrected 2026-11-16. On Motion specimens, No. 002 Focus-mode choreography's stage lost its panel in Dark: its left column (the course text) melted into the page. Every sample stage and Core CSS block takes `background: var(--ms-surface)` (`--color-bg`), a framed panel on the `--color-bg-secondary` page. `.s2-stage` overrode it, and in Dark with `--color-bg-secondary`, the page colour. (The first note, "the right column keeps a white background", described it wrongly.)
+
+Built 2026-11-16: the two `background` lines on `.s2-stage` are removed so it inherits `--ms-surface` like the other samples; the Dark ink and paper swap, which colours the cube, stays. No. 001's Dark stage already matched. Spec: `specs/2026-11-16-focus-mode-sample-dark/`.
 
 ## 68. Editing a standing order after its next payment leaves two payments (done)
 
