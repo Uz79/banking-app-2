@@ -153,8 +153,8 @@
 
     /* ---------- No. 002 · Focus-mode choreography ---------- */
     /* Ink = the dark scene, paper = the light object — both derived from the theme (incl. Profile colour override) */
-    .s2-stage { container-type: inline-size; --k: 1; background: var(--color-bg); --s2-ink: var(--color-fg); --s2-paper: var(--color-bg); }
-    html[data-theme="dark"] .s2-stage { background: var(--color-bg-secondary); --s2-ink: var(--color-bg); --s2-paper: var(--color-fg); }
+    .s2-stage { container-type: inline-size; --k: 1; --s2-ink: var(--color-fg); --s2-paper: var(--color-bg); }
+    html[data-theme="dark"] .s2-stage { --s2-ink: var(--color-bg); --s2-paper: var(--color-fg); }
     .s2-hero { position: absolute; left: 6%; top: 14%; width: 36%; display: flex; flex-direction: column; gap: 2cqw; pointer-events: none; }
     .s2-hero > * { transition: opacity calc(0.4s * var(--k)) ease, transform calc(0.4s * var(--k)) cubic-bezier(0.2, 0.8, 0.2, 1);
       transition-delay: calc((0.9s + var(--i) * 0.07s) * var(--k)); }
