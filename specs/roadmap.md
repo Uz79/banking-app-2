@@ -477,15 +477,17 @@ Spec: `specs/2026-11-06-demo-data-dates/` (branch `feature/demo-data-dates`), wi
 
 Spec: `specs/2026-11-16-remove-finder-duplicates/` (branch `feature/remove-finder-duplicate-files`). It sat under Later; taken on 2026-11-16 because Next was empty. Found while speccing: not one stray file but 686 Finder duplicates in git (131 in `apps/web` source, about 200 in `designs/`, 355 in tracked `storybook-static`); the 126 icon copies leak into the sprite as junk symbols. The spec covers all but `storybook-static` (75). Original note: Found while writing 63 and 64's spec (2026-11-08). `apps/web/scripts/generate-tokens-css 2.mjs` is tracked, is not run by `tokens:build` (which reads `generate-tokens-css.mjs`), and carries non-code text after the generator's end. To settle in its spec: whether anything reads it (it looks like an accidental copy), then remove it, and check the other `* 2.*` files in the repo for the same.
 
-## 76. `sync_icons_sprite.py` does more than build the sprite
-
-Found while building 70 (2026-11-16). Running `apps/web/scripts/sync_icons_sprite.py` also rewrites `js/storage-migrate.js`'s legacy key table (the `keys:` step turns `uzBankWebApp10Theme`, `uzBankWebApp11Theme` and similar into `uzBankWebTheme`, so the table maps a key to itself) and embeds the whole sprite into `fridge-advisor.html` and `investment-opening.html`, which carry it differently today (about 1576 more lines each). 70 did not run it for those; it removed the junk symbols from the sprite and the pages by hand. To settle in its spec: split the script (sprite build; embedding; the one-off HTML migration; the key migration), drop the steps that were one-offs, and check how the fridge and opening pages get their icons.
-
 Built 2026-11-16: 325 tracked Finder duplicates removed (131 in `apps/web` source, 194 in `designs/`), the 14 design manifests and 12 generated stories stop naming them, the sprite and 17 pages lose 126 junk symbols (`i-crosshair 2` and the like), `sync_icons_sprite.py` reads only `icon24-<name>.svg`, and `.gitignore` ignores `name 2.ext`. Kept: six files that are not duplicates. Found: `storybook-static` has 355 more (75); the sprite script also rewrites `js/storage-migrate.js` and embeds the sprite in two more pages (76), so the junk symbols were removed from the pages by a targeted edit, not by running it. Not checked: Storybook itself (started), most of the baseline smoke test.
 
 ## 75. `storybook-static` is tracked build output (done, in 77)
 
 Found while writing 70's spec (2026-11-16). `apps/web/storybook-static` held 1591 tracked files, 355 of them Finder duplicates. Rebuilt clean on 2026-11-16 (`specs/2026-11-16-rebuild-storybook-static/`), then untracked by 77, which builds it on deploy.
+
+## 76. `sync_icons_sprite.py` does more than build the sprite (done)
+
+Found while building 70 (2026-11-16). Run today, `apps/web/scripts/sync_icons_sprite.py` changed three files: `js/storage-migrate.js` (the legacy key table turned into one mapping keys to themselves) and the two pages that carried the sprite as a bare `<svg>` (doubled to 560 symbols). Spec: `specs/2026-11-18-sprite-script-builds-only-the-sprite/` (branch `feature/sprite-script-builds-only-the-sprite`), taken 2026-11-18 from Later because Next was empty.
+
+Built 2026-11-18: the script builds and embeds only (the `<img>` migration and the key rewrite are deleted), the fridge and the opening use the standard `#uzbank-icon-defs` wrapper, and a run on a clean tree changes no file (checked twice, and with a throwaway icon). `js/storage-migrate.js` is untouched. Not checked: the baseline smoke test beyond the build and the pages' icons.
 
 ## 77. Vercel builds Storybook on deploy (done)
 
