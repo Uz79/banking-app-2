@@ -301,6 +301,8 @@ function buildField(key, onChange) {
 }
 
 const NOTE = 'A rough guide, not financial advice.';
+/* Shown only when the result is CHF 0 (roadmap 83): what the zero means and what to try. */
+const ZERO = 'Your spending for a month and your reserves use up your assets. Try lowering a reserve.';
 
 /* Screen 7: a ring (the investable share of total assets), the amount, the yearly amount and the note (D6, D17). */
 function buildResult() {
@@ -330,11 +332,15 @@ function buildResult() {
   sr.textContent = 'You could invest ' + chf(amount) + '.';
   const year = document.createElement('p');
   year.className = 'fridge__year';
-  year.textContent = 'Left each year: ' + chf(values.left * 12);
+  year.textContent = 'You could set aside each year: ' + chf(values.left * 12);
   const note = document.createElement('p');
   note.className = 'fridge__note';
   note.textContent = NOTE;
-  box.append(label, ring, sr, year, note);
+  /* A zero says why, under the ring and above the yearly line, which is a separate recurring amount (83 D1, D3) */
+  const why = document.createElement('p');
+  why.className = 'fridge__note fridge__zero';
+  why.textContent = ZERO;
+  box.append(label, ring, sr, ...(amount === 0 ? [why] : []), year, note);
   return box;
 }
 
@@ -410,7 +416,7 @@ function render(moveFocus) {
   panel.append(caption, heading, text, ...(body ? [body] : []), form, actions);
   refreshAll();
   if (moveFocus) heading.focus({ preventScroll: true });
-  announce(caption.textContent + '. ' + (step.kind === 'result' ? 'You could invest ' + chf(investable()) + '. ' + NOTE
+  announce(caption.textContent + '. ' + (step.kind === 'result' ? 'You could invest ' + chf(investable()) + '. ' + (investable() === 0 ? ZERO + ' ' : '') + NOTE
     : step.title + '. ' + step.text));
   /* Closing always asks: the progress is kept for the session (phone polish D10, D11). */
   publish({ canBack: index > 0, dirty: true });

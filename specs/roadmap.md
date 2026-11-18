@@ -6,11 +6,9 @@ The order below is the order of work. Items keep their numbers (specs, commits a
 
 In order. The first is what `/feature-spec` starts.
 
-
 # Later
 
 Not scheduled, smallest first (an estimate of size, not of value).
-
 
 ## 58. Legibility doesn't reach the Playground
 
@@ -538,3 +536,11 @@ Found during 79 (2026-11-18). Closed by 82 (2026-11-18): `js/opening-risk-chart.
 Klaudiusz, 2026-11-18, a follow-up to 79. The tile gets an expander ("Compare with investing") with three native sliders: duration (1 to 30 years), amount (CHF 5'000 to 500'000) and strategy (the five of `STRATEGIES`). Open, the good, expected and unfavourable curves are drawn into the tile's one chart with the cash line for the slider's amount and duration, with the end values and the change as text. Settled in its interview: one chart and nothing replaced, start from the customer's idle cash, 10 years and Balanced, "See how much to invest" carries nothing over, the tile still hides under CHF 1'000, native range sliders, no analytics. Placeholder `r` and `s` per strategy in `CALCULATOR` (flagged). Investment values are before inflation, as in the reference (D7, for review).
 
 Built 2026-11-18: `js/inflation-tile.js` (now an ES module), `CALCULATOR` in `js/investment-opening-config.js`, the expander and sliders in `overview.html`, `.inflation-calc*` in `css/styles.css`. Follow-up the same day: the expanded tile was far too long, so the calculator moves into a flow sheet as its own page (`investment-calculator.html`), opened from a "Try the calculator" button on the tile; its "See how much to invest" ends it and starts the fridge as if opened from Offers, with nothing carried over. Spec: `specs/2026-11-18-inflation-tile-calculator/` (D20 to D32). Not checked: see its `validation.md`.
+
+## 83. Fridge advisor result: CHF 0 with no reason (done)
+
+Klaudiusz, 2026-11-18. On step 7 ("Your freezer", `buildResult()` in `js/fridge-advisor.js`), when one month of spending plus the two reserves is at least the total assets, `investable()` is 0 and the ring says "You could invest CHF 0" with no reason. Next to it the line "Left each year: CHF 33'600" (left at month end x 12) reads as a contradiction. To settle: (1) a one-line explanation when the result is 0, with a hint to lower the reserves; (2) relabel the yearly line so it reads as a separate recurring amount, for example "You could set aside each year"; (3) whether the yearly line stays when the result is 0.
+
+Settled in its interview: one sentence under the ring at 0, the yearly line relabelled "You could set aside each year" and kept at 0, "Show suitable products" unchanged. Spec: `specs/2026-11-18-fridge-zero-result/`.
+
+Built 2026-11-18: `buildResult()` and the announcement in `js/fridge-advisor.js`, `.fridge__zero` in `css/styles.css`. Not checked: see its `validation.md`.
