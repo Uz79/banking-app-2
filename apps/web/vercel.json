@@ -1,7 +1,25 @@
 {
+  "buildCommand": "npm run build && npm run build-storybook && rm -rf dist node_modules",
   "rewrites": [
-    { "source": "/from-cv", "destination": "/overview.html" },
-    { "source": "/from-portfolio", "destination": "/overview.html" },
-    { "source": "/from-linkedin", "destination": "/overview.html" }
+    {
+      "source": "/from-cv",
+      "destination": "/overview.html"
+    },
+    {
+      "source": "/from-portfolio",
+      "destination": "/overview.html"
+    },
+    {
+      "source": "/from-linkedin",
+      "destination": "/overview.html"
+    },
+    {
+      "source": "/designs/:path*",
+      "destination": "/storybook-static/designs/:path*"
+    },
+    {
+      "source": "/app/:path*",
+      "destination": "/storybook-static/app/:path*"
+    }
   ]
 }
