@@ -9718,7 +9718,7 @@ html[data-theme="light"] .status-message__shell {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  padding: var(--space-4);
+  padding: var(--space-4) var(--space-4) var(--space-5);
   overflow-y: auto;
 }
 
@@ -9764,9 +9764,12 @@ html[data-theme="light"] .status-message__shell {
 
 .calc__actions {
   display: flex;
+  /* Any spare height goes above the button, so the visible gap below it is exactly the page's bottom padding (82 D37) */
+  margin-top: auto;
 }
 
 .calc__continue {
+  width: 100%;
   max-width: 100%;
 }
 
@@ -9778,20 +9781,23 @@ html[data-theme="light"] .status-message__shell {
 }
 
 @media (min-width: 640px) {
+  /* 32 dp left, right and bottom (82 D33); the top is 24 dp like the opening flow's panel (82 D37) */
   .calc {
-    padding: var(--space-5) var(--space-6);
+    padding: var(--space-4) var(--space-5) var(--space-5);
   }
 
   .calc__grid {
     display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    /* Sliders and chart share the width 50-50 (82 D36) */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: var(--space-6);
     align-items: start;
   }
 
+  /* A secondary background, no stroke (82 D33) */
   .calc__controls {
     padding: var(--space-4);
-    border: 0.0625rem solid var(--color-separator);
+    background-color: var(--color-bg-secondary);
     border-radius: var(--radius-regular);
   }
 
@@ -9799,8 +9805,14 @@ html[data-theme="light"] .status-message__shell {
     order: 0;
   }
 
-  .calc__plot {
-    height: 12rem;
+  /* About square, so a steeper strategy reads as a steeper line (82 D34) */
+  .calc__plot.inflation-tile__plot {
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .calc__continue {
+    width: auto;
   }
 
   .calc__actions {
@@ -9811,7 +9823,7 @@ html[data-theme="light"] .status-message__shell {
 .inflation-calc__results {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-1);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -9819,7 +9831,7 @@ html[data-theme="light"] .status-message__shell {
 
 .inflation-calc__result {
   display: grid;
-  grid-template-columns: 1.5rem minmax(0, 1fr) auto 3.5rem;
+  grid-template-columns: 1.5rem minmax(0, 1fr) 3.5rem auto;
   align-items: center;
   gap: var(--space-2);
   font-size: var(--fs-text-sm);
@@ -9891,7 +9903,7 @@ html[data-theme="light"] .status-message__shell {
   padding: 0 var(--space-2);
   border: 1px solid var(--color-btn-secondary-border);
   border-radius: var(--radius-regular);
-  background: transparent;
+  background: var(--color-bg);
   color: var(--color-fg);
   font: inherit;
   text-align: right;
@@ -9910,14 +9922,23 @@ html[data-theme="light"] .status-message__shell {
   color: var(--color-fg-label);
 }
 
-/* At Legibility Large each result is a stacked row, as the old chart's end values were (9e D7) */
-:root[data-legibility="large"] .inflation-calc__result {
-  grid-template-columns: 1.5rem minmax(0, 1fr) auto;
-}
+/* Each legend row is one line (82 D35). Only on a phone at Legibility Large, where there is no room, the change wraps
+   under the name. */
+@media (max-width: 639px) {
+  :root[data-legibility="large"] .inflation-calc__result {
+    grid-template-columns: 1.5rem minmax(0, 1fr) auto;
+  }
 
-:root[data-legibility="large"] .inflation-calc__change {
-  grid-column: 2 / -1;
-  text-align: left;
+  :root[data-legibility="large"] .inflation-calc__amount {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  :root[data-legibility="large"] .inflation-calc__change {
+    grid-column: 2 / -1;
+    grid-row: 2;
+    text-align: left;
+  }
 }
 
 .inflation-tile__link {

@@ -107,10 +107,14 @@ function draw() {
   const path = (list, y) => list.map(([t, v], i) => (i ? 'L' : 'M') + x(t).toFixed(1) + ' ' + y(v).toFixed(1)).join(' ');
   const data = {};
   LINES.forEach(([id, k]) => { data[id] = sample(curve(k), years); });
-  /* From the lowest point of the unfavourable line (or the cash line's end) to the good line's end, snapped outward to
-     25 points, so the range moves in steps and not with every pixel of a drag (82 D8) */
-  const lo = Math.min(100, cashAt(years), ...data.bad.map((p) => p[1]));
-  const hi = Math.max(100, data.good[SAMPLES][1]);
+  /* One scale for all five strategies at this duration, so choosing a riskier one shows a steeper good line and
+     choosing a safer one a flatter one, not the same picture refitted. From the lowest point of any unfavourable
+     line (or the cash line's end) to the highest good line's end, snapped outward to 25 points, so the range moves
+     in steps and not with every pixel of a drag (82 D8, D34) */
+  const mixes = STRATEGIES.map((st) => C.mix[st.id]);
+  const at = (m2, k, t) => 100 * Math.exp(m2.r * t + k * C.z * m2.s * Math.sqrt(t));
+  const lo = Math.min(100, cashAt(years), ...mixes.map((m2) => Math.min(...sample((t) => at(m2, -1, t), years).map((p) => p[1]))));
+  const hi = Math.max(100, ...mixes.map((m2) => at(m2, 1, years)));
   const y0 = Math.floor(lo / 25) * 25;
   const y1 = Math.ceil(hi / 25) * 25;
   const y = (v) => m + (H - 2 * m) * (1 - (v - y0) / (y1 - y0));
@@ -155,7 +159,7 @@ function drawResults(values) {
     const change = document.createElement('span');
     change.className = 'inflation-calc__change';
     change.textContent = sign(values[id].change);
-    li.append(key, name, amountEl, change);
+    li.append(key, name, change, amountEl);
     results.appendChild(li);
   });
 }
