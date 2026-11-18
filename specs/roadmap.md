@@ -6,19 +6,11 @@ The order below is the order of work. Items keep their numbers (specs, commits a
 
 In order. The first is what `/feature-spec` starts.
 
-## 82. Overview tile: an investment return calculator in "Cash loses value"
-
-Klaudiusz, 2026-11-18, a follow-up to 79. The tile (`js/inflation-tile.js`, Overview's third column) keeps its text and its "See how much to invest" call to action, and gets an expander that opens three sliders inside the tile: "Investment duration in years" (1 to 30), "Amount in CHF" (5'000 to 500'000, 5'000 being `AMOUNT.min`) and "Strategy" (the five of `STRATEGIES`, safe to risky), each with its value in a field, as in the bank's calculator (reference: `calculator.png`, `261028_product-opening/scenario`). The good, expected and unfavourable end values in CHF with their percentage change update as the sliders move. Starting points: the unused `js/opening-risk-chart.js` and `RISK_CHART` (left over from 78 D4); the strategy slider needs a placeholder `r` and `s` per strategy, flagged like the existing ones. Keep the "an example, not a forecast" note and add the reference's short disclaimer in plain English. Short English copy, no em dashes, one-line labels. Interview: where the expander sits and whether the inflation chart stays; starting values (own idle cash or CHF 10'000); whether "See how much to invest" carries the amount and strategy over; the minIdle hiding; the slider (native range, as the fridge uses); 390px, Legibility Large, keyboard, reduced motion; analytics. Absorbs the cleanup in 81 (closed with it).
-
-Spec: `specs/2026-11-18-inflation-tile-calculator/`.
 
 # Later
 
 Not scheduled, smallest first (an estimate of size, not of value).
 
-## 81. Remove the unused risk chart
-
-Found during 79 (2026-11-18). After 78 took the forecast chart out of the opening's risk step and 79 drew its own tile, `js/opening-risk-chart.js`, `RISK_CHART` in `js/investment-opening-config.js` and the `.opening-chart*` rules in `css/styles.css` are used by nothing. Closed by 82 (`exampleAmount` turned out to be used and moves to `AMOUNT`). Check that, then delete them (and the chart's mentions in `specs/tech-spec.md`).
 
 ## 58. Legibility doesn't reach the Playground
 
@@ -536,3 +528,13 @@ Built 2026-11-18: the card is a `div` with the two buttons (stacked at 390px), a
 Found during 64's audit (2026-11-08). Two kinds of `.form-field` are not text fields and don't follow the 24 / 4 / control / 4 / 16 anatomy: the display-only underlined value rows (`.form-field__row` without `--bordered`: IBAN, Recipient and Bank Name in Pay's recipient step) are 89dp, or 81dp for a single line, and the account picker cards (`.debit-account`: Debit account, Credit account, from, to, Custody account) are 101dp, with no reserved text row. Neither shows a helper or an error today, so nothing jumps. To settle in its spec: which Figma case each one is (the ReadOnly TextField, the account card), what height they should have, and whether the picker cards should reserve the text row for a future error.
 
 Spec: `specs/2026-11-08-display-rows-and-account-cards/` (branch `feature/display-rows-and-account-cards`). Settled in its interview: the value rows become Figma's ReadOnly TextField (88dp); the cards keep their size and get the anatomy around them, with the 16dp text row reserved. Found in the build: the trade sheet's two account fields are `form-field--no-footer`, so they keep reserving nothing (101dp); Pay's and the transfer's cards are 121dp (24 + 4 + 73 + 4 + 16) and no step scrolls because of it. Built 2026-11-08.
+
+## 81. Remove the unused risk chart (done)
+
+Found during 79 (2026-11-18). Closed by 82 (2026-11-18): `js/opening-risk-chart.js`, the `.opening-chart*` rules and `RISK_CHART` are gone. The check found `RISK_CHART.exampleAmount` still in use (the assistant's `{amount}` fallback), so it moved to `AMOUNT.exampleAmount` with the same value.
+
+## 82. Overview tile: an investment return calculator in "Cash loses value" (done)
+
+Klaudiusz, 2026-11-18, a follow-up to 79. The tile gets an expander ("Compare with investing") with three native sliders: duration (1 to 30 years), amount (CHF 5'000 to 500'000) and strategy (the five of `STRATEGIES`). Open, the good, expected and unfavourable curves are drawn into the tile's one chart with the cash line for the slider's amount and duration, with the end values and the change as text. Settled in its interview: one chart and nothing replaced, start from the customer's idle cash, 10 years and Balanced, "See how much to invest" carries nothing over, the tile still hides under CHF 1'000, native range sliders, no analytics. Placeholder `r` and `s` per strategy in `CALCULATOR` (flagged). Investment values are before inflation, as in the reference (D7, for review).
+
+Built 2026-11-18: `js/inflation-tile.js` (now an ES module), `CALCULATOR` in `js/investment-opening-config.js`, the expander and sliders in `overview.html`, `.inflation-calc*` in `css/styles.css`. Spec: `specs/2026-11-18-inflation-tile-calculator/`. Not checked: see its `validation.md`.
