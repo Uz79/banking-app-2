@@ -477,19 +477,19 @@ Spec: `specs/2026-11-06-demo-data-dates/` (branch `feature/demo-data-dates`), wi
 
 Spec: `specs/2026-11-16-remove-finder-duplicates/` (branch `feature/remove-finder-duplicate-files`). It sat under Later; taken on 2026-11-16 because Next was empty. Found while speccing: not one stray file but 686 Finder duplicates in git (131 in `apps/web` source, about 200 in `designs/`, 355 in tracked `storybook-static`); the 126 icon copies leak into the sprite as junk symbols. The spec covers all but `storybook-static` (75). Original note: Found while writing 63 and 64's spec (2026-11-08). `apps/web/scripts/generate-tokens-css 2.mjs` is tracked, is not run by `tokens:build` (which reads `generate-tokens-css.mjs`), and carries non-code text after the generator's end. To settle in its spec: whether anything reads it (it looks like an accidental copy), then remove it, and check the other `* 2.*` files in the repo for the same.
 
-## 75. `storybook-static` is tracked build output
-
-Found while writing 70's spec (2026-11-16). `apps/web/storybook-static` holds 1591 tracked files, 355 of them Finder duplicates (`name 2.ext`). It is tracked on purpose for now: it is live at `banking-app-2-bay.vercel.app/storybook-static/`, served because Vercel serves `apps/web` as it is. Spec: `specs/2026-11-16-rebuild-storybook-static/` (branch `feature/rebuild-storybook-static`), taken 2026-11-16 from Later because Next was empty: rebuild it clean with `npm run build-storybook` so the copies drop out and it matches the current stories. It stays here until 77 ends the tracking.
-
-## 77. Vercel builds Storybook on deploy
-
-Added 2026-11-16, out of 75's scope. `storybook-static` is tracked build output (28 MB) that goes stale and collects Finder copies. To settle in its spec: where the build runs (`build-storybook` into the deploy output after `npm run build`, or a Vercel project of its own for Storybook), what the deploy command becomes (today `npm run build && rm -rf dist node_modules`, with `apps/web` served as it is), how the hosted URL `/storybook-static/` is kept or redirected (found while checking 75: the build uses root-absolute paths, `/designs/...` for the design export figures and `/app/js/...` for the live pages' scripts, which only resolve when Storybook is served from the site root; under `/storybook-static/` the figures 404 and the live pages' scripts fail to load, as in the July build, so a `--base`-style fix or a Storybook of its own at the root belongs here), and the preview deploys; then untrack `storybook-static` and add it to `.gitignore`. Closes 75. Spec: `specs/2026-11-18-build-storybook-on-deploy/` (branch `feature/build-storybook-on-deploy`), taken 2026-11-18 from Later because Next was empty: same project with a `buildCommand` in `apps/web/vercel.json`, two rewrites (`/designs/*` and `/app/*` to `/storybook-static/...`), then untrack and ignore; checked on the branch's Vercel preview.
-
 ## 76. `sync_icons_sprite.py` does more than build the sprite
 
 Found while building 70 (2026-11-16). Running `apps/web/scripts/sync_icons_sprite.py` also rewrites `js/storage-migrate.js`'s legacy key table (the `keys:` step turns `uzBankWebApp10Theme`, `uzBankWebApp11Theme` and similar into `uzBankWebTheme`, so the table maps a key to itself) and embeds the whole sprite into `fridge-advisor.html` and `investment-opening.html`, which carry it differently today (about 1576 more lines each). 70 did not run it for those; it removed the junk symbols from the sprite and the pages by hand. To settle in its spec: split the script (sprite build; embedding; the one-off HTML migration; the key migration), drop the steps that were one-offs, and check how the fridge and opening pages get their icons.
 
 Built 2026-11-16: 325 tracked Finder duplicates removed (131 in `apps/web` source, 194 in `designs/`), the 14 design manifests and 12 generated stories stop naming them, the sprite and 17 pages lose 126 junk symbols (`i-crosshair 2` and the like), `sync_icons_sprite.py` reads only `icon24-<name>.svg`, and `.gitignore` ignores `name 2.ext`. Kept: six files that are not duplicates. Found: `storybook-static` has 355 more (75); the sprite script also rewrites `js/storage-migrate.js` and embeds the sprite in two more pages (76), so the junk symbols were removed from the pages by a targeted edit, not by running it. Not checked: Storybook itself (started), most of the baseline smoke test.
+
+## 75. `storybook-static` is tracked build output (done, in 77)
+
+Found while writing 70's spec (2026-11-16). `apps/web/storybook-static` held 1591 tracked files, 355 of them Finder duplicates. Rebuilt clean on 2026-11-16 (`specs/2026-11-16-rebuild-storybook-static/`), then untracked by 77, which builds it on deploy.
+
+## 77. Vercel builds Storybook on deploy (done)
+
+Added 2026-11-16, out of 75's scope. Built 2026-11-18: `apps/web/vercel.json` has a `buildCommand` (`npm run build && npm run build-storybook && rm -rf dist node_modules`) and two rewrites (`/designs/*` and `/app/*` to `/storybook-static/...`, which fixes the figures and live-page stories that 404ed under that URL), and `storybook-static` is untracked and in `.gitignore`. Same project, same URL. Spec: `specs/2026-11-18-build-storybook-on-deploy/`.
 
 ## 71. Display-only rows and account pickers against the TextField anatomy (done)
 
