@@ -9641,6 +9641,176 @@ html[data-theme="light"] .status-message__shell {
   color: var(--color-fg);
 }
 
+/* The calculator (roadmap 82): five lines told apart by pattern, never by colour alone. Tokens only. No motion. */
+.inflation-tile.is-calculating .inflation-tile__plot {
+  height: 10rem;
+}
+
+.inflation-tile__line--cash {
+  stroke-width: 1.5;
+}
+
+.inflation-tile:not(.is-calculating) .inflation-tile__line--cash {
+  stroke-width: 2;
+}
+
+.inflation-tile__line--good {
+  stroke: var(--color-fg);
+  stroke-width: 1.5;
+  stroke-dasharray: 8 4;
+}
+
+.inflation-tile__line--expected {
+  stroke: var(--color-fg-interactive);
+  stroke-width: 3;
+}
+
+.inflation-tile__line--bad {
+  stroke: var(--color-fg-secondary);
+  stroke-width: 1.5;
+  stroke-dasharray: 1.5 3;
+}
+
+.inflation-tile__band {
+  fill: var(--color-fg-interactive);
+  fill-opacity: 0.12;
+  stroke: none;
+}
+
+.inflation-calc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.inflation-calc__toggle {
+  padding-inline: 0;
+}
+
+.inflation-calc__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.inflation-calc__panel[hidden] {
+  display: none;
+}
+
+.inflation-calc__results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.inflation-calc__result {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr) auto 3.5rem;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+}
+
+.inflation-calc__key {
+  width: 1.5rem;
+  height: 0.5rem;
+  overflow: visible;
+}
+
+.inflation-calc__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inflation-calc__amount {
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+}
+
+.inflation-calc__change {
+  text-align: right;
+  color: var(--color-fg-secondary);
+  white-space: nowrap;
+}
+
+.inflation-calc__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.inflation-calc__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.inflation-calc__label,
+.inflation-calc__strategy {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+}
+
+.inflation-calc__label {
+  color: var(--color-fg-label);
+}
+
+.inflation-calc__strategy {
+  font-weight: var(--fw-medium);
+  color: var(--color-fg);
+}
+
+.inflation-calc__num {
+  width: 6.5rem;
+  height: 2rem;
+  flex: none;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-btn-secondary-border);
+  border-radius: var(--radius-regular);
+  background: transparent;
+  color: var(--color-fg);
+  font: inherit;
+  text-align: right;
+}
+
+.inflation-calc__num:focus-visible {
+  outline: 2px solid var(--color-fg-interactive);
+  outline-offset: 2px;
+}
+
+.inflation-calc__ends {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--fs-text-xs);
+  color: var(--color-fg-label);
+}
+
+/* At Legibility Large each result is a stacked row, as the old chart's end values were (9e D7) */
+:root[data-legibility="large"] .inflation-calc__result {
+  grid-template-columns: 1.5rem minmax(0, 1fr) auto;
+}
+
+:root[data-legibility="large"] .inflation-calc__change {
+  grid-column: 2 / -1;
+  text-align: left;
+}
+
 .inflation-tile__link {
   align-self: flex-start;
   max-width: 100%;
