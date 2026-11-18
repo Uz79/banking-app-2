@@ -6,13 +6,19 @@ The order below is the order of work. Items keep their numbers (specs, commits a
 
 In order. The first is what `/feature-spec` starts.
 
+## 82. Overview tile: an investment return calculator in "Cash loses value"
+
+Klaudiusz, 2026-11-18, a follow-up to 79. The tile (`js/inflation-tile.js`, Overview's third column) keeps its text and its "See how much to invest" call to action, and gets an expander that opens three sliders inside the tile: "Investment duration in years" (1 to 30), "Amount in CHF" (5'000 to 500'000, 5'000 being `AMOUNT.min`) and "Strategy" (the five of `STRATEGIES`, safe to risky), each with its value in a field, as in the bank's calculator (reference: `calculator.png`, `261028_product-opening/scenario`). The good, expected and unfavourable end values in CHF with their percentage change update as the sliders move. Starting points: the unused `js/opening-risk-chart.js` and `RISK_CHART` (left over from 78 D4); the strategy slider needs a placeholder `r` and `s` per strategy, flagged like the existing ones. Keep the "an example, not a forecast" note and add the reference's short disclaimer in plain English. Short English copy, no em dashes, one-line labels. Interview: where the expander sits and whether the inflation chart stays; starting values (own idle cash or CHF 10'000); whether "See how much to invest" carries the amount and strategy over; the minIdle hiding; the slider (native range, as the fridge uses); 390px, Legibility Large, keyboard, reduced motion; analytics. Absorbs the cleanup in 81 (closed with it).
+
+Spec: `specs/2026-11-18-inflation-tile-calculator/`.
+
 # Later
 
 Not scheduled, smallest first (an estimate of size, not of value).
 
 ## 81. Remove the unused risk chart
 
-Found during 79 (2026-11-18). After 78 took the forecast chart out of the opening's risk step and 79 drew its own tile, `js/opening-risk-chart.js`, `RISK_CHART` in `js/investment-opening-config.js` and the `.opening-chart*` rules in `css/styles.css` are used by nothing. Check that, then delete them (and the chart's mentions in `specs/tech-spec.md`).
+Found during 79 (2026-11-18). After 78 took the forecast chart out of the opening's risk step and 79 drew its own tile, `js/opening-risk-chart.js`, `RISK_CHART` in `js/investment-opening-config.js` and the `.opening-chart*` rules in `css/styles.css` are used by nothing. Closed by 82 (`exampleAmount` turned out to be used and moves to `AMOUNT`). Check that, then delete them (and the chart's mentions in `specs/tech-spec.md`).
 
 ## 58. Legibility doesn't reach the Playground
 
