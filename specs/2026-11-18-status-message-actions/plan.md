@@ -21,7 +21,7 @@ Each group ends with something to check in the browser on the agent's server (`c
 ## 3. The bill and its route (D8 to D10)
 
 - [ ] `js/payment-details.js`: a registry of route-only payments with the open bill (type `domestic`, status `open`, placeholder recipient and amount, flagged); a first load of its route opens the sheet; `openOverlay` and `applyActions` show "Open" and no Edit, Delete or Copy for it; every other stale route is cleared as before
-- [ ] Check: typing `account-details.html#payment-details/domestic/open-bill-2026-10-04` on a fresh tab opens the read-only sheet; closing it clears the hash; Back and forward behave; a made-up id still clears; the console shows `uzbank:screen` with that route; the bill is in no list (Household and Private, All bookings)
+- [ ] Check: typing `account-details.html#payment-details/domestic/open-bill-2026-10-04` on a fresh tab opens the read-only sheet; closing it clears the hash; Back and forward behave; a made-up id opens nothing; the console shows `uzbank:screen` with that route; the bill is in no list (Household and Private, All bookings)
 
 ## 4. Wrap-up
 

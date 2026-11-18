@@ -7712,6 +7712,8 @@ dialog.basic-dialog-payment-exit.basic-dialog-payment-exit--closing[open] .basic
 /* The rule of a standing order: its frequency and next execution, no booking confirmation (roadmap 47, D2) */
 .modal--payment-details:not(.pd--rule) .pd-rule-only { display: none; }
 .modal--payment-details.pd--rule .pd-not-rule { display: none; }
+/* An open bill (roadmap 80): nothing is booked or signed yet, so no confirmation to download */
+.modal--payment-details.pd--open .pd-not-rule { display: none; }
 /* The function bar's buttons show by what the booking allows, each one by its `hidden` (roadmap 42, D6).
    A transfer has its own rule above, so the bar's goes; with no action it has no bar at all. */
 .modal--payment-details:not(.pd--has-actions) .payment-details__function-bar__actions { display: none; }
@@ -9395,11 +9397,11 @@ html[data-theme="light"] .status-message__shell {
   --status-float-shadow: 0 0 0 0 transparent;
 }
 
-.status-message:hover .status-message__shell {
+.status-message:not(.status-message--actions):hover .status-message__shell {
   background-color: color-mix(in srgb, var(--status-surface), var(--status-accent) 6%);
 }
 
-.status-message:active .status-message__shell {
+.status-message:not(.status-message--actions):active .status-message__shell {
   background-color: color-mix(in srgb, var(--status-surface), var(--status-accent) 12%);
 }
 
@@ -9407,6 +9409,45 @@ html[data-theme="light"] .status-message__shell {
   outline: 0.125rem solid var(--color-fg-interactive);
   outline-offset: 0.125rem;
   border-radius: var(--radius-regular);
+}
+
+/* A card with buttons (roadmap 80, D2, D3): not itself tappable, so no pointer and no hover tint. The buttons sit in a
+   row under the text; "Remind me later" first, "Go to payment" (filled) last. At phone width they stack full width. A label
+   is one line, cut with an ellipsis when too long. */
+.status-message--actions {
+  cursor: default;
+}
+
+.status-message__actions {
+  position: relative;
+  z-index: 1;
+  grid-column: 2 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.status-message__actions > .uz-btn {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.status-message__actions > .uz-btn > .uz-btn__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 36rem) {
+  .status-message__actions {
+    flex-direction: column;
+  }
+
+  .status-message__actions > .uz-btn {
+    width: 100%;
+  }
 }
 
 /* Content layer */

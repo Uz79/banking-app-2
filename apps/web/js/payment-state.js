@@ -744,6 +744,8 @@
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
     /* The investment opening's draft goes with the demo data (9a D18). */
     try { sessionStorage.removeItem('uzBankWebOpeningDraft'); } catch (e) {}
+    /* The status message the customer acted on comes back with the demo data (roadmap 80, D7). */
+    try { localStorage.removeItem('uzBankWebStatusActed'); } catch (e) {}
     state = defaultState();
     dispatchChange();
   }

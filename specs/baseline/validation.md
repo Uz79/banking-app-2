@@ -14,7 +14,7 @@ Setup: `cd apps/web && npm run build`, then `npm run dev` and open `http://local
 - [ ] ★ Overview loads with sidebar (desktop) or tab bar (phone); the 3D character appears in the lower right on desktop
 - [ ] ★ Light/Dark toggle switches instantly and survives a reload
 - [ ] Navigating Overview → Account details → All bookings and back plays the page transitions in the right directions
-- [ ] The "Open payment!" status message appears after about 12 s on a main view; tapping it dismisses it
+- [ ] The "Open payment!" status message appears after about 12 s on a main view; "Remind me later" hides it and it returns after about 8 s; "Go to payment" opens the bill's details and the message stays away
 
 ## 3. Banking flows
 

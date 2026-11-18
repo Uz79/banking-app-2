@@ -6,16 +6,6 @@ The order below is the order of work. Items keep their numbers (specs, commits a
 
 In order. The first is what `/feature-spec` starts.
 
-## 80. Status message: Remind me later and Go to payment
-
-From Klaudiusz, 2026-11-18. Purpose: show that the message pattern works. It appears, it is noticed, and the customer acts on it. Fixing the bill is not the point; there is no real scenario for it yet.
-
-The "Open payment!" card gets two buttons, each label short and on one line: "Remind me later" dismisses the card and it comes back after the demo delay (today's `reappearAfter`, 8 s); "Go to payment" dismisses it for good and opens the details of one specific payment, the open bill (feed id `open-bill-2026-10-04`, since 04.10.2026, overdue by several days), through its own unique route with an individual ID. A tap on the card body no longer dismisses it. Today's tap-to-dismiss and the reappear-after-tap behaviour go away. The card's layout, copy and states with two buttons need a decision in the spec.
-
-Measurement: `js/analytics.js` records hash routes as screen IDs, and Vercel Web Analytics shows whether that one payment's route was opened (against Overview views as the rough base). The ID must be unique to this bill and reachable no other way. No custom events (`specs/2026-10-26-web-analytics`, Hobby plan), so "shown" and "Remind me later" are not counted. The demo needs that payment to exist in the data and open by its route, also on a first load of the route.
-
-Open for the interview: the route and ID, and whether the booking sheet or the payment-details page opens; whether a direct open is told apart from one from the card; whether the overdue payment is added to the built-in Pending bookings, and what Reset demo data does; where the "acted on" state is stored (a key starting `uzBankWeb`, listed in `apps/web/README.md`) and whether Reset brings the message back; whether "Remind me later" repeats for ever; whether the warning and info variants and the "Scheduled payment" messages get the buttons; 390px, keyboard and screen reader order, reduced motion. Settled in its interview: a hash route as written, with the risk that Vercel lists only paths recorded; the acted-on state in localStorage `uzBankWebStatusActed`, cleared by Reset; "Remind me later" repeats for ever at 8 s; the other messages unchanged; the bill listed nowhere and read-only; the buttons in a row, stacked at 390px. Spec: `specs/2026-11-18-status-message-actions/` (branch `feature/status-message-actions`).
-
 # Later
 
 Not scheduled, smallest first (an estimate of size, not of value).
@@ -514,6 +504,18 @@ Added 2026-11-16, out of 75's scope. Built 2026-11-18: `apps/web/vercel.json` ha
 Klaudiusz, 2026-11-18. Purpose and horizon in one column, the minimum shown under the amount, the risk questions kept open and the forecast chart taken out of the step, all five strategies choosable with no primary button until one is, and glyph-only pencil Edit buttons on the summary. Spec: `specs/2026-11-18-opening-mobile-review/`.
 
 Built 2026-11-18, uncommitted for review: purpose and horizon are one column each; "Minimum CHF 5'000." shows under the amount; the three risk questions stay open (no folding, no Change buttons) and the forecast chart is off the step (its file and CSS stay for 79); all five strategies can be chosen, those above the profile carry an outlined "Above your risk profile" chip with a warning glyph and open the app's confirmation dialog (`UZBankPaymentExitPrompt`, loaded on the opening page); the strategy step shows no primary button until one is chosen; the summary's Edit buttons are glyph-only pencils ("Edit Strategy"); the assistant's copy no longer says a riskier strategy cannot be chosen. A chosen strategy now stays chosen when the answers change. Not checked: 390px (the window could not be resized), keyboard walk, reduced motion, a Multi-color theme, the baseline smoke test beyond the build.
+
+## 80. Status message: Remind me later and Go to payment (done)
+
+From Klaudiusz, 2026-11-18. Purpose: show that the message pattern works. It appears, it is noticed, and the customer acts on it. Fixing the bill is not the point; there is no real scenario for it yet.
+
+The "Open payment!" card gets two buttons, each label short and on one line: "Remind me later" dismisses the card and it comes back after the demo delay (today's `reappearAfter`, 8 s); "Go to payment" dismisses it for good and opens the details of one specific payment, the open bill (feed id `open-bill-2026-10-04`, since 04.10.2026, overdue by several days), through its own unique route with an individual ID. A tap on the card body no longer dismisses it. Today's tap-to-dismiss and the reappear-after-tap behaviour go away. The card's layout, copy and states with two buttons need a decision in the spec.
+
+Measurement: `js/analytics.js` records hash routes as screen IDs, and Vercel Web Analytics shows whether that one payment's route was opened (against Overview views as the rough base). The ID must be unique to this bill and reachable no other way. No custom events (`specs/2026-10-26-web-analytics`, Hobby plan), so "shown" and "Remind me later" are not counted. The demo needs that payment to exist in the data and open by its route, also on a first load of the route.
+
+Open for the interview: the route and ID, and whether the booking sheet or the payment-details page opens; whether a direct open is told apart from one from the card; whether the overdue payment is added to the built-in Pending bookings, and what Reset demo data does; where the "acted on" state is stored (a key starting `uzBankWeb`, listed in `apps/web/README.md`) and whether Reset brings the message back; whether "Remind me later" repeats for ever; whether the warning and info variants and the "Scheduled payment" messages get the buttons; 390px, keyboard and screen reader order, reduced motion. Settled in its interview: a hash route as written, with the risk that Vercel lists only paths recorded; the acted-on state in localStorage `uzBankWebStatusActed`, cleared by Reset; "Remind me later" repeats for ever at 8 s; the other messages unchanged; the bill listed nowhere and read-only; the buttons in a row, stacked at 390px. Spec: `specs/2026-11-18-status-message-actions/` (branch `feature/status-message-actions`).
+
+Built 2026-11-18: the card is a `div` with the two buttons (stacked at 390px), a tap on it does nothing; the open bill is a route-only payment in `js/payment-details.js` (read-only, "Open", no confirmation or signed rows) that opens on a first load of its route; `uzBankWebStatusActed` in localStorage, cleared by Reset. Not known until production: whether Vercel lists the hash route. Not checked: Light, a Multi-color theme, keyboard, screen reader, reduced motion.
 
 ## 71. Display-only rows and account pickers against the TextField anatomy (done)
 

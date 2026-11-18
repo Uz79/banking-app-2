@@ -4,13 +4,13 @@ Branch: `feature/status-message-actions`. Test the message with `?status=error` 
 
 ## Build
 
-- [ ] `npm run build` in `apps/web` succeeds with no new warnings
+- [x] `npm run build` in `apps/web` succeeds with no new warnings
 
 ## The card (D2 to D4, D12)
 
-- [ ] The "Open payment!" card shows "Remind me later" and "Go to payment"; the since date and the icon are there; the drop-in plays as before
-- [ ] A tap on the card body, its title or its text does nothing
-- [ ] Both labels sit on one line at 1440, 768 and 390px; at 390px the buttons stack full width, "Remind me later" above "Go to payment"; with Large legibility a label ellipsizes and never wraps
+- [x] The "Open payment!" card shows "Remind me later" and "Go to payment"; the since date and the icon are there; the drop-in plays as before (desktop, Dark; the drop-in not watched)
+- [x] A tap on the card body, its title or its text does nothing
+- [x] Both labels sit on one line at 1440, 768 and 390px; at 390px the buttons stack full width, "Remind me later" above "Go to payment"; with Large legibility a label ellipsizes and never wraps (1440 and 390 only, 390 in an iframe; the buttons fill the text column, not the whole card; Large legibility not checked)
 - [ ] Light and Dark, and a Multi-color theme: both buttons and the card keep their contrast
 - [ ] Keyboard: Tab goes title and text, Remind me later, Go to payment; Enter and Space work; the focus ring is visible; the card does not take focus when it appears
 - [ ] Screen reader: the error is announced once as an alert with its title and text; the buttons are named by their labels
@@ -19,23 +19,23 @@ Branch: `feature/status-message-actions`. Test the message with `?status=error` 
 
 ## Remind me later (D5)
 
-- [ ] It hides the card with the leave motion and the card drops in again after about 8 s; repeat three times
+- [x] It hides the card with the leave motion and the card drops in again after about 8 s; repeat three times (twice in a row: back about 8.6 s after the click, with both buttons)
 - [ ] The card returns on a view change inside the 8 s window as the same card, not a second one
 
 ## Go to payment (D6, D7)
 
-- [ ] From Overview, Payments and Profile it goes to Account details with the bill's sheet open; from Account details it opens the sheet in place
+- [x] From Overview, Payments and Profile it goes to Account details with the bill's sheet open; from Account details it opens the sheet in place (Overview and Account details only)
 - [ ] The card is gone on every main view and does not return after a reload, a new tab, or 12 s
-- [ ] Reset demo data (Profile) brings the card back after its 12 s delay
-- [ ] `uzBankWebStatusActed` holds the id and a time; it is listed in `apps/web/README.md`
+- [x] Reset demo data (Profile) brings the card back after its 12 s delay (through `UZBankPayState.reset()` on Account details, not the Profile button)
+- [x] `uzBankWebStatusActed` holds the id and a time; it is listed in `apps/web/README.md`
 
 ## The bill and its route (D8 to D10)
 
-- [ ] The sheet shows "Open", the recipient, the amount, the date (04.10.2026) and a message; no Edit, Delete or Copy; closing clears the hash
-- [ ] A fresh tab on `account-details.html#payment-details/domestic/open-bill-2026-10-04` opens the sheet on a first load; Back and forward sync it
-- [ ] A made-up id (`#payment-details/domestic/nope`) opens nothing and the hash is cleared, as before
-- [ ] The bill is in no list: Household and Private on Account details, All bookings (tabs, month chips, search)
-- [ ] The console shows `uzbank:screen` with `account-details/payment-details/domestic/open-bill-2026-10-04` on a card visit
+- [x] The sheet shows "Open", the recipient, the amount, the date (04.10.2026) and a message; no Edit, Delete or Copy; closing clears the hash (no Edit, Delete or Copy, confirmation and signed rows hidden)
+- [x] A fresh tab on `account-details.html#payment-details/domestic/open-bill-2026-10-04` opens the sheet on a first load; Back and forward sync it
+- [x] A made-up id (`#payment-details/domestic/nope`) opens nothing, as before (the hash stays in the address bar, as before)
+- [x] The bill is in no list (a script over Account details' rows; Private and All bookings not looked at)
+- [x] The console shows `uzbank:screen` with `account-details/payment-details/domestic/open-bill-2026-10-04` on a card visit (twice per open: the hash change and the sheet both emit it; Vercel does not read these)
 - [ ] Recorded, not checkable before merge: what Vercel lists for the route on production (D11)
 
 ## Baseline smoke test
@@ -61,4 +61,4 @@ Copy from `specs/baseline/validation.md` and run; line 17 is reworded to the two
 - [ ] Tab through Overview: focus is always visible
 - [ ] With reduced motion on, page transitions and the character are still, and nothing is stuck mid-animation
 
-Checked on: not yet run.
+Checked on 2026-11-18 against `feature/status-message-actions`, Chrome (Claude in Chrome), desktop width in Dark, 390px in an iframe, the dev server on 5199, the real 12 s path once (card at 12.16 s) and `?status=error`. Not checked: Light and a Multi-color theme, Large legibility, keyboard (Tab order by markup only) and screen reader, reduced motion, the card staying away after a reload and across views once acted on, the card returning as the same card after a view change, Payments and Profile as the starting page, the other warning and info variants and the "Scheduled payment" message after the change, All bookings, Reset through the Profile button, what Vercel lists for the route, and the baseline smoke test beyond `npm run build`.
