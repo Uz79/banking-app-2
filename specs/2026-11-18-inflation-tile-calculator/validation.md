@@ -8,7 +8,25 @@ Branch: `feature/inflation-tile-calculator`. Run on `http://localhost:5199/overv
 - [ ] No console errors on Overview or in the opening
 - [x] A search finds no reference to `opening-risk-chart`, `RISK_CHART`, `riskChart` or `.opening-chart` in `apps/web`
 
-## The expander
+## Follow-up: the calculator in a sheet (D20 to D32)
+
+The three sections after this one were written for the expander and are superseded where this section says otherwise: the same checks now run on the calculator page in the sheet.
+
+- [ ] The tile keeps the sentence, the inflation chart, the figures and the note; it is short again (no expander, no sliders, no results); the button reads "Try the calculator" on one line (390 and Legibility Large: an ellipsis if too long, no wrap)
+- [ ] The tile no longer has "See how much to invest"; the tile still hides under CHF 1'000, the button with it
+- [ ] The button opens the calculator in the sheet (title "Investment calculator", wide from 1024px, full screen at 390); Offers > Investment still opens the fridge directly
+- [ ] The sliders start from the account balances (idle cash rounded to 5'000), 10 years, Balanced; the amount is not read from anything the fridge knows
+- [ ] Wide: sliders card left, chart and results right, the primary button under; 390: chart, results, sliders, notes, button, one column, no horizontal scroll
+- [ ] Moving a slider redraws the one chart (cash and the three curves) at once; the results, the live region and the fields behave as in the sections below
+- [ ] "See how much to invest" loads the fridge in the same sheet: step 1, no Back, as from Offers; nothing from the calculator (amount, strategy) appears there; the fridge's Back and Start over behave as today
+- [ ] Close, Escape (also with the keyboard inside the frame) and the X close the calculator at once, with no prompt; focus returns to the tile's button; no ring after a pointer close
+- [ ] Reopening starts fresh from the balances, whatever the sliders were; closing and reopening several times works, on the dev server and on `npm run build` then `npx vite preview`
+- [ ] The page opened on its own (`investment-calculator.html`) shows its own header and works; a reload inside the sheet's frame is not blank
+- [ ] The page is registered: it is in the build output, no console errors, the sidebar and tab bar stay out of it like the fridge page
+- [ ] Reduced motion: nothing animates; Light and Dark; a Multi-color theme; Legibility Large and Small; keyboard: Tab order inside the sheet, arrows on the sliders
+- [ ] No new `localStorage` or `sessionStorage` key (reset demo data has nothing to clear)
+
+## The expander (as first built, superseded by the section above)
 
 - [x] Closed on every load; the tile is exactly as in 79 (idle cash, 10 years, the loss band, the link)
 - [x] Opens and closes with a click, Enter and Space; `aria-expanded` follows; the chevron turns
