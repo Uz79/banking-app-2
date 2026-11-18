@@ -68,6 +68,7 @@ export const HORIZON = {
 export const AMOUNT = {
   label: 'Amount',
   min: 5000,
+  exampleAmount: 10000, /* the assistant's {amount} until there is one (was RISK_CHART, roadmap 82 D16) */
   suggestion: 'The fridge suggests {amount}.',
   above: 'This is more than the fridge suggests. Investing more would use money set aside for daily needs or reserves.',
   hint: 'Minimum {min}.',
@@ -109,21 +110,35 @@ export const RISK = {
   missing: 'Answer all three questions.',
 };
 
-/* ── The risk chart (9e D1 to D4, flagged: placeholders for the bank's numbers) ──
-   One balanced mix as an example. Each line is amount × exp(r × t + z × s × √t): z 0 for expected, +z for good and
-   −z for unfavourable, so 95% of outcomes fall between the two. `years` turns the horizon into the chart's length. */
-export const RISK_CHART = {
-  r: 0.04,
-  s: 0.08,
+/* ── The calculator in Overview's "Cash loses value" tile (roadmap 82 D5, D6, D12) ──
+   Flagged: placeholders for the bank's numbers, an example and not a forecast. A curve is amount × exp(r × t + k × z × s × √t):
+   k 0 for expected, +1 for good, -1 for unfavourable, so 19 in 20 outcomes fall between good and unfavourable. `r` and `s`
+   rise with the strategy; balanced is the old risk chart's mix. */
+export const CALCULATOR = {
   z: 1.96,
-  years: { hlt3: 2, h3to5: 5, h6to10: 10, hgt10: 15 },
-  fallbackYears: 10,
-  exampleAmount: 10000,
-  intro: 'Your {amount} over {years} years',
-  how: 'How is this worked out?',
-  back: 'Back to the chart',
-  lines: { good: 'Good', expected: 'Expected', bad: 'Unfavourable' },
-  footnote: 'An example for a balanced mix, not a forecast. 19 in 20 outcomes end between the good and the unfavourable line.',
+  inflation: 0.02,
+  years: { min: 1, max: 30, start: 10 },
+  amount: { max: 500000, step: 5000 },
+  strategy: { start: 'balanced' },
+  mix: {
+    income: { r: 0.015, s: 0.03 },
+    conservative: { r: 0.027, s: 0.055 },
+    balanced: { r: 0.04, s: 0.08 },
+    growth: { r: 0.052, s: 0.11 },
+    dynamic: { r: 0.062, s: 0.14 },
+  },
+  copy: {
+    open: 'Compare with investing',
+    years: 'Investment duration in years',
+    amount: 'Amount in CHF',
+    strategy: 'Strategy',
+    safe: 'safe',
+    risky: 'risky',
+    lines: { cash: 'Cash after inflation', good: 'Good', expected: 'Expected', bad: 'Unfavourable' },
+    disclaimer: 'Possible outcomes for this strategy, based on example figures. 19 in 20 outcomes end between Good and Unfavourable. Real returns vary and you can lose money.',
+    beforeInflation: 'Investment values are before inflation.',
+    note: 'An example, not a forecast.',
+  },
 };
 
 /* ── Strategies (D11), from the most careful to the riskiest. `risk` and `ret` are out of five. ── */
