@@ -15,7 +15,10 @@
   'use strict';
 
   var overlay = document.querySelector('[data-fridge-overlay]');
-  var opener = document.querySelector('a.list-item[href="fridge-advisor.html"]');
+  /* Every link to the fridge on the page opens the sheet: Offers' Investment item and the inflation tile (roadmap 79, D6).
+     `opener` is whichever one was used, so the focus goes back to it. */
+  var openers = Array.prototype.slice.call(document.querySelectorAll('a[href="fridge-advisor.html"]'));
+  var opener = openers[0];
   var app = document.querySelector('.app');
   if (!overlay || !opener) return;
 
@@ -90,9 +93,11 @@
     opener.focus(byKeyboard ? undefined : { focusVisible: false });
   }
   /* The quiet focus lasts until the keyboard is used or the focus moves on. */
-  function speakUp() { opener.classList.remove('is-quiet-focus'); }
-  opener.addEventListener('keydown', speakUp);
-  opener.addEventListener('blur', speakUp);
+  function speakUp() { openers.forEach(function (link) { link.classList.remove('is-quiet-focus'); }); }
+  openers.forEach(function (link) {
+    link.addEventListener('keydown', speakUp);
+    link.addEventListener('blur', speakUp);
+  });
 
   function open() {
     if (isOpen() || closing) return;
@@ -197,10 +202,13 @@
     if (event.key === 'Escape' && isOpen() && !document.querySelector('dialog[open]')) { event.preventDefault(); requestClose(); }
   });
 
-  opener.addEventListener('click', function (event) {
-    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    event.preventDefault();
-    open();
+  openers.forEach(function (link) {
+    link.addEventListener('click', function (event) {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      opener = link;
+      open();
+    });
   });
 
   closeBtn.addEventListener('click', requestClose);
