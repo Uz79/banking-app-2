@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Build assets/icons-sprite.svg from assets/icons/icon24-*.svg, migrate legacy
-<img> icons, embed the sprite into each shell HTML page (same-document <use>),
-and bump storage keys when migrating from _07.
+Build assets/icons-sprite.svg from assets/icons/icon24-*.svg and embed it into
+each shell HTML page (same-document <use>). It changes nothing else, and running
+it again on a clean tree changes no file.
 
 Run from apps/web:
   python3 scripts/sync_icons_sprite.py
@@ -19,12 +19,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ICONS_DIR = ROOT / "assets" / "icons"
 SPRITE_PATH = ROOT / "assets" / "icons-sprite.svg"
-
-IMG_RE = re.compile(
-    r'<img\s+class="([^"]+)"\s+src="assets/icons/(icon24-[^"]+\.svg)"\s+alt="([^"]*)"\s*/?\s*>',
-    re.IGNORECASE,
-)
-
 
 def slug_from_filename(name: str) -> str:
     """icon24-home.svg -> home; icon24-edit-2.svg -> edit-2"""
@@ -85,67 +79,6 @@ def build_sprite() -> None:
     print(f"Wrote {SPRITE_PATH.relative_to(ROOT)} ({len(icon_files())} symbols)")
 
 
-def img_to_svg_use(m: re.Match[str]) -> str:
-    classes, filename, alt = m.group(1), m.group(2), m.group(3)
-    slug = slug_from_filename(filename)
-    sid = symbol_id(slug)
-    href = f"#{sid}"
-    if alt.strip():
-        return (
-            f'<svg class="{classes}" role="img" aria-label="{alt}" focusable="false">'
-            f'<use href="{href}"/></svg>'
-        )
-    return (
-        f'<svg class="{classes}" aria-hidden="true" focusable="false">'
-        f'<use href="{href}"/></svg>'
-    )
-
-
-def migrate_html_files() -> None:
-    n = 0
-    for html in ROOT.rglob("*.html"):
-        text = html.read_text(encoding="utf-8")
-        if "assets/icons/icon24-" not in text:
-            continue
-        new_text, count = IMG_RE.subn(img_to_svg_use, text)
-        if count:
-            html.write_text(new_text, encoding="utf-8")
-            n += count
-            print(f"  {html.relative_to(ROOT)}: {count} icon(s)")
-    print(f"Migrated {n} <img> icon(s) total.")
-
-
-def bump_storage_keys() -> None:
-    """Migrate legacy WebApp_* localStorage keys to uzBankWeb* names."""
-    subs = [
-        ("uzBankWebApp03Theme", "uzBankWebTheme"),
-        ("uzBankWebApp10Theme", "uzBankWebTheme"),
-        ("uzBankWebApp11Theme", "uzBankWebTheme"),
-        ("uzBankWebApp10ColorOverride", "uzBankWebColorOverride"),
-        ("uzBankWebApp11ColorOverride", "uzBankWebColorOverride"),
-        ("uzBankWebApp11Appearance", "uzBankWebAppearance"),
-        ("uzBankWebApp11PaymentState", "uzBankWebPaymentState"),
-        ("uzBankWebApp11SavedColorThemes", "uzBankWebSavedColorThemes"),
-        ("E-Banking WebApp 11", "UZ Bank Web"),
-        ("E-Banking WebApp 10", "UZ Bank Web"),
-        ("WebApp 11", "UZ Bank Web"),
-        ("WebApp 10", "UZ Bank Web"),
-    ]
-    exts = {".html", ".js", ".py", ".json", ".md"}
-    for path in ROOT.rglob("*"):
-        if path.suffix.lower() not in exts:
-            continue
-        if "sync_icons_sprite.py" in str(path):
-            continue
-        text = path.read_text(encoding="utf-8")
-        orig = text
-        for a, b in subs:
-            text = text.replace(a, b)
-        if text != orig:
-            path.write_text(text, encoding="utf-8")
-            print(f"  keys: {path.relative_to(ROOT)}")
-
-
 def embed_sprite_inline() -> None:
     """Cross-document <use href=file.svg#id> is unreliable (file://, Safari). Inline
     the sprite once per HTML page and switch <use> to same-document href=\"#…\".
@@ -184,10 +117,8 @@ def main() -> int:
         print("Missing assets/icons", file=sys.stderr)
         return 1
     build_sprite()
-    migrate_html_files()
     embed_sprite_inline()
-    bump_storage_keys()
-    print("Done. Sprite built, HTML migrated, sprite embedded for same-document <use>.")
+    print("Done. Sprite built and embedded for same-document <use>.")
     return 0
 
 
