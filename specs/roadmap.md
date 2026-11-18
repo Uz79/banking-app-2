@@ -22,12 +22,6 @@ Found while writing 34's spec (2026-11-06). The Playground (`playground.html`, a
 
 Found while building 48 (2026-11-16), measured for all 12 built-in themes in both shells. The primary chip and the primary button share one fill and ink, so both are low where the theme's accent is light: 3.31:1 in Custom 10 (Dark) and Custom 01, 3.39 in Custom 06, 3.64 in Custom 02, 3.72 in Custom 05 and Custom 04, and 4.38 in Custom 10 (Light). Custom 02 in Light also has its secondary chip at 4.03:1 and its filled tonal chip at 3.81:1 (its neutral ink on its own 5% tint). The plain UZ Bank look is fine (12.1 to 14.9:1, Dark tonal 6.2). Nothing regressed in 48; the values are the same as before. To settle in its spec: whether the engine should pick a darker accent step or a different ink when a pairing is under 4.5:1 (`primaryControlInk`, `inkOnPrimaryControl` in `scripts/theme-engine/lib/themeColors.ts`), or whether those themes' accents are changed; the same check for the other controls the engine derives (secondary and tonal buttons, segmented control); and a scripted audit of every built-in theme in both shells, so the numbers are a gate rather than a one-off.
 
-## 76. `sync_icons_sprite.py` does more than build the sprite
-
-Found while building 70 (2026-11-16). Running `apps/web/scripts/sync_icons_sprite.py` also rewrites `js/storage-migrate.js`'s legacy key table (the `keys:` step turns `uzBankWebApp10Theme`, `uzBankWebApp11Theme` and similar into `uzBankWebTheme`, so the table maps a key to itself) and embeds the whole sprite into `fridge-advisor.html` and `investment-opening.html`, which carry it differently today (about 1576 more lines each). 70 did not run it for those; it removed the junk symbols from the sprite and the pages by hand. To settle in its spec: split the script (sprite build; embedding; the one-off HTML migration; the key migration), drop the steps that were one-offs, and check how the fridge and opening pages get their icons.
-
-Spec: `specs/2026-11-18-sprite-script-builds-only-the-sprite/` (branch `feature/sprite-script-builds-only-the-sprite`), taken 2026-11-18 from Later because Next was empty. Measured when speccing: run today the script changes only three files, `js/storage-migrate.js` and the two pages that carry the sprite as a bare `<svg>` (doubling it to 560 symbols); the other 13 pages come out unchanged. Settled in its interview: the script builds and embeds only, the one-offs are deleted, the two pages move to the standard wrapper, `js/storage-migrate.js` stays.
-
 ## 50. Built-in transfers can read as a transfer to the same account
 
 Found during 46 (2026-11-05). All bookings shows the same built-in rows for Household and Savings, and a built-in transfer's sheet takes the page's account as its debit (`buildAllBookingsRowData` in `js/payment-details.js`, from `ACCOUNT_SNAPSHOTS`). So on Household's All bookings "Transfer to Household" reads "from Household to Household", and on Savings' "Transfer to Savings" reads "from Savings account to Savings account". The two lists also name Savings differently ("Savings account" in the built-in snapshots, "Savings Account" in the transfer's). To settle in its spec: per-account built-in rows, or a debit account in each transfer row's data, and one name for Savings.
@@ -488,6 +482,12 @@ Built 2026-11-16: 325 tracked Finder duplicates removed (131 in `apps/web` sourc
 ## 75. `storybook-static` is tracked build output (done, in 77)
 
 Found while writing 70's spec (2026-11-16). `apps/web/storybook-static` held 1591 tracked files, 355 of them Finder duplicates. Rebuilt clean on 2026-11-16 (`specs/2026-11-16-rebuild-storybook-static/`), then untracked by 77, which builds it on deploy.
+
+## 76. `sync_icons_sprite.py` does more than build the sprite (done)
+
+Found while building 70 (2026-11-16). Run today, `apps/web/scripts/sync_icons_sprite.py` changed three files: `js/storage-migrate.js` (the legacy key table turned into one mapping keys to themselves) and the two pages that carried the sprite as a bare `<svg>` (doubled to 560 symbols). Spec: `specs/2026-11-18-sprite-script-builds-only-the-sprite/` (branch `feature/sprite-script-builds-only-the-sprite`), taken 2026-11-18 from Later because Next was empty.
+
+Built 2026-11-18: the script builds and embeds only (the `<img>` migration and the key rewrite are deleted), the fridge and the opening use the standard `#uzbank-icon-defs` wrapper, and a run on a clean tree changes no file (checked twice, and with a throwaway icon). `js/storage-migrate.js` is untouched. Not checked: the baseline smoke test beyond the build and the pages' icons.
 
 ## 77. Vercel builds Storybook on deploy (done)
 

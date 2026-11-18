@@ -25,7 +25,7 @@ Open `http://localhost:5173/overview.html`.
    python3 scripts/sync_icons_sprite.py
    ```
 
-   Rebuilds `assets/icons-sprite.svg` and embeds symbols into shell HTML pages.
+   Rebuilds `assets/icons-sprite.svg` and embeds symbols into shell HTML pages. Run it again and nothing changes; after adding an icon, the sprite and the 15 pages that embed it change, and nothing else.
 
 3. **Markup** — each shell page includes an inline sprite block after `<body>` (`#uzbank-icon-defs`). Icons use same-document references:
 
@@ -39,7 +39,7 @@ Open `http://localhost:5173/overview.html`.
 
 | Script | Purpose |
 |--------|---------|
-| `scripts/sync_icons_sprite.py` | Build sprite, migrate legacy `<img>` icons, embed into shell HTML |
+| `scripts/sync_icons_sprite.py` | Build `assets/icons-sprite.svg` and embed it into the shell HTML pages (that is all it does; on a clean tree it changes no file) |
 | `scripts/generate-tokens-css.mjs` | Regenerate `css/tokens.css` from `designs/tokens/` |
 | `scripts/generate-storybook-design-exports.mjs` | Reference Storybook stories from `designs/` |
 
