@@ -6,6 +6,10 @@ The order below is the order of work. Items keep their numbers (specs, commits a
 
 In order. The first is what `/feature-spec` starts.
 
+# Later
+
+Not scheduled, smallest first (an estimate of size, not of value).
+
 ## 58. Legibility doesn't reach the Playground
 
 Found while writing 34's spec (2026-11-06). The Playground (`playground.html`, admin only, opened as a full-screen sheet) loads neither `js/app-mp.js` nor, since 34, `js/appearance.js`, so Legibility's type and spacing scale, Typeface and Font don't apply there. To settle in its spec: loading `js/appearance.js` as the fridge and the opening do, and a check of the Playground's layouts at Small and Large, desktop and phone.
@@ -538,10 +542,5 @@ Built 2026-11-18: `js/inflation-tile.js` (now an ES module), `CALCULATOR` in `js
 Klaudiusz, 2026-11-18. On step 7 ("Your freezer", `buildResult()` in `js/fridge-advisor.js`), when one month of spending plus the two reserves is at least the total assets, `investable()` is 0 and the ring says "You could invest CHF 0" with no reason. Next to it the line "Left each year: CHF 33'600" (left at month end x 12) reads as a contradiction. To settle: (1) a one-line explanation when the result is 0, with a hint to lower the reserves; (2) relabel the yearly line so it reads as a separate recurring amount, for example "You could set aside each year"; (3) whether the yearly line stays when the result is 0.
 
 Settled in its interview: one sentence under the ring at 0, the yearly line relabelled "You could set aside each year" and kept at 0, "Show suitable products" unchanged. Spec: `specs/2026-11-18-fridge-zero-result/`.
-
-
-# Later
-
-Not scheduled, smallest first (an estimate of size, not of value).
 
 Built 2026-11-18: `buildResult()` and the announcement in `js/fridge-advisor.js`, `.fridge__zero` in `css/styles.css`. Not checked: see its `validation.md`.
