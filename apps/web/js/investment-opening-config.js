@@ -22,7 +22,7 @@ export const SCREENS = [
   { id: 'esg', title: 'Sustainability', text: 'Sustainable investing also looks at the environment, society and how companies are run (ESG).' },
   { id: 'tax', title: 'Tax status' },
   { id: 'documents', title: 'Documents', text: 'Take your time to read them before you continue.' },
-  { id: 'summary', title: 'Your asset management', next: 'Open asset management' },
+  { id: 'summary', title: 'Your asset management', next: 'Open product' },
   { id: 'complete', title: 'Your asset management is open', counted: false, next: 'Done' },
   {
     id: 'ineligible', title: 'We cannot open this online', counted: false,
@@ -70,6 +70,7 @@ export const AMOUNT = {
   min: 5000,
   suggestion: 'The fridge suggests {amount}.',
   above: 'This is more than the fridge suggests. Investing more would use money set aside for daily needs or reserves.',
+  hint: 'Minimum {min}.',
   missing: 'Enter an amount.',
   belowMin: 'The minimum is {min}.',
 };
@@ -135,18 +136,23 @@ export const STRATEGIES = [
 ];
 export const STRATEGY = {
   recommended: 'Recommended',
+  /* The tag on a strategy riskier than the answers suggest (78 D6): information and a warning, not a block. */
   unavailable: 'Above your risk profile',
+  /* Choosing one opens a confirmation (78 D6). */
+  confirm: {
+    title: 'Choose {name}?',
+    message: '{name} is riskier than your answers suggest. You can choose it anyway, and change it until you confirm.',
+    choose: 'Choose {name}',
+    back: 'Go back',
+  },
   riskLabel: 'Risk',
   returnLabel: 'Expected return',
-  fellBack: 'Your answers changed, so we now recommend {name}.',
-  missing: 'Choose a strategy first.',
   /* The carousel (9d D16 to D18): one card at a time, chosen explicitly. A card's name for screen readers is
      "{name}, {n} of {total}" and its tag in lower case. */
   carousel: 'Strategies',
   position: '{n} of {total}',
   choose: 'Choose this strategy',
   chosen: 'Chosen',
-  reason: 'Riskier than your answers allow.',
   continueWith: 'Continue with {name}',
   previous: 'Previous strategy',
   next: 'Next strategy',

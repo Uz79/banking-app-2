@@ -1836,7 +1836,15 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
   outline-offset: 0.125rem;
 }
 
-.show-all-btn.uz-btn:focus-visible {
+.show-all-btn/* A button's label is one line (78 D12): when the space is too short it is cut with an ellipsis, never wrapped. Applies to buttons whose label sits in a `.uz-btn__label` span. */
+.uz-btn > .uz-btn__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.uz-btn:focus-visible {
   outline: 0.125rem solid var(--color-fg-interactive);
   outline-offset: 0.125rem;
 }
@@ -12441,15 +12449,9 @@ html.fridge--wide .fridge__ring-amount {
   visibility: hidden;
 }
 
-.opening-carousel.is-ready [data-above] .opening-carousel__figure > canvas,
-.opening-carousel.is-ready [data-above] .opening-carousel__still {
-  opacity: 0.45;
-}
-
 .opening-carousel__name,
 .opening-carousel__line,
-.opening-carousel__meters,
-.opening-carousel__reason {
+.opening-carousel__meters {
   margin: 0;
 }
 
@@ -12466,18 +12468,13 @@ html.fridge--wide .fridge__ring-amount {
   line-height: var(--lh-text);
 }
 
-/* Above the profile: an outline, not a coloured badge (D16). */
+/* Above the profile (78 D6): the outlined chip (`.chip--secondary`, its own tokens) with a warning glyph. Information
+   and a warning, not a block: the card stays as bright as the others. */
 .opening-carousel__above {
-  padding: 0 var(--space-2);
-  border: 1px solid var(--color-separator);
-  border-radius: var(--radius-pill);
-  color: var(--color-fg-secondary);
-  font-size: var(--fs-text-sm);
-  line-height: var(--lh-text);
+  flex-shrink: 0;
 }
 
-.opening-carousel__line,
-.opening-carousel__reason {
+.opening-carousel__line {
   font-size: var(--fs-text-sm);
   line-height: var(--lh-text);
   color: var(--color-fg-secondary);
@@ -12494,13 +12491,6 @@ html.fridge--wide .fridge__ring-amount {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-1) var(--space-3);
-}
-
-/* The reason sits where the button would, at its height. */
-.opening-carousel__reason {
-  display: flex;
-  align-items: center;
-  min-height: 2.5rem;
 }
 
 .opening-carousel__choose[aria-pressed="true"] {
@@ -12591,10 +12581,6 @@ html.fridge--wide .fridge__ring-amount {
   border-radius: 50%;
   background: currentColor;
   vertical-align: 0.1em;
-}
-
-.opening-carousel__marker[data-above] {
-  color: var(--color-fg-disabled);
 }
 
 .opening-carousel__marker[aria-current="true"] {
@@ -12711,53 +12697,19 @@ html.fridge--wide .fridge__ring-amount {
   background: var(--color-fg-disabled);
 }
 
-/* Risk (D27): one question open at a time; an answered one folds into its answer and Change, a later one waits. */
+/* Risk (78 D3): the three questions, all open. */
 .opening-question {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
 }
 
-/* 9e D16: an answered question is one line, its number and answer, so the step fits with the chart above. */
-.opening-question[data-state="done"] .opening__label {
-  display: none;
-}
-
-.opening-question[data-state="waiting"] .opening__label {
-  font-size: var(--fs-text-sm);
-  font-weight: var(--fw-regular);
-  color: var(--color-fg-secondary);
-}
-
 .opening-question .opening__label {
   margin-top: var(--space-1);
 }
 
-/* Right under the risk chart (9e D11), the first question needs no extra space. */
-.opening-chart + .opening-question .opening__label {
+.opening-question:first-child .opening__label {
   margin-top: 0;
-}
-
-.opening-question__done {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-}
-
-.opening-question__done[hidden] {
-  display: none;
-}
-
-.opening-question__answer {
-  margin: 0;
-  font-size: var(--fs-text-md);
-  line-height: var(--lh-text);
-  color: var(--color-fg);
-}
-
-.opening-question__change {
-  flex-shrink: 0;
 }
 
 /* The risk chart (9e D1, D5, D11): three lines in the secondary colour, the band a light tint of the foreground; the

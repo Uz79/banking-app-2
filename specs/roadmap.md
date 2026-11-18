@@ -10,6 +10,10 @@ In order. The first is what `/feature-spec` starts.
 
 Not scheduled, smallest first (an estimate of size, not of value).
 
+## 79. Dashboard tile: what inflation does to idle money
+
+Klaudiusz, 2026-11-18, out of 78. The forecast chart leaves the opening's risk step (78 D4). It becomes an educational tile in the dashboard's third column that shows how money left on an account loses value to inflation, as a nudge to invest. To settle in its spec: which page and column ("the dashboard's third column"), what the tile shows (the unused `js/opening-risk-chart.js` as it is, or a cash-against-inflation line, which needs an inflation rate placeholder in the config), the amount it uses (the customer's balance, or an example), where it leads (the fridge advisor or the opening), and how it reads on a phone, where the column stacks.
+
 ## 67. The status message's timing
 
 Klaudiusz, 2026-11-06. The "Open payment!" message appears after about 9 s; the baseline smoke test and `js/status-feed.js`'s comment say 12 s (8 s was measured on 2026-11-05). To settle: what the timer actually counts from, then align the code or the baseline.
@@ -492,6 +496,12 @@ Built 2026-11-18: the script builds and embeds only (the `<img>` migration and t
 ## 77. Vercel builds Storybook on deploy (done)
 
 Added 2026-11-16, out of 75's scope. Built 2026-11-18: `apps/web/vercel.json` has a `buildCommand` (`npm run build && npm run build-storybook && rm -rf dist node_modules`) and two rewrites (`/designs/*` and `/app/*` to `/storybook-static/...`, which fixes the figures and live-page stories that 404ed under that URL), and `storybook-static` is untracked and in `.gitignore`. Same project, same URL. Spec: `specs/2026-11-18-build-storybook-on-deploy/`.
+
+## 78. Opening review after the phone test (done)
+
+Klaudiusz, 2026-11-18. Purpose and horizon in one column, the minimum shown under the amount, the risk questions kept open and the forecast chart taken out of the step, all five strategies choosable with no primary button until one is, and glyph-only pencil Edit buttons on the summary. Spec: `specs/2026-11-18-opening-mobile-review/`.
+
+Built 2026-11-18, uncommitted for review: purpose and horizon are one column each; "Minimum CHF 5'000." shows under the amount; the three risk questions stay open (no folding, no Change buttons) and the forecast chart is off the step (its file and CSS stay for 79); all five strategies can be chosen, those above the profile carry an outlined "Above your risk profile" chip with a warning glyph and open the app's confirmation dialog (`UZBankPaymentExitPrompt`, loaded on the opening page); the strategy step shows no primary button until one is chosen; the summary's Edit buttons are glyph-only pencils ("Edit Strategy"); the assistant's copy no longer says a riskier strategy cannot be chosen. A chosen strategy now stays chosen when the answers change. Not checked: 390px (the window could not be resized), keyboard walk, reduced motion, a Multi-color theme, the baseline smoke test beyond the build.
 
 ## 71. Display-only rows and account pickers against the TextField anatomy (done)
 
