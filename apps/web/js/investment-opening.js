@@ -12,7 +12,6 @@ import {
 import * as assistant from './opening-assistant.js';
 import { NUDGES, HANDOFF } from './opening-assistant-config.js';
 import { createHesitation } from './opening-hesitation.js';
-import { riskChart } from './opening-risk-chart.js';
 
 const framed = window.self !== window.top;
 const send = (message) => { if (framed) window.parent.postMessage(message, window.location.origin); };
@@ -143,7 +142,8 @@ function button(label, kind, onClick) {
   const b = document.createElement('button');
   b.type = 'button';
   b.className = 'uz-btn uz-btn--' + kind + ' uz-btn--md uz-btn--block';
-  b.textContent = label;
+  /* The label sits in its own span so a long one is cut with an ellipsis, never wrapped (78 D12). */
+  b.append(el('span', 'uz-btn__label', label));
   b.addEventListener('click', onClick);
   return b;
 }
@@ -266,14 +266,7 @@ function recommendation() {
   return STRATEGIES[rank].id;
 }
 
-/* A chosen strategy that is now above the profile falls back to the new recommendation, with a note (D12). */
-function reconcile() {
-  const rec = recommendation();
-  if (rec && answers.strategy && rankOf(answers.strategy) > rankOf(rec)) {
-    answers.strategy = rec;
-    answers.strategyFellBack = true;
-  }
-}
+/* A chosen strategy stays chosen when the answers change (78 D6); the summary says when the recommendation moved. */
 
 /* ── The vehicles (9d) ──────────────────────────────────────────────────
    The module and the models load on the risk screen (or on arrival, D3) into a holder that is never shown, so they
@@ -394,6 +387,20 @@ function strategyCarousel(rec) {
   const frame = el('div', 'opening-carousel__frame');
   const track = el('div', 'opening-carousel__track');
 
+  /* Choosing: a strategy above the profile opens a confirmation first (78 D6); cancelling leaves the choice as it was. */
+  function choose(s) {
+    const take = () => { answers.strategy = s.id; changed(); };
+    const ask = window.UZBankPaymentExitPrompt;
+    if (!above(s) || typeof ask !== 'function') { take(); return; }
+    const values = { name: s.name };
+    ask(take, {
+      title: fill(STRATEGY.confirm.title, values),
+      message: fill(STRATEGY.confirm.message, values),
+      leaveLabel: fill(STRATEGY.confirm.choose, values),
+      stayLabel: STRATEGY.confirm.back,
+    });
+  }
+
   const cards = STRATEGIES.map((s, i) => {
     const card = el('div', 'opening-carousel__card');
     card.dataset.option = s.id;
@@ -401,7 +408,6 @@ function strategyCarousel(rec) {
     card.setAttribute('role', 'group');
     card.setAttribute('aria-roledescription', 'slide');
     card.setAttribute('aria-label', nameOf(s));
-    if (above(s)) card.dataset.above = '';
     /* The picture: the figure, named by its caption (D8), and "Model credits" in its corner (D9). */
     const pic = el('div', 'opening-carousel__pic');
     const figure = el('div', 'opening-carousel__figure');
@@ -420,15 +426,17 @@ function strategyCarousel(rec) {
     const head = el('p', 'opening-carousel__name');
     head.append(el('span', 'opening-carousel__label', s.name));
     if (s.id === rec) head.append(el('span', 'opening-option__tag', STRATEGY.recommended));
-    else if (above(s)) head.append(el('span', 'opening-carousel__above', STRATEGY.unavailable));
+    else if (above(s)) {
+      /* Above the profile (78 D6): an outlined chip with a warning glyph, stronger than the quiet tag it replaces. */
+      const warn = el('span', 'chip chip--sm chip--secondary opening-carousel__above');
+      warn.innerHTML = '<svg class="chip__icon" aria-hidden="true" focusable="false"><use href="#i-alert-triangle"/></svg>';
+      warn.append(el('span', 'chip__label', STRATEGY.unavailable));
+      head.append(warn);
+    }
     const meters = el('p', 'opening-carousel__meters');
     meters.append(meter(STRATEGY.riskLabel, s.risk, 'bar'), meter(STRATEGY.returnLabel, s.ret, 'dots'));
-    let action;
-    if (above(s)) action = el('p', 'opening-carousel__reason', STRATEGY.reason);
-    else {
-      action = button(STRATEGY.choose, 'secondary', () => { answers.strategy = s.id; changed(); });
-      action.classList.add('opening-carousel__choose');
-    }
+    const action = button(STRATEGY.choose, 'secondary', () => choose(s));
+    action.classList.add('opening-carousel__choose');
     card.append(pic, head, el('p', 'opening-carousel__line', s.short), meters, action);
     /* A peeking card is a way to it, not to its button. */
     card.addEventListener('click', (event) => {
@@ -463,7 +471,6 @@ function strategyCarousel(rec) {
     m.type = 'button';
     m.setAttribute('aria-label', nameOf(s));
     if (s.id === rec) m.dataset.recommended = '';
-    if (above(s)) m.dataset.above = '';
     m.append(el('span', 'opening-carousel__marker-bar'), el('span', 'opening-carousel__marker-label', s.name));
     m.addEventListener('click', () => go(i));
     markers.append(m);
@@ -498,7 +505,7 @@ function strategyCarousel(rec) {
       card.classList.toggle('is-current', j === i);
       card.toggleAttribute('aria-hidden', j !== i);
       credit.tabIndex = j === i ? 0 : -1;
-      if (action.tagName === 'BUTTON') action.tabIndex = j === i ? 0 : -1;
+      action.tabIndex = j === i ? 0 : -1;
     });
     marks.forEach((m, j) => {
       m.tabIndex = j === i ? 0 : -1;
@@ -532,7 +539,7 @@ function strategyCarousel(rec) {
     if (!credits.hidden) showCredits(false);
     settle(to);
     centre(true);
-    if (focus === 'card') (cards[at].action.tagName === 'BUTTON' ? cards[at].action : cards[at].card).focus({ preventScroll: true });
+    if (focus === 'card') cards[at].action.focus({ preventScroll: true });
     if (focus === 'marker') marks[at].focus();
   }
 
@@ -582,17 +589,10 @@ function strategyCarousel(rec) {
     },
     /* Placed once the screen is in the page: the starting card in the middle at once. */
     mounted() { centre(false); placeVehicles(); },
-    /* Next with nothing chosen (phone polish D5): the message under the cards, the focus on the current card's
-       button; from a card above the profile the carousel first moves to the recommended one. */
-    need(move) {
-      if (move && cards[at].action.tagName !== 'BUTTON') go(Math.max(0, rankOf(rec)));
-      return { after: frame, target: cards[at].action.tagName === 'BUTTON' ? cards[at].action : null };
-    },
     refresh() {
       cards.forEach(({ card, action }, j) => {
         const chosen = STRATEGIES[j].id === answers.strategy;
         card.classList.toggle('is-chosen', chosen);
-        if (action.tagName !== 'BUTTON') return;
         action.textContent = chosen ? STRATEGY.chosen : STRATEGY.choose;
         action.setAttribute('aria-pressed', String(chosen));
       });
@@ -663,9 +663,7 @@ const BUILD = {
       set: (id) => { answers.horizon = id; changed(); },
       disabled: (o) => HORIZON.options.indexOf(o) > maxHorizon(),
     });
-    /* Short labels: two columns, so the screen fits the sheet without scrolling (D27). */
-    purpose.group.classList.add('opening-options--grid');
-    horizon.group.classList.add('opening-options--grid');
+    /* One column each (78 D1): a single list reads better than two, even if the step scrolls on a phone. */
     const note = el('p', 'opening__note');
     note.id = 'opening-horizon-note';
     horizon.group.setAttribute('aria-describedby', note.id);
@@ -701,13 +699,16 @@ const BUILD = {
     input.autocomplete = 'off';
     input.value = answers.amount == null ? '' : fmt(answers.amount);
     box.append(unit, input);
+    /* The minimum, always there (78 D2), tied to the input. */
+    const hint = el('p', 'opening__note', fill(AMOUNT.hint, { min: chf(AMOUNT.min) }));
+    hint.id = 'opening-amount-hint';
     const suggestion = el('p', 'opening__note', fill(AMOUNT.suggestion, { amount: chf(fridgeAmount) }));
     suggestion.id = 'opening-amount-suggestion';
     suggestion.hidden = !(fridgeAmount > 0);
     const above = el('p', 'opening__note opening__note--check', AMOUNT.above);
     above.id = 'opening-amount-above';
-    if (fridgeAmount > 0) input.setAttribute('aria-describedby', suggestion.id + ' ' + above.id);
-    field.append(lab, box, suggestion, above);
+    input.setAttribute('aria-describedby', [hint.id, fridgeAmount > 0 ? suggestion.id + ' ' + above.id : ''].filter(Boolean).join(' '));
+    field.append(lab, box, hint, suggestion, above);
 
     /* Digits and apostrophes; the value applies as it is typed, leaving the field tidies it. */
     input.addEventListener('input', () => {
@@ -733,26 +734,18 @@ const BUILD = {
     };
   },
 
-  /* Three questions on one screen, one open at a time (D27): an answered question folds into a line with its answer
-     and Change, and the next open one follows. Arrow keys only move within the open question; choosing with a click,
-     Space or Enter folds it and moves on. 9e: the chart of the customer's amount above them (D1), the questions in
-     their francs (D6 to D9), the open one's part of the chart highlighted. */
+  /* Three questions on one screen, all open (78 D3): the customer sees every answer they chose and nothing folds. Arrow
+     keys only move within a question; choosing with a click, Space or Enter moves the focus on to the next unanswered
+     question, or to Next. The forecast chart left this step (78 D4); the questions keep their francs (9e D6 to D9). */
   risk() {
-    const firstOpen = () => (RISK.questions.find((q) => !answers[q.id]) || {}).id || null;
-    let open = firstOpen();
     const amount = ownAmount();
     const francs = { amount: chf(amount) };
     [90, 80, 75, 40, 25].forEach((p) => { francs['p' + p] = chf((amount * p) / 100); });
-    const years = RISK_CHART.years[answers.horizon] || RISK_CHART.fallbackYears;
-    const chart = riskChart({ amount, years, config: RISK_CHART });
-    /* "How is this worked out?" opened is a look-up (9f D1). */
-    chart.root.addEventListener('click', (event) => {
-      if (event.target.closest('.opening-chart__toggle') && chart.root.classList.contains('is-explained')) hesitation.signal('lookup');
-    });
-    const nodes = [chart.root];
+    const nodes = [];
     const questions = RISK.questions.map((q) => ({
       ...q, label: fill(q.label, francs), options: q.options.map((o) => ({ ...o, label: fill(o.label, francs) })),
     }));
+    const firstOpen = () => parts.find((p) => !answers[p.q.id]);
     const parts = questions.map((q, i) => {
       const box = el('div', 'opening-question');
       const lab = label((i + 1) + '. ' + q.label);
@@ -762,68 +755,41 @@ const BUILD = {
         get: () => answers[q.id],
         set: (id, how) => {
           answers[q.id] = id;
-          if (how === 'click') {
-            open = firstOpen();
-            changed();
-            const next = parts.find((p) => p.q.id === open);
-            if (next) next.g.focus();
-            else nextButton().focus();
-          } else changed();
+          changed();
+          if (how !== 'click') return;
+          const next = firstOpen();
+          if (next) next.g.focus();
+          else nextButton().focus();
         },
       });
-      const done = el('div', 'opening-question__done');
-      const doneText = el('p', 'opening-question__answer');
-      const change = el('button', 'uz-btn uz-btn--secondary uz-btn--sm opening-question__change', 'Change');
-      change.type = 'button';
-      change.setAttribute('aria-label', 'Change: ' + q.label);
-      change.addEventListener('click', () => { open = q.id; current.update(); g.focus(); });
-      done.append(doneText, change);
-      box.append(lab, g.group, done);
+      box.append(lab, g.group);
       nodes.push(box);
-      return { q, g, box, lab, done, doneText };
+      return { q, g };
     });
     return {
       nodes,
       missing: () => (RISK.questions.every((q) => answers[q.id]) ? '' : RISK.missing),
-      /* The first unanswered question opens, the message under it. */
-      need(move) {
-        if (move) open = firstOpen();
-        const part = parts.find((p) => p.q.id === open) || parts.find((p) => !answers[p.q.id]);
+      /* The message goes under the first unanswered question. */
+      need() {
+        const part = firstOpen();
         return part ? { after: part.g.group, target: part.g.stop() } : null;
       },
-      refresh() {
-        chart.highlight((questions.find((q) => q.id === open) || {}).part || null);
-        parts.forEach(({ q, g, box, done, doneText }, i) => {
-          g.refresh();
-          const option = q.options.find((o) => o.id === answers[q.id]);
-          const state = q.id === open ? 'open' : option ? 'done' : 'waiting';
-          box.dataset.state = state;
-          g.group.hidden = state !== 'open';
-          done.hidden = state !== 'done';
-          /* An answered question folds into one line, its number and answer (9e D16); Change still names it. */
-          doneText.textContent = option ? (i + 1) + '. ' + option.label : '';
-        });
-      },
+      refresh() { parts.forEach(({ g }) => g.refresh()); },
     };
   },
 
   strategy() {
     const rec = recommendation();
-    const nodes = [];
-    if (answers.strategyFellBack && rec) {
-      nodes.push(el('p', 'opening__note opening__note--check', fill(STRATEGY.fellBack, { name: STRATEGIES[rankOf(rec)].name })));
-      delete answers.strategyFellBack; /* said once */
-    }
-    /* One card at a time, chosen explicitly (D16 to D18): nothing is chosen on arrival. */
+    /* One card at a time, chosen explicitly (D16 to D18): nothing is chosen on arrival, and every strategy can be
+       chosen (78 D6). */
     const carousel = strategyCarousel(rec);
     vehicles.host = carousel;
-    nodes.push(carousel.root);
     const chosen = () => STRATEGIES[rankOf(answers.strategy)];
     return {
-      nodes,
-      missing: () => (answers.strategy ? '' : STRATEGY.missing),
-      need: carousel.need,
+      nodes: [carousel.root],
       next: () => (answers.strategy ? fill(STRATEGY.continueWith, { name: chosen().name }) : null),
+      /* No primary button until a strategy is chosen (78 D7): nothing is shown that only says "choose first". */
+      showNext: () => !!answers.strategy,
       refresh: carousel.refresh,
       mounted: carousel.mounted,
     };
@@ -952,9 +918,13 @@ const BUILD = {
       const head = el('div', 'opening-summary__head');
       const title = el('h3', 'opening-summary__label', section.label);
       title.id = 'opening-summary-' + section.id;
-      const edit = button(SUMMARY.edit, 'secondary', () => startEdit(section));
-      edit.className = 'uz-btn uz-btn--secondary uz-btn--sm';
+      /* Glyph-only with no border, the pencil the app uses for edit actions (78 D5, D11); named for screen readers by its section. */
+      const edit = el('button', 'uz-btn uz-btn--sm uz-btn--icon-only');
+      edit.type = 'button';
+      edit.setAttribute('aria-label', SUMMARY.edit + ' ' + section.label);
       edit.setAttribute('aria-describedby', title.id);
+      edit.innerHTML = '<svg class="uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-edit-2"/></svg>';
+      edit.addEventListener('click', () => startEdit(section));
       head.append(title);
       if (section.id === 'amount') head.append(el('span', 'opening-summary__value', chf(answers.amount || 0)));
       head.append(edit);
@@ -1092,7 +1062,6 @@ function fundNow() {
 }
 
 function changed() {
-  reconcile();
   if (current) current.update();
   publish({ dirty: true });
   writeDraft();
@@ -1122,11 +1091,13 @@ function render(moveFocus, animate, back, quiet) {
   const actions = el('div', 'opening__actions');
   const buttons = [];
   let named = null; /* Next, when the screen names it after the answer (the strategy's "Continue with", 9d D18) */
+  let primary = null; /* Next itself, for a screen that hides it until there is something to continue with (78 D7) */
   if (built.actions) buttons.push(...built.actions);
   else {
     const editing = edit && edit.screens.includes(screen.id);
     const next = button(editing ? SUMMARY.backToSummary : screen.next || 'Next', 'primary', () => { if (!showNeed()) forward(); });
     if (built.next && !editing) named = next;
+    primary = next;
     buttons.push(next);
     /* While editing, the section's next screen is one step away; the last one only returns. */
     const after = editing ? edit.screens[edit.screens.indexOf(screen.id) + 1] : null;
@@ -1179,7 +1150,8 @@ function render(moveFocus, animate, back, quiet) {
   current = {
     update() {
       if (built.refresh) built.refresh();
-      if (named) named.textContent = built.next() || screen.next || 'Next';
+      if (named) named.querySelector('.uz-btn__label').textContent = built.next() || screen.next || 'Next';
+      if (primary && built.showNext) primary.hidden = !built.showNext();
       placeNeed(built.missing ? built.missing() : '');
     },
   };
@@ -1252,8 +1224,6 @@ window.addEventListener('keydown', (event) => {
   send({ type: 'uzbank:fridge-escape' });
 });
 
-/* A draft is checked against the rules once more, so a stored strategy is never above the profile (D12). */
-reconcile();
 /* Framed, the page replaced the fridge in the sheet: the heading takes focus so a screen reader starts here. */
 render(framed, false);
 hesitation.step(SCREENS[index].id, false);

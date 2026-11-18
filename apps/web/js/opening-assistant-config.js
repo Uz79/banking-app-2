@@ -68,7 +68,7 @@ export const CHIPS = {
       {
         q: 'What happens if I choose "None"?',
         short: 'You can still open asset management. We take the investment decisions for you.',
-        more: 'With no experience, the strategies with the biggest ups and downs are not offered online.',
+        more: 'With no experience, the strategies with the biggest ups and downs are not recommended. You can still look at them.',
       },
     ],
   },
@@ -116,11 +116,6 @@ export const CHIPS = {
   risk: {
     chips: [
       {
-        q: 'How are these lines worked out?',
-        short: 'They are an example for a balanced mix over your horizon. It is not a forecast, and the past does not promise the future.',
-        more: '19 in 20 outcomes end between the good and the unfavourable line. Markets have recovered from past falls, but how long it took differed.',
-      },
-      {
         q: 'Is there a right answer?',
         short: 'No. The questions find out how you feel about ups and downs, so the strategy fits you.',
         more: 'Answer as you would feel, not as you think you should.',
@@ -160,8 +155,8 @@ export const CHIPS = {
       {
         /* Flagged for review (D7): the suitability line, aligned with 9a D11. */
         q: 'Do I have to take the recommendation?',
-        short: 'No. You can choose a more careful one. A riskier one than recommended cannot be chosen online.',
-        more: 'If you want to talk about a riskier strategy, an advisor can go through it with you.',
+        short: 'No. You can choose a more careful one, or a riskier one. A riskier one is marked, and we ask you to confirm it.',
+        more: 'If you want to talk about a riskier strategy first, an advisor can go through it with you.',
       },
       {
         /* 9d D10: the picture explained, without advice. */
@@ -321,7 +316,7 @@ export const NUDGES = {
     knowledge: { read: 15, q: 'What counts as basic knowledge?', signals: ['switch'], high: true },
     purpose: { read: 20, q: 'What if I am not sure when I need it?', signals: [] },
     amount: { read: 20, q: 'What if I invest more than the fridge suggests?', signals: ['empty'], high: true },
-    risk: { read: 45, q: 'Is there a right answer?', signals: ['switch', 'lookup'], high: true },
+    risk: { read: 45, q: 'Is there a right answer?', signals: ['switch'], high: true },
     strategy: { read: 40, q: 'Do I have to take the recommendation?', signals: ['browse', 'back'] },
     esg: { read: 15, q: 'Does it cost me return?', signals: [] },
     tax: { read: 25, q: 'Who counts as a US person?', signals: ['lookup'], high: true },
