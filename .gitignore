@@ -147,3 +147,6 @@ dist
 # Finder copies ("name 2.ext", roadmap 70): never track them
 * [2-9]
 * [2-9].*
+
+# Storybook is built by the Vercel deploy (roadmap 77); run npm run build-storybook in apps/web to get it locally
+apps/web/storybook-static/
