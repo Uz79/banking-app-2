@@ -6,12 +6,6 @@ The order below is the order of work. Items keep their numbers (specs, commits a
 
 In order. The first is what `/feature-spec` starts.
 
-## 79. Dashboard tile: what inflation does to idle money
-
-Klaudiusz, 2026-11-18, out of 78. The forecast chart leaves the opening's risk step (78 D4). It becomes an educational tile in the dashboard's third column that shows how money left on an account loses value to inflation, as a nudge to invest. To settle in its spec: which page and column ("the dashboard's third column"), what the tile shows (the unused `js/opening-risk-chart.js` as it is, or a cash-against-inflation line, which needs an inflation rate placeholder in the config), the amount it uses (the customer's balance, or an example), where it leads (the fridge advisor or the opening), and how it reads on a phone, where the column stacks.
-
-Settled in its interview: a new cash-against-inflation line (placeholders: 2% a year, 10 years), the customer's idle cash (Household plus Savings) from the demo data, a link into the fridge advisor sheet, Overview's third column under Offers (below Offers on a phone). Spec: `specs/2026-11-18-inflation-tile/` (branch `feature/inflation-tile`). It was under Later.
-
 # Later
 
 Not scheduled, smallest first (an estimate of size, not of value).
@@ -510,6 +504,14 @@ Added 2026-11-16, out of 75's scope. Built 2026-11-18: `apps/web/vercel.json` ha
 Klaudiusz, 2026-11-18. Purpose and horizon in one column, the minimum shown under the amount, the risk questions kept open and the forecast chart taken out of the step, all five strategies choosable with no primary button until one is, and glyph-only pencil Edit buttons on the summary. Spec: `specs/2026-11-18-opening-mobile-review/`.
 
 Built 2026-11-18, uncommitted for review: purpose and horizon are one column each; "Minimum CHF 5'000." shows under the amount; the three risk questions stay open (no folding, no Change buttons) and the forecast chart is off the step (its file and CSS stay for 79); all five strategies can be chosen, those above the profile carry an outlined "Above your risk profile" chip with a warning glyph and open the app's confirmation dialog (`UZBankPaymentExitPrompt`, loaded on the opening page); the strategy step shows no primary button until one is chosen; the summary's Edit buttons are glyph-only pencils ("Edit Strategy"); the assistant's copy no longer says a riskier strategy cannot be chosen. A chosen strategy now stays chosen when the answers change. Not checked: 390px (the window could not be resized), keyboard walk, reduced motion, a Multi-color theme, the baseline smoke test beyond the build.
+
+## 79. Dashboard tile: what inflation does to idle money (done)
+
+Klaudiusz, 2026-11-18, out of 78. The forecast chart leaves the opening's risk step (78 D4). It becomes an educational tile in the dashboard's third column that shows how money left on an account loses value to inflation, as a nudge to invest. To settle in its spec: which page and column ("the dashboard's third column"), what the tile shows (the unused `js/opening-risk-chart.js` as it is, or a cash-against-inflation line, which needs an inflation rate placeholder in the config), the amount it uses (the customer's balance, or an example), where it leads (the fridge advisor or the opening), and how it reads on a phone, where the column stacks.
+
+Settled in its interview: a new cash-against-inflation line (placeholders: 2% a year, 10 years), the customer's idle cash (Household plus Savings) from the demo data, a link into the fridge advisor sheet, Overview's third column under Offers (below Offers on a phone). Spec: `specs/2026-11-18-inflation-tile/` (branch `feature/inflation-tile`). It was under Later.
+
+Built 2026-11-18: `js/inflation-tile.js`, the card in `overview.html`, its CSS and the three-column grid rows (with and without the status message); `js/fridge-advisor-sheet.js` binds every link to the fridge. Not checked: a Multi-color theme, Large legibility, keyboard and screen reader, the baseline smoke test beyond the build.
 
 ## 80. Status message: Remind me later and Go to payment (done)
 
