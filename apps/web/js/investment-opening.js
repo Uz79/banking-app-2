@@ -6,7 +6,7 @@
  * fridge (D2, D3). Opened on its own, the page shows its own header.
  */
 import {
-  SCREENS, DRAFT_KEY, KNOWLEDGE, PURPOSE, HORIZON, AMOUNT, RISK, RISK_CHART, STRATEGIES, STRATEGY, SCORING, VEHICLE_STAGE,
+  SCREENS, DRAFT_KEY, KNOWLEDGE, PURPOSE, HORIZON, AMOUNT, RISK, STRATEGIES, STRATEGY, SCORING, VEHICLE_STAGE,
   ESG, TAX, INELIGIBLE, DOCUMENTS, SUMMARY, COMPLETE,
 } from './investment-opening-config.js';
 import * as assistant from './opening-assistant.js';
@@ -170,7 +170,7 @@ function startOver() {
 const fmt = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "'");
 const chf = (n) => 'CHF ' + fmt(n);
 /* The customer's own amount for the assistant's answers (9b D7) and the risk step (9e D2); an example until there is one. */
-const ownAmount = () => answers.amount || RISK_CHART.exampleAmount;
+const ownAmount = () => answers.amount || AMOUNT.exampleAmount;
 assistant.setValues(() => ({ amount: chf(ownAmount()) }));
 const fill = (text, values) => text.replace(/\{(\w+)\}/g, (m, k) => (k in values ? values[k] : m));
 let uid = 0;

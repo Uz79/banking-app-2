@@ -9641,6 +9641,306 @@ html[data-theme="light"] .status-message__shell {
   color: var(--color-fg);
 }
 
+/* The calculator (roadmap 82): five lines told apart by pattern, never by colour alone. Tokens only. No motion. */
+.inflation-tile__line--cash {
+  stroke-width: 1.5;
+}
+
+.calc__plot .inflation-tile__line--cash,
+.inflation-calc__key .inflation-tile__line--cash {
+  stroke-width: 1.5;
+}
+
+.inflation-tile__line--good {
+  stroke: var(--color-fg);
+  stroke-width: 1.5;
+  stroke-dasharray: 8 4;
+}
+
+.inflation-tile__line--expected {
+  stroke: var(--color-fg-interactive);
+  stroke-width: 3;
+}
+
+.inflation-tile__line--bad {
+  stroke: var(--color-fg-secondary);
+  stroke-width: 1.5;
+  stroke-dasharray: 1.5 3;
+}
+
+.inflation-tile__band {
+  fill: var(--color-fg-interactive);
+  fill-opacity: 0.12;
+  stroke: none;
+}
+
+/* The calculator page (roadmap 82), in the fridge's sheet or on its own: no app chrome. Framed, the sheet's header is
+   used; on its own, the page shows the same header. One column on a phone, two from a 640px wide page. */
+.body[data-screen="investment-calculator"] .sidebar,
+.body[data-screen="investment-calculator"] .tab-bar {
+  display: none;
+}
+
+.body[data-screen="investment-calculator"] .app {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+.body[data-screen="investment-calculator"] .main-content {
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--color-bg);
+}
+
+.body[data-screen="investment-calculator"] .main-content__inner,
+.body[data-screen="investment-calculator"] .view--calc,
+.body[data-screen="investment-calculator"] .view--calc .view__main {
+  max-width: none;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.body[data-screen="investment-calculator"] .view--calc .view__main {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.calc--framed .calc__nav {
+  display: none;
+}
+
+.calc {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-4) var(--space-5);
+  overflow-y: auto;
+}
+
+/* The page name for assistive tech only; the visible title is in the header. */
+.calc__title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.calc__intro,
+.calc__note {
+  margin: 0;
+  color: var(--color-fg-secondary);
+}
+
+.calc__grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.calc__controls,
+.calc__result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.calc__plot {
+  height: 10rem;
+}
+
+/* On a phone the chart and the results come first, then the sliders (82 D27) */
+.calc__result {
+  order: -1;
+}
+
+.calc__actions {
+  display: flex;
+  /* Any spare height goes above the button, so the visible gap below it is exactly the page's bottom padding (82 D37) */
+  margin-top: auto;
+}
+
+.calc__continue {
+  width: 100%;
+  max-width: 100%;
+}
+
+.calc__continue > .uz-btn__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+  /* 32 dp left, right and bottom (82 D33); the top is 24 dp like the opening flow's panel (82 D37) */
+  .calc {
+    padding: var(--space-4) var(--space-5) var(--space-5);
+  }
+
+  .calc__grid {
+    display: grid;
+    /* Sliders and chart share the width 50-50 (82 D36) */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-6);
+    align-items: start;
+  }
+
+  /* A secondary background, no stroke (82 D33) */
+  .calc__controls {
+    padding: var(--space-4);
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--radius-regular);
+  }
+
+  .calc__result {
+    order: 0;
+  }
+
+  /* About square, so a steeper strategy reads as a steeper line (82 D34) */
+  .calc__plot.inflation-tile__plot {
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .calc__continue {
+    width: auto;
+  }
+
+  .calc__actions {
+    justify-content: center;
+  }
+}
+
+.inflation-calc__results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.inflation-calc__result {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr) 3.5rem auto;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+}
+
+.inflation-calc__key {
+  width: 1.5rem;
+  height: 0.5rem;
+  overflow: visible;
+}
+
+.inflation-calc__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inflation-calc__amount {
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+}
+
+.inflation-calc__change {
+  text-align: right;
+  color: var(--color-fg-secondary);
+  white-space: nowrap;
+}
+
+.inflation-calc__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.inflation-calc__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.inflation-calc__label,
+.inflation-calc__strategy {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text);
+}
+
+.inflation-calc__label {
+  color: var(--color-fg-label);
+}
+
+.inflation-calc__strategy {
+  font-weight: var(--fw-medium);
+  color: var(--color-fg);
+}
+
+.inflation-calc__num {
+  width: 6.5rem;
+  height: 2rem;
+  flex: none;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-btn-secondary-border);
+  border-radius: var(--radius-regular);
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font: inherit;
+  text-align: right;
+}
+
+.inflation-calc__num:focus-visible {
+  outline: 2px solid var(--color-fg-interactive);
+  outline-offset: 2px;
+}
+
+.inflation-calc__ends {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--fs-text-xs);
+  color: var(--color-fg-label);
+}
+
+/* Each legend row is one line (82 D35). Only on a phone at Legibility Large, where there is no room, the change wraps
+   under the name. */
+@media (max-width: 639px) {
+  :root[data-legibility="large"] .inflation-calc__result {
+    grid-template-columns: 1.5rem minmax(0, 1fr) auto;
+  }
+
+  :root[data-legibility="large"] .inflation-calc__amount {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  :root[data-legibility="large"] .inflation-calc__change {
+    grid-column: 2 / -1;
+    grid-row: 2;
+    text-align: left;
+  }
+}
+
 .inflation-tile__link {
   align-self: flex-start;
   max-width: 100%;
@@ -12868,268 +13168,6 @@ html.fridge--wide .fridge__ring-amount {
 
 .opening-question:first-child .opening__label {
   margin-top: 0;
-}
-
-/* The risk chart (9e D1, D5, D11): three lines in the secondary colour, the band a light tint of the foreground; the
-   part the open question is about (`data-part`) in the accent with a heavier stroke. On a phone the line above, the
-   plot and the end values stack; on desktop the plot sits left of them. "How is this worked out?" shows the
-   footnote in place of the plot and the values. */
-.opening-chart {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-areas: "intro toggle" "plot plot" "values values";
-  gap: 0.25rem var(--space-2);
-}
-
-.opening-chart__side {
-  display: contents;
-}
-
-.opening-chart__intro {
-  grid-area: intro;
-  margin: 0;
-  font-size: var(--fs-text-sm);
-  line-height: var(--lh-text);
-  color: var(--color-fg-secondary);
-}
-
-.opening-chart__plot {
-  grid-area: plot;
-  display: block;
-  width: 100%;
-  height: 3.5rem;
-}
-
-.assistant--wide .opening-chart {
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-areas: "plot intro" "plot values" "toggle values";
-  column-gap: var(--space-3);
-}
-
-/* Desktop: the plot takes the height of the text beside it, the toggle under it. */
-.assistant--wide .opening-chart__plot {
-  height: auto;
-  min-height: 4rem;
-  align-self: stretch;
-  contain: size;
-}
-
-.opening-chart.is-explained {
-  grid-template-areas: "intro toggle" "note note";
-}
-
-.assistant--wide .opening-chart.is-explained {
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: "intro" "note" "toggle";
-}
-
-.opening-chart.is-explained .opening-chart__plot,
-.opening-chart.is-explained .opening-chart__values {
-  display: none;
-}
-
-.opening-chart__band {
-  fill: var(--color-fg);
-  fill-opacity: 0.06;
-  transition: fill 200ms ease, fill-opacity 200ms ease;
-}
-
-.opening-chart__start {
-  stroke: var(--color-separator);
-  stroke-width: 1;
-  stroke-dasharray: 3 3;
-}
-
-.opening-chart__line {
-  fill: none;
-  stroke: var(--color-fg-secondary);
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  transition: stroke 200ms ease, stroke-width 200ms ease;
-}
-
-.opening-chart__line--expected {
-  stroke-width: 2.5;
-}
-
-/* The unfavourable line is dashed, so the three read apart without colour (dashes in units of the path's length).
-   The draw-in (D13) runs on the solid lines; the dashed line and the band fade in. */
-.opening-chart__line--bad {
-  stroke-dasharray: 0.015 0.012;
-}
-
-.opening-chart__line--good,
-.opening-chart__line--expected {
-  stroke-dasharray: 1;
-  animation: opening-chart-draw 600ms ease-out both;
-}
-
-.opening-chart__line--bad,
-.opening-chart__band {
-  animation: opening-chart-fade 600ms ease-out both;
-}
-
-@keyframes opening-chart-draw {
-  from { stroke-dashoffset: 1; }
-  to { stroke-dashoffset: 0; }
-}
-
-@keyframes opening-chart-fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.opening-chart[data-part="bad"] .opening-chart__line--bad,
-.opening-chart[data-part="band"] .opening-chart__line--good,
-.opening-chart[data-part="band"] .opening-chart__line--bad,
-.opening-chart[data-part="expected"] .opening-chart__line--expected {
-  stroke: var(--color-fg-interactive);
-  stroke-width: 3;
-}
-
-.opening-chart[data-part="band"] .opening-chart__band {
-  fill: var(--color-fg-interactive);
-  fill-opacity: 0.14;
-}
-
-/* The end values: three columns on a phone, three rows (name, amount, change) on desktop. */
-.opening-chart__values {
-  grid-area: values;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.opening-chart__value {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end; /* names and amounts line up when one name wraps (roadmap 34, D4) */
-  font-size: var(--fs-text-sm);
-  line-height: var(--lh-text);
-  color: var(--color-fg-secondary);
-}
-
-.assistant--wide .opening-chart__values {
-  grid-template-columns: auto auto auto;
-  column-gap: var(--space-2);
-  row-gap: 0;
-}
-
-.assistant--wide .opening-chart__value {
-  display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: subgrid;
-  align-items: baseline;
-  line-height: 1.25;
-}
-
-.assistant--wide .opening-chart__amount {
-  line-height: 1.25;
-}
-
-/* Large type on a phone: three columns are too narrow for a wide typeface, so the end values become
-   rows of name and amount, as on desktop (roadmap 34, D7) */
-:root.assistant--full[data-legibility="large"] .opening-chart__values {
-  grid-template-columns: auto auto;
-  justify-content: start;
-  column-gap: var(--space-3);
-  row-gap: 0;
-}
-
-:root.assistant--full[data-legibility="large"] .opening-chart__value {
-  display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: subgrid;
-  align-items: baseline;
-  line-height: 1.25;
-}
-
-/* On a phone the three columns are too narrow for the change in percent; the amounts say it. */
-.opening-chart__change {
-  display: none;
-}
-
-.assistant--wide .opening-chart__change {
-  display: block;
-  text-align: right;
-}
-
-.opening-chart__name {
-  display: flex;
-  flex-wrap: wrap; /* the key goes above the name when a phone column is too narrow, Large type (roadmap 34, D4) */
-  align-items: center;
-  gap: 0 0.375rem;
-}
-
-.opening-chart__key {
-  flex-shrink: 0;
-  width: 1rem;
-  border-top: 2px solid var(--color-fg-secondary);
-}
-
-.opening-chart__value--expected .opening-chart__key {
-  border-top-width: 3px;
-}
-
-.opening-chart__value--bad .opening-chart__key {
-  border-top-style: dashed;
-}
-
-.opening-chart__amount {
-  font-size: var(--fs-text-md);
-  font-weight: var(--fw-medium);
-  color: var(--color-fg);
-  white-space: nowrap;
-}
-
-.opening-chart[data-part="bad"] .opening-chart__value--bad .opening-chart__key,
-.opening-chart[data-part="band"] .opening-chart__value--good .opening-chart__key,
-.opening-chart[data-part="band"] .opening-chart__value--bad .opening-chart__key,
-.opening-chart[data-part="expected"] .opening-chart__value--expected .opening-chart__key {
-  border-top-color: var(--color-fg-interactive);
-}
-
-.opening-chart__note {
-  grid-area: note;
-  max-width: 34rem;
-  margin: 0;
-  font-size: var(--fs-text-sm);
-  line-height: var(--lh-text);
-  color: var(--color-fg);
-}
-
-/* A quiet text button, like the step's other in-place links ("What counts?"). */
-.opening-chart__toggle {
-  grid-area: toggle;
-  justify-self: start;
-  padding: 0;
-  border: 0;
-  background: none;
-  font: inherit;
-  font-size: var(--fs-text-sm);
-  line-height: var(--lh-text);
-  color: var(--color-fg);
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
-  cursor: pointer;
-}
-
-.opening-chart__toggle:focus-visible {
-  outline: 0.125rem solid var(--color-fg-interactive);
-  outline-offset: 2px;
-  border-radius: var(--radius-small);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .opening-chart__line,
-  .opening-chart__band {
-    animation: none;
-    transition: none;
-  }
 }
 
 /* A screen arrives like a payment flow step (D24): forward from the right, back from the left; the buttons stay. */

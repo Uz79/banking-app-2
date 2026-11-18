@@ -1,5 +1,5 @@
 /**
- * Overview: opens the fridge advisor as a sheet, the same way the payment and trade flows open.
+ * Overview: opens the fridge advisor (or the investment calculator) as a sheet, the same way the payment and trade flows open.
  *
  * The sheet is a real flow sheet (.modal-overlay > .modal-shell > .modal--trade-flow) with the flows' own
  * header (Back, title, close), so it looks and moves like them. The page itself, fridge-advisor.html,
@@ -17,7 +17,7 @@
   var overlay = document.querySelector('[data-fridge-overlay]');
   /* Every link to the fridge on the page opens the sheet: Offers' Investment item and the inflation tile (roadmap 79, D6).
      `opener` is whichever one was used, so the focus goes back to it. */
-  var openers = Array.prototype.slice.call(document.querySelectorAll('a[href="fridge-advisor.html"]'));
+  var openers = Array.prototype.slice.call(document.querySelectorAll('a[href="fridge-advisor.html"], [data-calculator-open]'));
   var opener = openers[0];
   var app = document.querySelector('.app');
   if (!overlay || !opener) return;
@@ -31,6 +31,9 @@
 
   var FRIDGE = { src: 'fridge-advisor.html', title: 'How much should I invest?' };
   var OPENING = { src: 'investment-opening.html', title: 'Open asset management' };
+  /* The inflation tile's "Try the calculator" opens the calculator page in the same sheet (roadmap 82 D23). It keeps
+     nothing; "See how much to invest" in it loads the fridge, as if opened from Offers. */
+  var CALCULATOR = { src: 'investment-calculator.html', title: 'Investment calculator' };
   /* One exit prompt for both pages: both keep their progress for the session (phone polish D10, D11). */
   var PROMPT = { title: 'Leave for now?', message: 'Your progress is kept for this session, so you can continue where you left off.' };
 
@@ -99,11 +102,11 @@
     link.addEventListener('blur', speakUp);
   });
 
-  function open() {
+  function open(first) {
     if (isOpen() || closing) return;
     pageState = { canBack: false, dirty: false };
     showBack(false);
-    var page = resumePage();
+    var page = first || resumePage();
     setWide(true);
     frame = document.createElement('iframe');
     frame.className = 'fridge-frame';
@@ -207,7 +210,7 @@
       if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       event.preventDefault();
       opener = link;
-      open();
+      open(link.hasAttribute('data-calculator-open') ? CALCULATOR : null);
     });
   });
 

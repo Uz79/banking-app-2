@@ -2,13 +2,15 @@
  * Overview: "Cash loses value" (roadmap 79).
  * The customer's idle cash, the Household and Savings running balances, over a few years at a placeholder rate of
  * inflation: a falling line for what the money buys, a flat dashed line for today's amount. Inline SVG, no library, no
- * animation. The SVG is decoration: the sentence and the two figures say everything it shows. Re-read when the
- * payment state changes. Hidden below `minIdle`, when there is nothing to lose.
+ * animation. The SVG is decoration: the sentence and the two figures say everything it shows. Re-read when the payment
+ * state changes. Hidden below `minIdle`, when there is nothing to lose. "Try the calculator" opens the calculator sheet
+ * (js/fridge-advisor-sheet.js, roadmap 82); the calculator itself is js/investment-calculator.js.
  */
 (function () {
   'use strict';
 
-  /* Flagged: placeholders for the bank's numbers (79 D2). An example, not a forecast. */
+  /* Flagged: placeholders for the bank's numbers (79 D2). An example, not a forecast. The calculator uses the same rate
+     (`CALCULATOR.inflation` in js/investment-opening-config.js): change both. */
   var CONFIG = {
     rate: 0.02,        /* inflation a year */
     years: 10,
@@ -66,7 +68,7 @@
     /* What is lost: the band between today's amount and the falling line */
     plot.appendChild(shape('path', { class: 'inflation-tile__loss', d: line + ' L' + W + ' ' + flat + ' L0 ' + flat + ' Z' }));
     plot.appendChild(shape('line', { class: 'inflation-tile__flat', x1: 0, x2: W, y1: flat, y2: flat }));
-    plot.appendChild(shape('path', { class: 'inflation-tile__line', d: line }));
+    plot.appendChild(shape('path', { class: 'inflation-tile__line inflation-tile__line--cash', d: line }));
   }
 
   function render() {
