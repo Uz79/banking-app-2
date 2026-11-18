@@ -6,13 +6,19 @@ The order below is the order of work. Items keep their numbers (specs, commits a
 
 In order. The first is what `/feature-spec` starts.
 
+## 79. Dashboard tile: what inflation does to idle money
+
+Klaudiusz, 2026-11-18, out of 78. The forecast chart leaves the opening's risk step (78 D4). It becomes an educational tile in the dashboard's third column that shows how money left on an account loses value to inflation, as a nudge to invest. To settle in its spec: which page and column ("the dashboard's third column"), what the tile shows (the unused `js/opening-risk-chart.js` as it is, or a cash-against-inflation line, which needs an inflation rate placeholder in the config), the amount it uses (the customer's balance, or an example), where it leads (the fridge advisor or the opening), and how it reads on a phone, where the column stacks.
+
+Settled in its interview: a new cash-against-inflation line (placeholders: 2% a year, 10 years), the customer's idle cash (Household plus Savings) from the demo data, a link into the fridge advisor sheet, Overview's third column under Offers (below Offers on a phone). Spec: `specs/2026-11-18-inflation-tile/` (branch `feature/inflation-tile`). It was under Later.
+
 # Later
 
 Not scheduled, smallest first (an estimate of size, not of value).
 
-## 79. Dashboard tile: what inflation does to idle money
+## 81. Remove the unused risk chart
 
-Klaudiusz, 2026-11-18, out of 78. The forecast chart leaves the opening's risk step (78 D4). It becomes an educational tile in the dashboard's third column that shows how money left on an account loses value to inflation, as a nudge to invest. To settle in its spec: which page and column ("the dashboard's third column"), what the tile shows (the unused `js/opening-risk-chart.js` as it is, or a cash-against-inflation line, which needs an inflation rate placeholder in the config), the amount it uses (the customer's balance, or an example), where it leads (the fridge advisor or the opening), and how it reads on a phone, where the column stacks.
+Found during 79 (2026-11-18). After 78 took the forecast chart out of the opening's risk step and 79 drew its own tile, `js/opening-risk-chart.js`, `RISK_CHART` in `js/investment-opening-config.js` and the `.opening-chart*` rules in `css/styles.css` are used by nothing. Check that, then delete them (and the chart's mentions in `specs/tech-spec.md`).
 
 ## 58. Legibility doesn't reach the Playground
 
