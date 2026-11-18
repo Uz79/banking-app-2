@@ -13,6 +13,8 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-18-inflation-tile-calculator/`.
 
 ### Changed
+- **The fridge result explains a zero** (roadmap 83). When one month of spending and the reserves use up the assets, the result says so and suggests lowering a reserve. The yearly line now reads "You could set aside each year" and stays at zero.
+- Spec: `specs/2026-11-18-fridge-zero-result/`.
 - **The unused risk chart is removed** (roadmap 81, with 82). `js/opening-risk-chart.js`, its CSS and `RISK_CHART` are gone; the opening looks the same.
 - **The "Open payment!" message has two buttons** (roadmap 80, closes 67 as superseded). "Remind me later" hides it and it drops in again after 8 s, every time. "Go to payment" hides it for good (until Reset demo data) and opens the details of the open bill, a read-only payment that exists only for its own route and is in no bookings list. A tap on the card itself no longer dismisses it; the warning, information and "Scheduled payment" messages still do. New key `uzBankWebStatusActed`. Whether Vercel Web Analytics lists the route (a hash) is still to be checked on production.
 - Spec: `specs/2026-11-18-status-message-actions/`.

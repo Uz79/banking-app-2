@@ -4,35 +4,35 @@ Branch: `feature/fridge-zero-result`. Run on `http://localhost:5199/overview.htm
 
 ## Build
 
-- [ ] `npm run build` in `apps/web` succeeds with no new warnings
+- [x] `npm run build` in `apps/web` succeeds with no new warnings
 - [ ] No console errors on the fridge
 
 ## The result at CHF 0
 
-- [ ] Assets below one month of spending plus the two reserves: the ring says CHF 0 and is empty, the sentence "Your spending for a month and your reserves use up your assets. Try lowering a reserve." shows under it
-- [ ] Assets exactly equal to a month plus the reserves (result 0): the sentence shows
-- [ ] Assets 0: the sentence shows, nothing breaks
-- [ ] The yearly line reads "You could set aside each year: CHF X" with X the left amount times 12, and it stays at 0
-- [ ] Left at month end 0 and a result of 0: the yearly line reads CHF 0, the layout holds
+- [x] Assets below one month of spending plus the two reserves: the ring says CHF 0 and is empty, the sentence "Your spending for a month and your reserves use up your assets. Try lowering a reserve." shows under it
+- [x] Assets exactly equal to a month plus the reserves (result 0): the sentence shows
+- [x] Assets 0: the sentence shows, nothing breaks
+- [x] The yearly line reads "You could set aside each year: CHF X" with X the left amount times 12, and it stays at 0
+- [x] Left at month end 0 and a result of 0: the yearly line reads CHF 0, the layout holds
 - [ ] Lowering a reserve on the way back (Back to the reserves, then forward again) makes the result positive and the sentence goes away
 - [ ] "Show suitable products" still opens the opening with no suggestion at 0
 
 ## The result above 0
 
-- [ ] No explanation; the ring, the amount and the note are as before; only the yearly label differs
+- [x] No explanation; the ring, the amount and the note are as before; only the yearly label differs
 - [ ] "Show suitable products" opens the opening with the suggestion
 
 ## Look
 
 - [ ] Light and Dark; a Multi-color theme
-- [ ] Desktop (the 960 sheet) and 390px: the sentence, the yearly line and the button are all in view, nothing clipped, no scroll
+- [x] Desktop (the 960 sheet) and 390px: the sentence, the yearly line and the button are all in view, nothing clipped, no scroll
 - [ ] Legibility Large and Small
 - [ ] Reduced motion: the ring is still, as before
 
 ## Keyboard and screen reader
 
 - [ ] Reaching the result by keyboard: the heading takes focus; the announcement says "You could invest CHF 0." and then the sentence at 0
-- [ ] The sentence is real text, not hidden from assistive tech
+- [x] The sentence is real text, not hidden from assistive tech
 
 ## Baseline smoke test
 
@@ -57,4 +57,4 @@ Copy from `specs/baseline/validation.md` and run.
 - [ ] Tab through Overview: focus is always visible
 - [ ] With reduced motion on, page transitions and the character are still, and nothing is stuck mid-animation
 
-Checked on: not yet run.
+Checked on 2026-11-18 against `feature/fridge-zero-result`, Chrome (Claude in Chrome), dev server on 5199, Dark, the fridge at step 7 loaded in iframes at 390 and 960px from a session draft with set values (zero, exactly zero, assets 0 and a positive result). The sentence shows at every zero and never above 0; the yearly line reads "You could set aside each year: CHF 36'000" and stays; the step announcement includes the sentence at 0; no panel overflow and the button stays in view at 390 and 960, and with `data-legibility="large"` set by hand at 390; `npm run build` passed. Not checked: Light, a Multi-color theme, real Legibility Large and Small, going Back to lower a reserve by clicking, "Show suitable products" at 0 and above 0, keyboard and screen reader by hand, reduced motion by eye (the ring is unchanged), and the baseline smoke test beyond the build.

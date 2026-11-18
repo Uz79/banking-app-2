@@ -12441,6 +12441,11 @@ html.fridge--wide .fridge__panel {
   color: var(--color-fg);
 }
 
+/* The zero's explanation (roadmap 83): the note's look, centred like the rest of the result */
+.fridge__zero {
+  max-width: 28rem;
+}
+
 .fridge__year {
   margin: 0;
   font-size: var(--fs-text-md);
