@@ -23,6 +23,7 @@
 
   var root = document.documentElement;
   var DISMISSED_KEY = 'uzStatusDismissed';
+  var ACTED_KEY = 'uzBankWebStatusActed';   /* localStorage: { id: Date.now() }, a message the customer acted on (roadmap 80, D7) */
 
   var ICONS = {
     bell: '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',
@@ -86,6 +87,21 @@
     try {
       var all = dismissals();
       if (all[id]) { delete all[id]; sessionStorage.setItem(DISMISSED_KEY, JSON.stringify(all)); }
+    } catch (e) { /* ignore */ }
+  }
+
+  /* Acted on: the customer chose the message's own action. It is not shown again until Reset demo data. */
+  function actedOn(id) {
+    if (!id) return false;
+    try { return !!JSON.parse(localStorage.getItem(ACTED_KEY) || '{}')[id]; } catch (e) { return false; }
+  }
+
+  function rememberActed(id) {
+    if (!id) return;
+    try {
+      var all = JSON.parse(localStorage.getItem(ACTED_KEY) || '{}');
+      all[id] = Date.now();
+      localStorage.setItem(ACTED_KEY, JSON.stringify(all));
     } catch (e) { /* ignore */ }
   }
 
@@ -231,10 +247,13 @@
   function render(opts) {
     var state = STATE_LABEL[opts.state] ? opts.state : 'info';
     var icon = ICONS[opts.icon] || ICONS[DEFAULT_ICON[state]];
-    var card = document.createElement('button');
-    card.type = 'button';
-    card.className = 'status-message status-message--' + state;
+    var hasActions = !!(opts.actions && opts.actions.length);
+    /* With actions the card holds buttons, so it is not a button itself (roadmap 80, D2); a tap on it does nothing. */
+    var card = document.createElement(hasActions ? 'div' : 'button');
+    if (!hasActions) card.type = 'button';
+    card.className = 'status-message status-message--' + state + (hasActions ? ' status-message--actions' : '');
     card.setAttribute('data-status-state', state);
+    if (hasActions && state === 'error') card.setAttribute('role', 'alert');
     card.innerHTML =
       '<span class="status-message__shell" aria-hidden="true"></span>' +
       '<span class="status-message__icon" aria-hidden="true">' +
@@ -250,6 +269,22 @@
         ? '<span class="status-message__meta"><span class="status-message__since">since</span> ' +
           '<span class="status-message__date">' + escapeHtml(opts.since) + '</span></span>'
         : '');
+    if (hasActions) {
+      var row = document.createElement('div');
+      row.className = 'status-message__actions';
+      opts.actions.forEach(function (a) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'uz-btn uz-btn--sm uz-btn--' + (a.kind === 'primary' ? 'primary' : 'secondary');
+        var label = document.createElement('span');
+        label.className = 'uz-btn__label';
+        label.textContent = a.label;
+        b.appendChild(label);
+        b.addEventListener('click', function () { perform(a); });
+        row.appendChild(b);
+      });
+      card.appendChild(row);
+    }
     return card;
   }
 
@@ -310,7 +345,7 @@
 
     /* Content after the card has landed */
     var contentStart = dur - 40;
-    var parts = card.querySelectorAll('.status-message__icon, .status-message__title, .status-message__body, .status-message__meta');
+    var parts = card.querySelectorAll('.status-message__icon, .status-message__title, .status-message__body, .status-message__meta, .status-message__actions');
     Array.prototype.forEach.call(parts, function (el, i) {
       anims.push(el.animate([
         { opacity: 0, transform: 'translateY(-6px)' },
@@ -365,7 +400,7 @@
       var mid = shellRect(cw * 0.5625, 32, (ch - 32) / 2, (cw - cw * 0.5625) / 2);
       var anims = [];
 
-      card.querySelectorAll('.status-message__icon, .status-message__text, .status-message__meta').forEach(function (el) {
+      card.querySelectorAll('.status-message__icon, .status-message__text, .status-message__meta, .status-message__actions').forEach(function (el) {
         anims.push(el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 120, easing: 'linear', fill: 'forwards' }));
       });
       slot.classList.add('status-slot--entering');   /* above the title bar again while it rises */
@@ -423,7 +458,7 @@
     slot.appendChild(card);
     slot.hidden = false;
 
-    card.addEventListener('click', function () { activate(entry); });
+    if (card.tagName === 'BUTTON') card.addEventListener('click', function () { activate(entry); });
 
     /* Restored on another view: it's already there (on root pages it builds up with the other sections). */
     if (staticMount) {
@@ -468,6 +503,23 @@
       scheduleReappear(entry.opts, entry.opts.reappearAfter);
       if (entry.opts.href) global.location.href = entry.opts.href;
       try { global.dispatchEvent(new CustomEvent('uz:status-dismissed', { detail: { id: entry.opts.id } })); } catch (e) { /* ignore */ }
+    });
+  }
+
+  /* A button inside the card (roadmap 80). `later` dismisses and brings the message back after `reappearAfter` (D5);
+     `act` is the conversion: it is remembered for good (D7) and `run` goes where the message points (D6). */
+  function perform(action) {
+    var entry = current;
+    if (!entry || entry.phase === 'leaving') return;
+    var act = action.type === 'act';
+    if (act) rememberActed(entry.opts.id); else rememberDismissed(entry.opts.id);
+    forgetActive();
+    current = null;
+    leave(entry).then(function () {
+      teardown(entry);
+      if (!act) scheduleReappear(entry.opts, entry.opts.reappearAfter);
+      if (typeof action.run === 'function') action.run();
+      try { global.dispatchEvent(new CustomEvent('uz:status-dismissed', { detail: { id: entry.opts.id, acted: act } })); } catch (e) { /* ignore */ }
     });
   }
 
@@ -535,14 +587,20 @@
         Object.keys(def.variants[param]).forEach(function (k) { opts[k] = def.variants[param][k]; });
       }
       opts.id = def.id + ':' + param;
+      if (param !== def.state) delete opts.actions;   /* only the error card has buttons (roadmap 80, D1) */
       opts.delay = 300;
       opts.force = true;
       show(opts);
       return;
     }
 
+    /* Acted on earlier: never again, until Reset demo data. */
+    if (actedOn(opts.id)) return;
+
     var active = activeMessage();
     if (active && !dismissedAt(active.id)) {
+      /* The buttons are code, not stored: they come from the feed's own definition (roadmap 80). */
+      if (active.id === opts.id && opts.actions) active.actions = opts.actions;
       restore(active);
       return;
     }

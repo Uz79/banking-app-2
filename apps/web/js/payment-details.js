@@ -23,6 +23,21 @@
 (function () {
   'use strict';
 
+  /* ── Payments that exist only for a route (roadmap 80, D8, D9) ───────
+   * The status message's open bill: in no list, so a view of its route means the message sent the customer there.
+   * Read-only, status "Open". Recipient and amount are placeholders. */
+  var ROUTE_ONLY = {
+    'open-bill-2026-10-04': {
+      type: 'domestic',
+      title: 'Domestic Payment',
+      amount: '-148.50',
+      currency: 'CHF',
+      to: 'City Utilities Zürich\nLimmatstrasse 120\n8005 Zürich',
+      status: 'open',
+      message: 'Invoice 2026-1004, due 04.10.2026'
+    }
+  };
+
   /* ── Static booking data ─────────────────────────────────────── */
 
   var BOOKING_MAP_HOUSEHOLD = {
@@ -662,6 +677,21 @@
     var route = parsePaymentDetailsRoute();
     if (route) {
       if (isOtherFlowOpen()) return;
+      /* A route-only payment opens from its route alone, also on a first load (roadmap 80, D8) */
+      var only = route.type === 'domestic' && route.bookingId ? ROUTE_ONLY[route.bookingId] : null;
+      if (only) {
+        if (!overlay.classList.contains('modal-overlay--active') || currentBookingRouteId !== route.bookingId) {
+          currentRow = null;
+          currentBookingId = null;
+          currentBookingRouteId = route.bookingId;
+          openOverlay(Object.assign({}, only), { skipRoute: true });
+          notifyScreen();
+        } else {
+          isClosing = false;
+          overlay.classList.remove('modal-overlay--closing');
+        }
+        return;
+      }
       if (currentPaymentData && currentBookingRouteId) {
         var wantType = route.type === 'internal' ? 'internal' : 'domestic';
         var dataType = currentPaymentData.type === 'internal' ? 'internal' : 'domestic';
@@ -698,6 +728,7 @@
     var none = { edit: false, del: false, copy: false };
     var status = data.status || 'executed';
     if (data.title === 'Trade') return none;
+    if (status === 'open') return none; /* a route-only bill is read-only (roadmap 80, D9) */
     if (data.type === 'internal') {
       return { edit: false, del: status === 'pending' && !!currentBookingId, copy: false };
     }
@@ -781,9 +812,10 @@
     }
 
     // Status chip: a rule is Active, with its frequency and next execution (roadmap 47, D2)
-    var isPending = data.status !== 'executed';
-    if (statusIconUse) statusIconUse.setAttribute('href', isRule ? '#i-repeat' : isPending ? '#i-clock' : '#i-check');
-    if (statusTextEl)  statusTextEl.textContent = isRule ? 'Active' : isPending ? 'Pending' : 'Executed';
+    var isOpen = data.status === 'open';
+    var isPending = data.status !== 'executed' && !isOpen;
+    if (statusIconUse) statusIconUse.setAttribute('href', isRule ? '#i-repeat' : isOpen ? '#i-alert-circle' : isPending ? '#i-clock' : '#i-check');
+    if (statusTextEl)  statusTextEl.textContent = isRule ? 'Active' : isOpen ? 'Open' : isPending ? 'Pending' : 'Executed';
     if (frequencyValEl) {
       var pay = window.UZBankPayState;
       frequencyValEl.textContent = isRule && pay && pay.frequencyLabel ? pay.frequencyLabel(data.frequency) : '';
@@ -792,6 +824,7 @@
 
     if (modal) {
       modal.classList.toggle('pd--pending', isPending && !isRule);
+      modal.classList.toggle('pd--open', isOpen);
       modal.classList.toggle('pd--rule', isRule);
     }
     applyActions(data);
@@ -919,6 +952,9 @@
 
   window.addEventListener('hashchange', applyPaymentDetailsRoute);
   window.addEventListener('popstate', applyPaymentDetailsRoute);
+  /* A route-only payment opens on a first load of its route (roadmap 80, D8) */
+  if (document.readyState === 'complete') applyPaymentDetailsRoute();
+  else window.addEventListener('load', applyPaymentDetailsRoute);
 
   /* ── Expander toggle ─────────────────────────────────────────── */
 
