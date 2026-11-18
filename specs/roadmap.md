@@ -6,6 +6,16 @@ The order below is the order of work. Items keep their numbers (specs, commits a
 
 In order. The first is what `/feature-spec` starts.
 
+## 80. Status message: Remind me later and Go to payment
+
+From Klaudiusz, 2026-11-18. Purpose: show that the message pattern works. It appears, it is noticed, and the customer acts on it. Fixing the bill is not the point; there is no real scenario for it yet.
+
+The "Open payment!" card gets two buttons, each label short and on one line: "Remind me later" dismisses the card and it comes back after the demo delay (today's `reappearAfter`, 8 s); "Go to payment" dismisses it for good and opens the details of one specific payment, the open bill (feed id `open-bill-2026-10-04`, since 04.10.2026, overdue by several days), through its own unique route with an individual ID. A tap on the card body no longer dismisses it. Today's tap-to-dismiss and the reappear-after-tap behaviour go away. The card's layout, copy and states with two buttons need a decision in the spec.
+
+Measurement: `js/analytics.js` records hash routes as screen IDs, and Vercel Web Analytics shows whether that one payment's route was opened (against Overview views as the rough base). The ID must be unique to this bill and reachable no other way. No custom events (`specs/2026-10-26-web-analytics`, Hobby plan), so "shown" and "Remind me later" are not counted. The demo needs that payment to exist in the data and open by its route, also on a first load of the route.
+
+Open for the interview: the route and ID, and whether the booking sheet or the payment-details page opens; whether a direct open is told apart from one from the card; whether the overdue payment is added to the built-in Pending bookings, and what Reset demo data does; where the "acted on" state is stored (a key starting `uzBankWeb`, listed in `apps/web/README.md`) and whether Reset brings the message back; whether "Remind me later" repeats for ever; whether the warning and info variants and the "Scheduled payment" messages get the buttons; 390px, keyboard and screen reader order, reduced motion. Settled in its interview: a hash route as written, with the risk that Vercel lists only paths recorded; the acted-on state in localStorage `uzBankWebStatusActed`, cleared by Reset; "Remind me later" repeats for ever at 8 s; the other messages unchanged; the bill listed nowhere and read-only; the buttons in a row, stacked at 390px. Spec: `specs/2026-11-18-status-message-actions/` (branch `feature/status-message-actions`).
+
 # Later
 
 Not scheduled, smallest first (an estimate of size, not of value).
@@ -13,10 +23,6 @@ Not scheduled, smallest first (an estimate of size, not of value).
 ## 79. Dashboard tile: what inflation does to idle money
 
 Klaudiusz, 2026-11-18, out of 78. The forecast chart leaves the opening's risk step (78 D4). It becomes an educational tile in the dashboard's third column that shows how money left on an account loses value to inflation, as a nudge to invest. To settle in its spec: which page and column ("the dashboard's third column"), what the tile shows (the unused `js/opening-risk-chart.js` as it is, or a cash-against-inflation line, which needs an inflation rate placeholder in the config), the amount it uses (the customer's balance, or an example), where it leads (the fridge advisor or the opening), and how it reads on a phone, where the column stacks.
-
-## 67. The status message's timing
-
-Klaudiusz, 2026-11-06. The "Open payment!" message appears after about 9 s; the baseline smoke test and `js/status-feed.js`'s comment say 12 s (8 s was measured on 2026-11-05). To settle: what the timer actually counts from, then align the code or the baseline.
 
 ## 58. Legibility doesn't reach the Playground
 
@@ -464,6 +470,12 @@ Spec: `specs/2026-11-08-trade-sheet-account-and-price/` (branch `feature/trade-s
 Klaudiusz, 2026-11-06, corrected 2026-11-16. On Motion specimens, No. 002 Focus-mode choreography's stage lost its panel in Dark: its left column (the course text) melted into the page. Every sample stage and Core CSS block takes `background: var(--ms-surface)` (`--color-bg`), a framed panel on the `--color-bg-secondary` page. `.s2-stage` overrode it, and in Dark with `--color-bg-secondary`, the page colour. (The first note, "the right column keeps a white background", described it wrongly.)
 
 Built 2026-11-16: the two `background` lines on `.s2-stage` are removed so it inherits `--ms-surface` like the other samples; the Dark ink and paper swap, which colours the cube, stays. No. 001's Dark stage already matched. Spec: `specs/2026-11-16-focus-mode-sample-dark/`.
+
+## 67. The status message's timing (done, superseded)
+
+Klaudiusz, 2026-11-06. The "Open payment!" message appeared after about 9 s; the baseline smoke test and `js/status-feed.js`'s comment said 12 s.
+
+Closed 2026-11-18, no code change. Measured on a fresh Overview load: the card is in the page 12.2 s after navigation start (the 12000 ms delay plus about 0.2 s of load), as the code and the baseline say. The 9 s was the `reappearAfter` timer (8 s after a tap, plus the animation), not the first appearance. The status message is being redesigned (item 80) and the reappear-on-tap behaviour goes away, so the timing is neither changed nor documented further.
 
 ## 68. Editing a standing order after its next payment leaves two payments (done)
 
