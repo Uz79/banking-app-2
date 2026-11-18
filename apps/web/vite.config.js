@@ -42,6 +42,7 @@ export default {
         playground: resolve(dir, 'playground.html'),             // admin only, full screen
         fridgeAdvisor: resolve(dir, 'fridge-advisor.html'),      // opens as a sheet from Overview > Offers
         investmentOpening: resolve(dir, 'investment-opening.html'), // follows the fridge advisor in the same sheet
+        investmentCalculator: resolve(dir, 'investment-calculator.html'), // opens as a sheet from the Overview inflation tile
       },
     },
   },

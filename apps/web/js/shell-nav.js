@@ -33,6 +33,7 @@
     playground: 'design',
     'fridge-advisor': 'overview',
     'investment-opening': 'overview',
+    'investment-calculator': 'overview',
     'design-system': 'design'
   };
 
@@ -50,7 +51,8 @@
     'character-kit.html': 1,
     'playground.html': 1,         /* admin: full screen, closes back to the hub */
     'fridge-advisor.html': 1,     /* opens as a sheet from Overview, closes back to it */
-    'investment-opening.html': 1  /* follows the fridge advisor in the same sheet */
+    'investment-opening.html': 1, /* follows the fridge advisor in the same sheet */
+    'investment-calculator.html': 1 /* opens as a sheet from the inflation tile on Overview */
   };
 
   function prefersReducedMotion() {

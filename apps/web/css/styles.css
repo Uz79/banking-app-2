@@ -9642,16 +9642,13 @@ html[data-theme="light"] .status-message__shell {
 }
 
 /* The calculator (roadmap 82): five lines told apart by pattern, never by colour alone. Tokens only. No motion. */
-.inflation-tile.is-calculating .inflation-tile__plot {
-  height: 10rem;
-}
-
 .inflation-tile__line--cash {
   stroke-width: 1.5;
 }
 
-.inflation-tile:not(.is-calculating) .inflation-tile__line--cash {
-  stroke-width: 2;
+.calc__plot .inflation-tile__line--cash,
+.inflation-calc__key .inflation-tile__line--cash {
+  stroke-width: 1.5;
 }
 
 .inflation-tile__line--good {
@@ -9677,26 +9674,129 @@ html[data-theme="light"] .status-message__shell {
   stroke: none;
 }
 
-.inflation-calc {
+/* The calculator page (roadmap 82), in the fridge's sheet or on its own: no app chrome. Framed, the sheet's header is
+   used; on its own, the page shows the same header. One column on a phone, two from a 640px wide page. */
+.body[data-screen="investment-calculator"] .sidebar,
+.body[data-screen="investment-calculator"] .tab-bar {
+  display: none;
+}
+
+.body[data-screen="investment-calculator"] .app {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+.body[data-screen="investment-calculator"] .main-content {
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--color-bg);
+}
+
+.body[data-screen="investment-calculator"] .main-content__inner,
+.body[data-screen="investment-calculator"] .view--calc,
+.body[data-screen="investment-calculator"] .view--calc .view__main {
+  max-width: none;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.body[data-screen="investment-calculator"] .view--calc .view__main {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  min-width: 0;
+  min-height: 0;
 }
 
-.inflation-calc__toggle {
-  padding-inline: 0;
+.calc--framed .calc__nav {
+  display: none;
 }
 
-.inflation-calc__panel {
+.calc {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+
+/* The page name for assistive tech only; the visible title is in the header. */
+.calc__title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.calc__intro,
+.calc__note {
+  margin: 0;
+  color: var(--color-fg-secondary);
+}
+
+.calc__grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.calc__controls,
+.calc__result {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
   min-width: 0;
 }
 
-.inflation-calc__panel[hidden] {
-  display: none;
+.calc__plot {
+  height: 10rem;
+}
+
+.calc__actions {
+  display: flex;
+}
+
+.calc__continue {
+  max-width: 100%;
+}
+
+.calc__continue > .uz-btn__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+  .calc {
+    padding: var(--space-5) var(--space-6);
+  }
+
+  .calc__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--space-6);
+    align-items: start;
+  }
+
+  .calc__controls {
+    padding: var(--space-4);
+    border: 0.0625rem solid var(--color-separator);
+    border-radius: var(--radius-regular);
+  }
+
+  .calc__plot {
+    height: 12rem;
+  }
+
+  .calc__actions {
+    justify-content: center;
+  }
 }
 
 .inflation-calc__results {

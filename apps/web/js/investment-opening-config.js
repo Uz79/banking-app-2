@@ -128,7 +128,8 @@ export const CALCULATOR = {
     dynamic: { r: 0.062, s: 0.14 },
   },
   copy: {
-    open: 'Compare with investing',
+    title: 'Investment calculator',
+    intro: 'Try what inflation or investing could do to your money.',
     years: 'Investment duration in years',
     amount: 'Amount in CHF',
     strategy: 'Strategy',

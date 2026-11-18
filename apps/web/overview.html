@@ -1927,46 +1927,10 @@
                 <li class="inflation-tile__value"><span class="inflation-tile__when" data-inflation-when></span><span class="inflation-tile__amount" data-inflation-later></span></li>
               </ul>
               <p class="inflation-tile__note type-xs" data-inflation-note></p>
-              <!-- The calculator (roadmap 82), drawn into the chart above by js/inflation-tile.js -->
-              <div class="inflation-calc">
-                <button class="expander inflation-calc__toggle" type="button" aria-expanded="false" aria-controls="inflation-calc-panel" data-calc-toggle>
-                  <span class="expander__content"><span class="expander__title" data-calc-toggle-label>Compare with investing</span></span>
-                  <svg class="expander__chevron" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
-                </button>
-                <div class="inflation-calc__panel" id="inflation-calc-panel" data-calc-panel hidden>
-                  <ul class="inflation-calc__results" data-calc-results></ul>
-                  <div class="inflation-calc__field">
-                    <div class="inflation-calc__head">
-                      <label class="inflation-calc__label" for="inflation-calc-years" data-calc-years-label></label>
-                      <input class="inflation-calc__num" id="inflation-calc-years-num" type="text" inputmode="numeric" autocomplete="off" data-calc-years-num>
-                    </div>
-                    <input class="cc-color-slider cc-color-slider--compact" type="range" id="inflation-calc-years" data-calc-years>
-                    <div class="inflation-calc__ends"><span data-calc-years-min></span><span data-calc-years-max></span></div>
-                  </div>
-                  <div class="inflation-calc__field">
-                    <div class="inflation-calc__head">
-                      <label class="inflation-calc__label" for="inflation-calc-amount" data-calc-amount-label></label>
-                      <input class="inflation-calc__num" id="inflation-calc-amount-num" type="text" inputmode="numeric" autocomplete="off" data-calc-amount-num>
-                    </div>
-                    <input class="cc-color-slider cc-color-slider--compact" type="range" id="inflation-calc-amount" data-calc-amount>
-                    <div class="inflation-calc__ends"><span data-calc-amount-min></span><span data-calc-amount-max></span></div>
-                  </div>
-                  <div class="inflation-calc__field">
-                    <div class="inflation-calc__head">
-                      <label class="inflation-calc__label" for="inflation-calc-strategy" data-calc-strategy-label></label>
-                      <output class="inflation-calc__strategy" for="inflation-calc-strategy" data-calc-strategy-name></output>
-                    </div>
-                    <input class="cc-color-slider cc-color-slider--compact" type="range" id="inflation-calc-strategy" data-calc-strategy>
-                    <div class="inflation-calc__ends"><span data-calc-safe></span><span data-calc-risky></span></div>
-                  </div>
-                  <p class="inflation-tile__note type-xs" data-calc-disclaimer></p>
-                  <p class="visually-hidden" aria-live="polite" data-calc-live></p>
-                </div>
-              </div>
-              <a class="inflation-tile__link uz-btn uz-btn--tonal uz-btn--sm" href="fridge-advisor.html">
-                <span class="uz-btn__label">See how much to invest</span>
+              <button class="inflation-tile__link uz-btn uz-btn--tonal uz-btn--sm" type="button" data-calculator-open>
+                <span class="uz-btn__label">Try the calculator</span>
                 <svg class="uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
-              </a>
+              </button>
             </div>
           </section>
         </aside>
@@ -2480,7 +2444,7 @@
 <script src="js/payment-exit-confirm.js"></script>
 <script src="js/payment-state.js"></script>
 <script src="js/data-render.js"></script>
-<script type="module" src="js/inflation-tile.js"></script>
+<script src="js/inflation-tile.js"></script>
 <script src="js/scroll-edge-chrome.js"></script>
 <script src="js/field-error.js"></script>
 <script src="js/payment-overlay.js"></script>
