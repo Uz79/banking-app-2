@@ -9534,7 +9534,124 @@ html[data-theme="light"] .status-message__shell {
     .body[data-screen="overview"] .view--active.view--overview:has(> .view__sidebar > .status-slot:not([hidden])) .section-card--overview-offers {
       grid-row: 3;
     }
+
+    /* The inflation tile (roadmap 79) sits in column 3 under Offers. Columns 1 and 2 span the rows beside the two cards
+       (and a spare row that takes the leftover height), so Offers and the tile stack tightly. */
+    .body[data-screen="overview"] .view--active.view--overview {
+      grid-template-rows: auto auto auto 1fr;
+    }
+
+    .body[data-screen="overview"] .view--active.view--overview .overview__primary,
+    .body[data-screen="overview"] .view--active.view--overview .section-card--performance {
+      grid-row: 2 / span 3;
+    }
+
+    .body[data-screen="overview"] .view--active.view--overview .section-card--overview-inflation {
+      grid-column: 3;
+      grid-row: 3;
+    }
+
+    .body[data-screen="overview"] .view--active.view--overview:has(> .view__sidebar > .status-slot:not([hidden])) {
+      grid-template-rows: auto auto auto auto 1fr;
+    }
+
+    .body[data-screen="overview"] .view--active.view--overview:has(> .view__sidebar > .status-slot:not([hidden])) .overview__primary,
+    .body[data-screen="overview"] .view--active.view--overview:has(> .view__sidebar > .status-slot:not([hidden])) .section-card--performance {
+      grid-row: 2 / span 4;
+    }
+
+    .body[data-screen="overview"] .view--active.view--overview:has(> .view__sidebar > .status-slot:not([hidden])) .section-card--overview-inflation {
+      grid-row: 4;
+    }
   }
+}
+
+/* ── Overview: "Cash loses value" (roadmap 79) ───────────────────────────────
+   A falling line (what the money buys) over a flat dashed line (today's amount), the band between them is what is
+   lost. Tokens only; the SVG is decoration, the text says it all. No motion. */
+.inflation-tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+}
+
+.inflation-tile__sentence,
+.inflation-tile__note {
+  margin: 0;
+}
+
+.inflation-tile__note {
+  color: var(--color-fg-secondary);
+}
+
+.inflation-tile__plot {
+  display: block;
+  width: 100%;
+  height: 6rem;
+  overflow: visible;
+}
+
+.inflation-tile__line {
+  fill: none;
+  stroke: var(--color-fg);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.inflation-tile__flat {
+  stroke: var(--color-fg-secondary);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.inflation-tile__loss {
+  fill: var(--color-fg-secondary);
+  fill-opacity: 0.18;
+  stroke: none;
+}
+
+.inflation-tile__values {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.inflation-tile__value {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  font-size: var(--fs-text-xs);
+  color: var(--color-fg-secondary);
+}
+
+.inflation-tile__value:last-child {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.inflation-tile__amount {
+  font-size: var(--fs-text-sm);
+  font-weight: var(--fw-bold);
+  color: var(--color-fg);
+}
+
+.inflation-tile__link {
+  align-self: flex-start;
+  max-width: 100%;
+  text-decoration: none;
+}
+
+.inflation-tile__link > .uz-btn__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ==========================================================================

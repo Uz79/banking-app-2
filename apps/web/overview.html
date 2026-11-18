@@ -1914,6 +1914,25 @@
               </button>
             </div>
           </div>
+          <!-- What inflation does to idle money (roadmap 79), drawn by js/inflation-tile.js; hidden until it has an amount -->
+          <section class="section-card section-card--overview-inflation" aria-labelledby="inflation-tile-title" data-inflation-tile hidden>
+            <div class="section-card__header">
+              <h2 class="section-card__title" id="inflation-tile-title">Cash loses value</h2>
+            </div>
+            <div class="section-card__body inflation-tile">
+              <p class="inflation-tile__sentence type-sm" data-inflation-sentence></p>
+              <svg class="inflation-tile__plot" aria-hidden="true" focusable="false" data-inflation-plot></svg>
+              <ul class="inflation-tile__values">
+                <li class="inflation-tile__value"><span class="inflation-tile__when">Today</span><span class="inflation-tile__amount" data-inflation-today></span></li>
+                <li class="inflation-tile__value"><span class="inflation-tile__when" data-inflation-when></span><span class="inflation-tile__amount" data-inflation-later></span></li>
+              </ul>
+              <p class="inflation-tile__note type-xs" data-inflation-note></p>
+              <a class="inflation-tile__link uz-btn uz-btn--tonal uz-btn--sm" href="fridge-advisor.html">
+                <span class="uz-btn__label">See how much to invest</span>
+                <svg class="uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
+              </a>
+            </div>
+          </section>
         </aside>
       </section>
 
@@ -2425,6 +2444,7 @@
 <script src="js/payment-exit-confirm.js"></script>
 <script src="js/payment-state.js"></script>
 <script src="js/data-render.js"></script>
+<script src="js/inflation-tile.js"></script>
 <script src="js/scroll-edge-chrome.js"></script>
 <script src="js/field-error.js"></script>
 <script src="js/payment-overlay.js"></script>
