@@ -43,6 +43,10 @@ Open `http://localhost:5173/overview.html`.
 | `scripts/generate-tokens-css.mjs` | Regenerate `css/tokens.css` from `designs/tokens/` |
 | `scripts/generate-storybook-design-exports.mjs` | Reference Storybook stories from `designs/` |
 
+### Storybook
+
+`npm run storybook` runs it locally (port 6006). `npm run build-storybook` builds it into `storybook-static/`, which is **not tracked in git**: the Vercel deploy builds it (`buildCommand` in `vercel.json`) and serves it at `/storybook-static/`. Two rewrites in `vercel.json` send the root paths the stories use (`/designs/...`, `/app/...`) to the folder. Run `npm run build-storybook` yourself only to look at the built output.
+
 ## Storage keys
 
 Persisted in `localStorage` (see `js/storage-migrate.js` for legacy key migration):
