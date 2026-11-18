@@ -6,9 +6,17 @@ The order below is the order of work. Items keep their numbers (specs, commits a
 
 In order. The first is what `/feature-spec` starts.
 
+## 78. Opening review after the phone test
+
+Klaudiusz, 2026-11-18. Purpose and horizon in one column, the minimum shown under the amount, the risk questions kept open and the forecast chart taken out of the step, all five strategies choosable with no primary button until one is, and glyph-only pencil Edit buttons on the summary. Spec: `specs/2026-11-18-opening-mobile-review/`.
+
 # Later
 
 Not scheduled, smallest first (an estimate of size, not of value).
+
+## 79. Dashboard tile: what inflation does to idle money
+
+Klaudiusz, 2026-11-18, out of 78. The forecast chart leaves the opening's risk step (78 D4). It becomes an educational tile in the dashboard's third column that shows how money left on an account loses value to inflation, as a nudge to invest. To settle in its spec: which page and column ("the dashboard's third column"), what the tile shows (the unused `js/opening-risk-chart.js` as it is, or a cash-against-inflation line, which needs an inflation rate placeholder in the config), the amount it uses (the customer's balance, or an example), where it leads (the fridge advisor or the opening), and how it reads on a phone, where the column stacks.
 
 ## 67. The status message's timing
 
