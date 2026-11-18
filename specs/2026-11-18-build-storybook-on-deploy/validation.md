@@ -13,18 +13,19 @@ Setup: local checks in `apps/web`; the real check is the branch's Vercel preview
 
 - [x] Locally emulated: `/designs/<a figure path>` and `/app/js/theme-boot.js` resolve through `/storybook-static/` (a small server applying `vercel.json`'s rewrites when no file exists: both 200)
 - [x] A path that exists at the root (an app page, `/css/styles.css`) is not rewritten
-- [ ] The app is unaffected: `/overview.html` and `/payments.html` load on the preview
+- [x] The app is unaffected: `/overview.html` and `/payments.html` load on the preview (both 200 on the preview)
 
 ## The preview (D5)
 
-- [ ] The build log shows `build-storybook` ran, and finished inside the limits
-- [ ] `/storybook-static/` loads with the sidebar
-- [ ] A Design export story shows its figures (no 404 on `/designs/...`)
-- [ ] The Overview and Payments live-page stories mount (no `Failed to load /app/js/...`)
-- [ ] The console shows no error beyond the browser extension's own
-- [ ] The three `/from-*` rewrites still land on Overview
-- [ ] `dist` and `node_modules` are not published (`/dist/` and `/node_modules/` return 404)
-- [ ] Light and Dark in one story; phone width (390px) loads the Storybook manager
+- [x] The deployment succeeded, so the build, `build-storybook` included, finished inside the limits (the log itself was not read; GitHub reports "Deployment has completed")
+- [x] `/storybook-static/` loads with the sidebar (preview `banking-app-2-2n4ptdj11`, deployment state success)
+- [x] A Design export story shows its figures (no 404 on `/designs/...`) (Account details 3 of 3, circular button 11 of 11 load)
+- [x] The Overview and Payments live-page stories mount (no `Failed to load /app/js/...`) (both mount and load 11 `/app/js/` scripts)
+- [x] The console shows no error beyond the browser extension's own (only the extension's "message channel closed" exceptions)
+- [x] The three `/from-*` rewrites still land on Overview (`/from-cv` returns 200 with the Overview page; the other two share the rule, not fetched)
+- [x] `dist` and `node_modules` are not published (`/dist/` and `/node_modules/` return 404) (both 404)
+- [x] Light and Dark in one story (the Overview live-page story switched to Dark and rendered)
+- [ ] Phone width (390px) loads the Storybook manager: not run (the window cannot be resized here)
 
 ## Baseline smoke test
 
@@ -52,4 +53,6 @@ Copied from `specs/baseline/validation.md`. Setup: `cd apps/web && npm run build
 
 Local results, 2026-11-18: with the rewrites emulated, the Account details and circular-button design export stories show all their figures (3 and 11, none broken; before, all were), and the Overview and Payments live-page stories mount and load their 11 `/app/js/` scripts; `/from-cv` lands on Overview; `/dist/` and `/node_modules/` return 404; the console shows no failed load.
 
-Checked on 2026-11-18 against `feature/build-storybook-on-deploy`, Chrome (Claude in Chrome), desktop, locally only. Not checked: everything under "The preview" (it needs the branch pushed to Vercel, D5), Light/Dark and 390px, and the baseline smoke test beyond `npm run build`.
+Preview results, 2026-11-18, `https://banking-app-2-2n4ptdj11-uz79-s-projects.vercel.app` (built from `f238b65`): `/storybook-static/index.json` 200, `/designs/...` and `/app/js/theme-boot.js` 200 through the rewrites, `/from-cv` 200, `/css/styles.css` 200, `/dist/index.html` and `/node_modules/x` 404.
+
+Checked on 2026-11-18 against `feature/build-storybook-on-deploy`: locally (Chrome, desktop) and on the Vercel preview above (Chrome, desktop, signed in to Vercel; curl is redirected by deployment protection). Not checked: 390px, the build log itself and its duration, the baseline smoke test beyond `npm run build` and the preview's page loads, and the dashboard build command (the `vercel.json` one was used, as the build included Storybook).

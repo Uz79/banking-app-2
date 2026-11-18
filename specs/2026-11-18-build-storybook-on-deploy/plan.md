@@ -16,13 +16,13 @@ Branch: `feature/build-storybook-on-deploy`. Decisions are cited as D1 to D7 fro
 
 ## 3. The preview (D5)
 
-- [ ] Klaudiusz pushes the branch (GitHub Desktop); Vercel builds a preview
-- [ ] On the preview: `/storybook-static/` loads, a Design export story shows its figures, the Overview live-page story mounts, the console has no error beyond the extension's, and the app's own pages work
-- [ ] Check: the build log shows the Storybook step and no size or time limit hit
+- [x] Klaudiusz pushes the branch (GitHub Desktop); Vercel builds a preview
+- [x] On the preview: `/storybook-static/` loads, a Design export story shows its figures, the Overview live-page story mounts, the console has no error beyond the extension's, and the app's own pages work
+- [x] Check: the build log shows the Storybook step and no size or time limit hit
 
 ## 4. Wrap-up
 
-- [ ] `validation.md`, then the baseline smoke test
+- [x] `validation.md`, then the baseline smoke test
 - [x] `specs/roadmap.md`: 77 and 75 marked done and moved to Done in number order
 - [x] `specs/tech-spec.md`: the "Deploy" row (the build command, Storybook built on deploy, the rewrites) and the Finder duplicates row
 - [x] `apps/web/README.md`: how Storybook is built and where it is served
