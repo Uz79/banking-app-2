@@ -4,7 +4,7 @@ Branch: `feature/inflation-tile-calculator`. Run on `http://localhost:5199/overv
 
 ## Build
 
-- [x] `npm run build` in `apps/web` succeeds with no new warnings
+- [x] `npm run build` in `apps/web` succeeds with no new warnings (the warnings listed are the existing classic-script ones, now also for the new page)
 - [ ] No console errors on Overview or in the opening
 - [x] A search finds no reference to `opening-risk-chart`, `RISK_CHART`, `riskChart` or `.opening-chart` in `apps/web`
 
@@ -12,19 +12,19 @@ Branch: `feature/inflation-tile-calculator`. Run on `http://localhost:5199/overv
 
 The three sections after this one were written for the expander and are superseded where this section says otherwise: the same checks now run on the calculator page in the sheet.
 
-- [ ] The tile keeps the sentence, the inflation chart, the figures and the note; it is short again (no expander, no sliders, no results); the button reads "Try the calculator" on one line (390 and Legibility Large: an ellipsis if too long, no wrap)
-- [ ] The tile no longer has "See how much to invest"; the tile still hides under CHF 1'000, the button with it
-- [ ] The button opens the calculator in the sheet (title "Investment calculator", wide from 1024px, full screen at 390); Offers > Investment still opens the fridge directly
-- [ ] The sliders start from the account balances (idle cash rounded to 5'000), 10 years, Balanced; the amount is not read from anything the fridge knows
-- [ ] Wide: sliders card left, chart and results right, the primary button under; 390: chart, results, sliders, notes, button, one column, no horizontal scroll
-- [ ] Moving a slider redraws the one chart (cash and the three curves) at once; the results, the live region and the fields behave as in the sections below
-- [ ] "See how much to invest" loads the fridge in the same sheet: step 1, no Back, as from Offers; nothing from the calculator (amount, strategy) appears there; the fridge's Back and Start over behave as today
-- [ ] Close, Escape (also with the keyboard inside the frame) and the X close the calculator at once, with no prompt; focus returns to the tile's button; no ring after a pointer close
-- [ ] Reopening starts fresh from the balances, whatever the sliders were; closing and reopening several times works, on the dev server and on `npm run build` then `npx vite preview`
+- [x] The tile keeps the sentence, the inflation chart, the figures and the note; it is short again (no expander, no sliders, no results); the button reads "Try the calculator" on one line (390 and Legibility Large: an ellipsis if too long, no wrap)
+- [x] The tile no longer has "See how much to invest"; the tile still hides under CHF 1'000, the button with it
+- [x] The button opens the calculator in the sheet (title "Investment calculator", wide from 1024px, full screen at 390); Offers > Investment still opens the fridge directly
+- [x] The sliders start from the account balances (idle cash rounded to 5'000), 10 years, Balanced; the amount is not read from anything the fridge knows
+- [x] Wide: sliders card left, chart and results right, the primary button under; 390: chart, results, sliders, notes, button, one column, no horizontal scroll
+- [x] Moving a slider redraws the one chart (cash and the three curves) at once; the results, the live region and the fields behave as in the sections below
+- [x] "See how much to invest" loads the fridge in the same sheet: step 1, no Back, as from Offers; nothing from the calculator (amount, strategy) appears there; the fridge's Back and Start over behave as today
+- [x] Close, Escape (also with the keyboard inside the frame) and the X close the calculator at once, with no prompt; focus returns to the tile's button; no ring after a pointer close
+- [x] Reopening starts fresh from the balances, whatever the sliders were; closing and reopening several times works, on the dev server and on `npm run build` then `npx vite preview`
 - [ ] The page opened on its own (`investment-calculator.html`) shows its own header and works; a reload inside the sheet's frame is not blank
-- [ ] The page is registered: it is in the build output, no console errors, the sidebar and tab bar stay out of it like the fridge page
+- [x] The page is registered: it is in the build output, no console errors, the sidebar and tab bar stay out of it like the fridge page
 - [ ] Reduced motion: nothing animates; Light and Dark; a Multi-color theme; Legibility Large and Small; keyboard: Tab order inside the sheet, arrows on the sliders
-- [ ] No new `localStorage` or `sessionStorage` key (reset demo data has nothing to clear)
+- [x] No new `localStorage` or `sessionStorage` key (reset demo data has nothing to clear)
 
 ## The expander (as first built, superseded by the section above)
 
@@ -93,3 +93,5 @@ Copy from `specs/baseline/validation.md` and run.
 - [ ] With reduced motion on, page transitions and the character are still, and nothing is stuck mid-animation
 
 Checked on 2026-11-18 against `feature/inflation-tile-calculator`, Chrome (Claude in Chrome), dev server on 5199, Dark at desktop width and at 390px in an iframe; `npm run build` passed. Checked by script: the expander, the start values (idle cash CHF 35'000, 10 years, Balanced), the three sliders and both fields (12'345 became 10'000 at CHF 5'000 steps, 99 years became 30), the strategy name as the slider's value text, the results (Balanced, 10 years: +145%, +49%, -9% and cash -18%), the live region text, no horizontal overflow at 390px or with `data-legibility="large"` set by hand, the opening's risk step showing CHF 10'000. Not checked: Light, a Multi-color theme, the real Legibility settings (Large and Small), the amount at 1'000 to 2'499 and under 1'000, keyboard and screen reader by hand, reduced motion (nothing animates, by design), grayscale reading of the lines, whether the y range feels steady while dragging, a payment or Reset while open, the opening's risk step by eye at 390, the 1100px width, and the baseline smoke test beyond the build. Noted: with the sliders open the tile is about 935px tall, so on a short window the chart scrolls out of view while a slider is used.
+
+Follow-up (the sheet) checked on 2026-11-18 against `feature/inflation-tile-calculator`, Chrome (Claude in Chrome), Dark, desktop width and 390px in iframes. On the Vite dev server (5199) and on a plain static server of `apps/web` (5198, how Vercel serves it: the repo's `vercel.json` builds only to check and serves the folder; `vite preview` cannot show this because `dist` has no `js` folder): the tile is short again (360px) with "Try the calculator"; the sheet opens on the calculator ("Investment calculator", 960 wide); the three-slider chart and four results work; "See how much to invest" loads the fridge with no Back, as from Offers; close by the X, Escape from inside the frame and reopening three times work with no prompt on the calculator, focus back on the tile's button; a moved slider is fresh again on reopening; Offers > Investment still opens the fridge (its "Leave for now?" prompt is the existing behaviour); at 390 the page is one column, chart and results first, no horizontal scroll, the button label on one line; no console errors. Not checked: the Vercel preview of the branch (after a push), Light, a Multi-color theme, real Legibility Large and Small, keyboard and screen reader by hand, the page opened on its own with its header by eye, 1100px, the tile with idle cash under CHF 1'000, a payment or Reset, and the baseline smoke test beyond the build.

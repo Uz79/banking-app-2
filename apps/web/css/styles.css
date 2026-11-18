@@ -9757,6 +9757,11 @@ html[data-theme="light"] .status-message__shell {
   height: 10rem;
 }
 
+/* On a phone the chart and the results come first, then the sliders (82 D27) */
+.calc__result {
+  order: -1;
+}
+
 .calc__actions {
   display: flex;
 }
@@ -9788,6 +9793,10 @@ html[data-theme="light"] .status-message__shell {
     padding: var(--space-4);
     border: 0.0625rem solid var(--color-separator);
     border-radius: var(--radius-regular);
+  }
+
+  .calc__result {
+    order: 0;
   }
 
   .calc__plot {
