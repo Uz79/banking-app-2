@@ -6,6 +6,12 @@ The order below is the order of work. Items keep their numbers (specs, commits a
 
 In order. The first is what `/feature-spec` starts.
 
+## 83. Fridge advisor result: CHF 0 with no reason
+
+Klaudiusz, 2026-11-18. On step 7 ("Your freezer", `buildResult()` in `js/fridge-advisor.js`), when one month of spending plus the two reserves is at least the total assets, `investable()` is 0 and the ring says "You could invest CHF 0" with no reason. Next to it the line "Left each year: CHF 33'600" (left at month end x 12) reads as a contradiction. To settle: (1) a one-line explanation when the result is 0, with a hint to lower the reserves; (2) relabel the yearly line so it reads as a separate recurring amount, for example "You could set aside each year"; (3) whether the yearly line stays when the result is 0.
+
+Settled in its interview: one sentence under the ring at 0, the yearly line relabelled "You could set aside each year" and kept at 0, "Show suitable products" unchanged. Spec: `specs/2026-11-18-fridge-zero-result/`.
+
 
 # Later
 
