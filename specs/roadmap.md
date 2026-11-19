@@ -36,6 +36,8 @@ Found during 42 (2026-11-05). A pending transfer made in the app gets Delete in 
 
 ## 72. Account details: the "Pending payments" summary expands
 
+Spec: `specs/2026-11-19-pending-payments-expander/` (branch `feature/pending-payments-expander`). Settled in its interview: at most 3 rows shown, "Show all pending" via `?status=pending` on All bookings, closed by default, total with a minus.
+
 Found 2026-11-13. The "Pending payments" row above the booking list (`bookings-card__pending` in `account-details.html`, filled by `js/data-render.js`) has a chevron and a total but opens nothing. Reuse the design system's Expander (`.expander`, `designs/components/expander`); no new component. Expanded: the pending payments grouped by execution date, the nearest date just above the "now" line and later ones further up, as booking rows with the Pending chip that open the sheet (Edit, Delete). Findings:
 
 - **Expander gaps** (`.expander` in `css/styles.css` 1455): it has a leading icon container, a title and subtitle in `__content`, a trailing chevron, hover/pressed states and `aria-expanded` rotating the chevron (0.15 s, no reduced-motion rule). It is a `<button>`, so Enter and Space work, but `aria-controls` is not set (the Payment details instance wires it in JS only). Missing: trailing content (count and signed total) beside the label, a panel (the Payment details one is a separate `hidden` div toggled in JS), and a reduced-motion rule for the chevron. All small: a `.expander__trailing` slot, a panel convention (`aria-controls`, `hidden`, no height animation) and a reduced-motion rule fit as an extension of `.expander`; no variant needed. The component's own spec (`expander.md`) lists only the regular variant.
