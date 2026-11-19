@@ -28,7 +28,7 @@
     },
     savings: {
       key: 'savings',
-      name: 'Savings Account',
+      name: 'Savings account',
       iban: 'CH35 0900 0000 2470 2920 2',
       balance: "25'000.00",
       currency: 'CHF',

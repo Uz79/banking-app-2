@@ -71,10 +71,10 @@
         icon: '#i-anchor'
       },
       credit: {
-        name: 'Private account',
+        name: 'Household',
         iban: 'CH35 0900 0000 2470 2920 1',
         balance: "CHF 10'000.00",
-        icon: '#i-scissors'
+        icon: '#i-home'
       },
       status: 'executed',
       message: 'Pizza'

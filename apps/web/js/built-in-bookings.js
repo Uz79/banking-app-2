@@ -55,7 +55,7 @@
   var ONE_OFFS = [
     /* Household */
     { id: 'hh-cafe', account: 'household', name: 'Cafe', amount: 10, daysAgo: 1 },
-    { id: 'hh-pizza', account: 'household', name: 'Pizza', amount: 320, type: 'transfer', icon: 'i-anchor', daysAgo: 1 },
+    { id: 'hh-pizza', account: 'household', name: 'Pizza', amount: 320, type: 'transfer', icon: 'i-anchor', from: 'savings', to: 'household', daysAgo: 1 },
     { id: 'hh-railway', account: 'household', name: 'Railway', amount: 100, daysAgo: 1 },
     { id: 'hh-migros-0-2', account: 'household', name: 'Migros', amount: 64.3, monthsAgo: 0, day: 2 },
     { id: 'hh-spruengli-0-4', account: 'household', name: 'Bakery Sprüngli', amount: 18.5, monthsAgo: 0, day: 4 },
@@ -82,7 +82,7 @@
     { id: 'hh-schober-4-24', account: 'household', name: 'Café Schober', amount: 9.8, monthsAgo: 4, day: 24 },
     { id: 'hh-sbb-4-30', account: 'household', name: 'SBB Mobile', amount: 35, monthsAgo: 4, day: 30 },
     /* Savings */
-    { id: 'sv-to-household-320', account: 'savings', name: 'Transfer to Household', amount: 320, type: 'transfer', icon: 'i-home', daysAgo: 1 },
+    { id: 'sv-to-household-320', account: 'savings', name: 'Transfer to Household', amount: 320, type: 'transfer', icon: 'i-home', from: 'savings', to: 'household', daysAgo: 1 },
     { id: 'sv-migros-1-28', account: 'savings', name: 'Migros', amount: 100, monthsAgo: 1, day: 28 },
     { id: 'sv-coop-1-25', account: 'savings', name: 'Coop', amount: 10, monthsAgo: 1, day: 25 },
     { id: 'sv-pharmacy-1-25', account: 'savings', name: 'Pharmacy Zürich', amount: 100, monthsAgo: 1, day: 25 },
@@ -91,7 +91,7 @@
     { id: 'sv-shell-2-28', account: 'savings', name: 'Shell', amount: 85, monthsAgo: 2, day: 28 },
     { id: 'sv-sbb-2-18', account: 'savings', name: 'SBB Mobile', amount: 35, monthsAgo: 2, day: 18 },
     { id: 'sv-electricity-2-3', account: 'savings', name: 'Electricity Zürich', amount: 120, monthsAgo: 2, day: 3 },
-    { id: 'sv-to-savings-2-3', account: 'savings', name: 'Transfer to Savings', amount: 500, type: 'transfer', icon: 'i-anchor', monthsAgo: 2, day: 3 },
+    { id: 'sv-to-savings-2-3', account: 'savings', name: 'Transfer to Household', amount: 500, type: 'transfer', icon: 'i-home', from: 'savings', to: 'household', monthsAgo: 2, day: 3 },
     { id: 'sv-ikea-3-25', account: 'savings', name: 'IKEA Dietlikon', amount: 249, monthsAgo: 3, day: 25 },
     { id: 'sv-manor-3-15', account: 'savings', name: 'Manor', amount: 67.8, monthsAgo: 3, day: 15 },
     { id: 'sv-migros-3-8', account: 'savings', name: 'Migros', amount: 78.4, monthsAgo: 3, day: 8 },
