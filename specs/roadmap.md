@@ -20,6 +20,8 @@ Found while building 48 (2026-11-16), measured for all 12 built-in themes in bot
 
 ## 39. Pay: a recipient's details typed on the recipient step are lost
 
+Spec: `specs/2026-11-19-pay-recipient-details/` (branch `feature/pay-recipient-details`). Settled in its interview: typed details apply to this payment only, an empty name blocks Next with a field error, and the booking keeps street and city for the sheet, Edit and Copy.
+
 Found while writing 29's spec (2026-11-04). The recipient step fills Recipient name, Street and City from the chosen recipient, but nothing reads the inputs back (`js/payment-overlay.js`, the `input` handler only syncs the clear buttons). A name changed there is ignored: the schedule step, the summary, the confirmation and the stored booking keep the name picked from the list. To settle in its spec: whether the typed details update the flow's recipient (and the stored booking), whether a changed name makes a new recipient or edits the saved one, and what an emptied name does on Next.
 
 ## 44. Booking sheet: an executed instance names its standing order
