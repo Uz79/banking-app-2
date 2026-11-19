@@ -64,6 +64,7 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-04-reset-demo-confirm/`.
 
 ### Fixed
+- **Built-in transfers name both accounts** (roadmap 50). The 500 "Transfer to Savings" on Savings is now a transfer to Household, every built-in transfer row names both accounts, and Household's Pizza sheet reads "Savings account to Household" instead of "Private account". The Savings account is spelled "Savings account" in the transfer and trade sheets. Spec: `specs/2026-11-19-builtin-transfer-accounts/`.
 - **Focus-mode choreography keeps its panel in Dark** (roadmap 66). On Motion specimens, No. 002's stage took the page's own colour in Dark, so the course text melted into the page. It now uses the same panel as the other samples and the Core CSS blocks, in Light, Dark and the Multi-color themes. Light is unchanged.
 - Spec: `specs/2026-11-16-focus-mode-sample-dark/`.
 - **No empty "Today" on Household's All bookings** (roadmap 61). The list opened with a "Today" header and balance and nothing under it. A day now shows only while it has a booking: Today appears with the first payment made in the app and goes again if that is deleted. June's band moves to the first day shown. The same rule hides any group left without bookings, on All bookings and Account details.

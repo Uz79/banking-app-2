@@ -18,12 +18,6 @@ Found while writing 34's spec (2026-11-06). The Playground (`playground.html`, a
 
 Found while building 48 (2026-11-16), measured for all 12 built-in themes in both shells. The primary chip and the primary button share one fill and ink, so both are low where the theme's accent is light: 3.31:1 in Custom 10 (Dark) and Custom 01, 3.39 in Custom 06, 3.64 in Custom 02, 3.72 in Custom 05 and Custom 04, and 4.38 in Custom 10 (Light). Custom 02 in Light also has its secondary chip at 4.03:1 and its filled tonal chip at 3.81:1 (its neutral ink on its own 5% tint). The plain UZ Bank look is fine (12.1 to 14.9:1, Dark tonal 6.2). Nothing regressed in 48; the values are the same as before. To settle in its spec: whether the engine should pick a darker accent step or a different ink when a pairing is under 4.5:1 (`primaryControlInk`, `inkOnPrimaryControl` in `scripts/theme-engine/lib/themeColors.ts`), or whether those themes' accents are changed; the same check for the other controls the engine derives (secondary and tonal buttons, segmented control); and a scripted audit of every built-in theme in both shells, so the numbers are a gate rather than a one-off.
 
-## 50. Built-in transfers can read as a transfer to the same account
-
-Spec: `specs/2026-11-19-builtin-transfer-accounts/` (branch `feature/builtin-transfer-accounts`). Since this was written, built-in rows became per-account and transfers with `from`/`to` read both (62 D18); what is left is one same-account row, two rows without `from`/`to`, and the Savings spelling.
-
-Found during 46 (2026-11-05). All bookings shows the same built-in rows for Household and Savings, and a built-in transfer's sheet takes the page's account as its debit (`buildAllBookingsRowData` in `js/payment-details.js`, from `ACCOUNT_SNAPSHOTS`). So on Household's All bookings "Transfer to Household" reads "from Household to Household", and on Savings' "Transfer to Savings" reads "from Savings account to Savings account". The two lists also name Savings differently ("Savings account" in the built-in snapshots, "Savings Account" in the transfer's). To settle in its spec: per-account built-in rows, or a debit account in each transfer row's data, and one name for Savings.
-
 ## 39. Pay: a recipient's details typed on the recipient step are lost
 
 Found while writing 29's spec (2026-11-04). The recipient step fills Recipient name, Street and City from the chosen recipient, but nothing reads the inputs back (`js/payment-overlay.js`, the `input` handler only syncs the clear buttons). A name changed there is ignored: the schedule step, the summary, the confirmation and the stored booking keep the name picked from the list. To settle in its spec: whether the typed details update the flow's recipient (and the stored booking), whether a changed name makes a new recipient or edits the saved one, and what an emptied name does on Next.
@@ -374,6 +368,14 @@ Spec: `specs/2026-11-13-escape-closes-banking-sheets/`. Settled in its interview
 Found during 32 (2026-11-05). Pay, the transfer, Buy and Sell, and a booking's sheet ignore Escape: only their close button closes them. The fridge, the opening and the Playground close on Escape (`js/fridge-advisor-sheet.js`, `js/investment-opening.js`, `js/playground-sheet.js`). To settle in its spec: Escape on every banking sheet, with the flows asking their "Discard …?" prompt first as their close button does, what Escape does while a picker, the calendar or a confirmation is open over a sheet, and focus after the close.
 
 Built 2026-11-13: one registry in `js/dialog-focus.js` (`UZBankSheetFocus.onEscape`) on the sheet stack, so the guard is written once; the Discard prompts got `escapeStays`. Found: Account and Share information are sheets too and still ignore Escape (out of scope here). Reduced motion and VoiceOver checked by Klaudiusz (2026-11-14). 390px and Light seen for Pay only (a 386px frame). Not checked: the other sheets at phone width, and most of the baseline smoke test.
+
+## 50. Built-in transfers can read as a transfer to the same account (done)
+
+Spec: `specs/2026-11-19-builtin-transfer-accounts/` (branch `feature/builtin-transfer-accounts`). Since this was written, built-in rows became per-account and transfers with `from`/`to` read both (62 D18); what is left is one same-account row, two rows without `from`/`to`, and the Savings spelling.
+
+Found during 46 (2026-11-05). All bookings shows the same built-in rows for Household and Savings, and a built-in transfer's sheet takes the page's account as its debit (`buildAllBookingsRowData` in `js/payment-details.js`, from `ACCOUNT_SNAPSHOTS`). So on Household's All bookings "Transfer to Household" reads "from Household to Household", and on Savings' "Transfer to Savings" reads "from Savings account to Savings account". The two lists also name Savings differently ("Savings account" in the built-in snapshots, "Savings Account" in the transfer's). To settle in its spec: per-account built-in rows, or a debit account in each transfer row's data, and one name for Savings.
+
+Built 2026-11-19. Found in its check: Household's Pizza sheet named its credit "Private account" (D6).
 
 ## 52. Booking rows can't be reached with the keyboard (duplicate of 33)
 

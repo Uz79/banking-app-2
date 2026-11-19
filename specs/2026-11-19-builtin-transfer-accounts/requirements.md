@@ -23,7 +23,8 @@ Roadmap item 50, found during 46 (2026-11-05). A built-in transfer's sheet could
 | # | Decision | Why |
 |---|---|---|
 | D1 | **`sv-to-savings-2-3` becomes "Transfer to Household"**, icon `i-home`, `from: 'savings'`, `to: 'household'`, same amount (500) and date. | Klaudiusz's answer. Keeps a plain internal transfer, only the name, icon and accounts change. |
-| D2 | **Every built-in `type: 'transfer'` row sets `from` and `to`**, so the built-in sheet never takes the page's account as the debit. Rows: `sv-to-household-320` (savings to household) and `hh-pizza` (household to savings, from its anchor icon; its name "Pizza" is kept). | Klaudiusz's answer: one rule. `hh-pizza`'s direction is a guess, see Open questions. |
+| D2 | **Every built-in `type: 'transfer'` row sets `from` and `to`**, so the built-in sheet never takes the page's account as the debit. Rows: `sv-to-household-320` (savings to household) and `hh-pizza` (savings to household: it is the Household side of the 320 transfer; its name "Pizza" is its message and is kept). | Klaudiusz's answer: one rule. |
+| D6 | **Household's `pizza` sheet (`BOOKING_MAP_HOUSEHOLD` in `js/payment-details.js`) names its credit account "Household" with the home icon**, not "Private account" with the scissors icon. | Found in the check: Household's All bookings opens the sheet from that map, not from `from`/`to`, so it read "Savings account to Private account". The account is called Household everywhere else. |
 | D3 | **The name is "Savings account"** everywhere users read it: the transfer overlay and its markup (`js/iat-overlay.js`, `js/trade-flow-overlay.js`, the "from" names in `account-details.html`, `payments.html`, `overview.html`). | Klaudiusz's answer. Matches the majority and the booking sheets. |
 | D4 | **No new storage key, no new page, no CSS.** Mock data and copy only. | Smallest diff. |
 | D5 | **Anything that compares the old capitalised name must keep working** (`findIatAccountKeyByName` in `js/payment-details.js`, and any lookup by account name). | A rename must not break a lookup by name. |
@@ -36,4 +37,4 @@ Roadmap item 50, found during 46 (2026-11-05). A built-in transfer's sheet could
 
 ## Open questions
 
-- `hh-pizza` is a built-in "transfer" with no direction and the same 320 and day as `sv-to-household-320`. If it was meant as the Household side of that one, say so at review: it would become Savings to Household instead.
+None. `hh-pizza`'s direction was settled in the check (D2, D6).
