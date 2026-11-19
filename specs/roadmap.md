@@ -18,12 +18,6 @@ Found while writing 34's spec (2026-11-06). The Playground (`playground.html`, a
 
 Found while building 48 (2026-11-16), measured for all 12 built-in themes in both shells. The primary chip and the primary button share one fill and ink, so both are low where the theme's accent is light: 3.31:1 in Custom 10 (Dark) and Custom 01, 3.39 in Custom 06, 3.64 in Custom 02, 3.72 in Custom 05 and Custom 04, and 4.38 in Custom 10 (Light). Custom 02 in Light also has its secondary chip at 4.03:1 and its filled tonal chip at 3.81:1 (its neutral ink on its own 5% tint). The plain UZ Bank look is fine (12.1 to 14.9:1, Dark tonal 6.2). Nothing regressed in 48; the values are the same as before. To settle in its spec: whether the engine should pick a darker accent step or a different ink when a pairing is under 4.5:1 (`primaryControlInk`, `inkOnPrimaryControl` in `scripts/theme-engine/lib/themeColors.ts`), or whether those themes' accents are changed; the same check for the other controls the engine derives (secondary and tonal buttons, segmented control); and a scripted audit of every built-in theme in both shells, so the numbers are a gate rather than a one-off.
 
-## 39. Pay: a recipient's details typed on the recipient step are lost
-
-Spec: `specs/2026-11-19-pay-recipient-details/` (branch `feature/pay-recipient-details`). Settled in its interview: typed details apply to this payment only, an empty name blocks Next with a field error, and the booking keeps street and city for the sheet, Edit and Copy.
-
-Found while writing 29's spec (2026-11-04). The recipient step fills Recipient name, Street and City from the chosen recipient, but nothing reads the inputs back (`js/payment-overlay.js`, the `input` handler only syncs the clear buttons). A name changed there is ignored: the schedule step, the summary, the confirmation and the stored booking keep the name picked from the list. To settle in its spec: whether the typed details update the flow's recipient (and the stored booking), whether a changed name makes a new recipient or edits the saved one, and what an emptied name does on Next.
-
 ## 44. Booking sheet: an executed instance names its standing order
 
 Added 2026-11-05, out of 43's scope. An executed booking that is an instance of a standing order (Rent, Internet & Phone) shows a line "Standing order: <frequency>" in its sheet, linking to the order in the Recurring tab. To settle in its spec: how an instance points to its order (built-in data and the payment state), what the link opens (the order's sheet, or the Recurring tab scrolled to it), and how it reads on a phone and to a screen reader.
@@ -310,6 +304,15 @@ Built 2026-11-15, `js/payment-state.js` (`runDue`, `nextDueDate`, `takeRunNotes`
 ## 38. Pay: the schedule step always names Hans Meyer (duplicate of 29)
 
 Found during 28 (2026-11-04). Pay's schedule step shows "Recipient: Hans Meyer" whoever was picked: `paintScheduleStep` in `js/payment-overlay.js` never writes the recipient's name, so the markup's placeholder stays (the amount step and the summary are right). Also on `main`. The same bug as 29, closed on 2026-11-04 and built there; its look at the other steps' placeholders is 29's D3.
+
+## 39. Pay: a recipient's details typed on the recipient step are lost (done)
+
+Spec: `specs/2026-11-19-pay-recipient-details/` (branch `feature/pay-recipient-details`). Settled in its interview: typed details apply to this payment only, an empty name blocks Next with a field error, and the booking keeps street and city for the sheet, Edit and Copy.
+
+Found while writing 29's spec (2026-11-04). The recipient step fills Recipient name, Street and City from the chosen recipient, but nothing reads the inputs back (`js/payment-overlay.js`, the `input` handler only syncs the clear buttons). A name changed there is ignored: the schedule step, the summary, the confirmation and the stored booking keep the name picked from the list. To settle in its spec: whether the typed details update the flow's recipient (and the stored booking), whether a changed name makes a new recipient or edits the saved one, and what an emptied name does on Next.
+
+Built 2026-11-19.
+
 
 ## 40. Pay and the transfer: picking a date overrides the toggle (done)
 
