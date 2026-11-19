@@ -130,6 +130,113 @@
     return row;
   }
 
+  /* ── The "Pending payments" expander (roadmap 72) ──────────────────
+   * Closed on every visit (D3). Open: the nearest PENDING_SHOWN pending payments, by date as the Pending tab lists
+   * them, grouped by execution date, with a button to All bookings > Pending when there are more (D1, D2, D6). */
+
+  var PENDING_SHOWN = 3;
+
+  function dateKey(label) {
+    var m = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec(label || '');
+    return m ? m[3] + m[2] + m[1] : '';
+  }
+
+  function ruleRow(rule) {
+    var row = document.createElement('button');
+    row.type = 'button';
+    row.className = 'booking-row';
+    row.setAttribute('data-source', 'pending');
+    row.setAttribute('data-status', 'pending');
+    row.setAttribute('data-type', rule.type);
+    row.setAttribute('data-rule-id', rule.id);
+    row.setAttribute('data-occurrence', rule.date);
+    row.setAttribute('data-execute-on', rule.date);
+    row.innerHTML =
+      '<svg class="booking-row__icon" aria-hidden="true" focusable="false"><use href="#' + escapeHtml(rule.icon) + '"/></svg>' +
+      '<span class="booking-row__name">' + escapeHtml(rule.name) + '</span>' +
+      '<span class="chip chip--sm chip--tonal booking-row__chip">Pending</span>' +
+      '<span class="booking-row__amount">' +
+        '<span class="booking-row__currency">' + escapeHtml(rule.currency) + '</span>' +
+        '<span class="booking-row__value">' + escapeHtml(rule.value) + '</span>' +
+      '</span>';
+    return row;
+  }
+
+  /* Every pending item the account's Pending tab lists (what pendingTotal adds up), with its date label */
+  function pendingItems(accountKey, t) {
+    var list = window.UZBankBuiltInBookings;
+    var state = window.UZBankPayState.getState();
+    var removed = state.removedBuiltIns || [];
+    var items = [];
+    list.pending(accountKey, t).forEach(function (b) {
+      if (removed.indexOf(b.id) === -1) items.push({ date: b.label, row: list.row(b) });
+    });
+    (state.bookings || []).forEach(function (b) {
+      if ((b.accountKey || 'household') !== accountKey || b.status !== 'pending') return;
+      var row = buildBookingRow(b);
+      row.setAttribute('data-status', 'pending');
+      if (b.executeOn) row.setAttribute('data-execute-on', b.executeOn);
+      items.push({ date: b.executeOn, row: row });
+    });
+    list.nextPayments(accountKey, t).forEach(function (rule) {
+      items.push({ date: rule.date, row: ruleRow(rule) });
+    });
+    return items
+      .map(function (item, i) { item.order = i; return item; })
+      .sort(function (a, b) { return dateKey(a.date) < dateKey(b.date) ? -1 : dateKey(a.date) > dateKey(b.date) ? 1 : a.order - b.order; });
+  }
+
+  function renderPendingPanel(line, accountKey, t) {
+    var toggle = line.querySelector('[data-pending-toggle]');
+    var panel = line.querySelector('[data-pending-panel]');
+    var more = line.querySelector('[data-pending-all]');
+    if (!toggle || !panel) return;
+    if (line.hidden) {
+      toggle.setAttribute('aria-expanded', 'false');
+      panel.hidden = true;
+    }
+    panel.querySelectorAll('[data-source="pending"]').forEach(function (n) { n.remove(); });
+    var items = pendingItems(accountKey, t);
+    var group = null;
+    var lastDate = null;
+    items.slice(0, PENDING_SHOWN).forEach(function (item, i) {
+      if (item.date !== lastDate) {
+        if (i > 0) {
+          var divider = document.createElement('div');
+          divider.className = 'divider';
+          divider.setAttribute('data-source', 'pending');
+          panel.insertBefore(divider, more);
+        }
+        group = document.createElement('div');
+        group.className = 'booking-group';
+        group.setAttribute('data-source', 'pending');
+        group.innerHTML = '<header class="booking-group__header"><span class="booking-group__label">' +
+          escapeHtml('Execute on ' + item.date) + '</span></header>';
+        panel.insertBefore(group, more);
+        lastDate = item.date;
+      }
+      group.appendChild(item.row);
+    });
+    if (more) more.hidden = items.length <= PENDING_SHOWN;
+  }
+
+  document.addEventListener('click', function (event) {
+    var toggle = event.target.closest('[data-pending-toggle]');
+    if (toggle) {
+      var open = toggle.getAttribute('aria-expanded') !== 'true';
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      var target = document.getElementById(toggle.getAttribute('aria-controls'));
+      if (target) target.hidden = !open;
+      return;
+    }
+    if (event.target.closest('[data-action="show-all-pending"]')) {
+      var key = window.__UZ_ACTIVE_ACCOUNT__ || 'household';
+      var url = 'all-bookings-and-payments.html?account=' + encodeURIComponent(key) + '&status=pending';
+      if (window.UZShellNav) window.UZShellNav.go(url);
+      else window.location.href = url;
+    }
+  });
+
   function renderAccountBookings(accountKey) {
     var panel = document.querySelector('[data-account-bookings="' + accountKey + '"]');
     var list = window.UZBankBuiltInBookings;
@@ -141,9 +248,11 @@
       var total = list.pendingTotal(accountKey, t);
       line.hidden = !(total !== 0);
       var value = line.querySelector('[data-pending-value]');
-      if (value) value.textContent = fmt(Math.abs(total));
+      /* Money out reads with a minus, as the rows below it do (roadmap 72, D4) */
+      if (value) value.textContent = (total > 0 ? '-' : '+') + fmt(Math.abs(total));
       var lineDivider = panel.querySelector('[data-pending-divider]');
       if (lineDivider) lineDivider.hidden = line.hidden;
+      renderPendingPanel(line, accountKey, t);
     }
 
     panel.querySelectorAll('[data-source="days"]').forEach(function (n) { n.remove(); });
