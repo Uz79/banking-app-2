@@ -1768,13 +1768,21 @@
 
             <!-- Household account bookings (slide 0) -->
             <div class="bookings-card__account" data-account-bookings="household">
-            <div class="bookings-card__pending" data-pending-line hidden>
-              <svg class="bookings-card__pending-icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
-              <span class="bookings-card__pending-label">Pending payments</span>
-              <span class="bookings-card__pending-amount">
-                <span class="bookings-card__pending-currency">CHF</span>
-                <span class="bookings-card__pending-value" data-pending-value></span>
-              </span>
+            <div class="bookings-card__pending-wrap" data-pending-line hidden>
+              <button class="expander bookings-card__pending" type="button" aria-expanded="false" aria-controls="pending-panel-household" data-pending-toggle>
+                <svg class="expander__chevron bookings-card__pending-icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+                <span class="bookings-card__pending-label">Pending payments</span>
+                <span class="expander__trailing bookings-card__pending-amount">
+                  <span class="bookings-card__pending-currency">CHF</span>
+                  <span class="bookings-card__pending-value" data-pending-value></span>
+                </span>
+              </button>
+              <div class="expander__panel" id="pending-panel-household" data-pending-panel hidden>
+                <button class="show-all-btn uz-btn uz-btn--tonal uz-btn--sm" type="button" data-action="show-all-pending" data-pending-all hidden>
+                  <span>Show all pending</span>
+                  <svg class="show-all-btn__icon uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
+                </button>
+              </div>
             </div>
             <div class="divider" data-pending-divider hidden></div>
 
@@ -1788,13 +1796,21 @@
 
             <!-- Savings account bookings (slide 1) -->
             <div class="bookings-card__account" data-account-bookings="savings" hidden>
-            <div class="bookings-card__pending" data-pending-line hidden>
-              <svg class="bookings-card__pending-icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
-              <span class="bookings-card__pending-label">Pending payments</span>
-              <span class="bookings-card__pending-amount">
-                <span class="bookings-card__pending-currency">CHF</span>
-                <span class="bookings-card__pending-value" data-pending-value></span>
-              </span>
+            <div class="bookings-card__pending-wrap" data-pending-line hidden>
+              <button class="expander bookings-card__pending" type="button" aria-expanded="false" aria-controls="pending-panel-savings" data-pending-toggle>
+                <svg class="expander__chevron bookings-card__pending-icon" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+                <span class="bookings-card__pending-label">Pending payments</span>
+                <span class="expander__trailing bookings-card__pending-amount">
+                  <span class="bookings-card__pending-currency">CHF</span>
+                  <span class="bookings-card__pending-value" data-pending-value></span>
+                </span>
+              </button>
+              <div class="expander__panel" id="pending-panel-savings" data-pending-panel hidden>
+                <button class="show-all-btn uz-btn uz-btn--tonal uz-btn--sm" type="button" data-action="show-all-pending" data-pending-all hidden>
+                  <span>Show all pending</span>
+                  <svg class="show-all-btn__icon uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
+                </button>
+              </div>
             </div>
             <div class="divider" data-pending-divider hidden></div>
 

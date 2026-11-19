@@ -79,6 +79,11 @@
         select(tab.getAttribute('data-bookings-status'));
       });
     });
+
+    /* ?status=pending (or recurring) opens on that tab, as Account details' "Show all pending" does (roadmap 72, D6);
+       anything else keeps Executed */
+    var wanted = new URLSearchParams(window.location.search).get('status');
+    if (wanted === 'pending' || wanted === 'recurring') select(wanted);
   }
 
   function setActiveMonth(root, monthKey) {

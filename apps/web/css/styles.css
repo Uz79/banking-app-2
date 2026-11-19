@@ -1540,6 +1540,25 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
   transform: rotate(180deg);
 }
 
+/* Roadmap 72: what sits at the trailing edge (a count, a total), and a panel the button controls. The panel is a
+   hidden div toggled in JS, `aria-controls` names it; it does not animate. */
+.expander__trailing {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.expander__panel[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .expander__chevron {
+    transition: none;
+  }
+}
+
 /* Payment details: the right-side chevron is hidden per design */
 .modal--payment-details .expander__chevron {
   display: none;
