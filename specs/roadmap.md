@@ -20,6 +20,8 @@ Found while building 48 (2026-11-16), measured for all 12 built-in themes in bot
 
 ## 50. Built-in transfers can read as a transfer to the same account
 
+Spec: `specs/2026-11-19-builtin-transfer-accounts/` (branch `feature/builtin-transfer-accounts`). Since this was written, built-in rows became per-account and transfers with `from`/`to` read both (62 D18); what is left is one same-account row, two rows without `from`/`to`, and the Savings spelling.
+
 Found during 46 (2026-11-05). All bookings shows the same built-in rows for Household and Savings, and a built-in transfer's sheet takes the page's account as its debit (`buildAllBookingsRowData` in `js/payment-details.js`, from `ACCOUNT_SNAPSHOTS`). So on Household's All bookings "Transfer to Household" reads "from Household to Household", and on Savings' "Transfer to Savings" reads "from Savings account to Savings account". The two lists also name Savings differently ("Savings account" in the built-in snapshots, "Savings Account" in the transfer's). To settle in its spec: per-account built-in rows, or a debit account in each transfer row's data, and one name for Savings.
 
 ## 39. Pay: a recipient's details typed on the recipient step are lost
