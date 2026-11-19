@@ -29,6 +29,15 @@
 - [ ] Legibility Large: the row, the total and the button fit
 - [ ] The Expander on the design system page is unchanged
 
+## Review follow-up (D13 to D15)
+
+- [ ] `npm run build` succeeds
+- [ ] Household: below the pending row, the 5 newest executed bookings show, grouped by day with balances, then "Show all bookings"
+- [ ] Savings: the same, with its own bookings
+- [ ] Pending row closed: no executed booking is hidden; open: at most 3 pending rows, no "Show all pending" button
+- [ ] Make a payment in the app: it appears at the top of the executed list (and the oldest of the five drops off)
+- [ ] Light and Dark, 390px
+
 ## Baseline smoke test
 
 Copy the checklist from `specs/baseline/validation.md` here when running it.

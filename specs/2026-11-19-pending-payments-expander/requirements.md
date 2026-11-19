@@ -35,6 +35,9 @@ Roadmap item 72, found 2026-11-13. The "Pending payments" row above the booking 
 | D10 | **The rows follow the data:** a payment made, edited or deleted while the page is open redraws the panel (the existing `uzbank:state-changed` redraw); an open panel stays open across the redraw. | Without it the panel would show stale rows. |
 | D11 | **Copy:** "Pending payments" (unchanged label) and "Show all pending" (button, `show-all-btn` look with the arrow, as "Show all bookings"). No em dashes. | Default; matches the existing button. |
 | D12 | **No new page, no dependency, no storage key.** | Nothing to register or list. |
+| D13 | **Follow-up (2026-11-19, review):** under the pending row, Account details shows the **5 most recent executed bookings**, grouped by day with each day's balance, instead of the two newest days. A day can be cut part-way when the five run out. | Klaudiusz at review: 3 pending in the panel, and about five executed bookings below it. |
+| D14 | **"Show all pending" is removed** (supersedes D6 and the button half of D11). "Show all bookings" is the one way on to All bookings. `all-bookings.js` keeps reading `?status=` (harmless, still works from a URL). | Klaudiusz at review: no second button. |
+| D15 | **Fix:** the day groups are placed before the account's own `[data-action="show-all-bookings"]` button. Since 72 they were placed before the first `.show-all-btn`, which became the hidden "Show all pending" inside the collapsed panel, so no executed booking showed on main. | Regression found at review; the first validation never looked below the pending row. |
 
 ## Context
 

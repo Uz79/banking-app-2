@@ -107,7 +107,8 @@
    * what the account's Pending tab on All bookings lists, hidden when none.
    * Pending payments are not listed under a day (D11). */
 
-  var ACCOUNT_DAYS = 2;
+  /* The newest executed bookings shown on Account details, grouped by day (roadmap 72 follow-up, D13) */
+  var ACCOUNT_ROWS = 5;
 
   function buildBookingRow(b) {
     var row = document.createElement('button');
@@ -132,7 +133,7 @@
 
   /* ── The "Pending payments" expander (roadmap 72) ──────────────────
    * Closed on every visit (D3). Open: the nearest PENDING_SHOWN pending payments, by date as the Pending tab lists
-   * them, grouped by execution date, with a button to All bookings > Pending when there are more (D1, D2, D6). */
+   * them, grouped by execution date (D1, D2). No "Show all pending" button: "Show all bookings" is the one way on (D14). */
 
   var PENDING_SHOWN = 3;
 
@@ -189,7 +190,6 @@
   function renderPendingPanel(line, accountKey, t) {
     var toggle = line.querySelector('[data-pending-toggle]');
     var panel = line.querySelector('[data-pending-panel]');
-    var more = line.querySelector('[data-pending-all]');
     if (!toggle || !panel) return;
     if (line.hidden) {
       toggle.setAttribute('aria-expanded', 'false');
@@ -205,19 +205,18 @@
           var divider = document.createElement('div');
           divider.className = 'divider';
           divider.setAttribute('data-source', 'pending');
-          panel.insertBefore(divider, more);
+          panel.appendChild(divider);
         }
         group = document.createElement('div');
         group.className = 'booking-group';
         group.setAttribute('data-source', 'pending');
         group.innerHTML = '<header class="booking-group__header"><span class="booking-group__label">' +
           escapeHtml('Execute on ' + item.date) + '</span></header>';
-        panel.insertBefore(group, more);
+        panel.appendChild(group);
         lastDate = item.date;
       }
       group.appendChild(item.row);
     });
-    if (more) more.hidden = items.length <= PENDING_SHOWN;
   }
 
   document.addEventListener('click', function (event) {
@@ -227,13 +226,6 @@
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
       var target = document.getElementById(toggle.getAttribute('aria-controls'));
       if (target) target.hidden = !open;
-      return;
-    }
-    if (event.target.closest('[data-action="show-all-pending"]')) {
-      var key = window.__UZ_ACTIVE_ACCOUNT__ || 'household';
-      var url = 'all-bookings-and-payments.html?account=' + encodeURIComponent(key) + '&status=pending';
-      if (window.UZShellNav) window.UZShellNav.go(url);
-      else window.location.href = url;
     }
   });
 
@@ -256,8 +248,11 @@
     }
 
     panel.querySelectorAll('[data-source="days"]').forEach(function (n) { n.remove(); });
-    var end = panel.querySelector('.show-all-btn');
-    list.days(accountKey, t).slice(0, ACCOUNT_DAYS).forEach(function (d, i) {
+    /* The account's own "Show all bookings", not a button inside the pending panel (D15) */
+    var end = panel.querySelector('[data-action="show-all-bookings"]');
+    var left = ACCOUNT_ROWS;
+    list.days(accountKey, t).forEach(function (d, i) {
+      if (left <= 0) return;
       if (i > 0) {
         var divider = document.createElement('div');
         divider.className = 'divider';
@@ -275,8 +270,8 @@
           '<span class="booking-group__balance-currency">CHF</span>' +
           '<span class="booking-group__balance-value">' + escapeHtml(fmt(d.balance)) + '</span>' +
         '</span></header>';
-      d.stored.forEach(function (b) { group.appendChild(buildBookingRow(b)); });
-      d.builtIn.forEach(function (b) { group.appendChild(list.row(b)); });
+      d.stored.forEach(function (b) { if (left > 0) { group.appendChild(buildBookingRow(b)); left--; } });
+      d.builtIn.forEach(function (b) { if (left > 0) { group.appendChild(list.row(b)); left--; } });
       panel.insertBefore(group, end);
     });
   }

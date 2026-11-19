@@ -5,6 +5,10 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 ## Unreleased
 <!-- changelog: last-commit a44e89743dfbf6322191036cce34abfa46609047 -->
 
+### Fixed
+- **Account details shows its executed bookings again** (roadmap 72 follow-up). Since the pending expander, the day groups were drawn into the collapsed pending panel, so no executed booking was visible. It now shows the 5 most recent executed bookings, grouped by day, under the pending row, and the pending panel has no "Show all pending" button: "Show all bookings" is the one way on.
+- Spec: `specs/2026-11-19-pending-payments-expander/` (D13 to D15).
+
 ### Added
 - **The "Pending payments" row on Account details expands** (roadmap 72). It is closed on every visit; open, it shows the 3 nearest pending payments grouped by date, with the Pending chip, and a row opens its booking sheet (Edit, Delete). With more than 3, "Show all pending" opens All bookings on the account's Pending tab; All bookings reads `?status=pending` (or `recurring`) for that. The total now has a minus for money out. The Expander gained a trailing slot, a panel and a reduced-motion rule. Spec: `specs/2026-11-19-pending-payments-expander/`.
 - **"Cash loses value" on Overview** (roadmap 79). A new tile in the third column, under Offers: what the customer's idle cash (Household plus Savings) buys in 10 years at 2% inflation a year, as a falling line over today's amount, with the two figures and a link, "See how much to invest", into the fridge advisor sheet. The rate and the horizon are placeholders. The tile is hidden under CHF 1'000 and follows the demo data. The fridge sheet now opens from every link to it on the page.
