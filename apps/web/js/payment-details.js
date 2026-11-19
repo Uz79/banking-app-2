@@ -925,6 +925,15 @@
           : '';
         // Try to find the full recipient record from the catalog
         var fullRecipient = findRecipientByName(recipientName);
+        /* The sheet's "To" is name, street, city: what the booking shows is what Edit and Copy open on (roadmap 39, D6) */
+        var toLines = d.type === 'domestic' && d.to ? d.to.split('\n').map(function (l) { return l.trim(); }) : [];
+        if (toLines.length > 1 && recipientName) {
+          fullRecipient = Object.assign(
+            { id: 'custom', iban: '', bank: '', country: 'CH' },
+            fullRecipient || {},
+            { name: recipientName, street: toLines[1] || '', city: toLines[2] || '' }
+          );
+        }
 
         window.__UZ_PD_EDIT_CONTEXT__ = {
           bookingId:     copy ? null : currentBookingId,       // null for static mocks and a copy
@@ -1147,6 +1156,10 @@
 
       // A stored payment shows its own status and schedule (roadmap 23, D5)
       var stored = getStateBooking(currentBookingId);
+      /* What was typed on the recipient step is the booking's own address (roadmap 39, D5) */
+      if (stored && (stored.recipientStreet || stored.recipientCity)) {
+        toStr = [recipientName, stored.recipientStreet, stored.recipientCity].filter(Boolean).join('\n');
+      }
 
       data = {
         type:      'domestic',
