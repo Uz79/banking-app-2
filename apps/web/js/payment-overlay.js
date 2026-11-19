@@ -526,6 +526,44 @@
     else btn.classList.add('amount-input__clear--hidden');
   }
 
+  /* ── What is typed on the recipient step (roadmap 39) ──────────────
+   * Name, Street and City count for this payment only (D1): the flow's recipient is a copy of the chosen record with
+   * what the inputs hold, read as it is typed (D2), so the list entry is never changed. An empty name blocks Next
+   * (D3). */
+
+  function recipientInputs() {
+    var step = $step('recipient');
+    var fields = step ? step.querySelectorAll('.form-field') : [];
+    function input(i) { return fields[i] && fields[i].querySelector('.form-field__input'); }
+    return { name: input(2), street: input(3), city: input(4), nameField: fields[2] || null };
+  }
+
+  function readRecipientDetails() {
+    if (!live.recipient) return;
+    var f = recipientInputs();
+    if (!f.name) return;
+    live.recipient = Object.assign({}, live.recipient, {
+      name: f.name.value.trim(),
+      street: f.street ? f.street.value.trim() : live.recipient.street,
+      city: f.city ? f.city.value.trim() : live.recipient.city
+    });
+    var fe = window.UZBankFieldError;
+    if (fe && f.nameField && fe.isShown(f.nameField)) checkRecipientName(false);
+  }
+
+  function checkRecipientName(focus) {
+    var f = recipientInputs();
+    var fe = window.UZBankFieldError;
+    if (!f.name || !f.nameField || !fe) return true;
+    var empty = !f.name.value.trim();
+    if (empty) fe.show(f.nameField, f.name, 'Enter a name.');
+    else fe.clear(f.nameField, f.name);
+    if (empty && focus) {
+      try { f.name.focus(); } catch (err) { /* ignore */ }
+    }
+    return !empty;
+  }
+
   /* ── Amount errors (roadmap 54) ───────────────────────────────────
    * The amount is checked when focus leaves it after typing (D4), live once
    * its error shows, and on Confirm (D5). The balance is checked at Execute for
@@ -641,6 +679,7 @@
     if (recipientStep && e.target.classList && e.target.classList.contains('form-field__input')) {
       var wrap = e.target.closest('.form-field__text-wrap');
       if (wrap) syncOneRecipientDetailClear(wrap);
+      readRecipientDetails();
       return;
     }
     var step = e.target.closest && e.target.closest('.modal__step[data-step="amount"]');
@@ -1176,6 +1215,7 @@
       return;
     }
 
+    if (activeName === 'recipient' && !checkRecipientName(true)) return;
     if (activeName === 'amount' && !checkAmount(true)) return;
 
     if (currentStep < STEPS.length - 1) {

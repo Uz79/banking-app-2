@@ -403,6 +403,8 @@
         row.status = b.status || 'executed';
         if (b.executeOn) row.executeOn = b.executeOn;
         if (b.frequency) row.frequency = b.frequency;
+        if (b.recipientStreet) row.recipientStreet = b.recipientStreet; /* typed on the recipient step (roadmap 39, D4) */
+        if (b.recipientCity) row.recipientCity = b.recipientCity;
         if (b.kind) row.kind = b.kind;
         if (b.fromKey) row.fromKey = b.fromKey;
         if (b.toKey) row.toKey = b.toKey;
@@ -472,6 +474,14 @@
     if (status === 'recurring') booking.frequency = source.frequency || 'monthly';
   }
 
+  /* What was typed for the recipient's street and city stays on the booking (roadmap 39, D4); a booking made without
+     them has neither field */
+  function applyRecipientAddress(booking, recipient) {
+    if (!recipient) return;
+    if (recipient.street) booking.recipientStreet = recipient.street; else delete booking.recipientStreet;
+    if (recipient.city) booking.recipientCity = recipient.city; else delete booking.recipientCity;
+  }
+
   function commitPayment(payment) {
     if (!payment || typeof payment.amount !== 'number' || payment.amount <= 0) return;
 
@@ -486,6 +496,7 @@
       direction: 'out'
     };
     applySchedule(booking, payment);
+    applyRecipientAddress(booking, payment.recipient);
     /* An edit of a standing order's next payment: the rule and date it stands in for (roadmap 47, D10) */
     if (payment.ruleId && payment.occurrence) {
       booking.ruleId = payment.ruleId;
@@ -604,6 +615,7 @@
     var wasRule = isStoredRule(state.bookings[idx]);
     var booking = Object.assign({}, state.bookings[idx]);
     if (updates.recipient && updates.recipient.name) booking.recipientName = updates.recipient.name;
+    if (updates.recipient && updates.recipient.name) applyRecipientAddress(booking, updates.recipient);
     if (updates.currency) booking.currency = updates.currency;
     if (typeof updates.amount === 'number' && updates.amount > 0) booking.amount = updates.amount;
 
