@@ -27,7 +27,7 @@ Each group ends with something to check in the browser on the agent's server (`c
 
 - [x] `js/data-render.js`: day groups go before `[data-action="show-all-bookings"]` (D15); `ACCOUNT_DAYS = 2` becomes `ACCOUNT_ROWS = 5`, counted across days (D13); the "Show all pending" click handler and the `more` logic go (D14)
 - [x] `account-details.html`: the two "Show all pending" buttons removed (D14)
-- [ ] Klaudiusz: `npm run build`, then the follow-up checks in `validation.md`
+- [x] Klaudiusz: `npm run build`, then the follow-up checks in `validation.md`
 
 ## 4. Wrap-up
 

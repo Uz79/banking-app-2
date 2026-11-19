@@ -31,10 +31,10 @@
 
 ## Review follow-up (D13 to D15)
 
-- [ ] `npm run build` succeeds
-- [ ] Household: below the pending row, the 5 newest executed bookings show, grouped by day with balances, then "Show all bookings"
+- [x] `npm run build` succeeds
+- [x] Household: below the pending row, the 5 newest executed bookings show, grouped by day with balances, then "Show all bookings"
 - [ ] Savings: the same, with its own bookings
-- [ ] Pending row closed: no executed booking is hidden; open: at most 3 pending rows, no "Show all pending" button
+- [x] Pending row closed: no executed booking is hidden; open: at most 3 pending rows, no "Show all pending" button
 - [ ] Make a payment in the app: it appears at the top of the executed list (and the oldest of the five drops off)
 - [ ] Light and Dark, 390px
 
@@ -43,3 +43,5 @@
 Copy the checklist from `specs/baseline/validation.md` here when running it.
 
 Checked on 2026-11-19 against `feature/pending-payments-expander`, Chrome, dev server on 5199, desktop width, Dark theme. Run: the build; Household closed on load, open shows Apple (20.11) and Swisscom and Helvetia (23.11) with "Show all pending"; a row opens its sheet with Edit, Delete, Copy; "Show all pending" lands on Household's Pending tab (5 rows, total -1'654.80 matches the 5 built-ins); an unknown `status` keeps Executed; the panel redraws and an open panel stays open when the list changes (mocked 0, 1, 3, 4 items). Not checked: payments made in the app and deleting from the panel by hand, `?status=recurring` (code path only), Light, a Multi-color theme, 390px, keyboard by hand (the toggle is a native button), reduced motion, Legibility Large, the Expander on the design system page, first visit with empty storage, the baseline smoke test beyond the build.
+
+Follow-up (D13 to D15) checked on 2026-11-19 by Klaudiusz: `npm run build` on `fix/account-details-bookings`, then the merged result on `main` in the browser (executed bookings back, at most 3 pending, no "Show all pending"). Not checked: Savings on its own, a payment made in the app, Dark, 390px.
