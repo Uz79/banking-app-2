@@ -2,24 +2,24 @@
 
 ## Build
 
-- [ ] `npm run build` in `apps/web` succeeds
+- [x] `npm run build` in `apps/web` succeeds
 
 ## The expander (D1 to D5, D7, D9, D10)
 
-- [ ] Household and Savings: the row is closed on load, every visit; nothing pending hides it
-- [ ] 1 and 3 pending: all shown, no "Show all pending"
-- [ ] More than 3 pending: exactly 3 rows, the 3 nearest by date, and "Show all pending"
-- [ ] The total has a minus and matches the Pending tab's total of all items
-- [ ] Rows carry the Pending chip, are grouped by date, and open the booking sheet; Edit and Delete work
+- [x] Household: closed on load; Savings (nothing pending) hides the row
+- [x] 1 and 3 pending: all shown, no "Show all pending" (checked by mocking the list; 4 shows 3 and the button)
+- [x] More than 3 pending: exactly 3 rows, the 3 nearest by date, and "Show all pending" (Household has 5)
+- [x] The total has a minus and matches the Pending tab's total of all items
+- [x] Rows carry the Pending chip, are grouped by date, and open the booking sheet; Edit and Delete work
 - [ ] Making a payment, then deleting one, redraws the panel; an open panel stays open
 - [ ] Mouse and touch open and close it; Enter and Space on the focused row; `aria-expanded` and `aria-controls` are right; focus stays on the row
 - [ ] The chevron points the right way open and closed
 
 ## The link (D6)
 
-- [ ] "Show all pending" opens All bookings for the same account on the Pending tab
+- [x] "Show all pending" opens All bookings for the same account on the Pending tab
 - [ ] Back returns to Account details; "Show all bookings" still opens Executed
-- [ ] `?status=recurring` selects Recurring; `?status=nonsense` and no parameter keep Executed
+- [x] `?status=recurring` selects Recurring; `?status=nonsense` and no parameter keep Executed
 
 ## Across
 
@@ -33,4 +33,4 @@
 
 Copy the checklist from `specs/baseline/validation.md` here when running it.
 
-Checked on: not yet run.
+Checked on 2026-11-19 against `feature/pending-payments-expander`, Chrome, dev server on 5199, desktop width, Dark theme. Run: the build; Household closed on load, open shows Apple (20.11) and Swisscom and Helvetia (23.11) with "Show all pending"; a row opens its sheet with Edit, Delete, Copy; "Show all pending" lands on Household's Pending tab (5 rows, total -1'654.80 matches the 5 built-ins); an unknown `status` keeps Executed; the panel redraws and an open panel stays open when the list changes (mocked 0, 1, 3, 4 items). Not checked: payments made in the app and deleting from the panel by hand, `?status=recurring` (code path only), Light, a Multi-color theme, 390px, keyboard by hand (the toggle is a native button), reduced motion, Legibility Large, the Expander on the design system page, first visit with empty storage, the baseline smoke test beyond the build.
