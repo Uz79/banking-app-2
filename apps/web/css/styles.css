@@ -8009,6 +8009,29 @@ dialog.basic-dialog-payment-exit.basic-dialog-payment-exit--closing[open] .basic
   color: var(--color-fg);
 }
 
+/* An executed instance names its standing order (roadmap 44, D2, D3, D5) */
+.payment-details__info-row[data-pd-order][hidden] { display: none; }
+.payment-details__order-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--fs-text-sm);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-text);
+  color: var(--color-fg);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.payment-details__order-link[hidden],
+.payment-details__info-value[hidden] { display: none; }
+.payment-details__order-link:focus-visible {
+  outline: 2px solid var(--color-fg-interactive);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 /* Download button */
 .payment-details__download {
   display: inline-flex;
