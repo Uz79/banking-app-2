@@ -821,6 +821,7 @@
       frequencyValEl.textContent = isRule && pay && pay.frequencyLabel ? pay.frequencyLabel(data.frequency) : '';
     }
     if (nextValEl) nextValEl.textContent = isRule ? (data.executeOn || '') : '';
+    showRuleLine(data);
 
     if (modal) {
       modal.classList.toggle('pd--pending', isPending && !isRule);
@@ -1107,6 +1108,11 @@
     // Don't open if any other overlay is already active
     if (document.body.classList.contains('body--payment-open')) return;
 
+    openFromRow(row);
+  });
+
+  /* The row's sheet; also the standing order's own sheet from an executed instance (roadmap 44, D3) */
+  function openFromRow(row) {
     var nameEl = row.querySelector('.booking-row__name');
     var name   = nameEl ? nameEl.textContent.trim().toLowerCase() : '';
 
@@ -1181,7 +1187,93 @@
       data = Object.assign({}, data, { status: 'executed' });
     }
 
+    /* An executed instance names its standing order (roadmap 44, D1, D2) */
+    var made = currentBookingId ? getStateBooking(currentBookingId) : null;
+    if (made && made.ranOf && made.status === 'executed') data = Object.assign({}, data, { ranOf: made.ranOf, ranFrequency: made.frequency || null });
+
     openOverlay(data);
+  }
+
+  /* ── An instance's "Standing order" line opens the order's sheet (roadmap 44, D3, D4, D6) ── */
+
+  function findRule(id) {
+    var rule = getStateBooking(id);
+    return rule && rule.status === 'recurring' && !rule.ruleId ? rule : null;
+  }
+
+  var returnTo = null; /* the instance to come back to, while its order's sheet is open */
+
+  function ruleRowFor(rule) {
+    var live = document.querySelector('.booking-row[data-booking-id="' + rule.id + '"]');
+    if (live) return live;
+    var pay = window.UZBankPayState;
+    var row = document.createElement('button');
+    row.type = 'button';
+    row.className = 'booking-row';
+    row.setAttribute('data-booking-id', rule.id);
+    row.setAttribute('data-status', 'recurring');
+    row.innerHTML = '<span class="booking-row__name"></span><span class="booking-row__amount"><span class="booking-row__currency"></span><span class="booking-row__value"></span></span>';
+    row.querySelector('.booking-row__name').textContent = rule.recipientName;
+    row.querySelector('.booking-row__currency').textContent = rule.currency;
+    row.querySelector('.booking-row__value').textContent = (rule.direction === 'in' ? '+' : '-') + pay.formatMoney(rule.amount);
+    return row;
+  }
+
+  function showRuleLine(data) {
+    var line = overlay.querySelector('[data-pd-order]');
+    var btn = overlay.querySelector('[data-pd-order-open]');
+    var text = overlay.querySelector('[data-pd-order-text]');
+    if (!line) return;
+    var pay = window.UZBankPayState;
+    var label = data.ranOf && pay && pay.frequencyLabel && data.ranFrequency ? pay.frequencyLabel(data.ranFrequency) : '';
+    var rule = data.ranOf ? findRule(data.ranOf) : null;
+    if (!data.ranOf || !label) { line.hidden = true; return; }
+    line.hidden = false;
+    var words = 'Standing order: ' + label;
+    if (rule) {
+      text.hidden = true;
+      btn.hidden = false;
+      btn.textContent = words;
+      btn.setAttribute('aria-label', words + ', open the standing order');
+    } else {
+      btn.hidden = true;
+      text.hidden = false;
+      text.textContent = words;
+    }
+  }
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-pd-order-open]');
+    if (!btn || !overlay.contains(btn) || !currentPaymentData || !currentPaymentData.ranOf) return;
+    var rule = findRule(currentPaymentData.ranOf);
+    if (!rule) return;
+    returnTo = { row: currentRow, id: currentBookingId, routeId: currentBookingRouteId, data: currentPaymentData };
+    var row = ruleRowFor(rule);
+    openFromRowInPlace(row);
+    try { history.pushState({ uzPaymentDetails: true, uzOrderOf: returnTo.id }, '', location.href); } catch (_e) {}
   });
+
+  /* Opens another row's sheet while this one is open: no hand-over of focus, the sheet stays up */
+  function openFromRowInPlace(row) {
+    var was = document.body.classList.contains('body--payment-open');
+    document.body.classList.remove('body--payment-open');
+    openFromRow(row);
+    if (was) document.body.classList.add('body--payment-open');
+    var first = overlay.querySelector('.modal-shell');
+    if (first && first.scrollTo) first.scrollTo(0, 0);
+  }
+
+  /* Back from the order's sheet returns to the instance */
+  window.addEventListener('popstate', function (e) {
+    if (!returnTo) return;
+    if (e.state && e.state.uzOrderOf) return;
+    var back = returnTo;
+    returnTo = null;
+    if (!overlay.classList.contains('modal-overlay--active')) return;
+    currentRow = back.row;
+    currentBookingId = back.id;
+    currentBookingRouteId = back.routeId;
+    openOverlay(back.data, { skipRoute: true });
+  }, true);
 
 })();
