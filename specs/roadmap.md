@@ -18,12 +18,6 @@ Found while writing 34's spec (2026-11-06). The Playground (`playground.html`, a
 
 Found while building 48 (2026-11-16), measured for all 12 built-in themes in both shells. The primary chip and the primary button share one fill and ink, so both are low where the theme's accent is light: 3.31:1 in Custom 10 (Dark) and Custom 01, 3.39 in Custom 06, 3.64 in Custom 02, 3.72 in Custom 05 and Custom 04, and 4.38 in Custom 10 (Light). Custom 02 in Light also has its secondary chip at 4.03:1 and its filled tonal chip at 3.81:1 (its neutral ink on its own 5% tint). The plain UZ Bank look is fine (12.1 to 14.9:1, Dark tonal 6.2). Nothing regressed in 48; the values are the same as before. To settle in its spec: whether the engine should pick a darker accent step or a different ink when a pairing is under 4.5:1 (`primaryControlInk`, `inkOnPrimaryControl` in `scripts/theme-engine/lib/themeColors.ts`), or whether those themes' accents are changed; the same check for the other controls the engine derives (secondary and tonal buttons, segmented control); and a scripted audit of every built-in theme in both shells, so the numbers are a gate rather than a one-off.
 
-## 44. Booking sheet: an executed instance names its standing order
-
-Spec: `specs/2026-11-19-standing-order-link/` (branch `feature/standing-order-link`). Settled in its interview: only instances the app made (`ranOf`), the line opens the order's own sheet, plain text when the order is gone. Built-in executed rows for Rent and the others are not added.
-
-Added 2026-11-05, out of 43's scope. An executed booking that is an instance of a standing order (Rent, Internet & Phone) shows a line "Standing order: <frequency>" in its sheet, linking to the order in the Recurring tab. To settle in its spec: how an instance points to its order (built-in data and the payment state), what the link opens (the order's sheet, or the Recurring tab scrolled to it), and how it reads on a phone and to a screen reader.
-
 ## 45. Pay and the transfer: choose a frequency
 
 Found while writing 43's spec (2026-11-05). Pay's and the transfer's Recurring and Standing order have no frequency choice, so a recurring booking made in the app stores Monthly (43, D9). To settle in its spec: the choices (weekly, monthly, quarterly, yearly; the repeat itself is `nextDueDate(frequency, anchorDay, after)` in `js/payment-state.js` since 37, which only knows monthly), where the field sits in the schedule step, what an edit shows, and the confirmation's wording.
@@ -339,6 +333,14 @@ Spec: `specs/2026-11-05-booking-actions/` (branch `feature/booking-actions`). Wi
 Found during 31 (2026-11-05). On All bookings, every built-in row opens a sheet that says "Executed" with no Edit, also the ones in Pending and Recurring (Swisscom, Helvetia Insurance, Tax office Zurich): `buildAllBookingsRowData` in `js/payment-details.js` sets `status: 'executed'` and ignores the row's `data-status`. Payments made in the app read their real status since 23. To settle in its spec: read the row's status (and a date for "Execute on"), what Edit does on a built-in row once it shows (it runs into 42, and may leave an empty month band), and the same check for built-in transfer rows (32).
 
 Spec: `specs/2026-11-05-booking-chips/` (branch `feature/booking-chips`, from `feature/bookings-edit`). Direction settled before the interview: a row's icon names the counterparty, a tonal chip names "Pending" or the frequency, the booking type is row data, not the icon (which also made Rent and Account details' Pizza open as transfers). Settled in its interview: Edit stays off on built-in rows until 42; All bookings and Account details adopt it now; recurring bookings made in the app store Monthly, and a frequency choice in Pay is item 45. An executed instance's "Standing order" line is item 44. Found in the build: Pizza on Account details is a transfer in its data, so it stays one; trades appear in these lists and keep their buy and sell icons; a transfer made in the app opens as a payment on All bookings (46, from 31's setup). Built 2026-11-05.
+
+## 44. Booking sheet: an executed instance names its standing order (done)
+
+Spec: `specs/2026-11-19-standing-order-link/` (branch `feature/standing-order-link`). Settled in its interview: only instances the app made (`ranOf`), the line opens the order's own sheet, plain text when the order is gone. Built-in executed rows for Rent and the others are not added.
+
+Added 2026-11-05, out of 43's scope. An executed booking that is an instance of a standing order (Rent, Internet & Phone) shows a line "Standing order: <frequency>" in its sheet, linking to the order in the Recurring tab. To settle in its spec: how an instance points to its order (built-in data and the payment state), what the link opens (the order's sheet, or the Recurring tab scrolled to it), and how it reads on a phone and to a screen reader.
+
+Done 2026-11-20: a stored instance (`ranOf`) shows "Standing order: <frequency>" under Status, a button that opens the order's sheet (browser Back returns), plain text when the order is gone. Built-in executed rows for Rent, Netflix and Internet & Phone remain none.
 
 ## 46. All bookings: a transfer made in the app opens as a payment (done)
 
