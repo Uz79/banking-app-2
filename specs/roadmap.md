@@ -20,6 +20,8 @@ Found while building 48 (2026-11-16), measured for all 12 built-in themes in bot
 
 ## 44. Booking sheet: an executed instance names its standing order
 
+Spec: `specs/2026-11-19-standing-order-link/` (branch `feature/standing-order-link`). Settled in its interview: only instances the app made (`ranOf`), the line opens the order's own sheet, plain text when the order is gone. Built-in executed rows for Rent and the others are not added.
+
 Added 2026-11-05, out of 43's scope. An executed booking that is an instance of a standing order (Rent, Internet & Phone) shows a line "Standing order: <frequency>" in its sheet, linking to the order in the Recurring tab. To settle in its spec: how an instance points to its order (built-in data and the payment state), what the link opens (the order's sheet, or the Recurring tab scrolled to it), and how it reads on a phone and to a screen reader.
 
 ## 45. Pay and the transfer: choose a frequency
