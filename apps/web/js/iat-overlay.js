@@ -224,6 +224,18 @@
     });
   }
 
+  /* The Repeats group sits under the execution switch (roadmap 45): helpers live in payment-state.js */
+  function repeatChoice() {
+    var rc = window.UZBankPayState && window.UZBankPayState.repeatChoice;
+    return rc || { read: function () { return 'monthly'; }, set: function () {}, show: function () {}, bind: function () {} };
+  }
+  function repeatRoot() { return execTypeGroup ? execTypeGroup.parentElement : null; }
+  function repeatWord() {
+    var pay = window.UZBankPayState;
+    var f = repeatChoice().read(repeatRoot());
+    return pay && pay.frequencyLabel ? pay.frequencyLabel(f).toLowerCase() : 'monthly';
+  }
+
   /* What the schedule step chose: a recurring transfer, a later one ("immediately" off) or one that runs now. */
   function scheduleStatus() {
     var active = execTypeGroup && execTypeGroup.querySelector('.segmented__option--active');
@@ -246,7 +258,8 @@
       currency: live.currency,
       dateISO: new Date().toISOString(),
       status: scheduleStatus(),
-      executeOn: live.dateLabel
+      executeOn: live.dateLabel,
+      frequency: scheduleStatus() === 'recurring' ? repeatChoice().read(repeatRoot()) : undefined
     });
   }
 
@@ -342,7 +355,7 @@
     var date = live.dateLabel || formatTodayDate();
     if (confMessage) {
       confMessage.textContent = status === 'executed' ? 'Your transfer to ' + to.name + ' is done.'
-        : status === 'recurring' ? 'Your recurring transfer to ' + to.name + ' starts on ' + date + '.'
+        : status === 'recurring' ? 'Your recurring transfer to ' + to.name + ' starts on ' + date + ', repeating ' + repeatWord() + '.'
           : 'Your transfer to ' + to.name + ' will be made on ' + date + '.';
     }
   }
@@ -516,6 +529,8 @@
       execTypeGroup.querySelectorAll('.segmented__option').forEach(function (b) {
         b.classList.toggle('segmented__option--active', b.getAttribute('data-exec') === 'single');
       });
+      repeatChoice().set(repeatRoot(), 'monthly');
+      repeatChoice().show(repeatRoot(), false);
     }
 
     /* Reset to first step; goToStep reads the amount back from the field, so the field shows it first */
@@ -683,7 +698,9 @@
         b.classList.remove('segmented__option--active');
       });
       btn.classList.add('segmented__option--active');
+      repeatChoice().show(repeatRoot(), btn.getAttribute('data-exec') === 'recurring');
     });
+    repeatChoice().bind(repeatRoot());
   }
 
   /* Summary edit buttons: data-iat-nav="<step>" */

@@ -177,12 +177,31 @@
     return step.querySelectorAll('.form-field')[idx] || null;
   }
 
+  /* The Repeats group (roadmap 45): helpers live in payment-state.js */
+  function repeatChoice() {
+    var rc = window.UZBankPayState && window.UZBankPayState.repeatChoice;
+    return rc || { read: function () { return 'monthly'; }, set: function () {}, show: function () {}, bind: function () {} };
+  }
+  function repeatWord() {
+    var pay = window.UZBankPayState;
+    var f = repeatChoice().read($step('schedule'));
+    return pay && pay.frequencyLabel ? pay.frequencyLabel(f).toLowerCase() : 'monthly';
+  }
+  /* Repeats shows for Recurring and Standing order only (D2) */
+  document.addEventListener('click', function (e) {
+    var opt = e.target.closest && e.target.closest('.modal__step[data-step="schedule"] .segmented:not([data-repeat]) .segmented__option');
+    if (!opt) return;
+    var first = opt.parentElement.querySelector('.segmented__option');
+    repeatChoice().show($step('schedule'), opt !== first);
+  });
+  if (window.UZBankPayState) repeatChoice().bind($step('schedule'));
+
   /** What the schedule step chose: a recurring or standing order, a later payment
    *  ("as soon as possible" off) or one that runs now. */
   function scheduleStatus() {
     var step = $step('schedule');
     if (!step) return 'executed';
-    var active = step.querySelector('.segmented__option--active');
+    var active = step.querySelector('.segmented:not([data-repeat]) .segmented__option--active');
     var mode = active ? active.textContent.trim() : 'Single';
     if (mode !== 'Single') return 'recurring';
     var toggle = step.querySelector('.toggle');
@@ -195,8 +214,10 @@
     live.dateLabel = asapLabel();
     live.debitKey = 'household';
     resetScheduleToggleOn();
-    var firstMode = $step('schedule') && $step('schedule').querySelectorAll('.segmented__option');
+    var firstMode = $step('schedule') && $step('schedule').querySelectorAll('.segmented:not([data-repeat]) .segmented__option');
     if (firstMode) firstMode.forEach(function (b, i) { b.classList.toggle('segmented__option--active', i === 0); });
+    repeatChoice().set($step('schedule'), 'monthly');
+    repeatChoice().show($step('schedule'), false);
   }
 
   /** Recipient step — fills IBAN, Bank, Name, Street, City, Country */
@@ -290,13 +311,16 @@
   /** Set the schedule step to an edited booking's schedule (roadmap 23, D3, D4): pending opens on Single with
    *  "as soon as possible" off and its date, recurring on Recurring (the booking doesn't store Standing order);
    *  anything else on the defaults. */
-  function seedScheduleFromBooking(status, executeOn) {
+  function seedScheduleFromBooking(status, executeOn, frequency) {
     var step = $step('schedule'); if (!step) return;
     var later = status === 'pending' || status === 'recurring';
     var modeIdx = status === 'recurring' ? 1 : 0;
-    step.querySelectorAll('.segmented__option').forEach(function (b, i) {
+    step.querySelectorAll('.segmented:not([data-repeat]) .segmented__option').forEach(function (b, i) {
       b.classList.toggle('segmented__option--active', i === modeIdx);
     });
+    /* Repeats opens on the rule's own frequency (roadmap 45, D8) */
+    repeatChoice().set(step, status === 'recurring' ? frequency : 'monthly');
+    repeatChoice().show(step, status === 'recurring');
     var toggle = step.querySelector('.toggle');
     var thumb = step.querySelector('.toggle__thumb');
     if (toggle) toggle.classList.toggle('toggle--active', !later);
@@ -330,13 +354,13 @@
      * D11). The schedule step names Recurring and Standing order apart, so the sentence does too. */
     var status = scheduleStatus();
     var step = $step('schedule');
-    var active = step && step.querySelector('.segmented__option--active');
+    var active = step && step.querySelector('.segmented:not([data-repeat]) .segmented__option--active');
     var mode = active ? active.textContent.trim() : 'Single';
     var to = live.recipient && live.recipient.name ? ' to ' + live.recipient.name : '';
     if (message) {
       message.textContent = status === 'executed' ? 'Your payment' + to + ' will be executed on ' + live.dateLabel + '.'
         : status === 'recurring'
-          ? (mode === 'Standing order' ? 'Your standing order' : 'Your recurring payment') + to + ' starts on ' + live.dateLabel + '.'
+          ? (mode === 'Standing order' ? 'Your standing order' : 'Your recurring payment') + to + ' starts on ' + live.dateLabel + ', repeating ' + repeatWord() + '.'
           : 'Your payment' + to + ' will be made on ' + live.dateLabel + '.';
     }
     /* An edit of a standing order replaces its edited next payments; say so (roadmap 68, D4) */
@@ -1151,7 +1175,7 @@
         live.debitKey = DEBIT_ACCOUNTS[editCtx.accountKey] ? editCtx.accountKey : 'household';
 
         // Amount — parse just in case it was stored as a string
-        seedScheduleFromBooking(editCtx.status, editCtx.executeOn);
+        seedScheduleFromBooking(editCtx.status, editCtx.executeOn, editCtx.frequency);
 
         var ctxAmount = typeof editCtx.amount === 'number'
           ? editCtx.amount
@@ -1237,6 +1261,7 @@
           executeOn: live.dateLabel,
           accountKey: live.debitKey
         };
+        if (payData.status === 'recurring') payData.frequency = repeatChoice().read($step('schedule'));
         droppedEdits = [];
         if (editingBookingId && window.UZBankPayState && window.UZBankPayState.updatePayment) {
           droppedEdits = window.UZBankPayState.updatePayment(editingBookingId, payData) || [];
