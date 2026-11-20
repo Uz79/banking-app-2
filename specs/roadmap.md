@@ -20,6 +20,8 @@ Found while building 48 (2026-11-16), measured for all 12 built-in themes in bot
 
 ## 45. Pay and the transfer: choose a frequency
 
+Spec: `specs/2026-11-20-choose-frequency/` (branch `feature/choose-frequency`). Settled in its interview: Weekly, Monthly, Quarterly, Yearly (default Monthly); a "Repeats" segmented choice under the mode switch for Recurring and Standing order only; the confirmation says "repeating <frequency>"; Edit opens on the rule's frequency.
+
 Found while writing 43's spec (2026-11-05). Pay's and the transfer's Recurring and Standing order have no frequency choice, so a recurring booking made in the app stores Monthly (43, D9). To settle in its spec: the choices (weekly, monthly, quarterly, yearly; the repeat itself is `nextDueDate(frequency, anchorDay, after)` in `js/payment-state.js` since 37, which only knows monthly), where the field sits in the schedule step, what an edit shows, and the confirmation's wording.
 
 ## 51. Booking sheet: Edit and Copy for a pending transfer
