@@ -20,6 +20,8 @@ Found while building 48 (2026-11-16), measured for all 12 built-in themes in bot
 
 ## 51. Booking sheet: Edit and Copy for a pending transfer
 
+Spec: `specs/2026-11-21-transfer-edit-copy/` (branch `feature/pending-transfer-edit-copy`). Settled in its interview: pending Edit + Copy, recurring order Edit + Copy, executed Copy, built-in transfers Copy only; Edit updates both legs in place; Copy opens the same accounts and amount, as soon as possible.
+
 Found during 42 (2026-11-05). A pending transfer made in the app gets Delete in its sheet; Edit and Copy are left out, as the transfer flow (`js/iat-overlay.js`) has no way to open with an amount, accounts and a schedule filled in. To settle in its spec: a prefill path for the transfer like Pay's edit context, whether Edit updates both legs in place, what Copy of an executed transfer opens, and whether built-in transfers get Copy (they need 50 first).
 
 ## 73. Promote the full 260617 token export
