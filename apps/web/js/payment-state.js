@@ -518,17 +518,11 @@
     return dropped;
   }
 
-  /**
-   * Record an internal account transfer in the bookings ledger (debit + credit rows).
-   */
-  function commitInternalTransfer(transfer) {
-    if (!transfer || typeof transfer.amount !== 'number' || transfer.amount <= 0) return;
-    if (!transfer.fromKey || !transfer.toKey || transfer.fromKey === transfer.toKey) return;
-
+  /* A transfer's legs: the debit leg, and the credit leg unless the credit side is a mandate (roadmap 18, D5, D6: a
+     mandate has no bookings list). Shared by a new transfer and an edit of one (roadmap 51, D4). */
+  function transferLegs(suffix, transfer, mandate) {
     var ts = transfer.dateISO || new Date().toISOString();
-    var suffix = Date.now() + '_' + Math.random().toString(36).slice(2, 8);
-
-    state.bookings.push({
+    var legs = [{
       id: 'iat_out_' + suffix,
       recipientName: 'Transfer to ' + (transfer.toName || 'Account'),
       currency: transfer.currency || 'CHF',
@@ -542,40 +536,80 @@
       toKey: transfer.toKey,
       fromName: transfer.fromName,
       toName: transfer.toName
-    });
-    applySchedule(state.bookings[state.bookings.length - 1], transfer);
-
-    /* To a mandate (roadmap 18, D5, D6): no in-leg, since a mandate has no bookings list; an executed transfer adds
-       to what it holds, a pending or recurring one funds nothing, as it adds nothing to Savings. */
-    var mandate = findMandate(transfer.toKey);
-    if (mandate) {
-      if (isExecuted(state.bookings[state.bookings.length - 1])) {
-        mandate.funded = Math.round(((mandate.funded || 0) + transfer.amount) * 100) / 100;
-      }
-      trimBookings(state);
-      dispatchChange();
-      return;
+    }];
+    if (!mandate) {
+      legs.push({
+        id: 'iat_in_' + suffix,
+        recipientName: 'Transfer from ' + (transfer.fromName || 'Account'),
+        currency: transfer.currency || 'CHF',
+        amount: transfer.amount,
+        dateISO: ts,
+        accountKey: transfer.toKey,
+        icon: 'i-download',
+        direction: 'in',
+        kind: 'iat',
+        fromKey: transfer.fromKey,
+        toKey: transfer.toKey,
+        fromName: transfer.fromName,
+        toName: transfer.toName
+      });
     }
+    legs.forEach(function (leg) { applySchedule(leg, transfer); });
+    return legs;
+  }
 
-    state.bookings.push({
-      id: 'iat_in_' + suffix,
-      recipientName: 'Transfer from ' + (transfer.fromName || 'Account'),
-      currency: transfer.currency || 'CHF',
-      amount: transfer.amount,
-      dateISO: ts,
-      accountKey: transfer.toKey,
-      icon: 'i-download',
-      direction: 'in',
-      kind: 'iat',
-      fromKey: transfer.fromKey,
-      toKey: transfer.toKey,
-      fromName: transfer.fromName,
-      toName: transfer.toName
-    });
-    applySchedule(state.bookings[state.bookings.length - 1], transfer);
+  /**
+   * Record an internal account transfer in the bookings ledger (debit + credit rows).
+   * To a mandate (roadmap 18, D5, D6): no in-leg; an executed transfer adds to what it holds, a pending or recurring
+   * one funds nothing, as it adds nothing to Savings.
+   */
+  function commitInternalTransfer(transfer) {
+    if (!transfer || typeof transfer.amount !== 'number' || transfer.amount <= 0) return;
+    if (!transfer.fromKey || !transfer.toKey || transfer.fromKey === transfer.toKey) return;
 
+    var suffix = Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+    var mandate = findMandate(transfer.toKey);
+    var legs = transferLegs(suffix, transfer, mandate);
+    legs.forEach(function (leg) { state.bookings.push(leg); });
+    if (mandate && isExecuted(legs[0])) {
+      mandate.funded = Math.round(((mandate.funded || 0) + transfer.amount) * 100) / 100;
+    }
     trimBookings(state);
     dispatchChange();
+  }
+
+  /**
+   * Edit a stored transfer in place (roadmap 51, D4, D5): both legs keep their ids and their place in the list. The
+   * transfer is what the flow sent (accounts, amount, schedule); a later one keeps its date, one that runs now is
+   * dated now, as for a payment. Returns the dates of the edited next payments dropped with a rule (roadmap 68).
+   */
+  function updateTransfer(id, transfer) {
+    var suffix = transferSuffix(id);
+    if (!suffix || !transfer || typeof transfer.amount !== 'number' || transfer.amount <= 0) return [];
+    if (!transfer.fromKey || !transfer.toKey || transfer.fromKey === transfer.toKey) return [];
+    var first = -1;
+    var old = [];
+    state.bookings.forEach(function (b, i) {
+      if (transferSuffix(b.id) !== suffix) return;
+      if (first < 0) first = i;
+      old.push(b);
+    });
+    if (first < 0) return [];
+    var wasRule = isStoredRule(old[0]);
+    var later = transfer.status === 'pending' || transfer.status === 'recurring';
+    var mandate = findMandate(transfer.toKey);
+    var legs = transferLegs(suffix, Object.assign({}, transfer, {
+      dateISO: later ? old[0].dateISO : (transfer.dateISO || new Date().toISOString())
+    }), mandate);
+    state.bookings = state.bookings.filter(function (b) { return transferSuffix(b.id) !== suffix; });
+    state.bookings.splice.apply(state.bookings, [first, 0].concat(legs));
+    if (mandate && isExecuted(legs[0])) {
+      mandate.funded = Math.round(((mandate.funded || 0) + transfer.amount) * 100) / 100;
+    }
+    var dropped = [];
+    if (wasRule) old.forEach(function (b) { dropped = dropped.concat(dropInstanceEdits(b.id)); });
+    dispatchChange();
+    return dropped;
   }
 
   /* An edited next payment belongs to its standing order: a stored booking carrying the rule's id (roadmap 47, D10).
@@ -1004,6 +1038,7 @@
     getPosition:         getPosition,
     commitPayment:       commitPayment,
     commitInternalTransfer: commitInternalTransfer,
+    updateTransfer:      updateTransfer,
     commitTradeOrder:    commitTradeOrder,
     commitMandate:       commitMandate,
     updatePayment:       updatePayment,

@@ -206,6 +206,13 @@
     return document.body.getAttribute('data-screen') === 'all-bookings';
   }
 
+  /* The account a snapshot stands for (roadmap 51, D1: Copy opens the transfer on a row's two accounts) */
+  function snapshotKey(snap) {
+    var keys = Object.keys(ACCOUNT_SNAPSHOTS);
+    for (var i = 0; i < keys.length; i++) if (ACCOUNT_SNAPSHOTS[keys[i]] === snap) return keys[i];
+    return null;
+  }
+
   function findAccountSnapshotByLabel(label) {
     if (!label) return null;
     var needle = label.toLowerCase().trim();
@@ -260,6 +267,8 @@
           currency: currency,
           debit: ACCOUNT_SNAPSHOTS[fromKey],
           credit: ACCOUNT_SNAPSHOTS[toKey],
+          fromKey: fromKey,
+          toKey: toKey,
           status: schedule.status,
           executeOn: schedule.executeOn,
           frequency: schedule.frequency,
@@ -281,6 +290,8 @@
         currency: currency,
         debit: debit,
         credit: credit,
+        fromKey: snapshotKey(debit),
+        toKey: snapshotKey(credit),
         status: schedule.status,
         executeOn: schedule.executeOn,
         frequency: schedule.frequency,
@@ -514,6 +525,8 @@
         currency: booking.currency || 'CHF',
         debit: debit,
         credit: credit,
+        fromKey: keys.fromKey,
+        toKey: keys.toKey,
         /* Its own schedule, as a payment's (roadmap 32, D1); a recurring one is a rule (roadmap 47, D2) */
         status: booking.status || 'executed',
         executeOn: booking.executeOn || null,
@@ -730,7 +743,17 @@
     if (data.title === 'Trade') return none;
     if (status === 'open') return none; /* a route-only bill is read-only (roadmap 80, D9) */
     if (data.type === 'internal') {
-      return { edit: false, del: status === 'pending' && !!currentBookingId, copy: false };
+      /* A transfer: Copy on any row whose two accounts the flow knows; Edit on a stored pending transfer or standing
+         order, not on one payment of an order (roadmap 51, D1) */
+      var accountFor = window.__UZ_IAT_ACCOUNT_FOR__;
+      var flow = typeof window.__UZ_IAT_OPEN === 'function' && typeof accountFor === 'function'
+        && data.fromKey && data.toKey && data.fromKey !== data.toKey && !!accountFor(data.fromKey) && !!accountFor(data.toKey);
+      var stored = !!currentBookingId && !(currentRow && currentRow.hasAttribute('data-rule-id'));
+      return {
+        edit: flow && stored && (status === 'pending' || status === 'recurring'),
+        del: status === 'pending' && !!currentBookingId,
+        copy: !!flow
+      };
     }
     if (/^\+/.test(String(data.amount || '').trim())) return none;
     if (status === 'executed') return { edit: false, del: false, copy: true };
@@ -748,7 +771,7 @@
       modal.classList.toggle('pd--has-actions', a.edit || a.del || a.copy);
       modal.classList.toggle('pd--can-edit', a.edit);
     }
-    var noun = data.status === 'recurring' ? 'standing order' : 'payment';
+    var noun = data.type === 'internal' ? 'transfer' : data.status === 'recurring' ? 'standing order' : 'payment';
     if (fnEditBtn) {
       fnEditBtn.hidden = !a.edit;
       fnEditBtn.setAttribute('aria-label', 'Edit ' + noun);
@@ -913,6 +936,23 @@
       var copy = pendingCopy;
       pendingEditStep = null;
       pendingCopy = false;
+
+      /* A transfer opens its own flow, on the same accounts and amount; an Edit also on the booking's schedule
+         (roadmap 51, D2, D3, D7) */
+      var t = currentPaymentData;
+      if (t && t.type === 'internal') {
+        var prefill = { fromKey: t.fromKey, toKey: t.toKey, amount: parseFloat(String(t.amount || '').replace(/[^0-9.]/g, '')) || 0 };
+        if (!copy) {
+          prefill.bookingId = currentBookingId;
+          prefill.status = t.status || 'executed';
+          prefill.executeOn = t.executeOn || null;
+          prefill.frequency = t.frequency || null;
+        }
+        window.setTimeout(function () {
+          if (typeof window.__UZ_IAT_OPEN === 'function') window.__UZ_IAT_OPEN(prefill);
+        }, 0);
+        return;
+      }
 
       // Export current payment data so payment-overlay.js can pre-seed live.*
       if (currentPaymentData) {

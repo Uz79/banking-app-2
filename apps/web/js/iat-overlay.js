@@ -243,13 +243,17 @@
     return live.immediately ? 'executed' : 'pending';
   }
 
+  /* The stored transfer an Edit replaces, set from the booking sheet's prefill (roadmap 51, D2, D4) */
+  var editingTransferId = null;
+
   function commitTransfer() {
     collectRecipientStep();
     if (live.fromKey === live.toKey || live.amount <= 0) return;
     var from = accountFor(live.fromKey);
     var to = accountFor(live.toKey);
     if (!from || !to || !window.UZBankPayState || !window.UZBankPayState.commitInternalTransfer) return;
-    window.UZBankPayState.commitInternalTransfer({
+    var pay = window.UZBankPayState;
+    var transfer = {
       fromKey: live.fromKey,
       toKey: live.toKey,
       fromName: from.name,
@@ -260,7 +264,11 @@
       status: scheduleStatus(),
       executeOn: live.dateLabel,
       frequency: scheduleStatus() === 'recurring' ? repeatChoice().read(repeatRoot()) : undefined
-    });
+    };
+    /* An edit replaces the stored transfer, both legs, in place (roadmap 51, D4) */
+    if (editingTransferId && pay.updateTransfer) pay.updateTransfer(editingTransferId, transfer);
+    else pay.commitInternalTransfer(transfer);
+    editingTransferId = null;
   }
 
   function stampDebitAccount(btn, acc) {
@@ -506,8 +514,9 @@
 
   /* ── Open / close ──────────────────────────────────────────────── */
 
-  /* prefill (optional): { toKey, fromKey, amount }, e.g. to fund a mandate (roadmap 18, D9, D10). An unknown account
-     is ignored, so the transfer opens as usual. */
+  /* prefill (optional): { toKey, fromKey, amount }, e.g. to fund a mandate (roadmap 18, D9, D10); from the booking
+     sheet also { bookingId, status, executeOn, frequency } for an Edit (roadmap 51, D2). An unknown account is ignored,
+     so the transfer opens as usual. */
   function openOverlay(prefill) {
     if (!prefill || typeof prefill !== 'object' || prefill instanceof Event) prefill = null;
     /* Default debit account = currently active carousel account */
@@ -522,15 +531,20 @@
       if (live.fromKey === live.toKey) live.fromKey = pickOtherKey(live.toKey);
       if (typeof prefill.amount === 'number' && prefill.amount > 0) live.amount = prefill.amount;
     }
-    live.immediately = true;
-    live.dateLabel = formatTodayDate();
+    /* An edit opens on the booking's own schedule (roadmap 51, D6); anything else runs as soon as possible */
+    var seeded = prefill && accountFor(prefill.toKey) && typeof prefill.bookingId === 'string' && prefill.bookingId;
+    editingTransferId = seeded || null;
+    var status = seeded ? prefill.status : null;
+    var later = status === 'pending' || status === 'recurring';
+    live.immediately = !later;
+    live.dateLabel = later && prefill.executeOn ? prefill.executeOn : formatTodayDate();
     transferConfirmed = false;
     if (execTypeGroup) {
       execTypeGroup.querySelectorAll('.segmented__option').forEach(function (b) {
-        b.classList.toggle('segmented__option--active', b.getAttribute('data-exec') === 'single');
+        b.classList.toggle('segmented__option--active', b.getAttribute('data-exec') === (status === 'recurring' ? 'recurring' : 'single'));
       });
-      repeatChoice().set(repeatRoot(), 'monthly');
-      repeatChoice().show(repeatRoot(), false);
+      repeatChoice().set(repeatRoot(), status === 'recurring' ? prefill.frequency : 'monthly');
+      repeatChoice().show(repeatRoot(), status === 'recurring');
     }
 
     /* Reset to first step; goToStep reads the amount back from the field, so the field shows it first */
@@ -568,6 +582,7 @@
       overlay.setAttribute('aria-hidden', 'true');
       overlay.classList.remove('modal-overlay--active', 'modal-overlay--closing');
       document.body.classList.remove('body--iat-open');
+      editingTransferId = null;
     });
 
     if (replaceState !== false) {
