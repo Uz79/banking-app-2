@@ -948,6 +948,7 @@
           currency:      d.currency || 'CHF',
           status:        copy ? 'executed' : (d.status || 'executed'),  // the schedule step opens on it (roadmap 23, D3); a copy as soon as possible
           executeOn:     copy ? null : (d.executeOn || null),
+          frequency:     copy ? null : (d.frequency || null), // the Repeats choice opens on it (roadmap 45, D8)
           targetStep:    step
         };
       }

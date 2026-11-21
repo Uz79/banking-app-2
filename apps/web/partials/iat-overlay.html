@@ -81,6 +81,15 @@
               <button type="button" class="segmented__option segmented__option--active" data-exec="single">Single execution</button>
               <button type="button" class="segmented__option" data-exec="recurring">Recurring execution</button>
             </div>
+            <div class="repeat-choice" data-repeat-wrap hidden>
+              <span class="repeat-choice__label" id="uz-iat-repeat-label">Repeats</span>
+              <div class="segmented segmented--regular" data-repeat role="radiogroup" aria-labelledby="uz-iat-repeat-label">
+                <button class="segmented__option" type="button" role="radio" aria-checked="false" data-frequency="weekly">Weekly</button>
+                <button class="segmented__option segmented__option--active" type="button" role="radio" aria-checked="true" data-frequency="monthly">Monthly</button>
+                <button class="segmented__option" type="button" role="radio" aria-checked="false" data-frequency="quarterly">Quarterly</button>
+                <button class="segmented__option" type="button" role="radio" aria-checked="false" data-frequency="yearly">Yearly</button>
+              </div>
+            </div>
 
             <div class="iat-toggle-row">
               <span class="iat-toggle-row__label">Immediately</span>

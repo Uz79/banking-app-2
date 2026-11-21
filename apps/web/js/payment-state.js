@@ -470,7 +470,7 @@
       booking.status = status;
       if (source.executeOn) booking.executeOn = source.executeOn;
     }
-    /* Pay and the transfer have no frequency choice yet (45): a standing order is monthly (roadmap 43, D9) */
+    /* The schedule step's choice, Monthly when it gave none (roadmap 45, D6) */
     if (status === 'recurring') booking.frequency = source.frequency || 'monthly';
   }
 
@@ -803,11 +803,21 @@
     return d;
   }
 
-  /* The first date after `after` a rule runs on (D4). Only 'monthly' so far: roadmap 45 adds the other cases here. */
+  /* The first date after `after` a rule runs on (D4; roadmap 45, D4, D5). Weekly keeps the weekday (a weekend moves to
+     the Monday, which then stays), the others keep the anchor day of the month. */
   function nextDueDate(frequency, anchorDay, after) {
-    if (frequency !== 'monthly') throw new Error('Unsupported frequency: ' + frequency);
     var y = after.getFullYear();
     var m = after.getMonth();
+    if (frequency === 'weekly') {
+      var w = new Date(y, m, after.getDate() + 7);
+      while (w.getDay() === 0 || w.getDay() === 6) w = new Date(w.getFullYear(), w.getMonth(), w.getDate() + 1);
+      return w;
+    }
+    /* A date moved by a weekend into the next month (28 Feb on a Saturday runs on 2 March): count from the month it belongs to */
+    var base = monthlyOccurrence(y, m - 1, anchorDay).getTime() === after.getTime() ? m - 1 : m;
+    if (frequency === 'quarterly') return monthlyOccurrence(y, base + 3, anchorDay);
+    if (frequency === 'yearly') return monthlyOccurrence(y + 1, base, anchorDay);
+    if (frequency !== 'monthly') throw new Error('Unsupported frequency: ' + frequency);
     for (var i = 0; i < 3; i++) {
       var d = monthlyOccurrence(y, m + i, anchorDay);
       if (d > after) return d;
@@ -918,6 +928,51 @@
   var ACCOUNT_ICONS = { household: 'i-home', savings: 'i-anchor', deposit: 'i-life-buoy' };
   var FREQUENCY_LABELS = { weekly: 'Weekly', monthly: 'Monthly', quarterly: 'Quarterly', yearly: 'Yearly' };
 
+  /* The schedule step's "Repeats" group (roadmap 45): shown for a recurring choice only, one option checked */
+  var repeatChoice = {
+    wrap: function (root) { return root && root.querySelector('[data-repeat-wrap]'); },
+    read: function (root) {
+      var on = root && root.querySelector('[data-repeat] .segmented__option--active');
+      return on ? on.getAttribute('data-frequency') : 'monthly';
+    },
+    set: function (root, frequency) {
+      var group = root && root.querySelector('[data-repeat]');
+      if (!group) return;
+      group.querySelectorAll('.segmented__option').forEach(function (b) {
+        var on = b.getAttribute('data-frequency') === (frequency || 'monthly');
+        b.classList.toggle('segmented__option--active', on);
+        b.setAttribute('aria-checked', on ? 'true' : 'false');
+        b.tabIndex = on ? 0 : -1;
+      });
+    },
+    show: function (root, on) {
+      var w = repeatChoice.wrap(root);
+      if (w) w.hidden = !on;
+    },
+    /* Keeps aria-checked and the arrow keys in step; app-mp.js already moves the active class on a click */
+    bind: function (root) {
+      var group = root && root.querySelector('[data-repeat]');
+      if (!group || group.__bound) return;
+      group.__bound = true;
+      group.addEventListener('click', function (e) {
+        var b = e.target.closest('.segmented__option');
+        if (b) repeatChoice.set(root, b.getAttribute('data-frequency'));
+      });
+      group.addEventListener('keydown', function (e) {
+        var k = e.key;
+        if (k !== 'ArrowRight' && k !== 'ArrowLeft' && k !== 'ArrowDown' && k !== 'ArrowUp') return;
+        var opts = [].slice.call(group.querySelectorAll('.segmented__option'));
+        var i = opts.indexOf(document.activeElement);
+        if (i < 0) return;
+        e.preventDefault();
+        var n = opts[(i + (k === 'ArrowRight' || k === 'ArrowDown' ? 1 : opts.length - 1)) % opts.length];
+        repeatChoice.set(root, n.getAttribute('data-frequency'));
+        n.focus();
+      });
+      repeatChoice.set(root, 'monthly');
+    }
+  };
+
   function frequencyLabel(frequency) {
     return FREQUENCY_LABELS[frequency] || FREQUENCY_LABELS.monthly;
   }
@@ -959,6 +1014,7 @@
     formatMoney:         formatMoney,
     bookingRowLook:      bookingRowLook,
     frequencyLabel:      frequencyLabel,
+    repeatChoice:        repeatChoice,
     nextDueDate:         nextDueDate,
     runDue:              runDue,
     takeRunNotes:        takeRunNotes
