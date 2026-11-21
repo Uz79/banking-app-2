@@ -31,6 +31,8 @@ Out: a recurring transfer's single next payment (no Edit of one instance, as Pay
 | D10 | Edit and Copy have the same aria labels pattern as Pay ("Edit transfer", "Copy transfer"); the sheet's function bar needs no new markup. Copy: no em dashes. | Conventions; `applyActions` names the noun for payments only today. |
 | D11 | No new storage key, page or dependency. | `tech-spec.md`: nothing new. |
 
+| D12 | Done as built: D3's hand-over is a direct `__UZ_IAT_OPEN(prefill)` call after the sheet closes, not an edit context and hash. Edit opens the Recipient step (it holds the amount and accounts). All bookings gained the transfer's markup, which it lacked. `updateTransfer` also takes changed accounts and a switch to or from a mandate. | Simpler; the transfer's route has no step state to seed. Without the markup Edit and Copy could not open there. |
+
 ## Context
 
 - `js/payment-details.js`: `bookingActions` (about 727, the internal branch returns `edit: false`, `copy: false`); `applyActions` (about 746, noun text); the edit context export in `finishClose` (about 911 to 960); `buildDataFromStateBooking` returns the transfer's data with `status`, `executeOn`, `frequency`.

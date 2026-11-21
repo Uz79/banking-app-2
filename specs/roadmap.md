@@ -18,12 +18,6 @@ Found while writing 34's spec (2026-11-06). The Playground (`playground.html`, a
 
 Found while building 48 (2026-11-16), measured for all 12 built-in themes in both shells. The primary chip and the primary button share one fill and ink, so both are low where the theme's accent is light: 3.31:1 in Custom 10 (Dark) and Custom 01, 3.39 in Custom 06, 3.64 in Custom 02, 3.72 in Custom 05 and Custom 04, and 4.38 in Custom 10 (Light). Custom 02 in Light also has its secondary chip at 4.03:1 and its filled tonal chip at 3.81:1 (its neutral ink on its own 5% tint). The plain UZ Bank look is fine (12.1 to 14.9:1, Dark tonal 6.2). Nothing regressed in 48; the values are the same as before. To settle in its spec: whether the engine should pick a darker accent step or a different ink when a pairing is under 4.5:1 (`primaryControlInk`, `inkOnPrimaryControl` in `scripts/theme-engine/lib/themeColors.ts`), or whether those themes' accents are changed; the same check for the other controls the engine derives (secondary and tonal buttons, segmented control); and a scripted audit of every built-in theme in both shells, so the numbers are a gate rather than a one-off.
 
-## 51. Booking sheet: Edit and Copy for a pending transfer
-
-Spec: `specs/2026-11-21-transfer-edit-copy/` (branch `feature/pending-transfer-edit-copy`). Settled in its interview: pending Edit + Copy, recurring order Edit + Copy, executed Copy, built-in transfers Copy only; Edit updates both legs in place; Copy opens the same accounts and amount, as soon as possible.
-
-Found during 42 (2026-11-05). A pending transfer made in the app gets Delete in its sheet; Edit and Copy are left out, as the transfer flow (`js/iat-overlay.js`) has no way to open with an amount, accounts and a schedule filled in. To settle in its spec: a prefill path for the transfer like Pay's edit context, whether Edit updates both legs in place, what Copy of an executed transfer opens, and whether built-in transfers get Copy (they need 50 first).
-
 ## 73. Promote the full 260617 token export
 
 Found while writing 48's spec (2026-11-15). `designs/tokens/_NEW/260617_tokens` carries the Figma tokens of every component (checkbox, slider, paginator, tab control, toggle switch, segmented control, form field, list item, row item, menu item, radio button and more), while `designs/tokens/mapped` holds only the older, thinner set; 48 copies in the `chip` group alone. To settle in its spec: run `npm run tokens:promote -- 260617_tokens` on a branch, list every `--color-*` and layout token that changes in `css/tokens.css`, and check every component it touches in Light, Dark and a Multi-color theme, desktop and 390px, before anything merges; the chip group from 48 then comes from the promote and the copy is dropped.
@@ -381,6 +375,14 @@ Spec: `specs/2026-11-19-builtin-transfer-accounts/` (branch `feature/builtin-tra
 Found during 46 (2026-11-05). All bookings shows the same built-in rows for Household and Savings, and a built-in transfer's sheet takes the page's account as its debit (`buildAllBookingsRowData` in `js/payment-details.js`, from `ACCOUNT_SNAPSHOTS`). So on Household's All bookings "Transfer to Household" reads "from Household to Household", and on Savings' "Transfer to Savings" reads "from Savings account to Savings account". The two lists also name Savings differently ("Savings account" in the built-in snapshots, "Savings Account" in the transfer's). To settle in its spec: per-account built-in rows, or a debit account in each transfer row's data, and one name for Savings.
 
 Built 2026-11-19. Found in its check: Household's Pizza sheet named its credit "Private account" (D6).
+
+## 51. Booking sheet: Edit and Copy for a transfer (done)
+
+Spec: `specs/2026-11-21-transfer-edit-copy/` (branch `feature/pending-transfer-edit-copy`). Settled in its interview: pending Edit + Copy, recurring order Edit + Copy, executed Copy, built-in transfers Copy only; Edit updates both legs in place; Copy opens the same accounts and amount, as soon as possible.
+
+Found during 42 (2026-11-05). A pending transfer made in the app gets Delete in its sheet; Edit and Copy are left out, as the transfer flow (`js/iat-overlay.js`) has no way to open with an amount, accounts and a schedule filled in. To settle in its spec: a prefill path for the transfer like Pay's edit context, whether Edit updates both legs in place, what Copy of an executed transfer opens, and whether built-in transfers get Copy (they need 50 first).
+
+Done 2026-11-21 (`specs/2026-11-21-transfer-edit-copy/`). All bookings also gained the transfer's markup, which Edit and Copy need there.
 
 ## 52. Booking rows can't be reached with the keyboard (duplicate of 33)
 
