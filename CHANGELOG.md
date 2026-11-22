@@ -6,6 +6,7 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 <!-- changelog: last-commit a44e89743dfbf6322191036cce34abfa46609047 -->
 
 ### Fixed
+- **Legibility reaches the Playground** (roadmap 58). The Playground now loads `js/appearance.js`, so Profile > Legibility (Small, Regular, Large) and the Typeface and Font choices apply to its text and spacing. Spec: `specs/2026-11-22-playground-legibility/`.
 - **Multi-color themes: text on buttons, chips and the segmented control reaches 4.5:1** (roadmap 74). The engine picked ink at 3:1, so light accents (Custom 10, 01, 06, 05, 04, 02) gave white labels at 3.3 to 4.4:1; it now picks the first ink that reaches 4.5:1, else dark ink. A theme's neutral ink is also held to 4.5:1 on its page and tint, which darkens Custom 02's text in Light and its page tint in Dark. New `npm run audit:contrast` checks every built-in theme in both shells. Spec: `specs/2026-11-22-theme-contrast/`.
 - **Account details shows its executed bookings again** (roadmap 72 follow-up). Since the pending expander, the day groups were drawn into the collapsed pending panel, so no executed booking was visible. It now shows the 5 most recent executed bookings, grouped by day, under the pending row, and the pending panel has no "Show all pending" button: "Show all bookings" is the one way on.
 - Spec: `specs/2026-11-19-pending-payments-expander/` (D13 to D15).
