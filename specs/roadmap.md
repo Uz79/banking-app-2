@@ -16,6 +16,8 @@ Found while writing 34's spec (2026-11-06). The Playground (`playground.html`, a
 
 ## 74. Multi-color themes: some chips and buttons fall under 4.5:1
 
+Spec: `specs/2026-11-22-theme-contrast/` (branch `feature/theme-contrast`). Settled in its interview: raise the ink bar to 4.5 rather than move accents; primary and secondary buttons, all three chips and the segmented control; a node audit as a merge gate, not in `npm run build`.
+
 Found while building 48 (2026-11-16), measured for all 12 built-in themes in both shells. The primary chip and the primary button share one fill and ink, so both are low where the theme's accent is light: 3.31:1 in Custom 10 (Dark) and Custom 01, 3.39 in Custom 06, 3.64 in Custom 02, 3.72 in Custom 05 and Custom 04, and 4.38 in Custom 10 (Light). Custom 02 in Light also has its secondary chip at 4.03:1 and its filled tonal chip at 3.81:1 (its neutral ink on its own 5% tint). The plain UZ Bank look is fine (12.1 to 14.9:1, Dark tonal 6.2). Nothing regressed in 48; the values are the same as before. To settle in its spec: whether the engine should pick a darker accent step or a different ink when a pairing is under 4.5:1 (`primaryControlInk`, `inkOnPrimaryControl` in `scripts/theme-engine/lib/themeColors.ts`), or whether those themes' accents are changed; the same check for the other controls the engine derives (secondary and tonal buttons, segmented control); and a scripted audit of every built-in theme in both shells, so the numbers are a gate rather than a one-off.
 
 ## 73. Promote the full 260617 token export
