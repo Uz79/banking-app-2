@@ -10,10 +10,6 @@ In order. The first is what `/feature-spec` starts.
 
 Not scheduled, smallest first (an estimate of size, not of value).
 
-## 73. Promote the full 260617 token export
-
-Found while writing 48's spec (2026-11-15). `designs/tokens/_NEW/260617_tokens` carries the Figma tokens of every component (checkbox, slider, paginator, tab control, toggle switch, segmented control, form field, list item, row item, menu item, radio button and more), while `designs/tokens/mapped` holds only the older, thinner set; 48 copies in the `chip` group alone. To settle in its spec: run `npm run tokens:promote -- 260617_tokens` on a branch, list every `--color-*` and layout token that changes in `css/tokens.css`, and check every component it touches in Light, Dark and a Multi-color theme, desktop and 390px, before anything merges; the chip group from 48 then comes from the promote and the copy is dropped.
-
 ## 8. "How much should I invest?": the fridge advisor (8a, 8c, 8d and 8e done)
 
 The first step of opening an investment product, as in a bank's advisory meeting. A fridge metaphor: the main compartment is money for daily needs, the reserve drawers are reserves for the unplanned and for bigger purchases, and the freezer is what can be invested. Based on a flow Klaudiusz designed with a bank; the reference frames are in `~/Documents/Projects/AI Portfolio Projects/Banking App/_resources/261022_fridge-food/scenario`.
@@ -498,6 +494,14 @@ To settle in its spec: the total's sign (money out as "-"), open or closed by de
 
 Built 2026-11-19. The panel draws the 3 nearest top-down in the Pending tab's order (not the newest-first layout the findings describe).
 
+
+## 73. Promote the full 260617 token export (done)
+
+Found while writing 48's spec (2026-11-15). `designs/tokens/_NEW/260617_tokens` carries the Figma tokens of every component (checkbox, slider, paginator, tab control, toggle switch, segmented control, form field, list item, row item, menu item, radio button and more), while `designs/tokens/mapped` holds only the older, thinner set; 48 copies in the `chip` group alone. To settle in its spec: run `npm run tokens:promote -- 260617_tokens` on a branch, list every `--color-*` and layout token that changes in `css/tokens.css`, and check every component it touches in Light, Dark and a Multi-color theme, desktop and 390px, before anything merges; the chip group from 48 then comes from the promote and the copy is dropped.
+
+Spec: `specs/2026-11-22-promote-260617-tokens/` (branch `feature/promote-260617-tokens`). Found while specifying (2026-11-22): the command above fails (the export is in Figma's folder layout, its colours are 8-digit hex, it drops tokens the generator reads) and the export re-indexes the whole spacing scale. Settled in its interview: keep today's spacing scale, take the secondary text and separator changes, emit the new component tokens and wire none, gate on a token diff report, the contrast audit and before and after of key pages.
+
+Done 2026-11-22: the promote now takes Figma's folder layout and 8-digit hex (`scripts/token-lib.mjs`); `designs/tokens/` is the 260617 set, `css/tokens.css` carries 172 new component variables per mode (read by nothing), secondary text and the separator follow the export, and `alias.space` and `section.padding.main` stay as they were (`keepLive` in `required-manifest.json`). Contrast audit and the Bank default checked (lowest secondary text 4.89:1, Dark on the secondary background). Not checked: see its `validation.md`. Token report: `specs/2026-11-22-promote-260617-tokens/token-diff.md`.
 
 ## 74. Multi-color themes: some chips and buttons fall under 4.5:1 (done)
 

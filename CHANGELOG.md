@@ -24,6 +24,8 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-18-inflation-tile-calculator/`.
 
 ### Changed
+- **The 260617 token export is promoted** (roadmap 73). `tokens:promote` reads Figma's folder layout and 8-digit hex colours. `css/tokens.css` gains 172 component colour variables per mode (account-picker, button, checkbox, form field, list item, menu item, paginator, radio button, row item, segmented control, slider, tab control, toggle switch); no stylesheet uses them yet. In the Bank default, secondary text is 70% ink (was a solid tint) and the separator is 20% (was 10%); Multi-color themes set both themselves and look the same. The spacing scale is kept as it was: the export re-indexes it one step lower, which would have moved every layout.
+- Spec: `specs/2026-11-22-promote-260617-tokens/` (D1 to D10).
 - **Segmented controls and "Recurring"** (roadmap 84). The sidebar's Light / Dark switch is one small segmented control (icons only, stacked, when the sidebar is compressed). Pay's schedule step has Single and Recurring only; the "Standing order" tab is gone and "Recurring" is the one term in the UI and code (`recurringRules()` replaces `standingOrders()`). In Recurring there is no toggle: the date field is labelled "First payment". Repeats is the small size in Pay and the transfer flow, like the mode switch above it.
 - **Labels above segmented controls use the shared label row** (roadmap 84, D9). "Repeats" now has the same 24px label row, type and 4px gap as Recipient and Execute on; the Playground's settings, the theme panel's "Theme" and the Character kit's controls did not and now do.
 - Spec: `specs/2026-11-22-segmented-recurring/` (D1 to D9).
