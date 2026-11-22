@@ -12,6 +12,8 @@ Not scheduled, smallest first (an estimate of size, not of value).
 
 ## 58. Legibility doesn't reach the Playground
 
+Spec: `specs/2026-11-22-playground-legibility/` (branch `feature/playground-legibility`). Settled in its interview: load `js/appearance.js` as the fridge does; fix only what breaks at Small and Large, HUD and dialogs included; checked at Small, Regular, Large, desktop and 390px.
+
 Found while writing 34's spec (2026-11-06). The Playground (`playground.html`, admin only, opened as a full-screen sheet) loads neither `js/app-mp.js` nor, since 34, `js/appearance.js`, so Legibility's type and spacing scale, Typeface and Font don't apply there. To settle in its spec: loading `js/appearance.js` as the fridge and the opening do, and a check of the Playground's layouts at Small and Large, desktop and phone.
 
 ## 73. Promote the full 260617 token export
