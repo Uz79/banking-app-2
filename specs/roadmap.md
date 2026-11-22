@@ -14,10 +14,6 @@ Not scheduled, smallest first (an estimate of size, not of value).
 
 Found while writing 34's spec (2026-11-06). The Playground (`playground.html`, admin only, opened as a full-screen sheet) loads neither `js/app-mp.js` nor, since 34, `js/appearance.js`, so Legibility's type and spacing scale, Typeface and Font don't apply there. To settle in its spec: loading `js/appearance.js` as the fridge and the opening do, and a check of the Playground's layouts at Small and Large, desktop and phone.
 
-## 74. Multi-color themes: some chips and buttons fall under 4.5:1
-
-Found while building 48 (2026-11-16), measured for all 12 built-in themes in both shells. The primary chip and the primary button share one fill and ink, so both are low where the theme's accent is light: 3.31:1 in Custom 10 (Dark) and Custom 01, 3.39 in Custom 06, 3.64 in Custom 02, 3.72 in Custom 05 and Custom 04, and 4.38 in Custom 10 (Light). Custom 02 in Light also has its secondary chip at 4.03:1 and its filled tonal chip at 3.81:1 (its neutral ink on its own 5% tint). The plain UZ Bank look is fine (12.1 to 14.9:1, Dark tonal 6.2). Nothing regressed in 48; the values are the same as before. To settle in its spec: whether the engine should pick a darker accent step or a different ink when a pairing is under 4.5:1 (`primaryControlInk`, `inkOnPrimaryControl` in `scripts/theme-engine/lib/themeColors.ts`), or whether those themes' accents are changed; the same check for the other controls the engine derives (secondary and tonal buttons, segmented control); and a scripted audit of every built-in theme in both shells, so the numbers are a gate rather than a one-off.
-
 ## 73. Promote the full 260617 token export
 
 Found while writing 48's spec (2026-11-15). `designs/tokens/_NEW/260617_tokens` carries the Figma tokens of every component (checkbox, slider, paginator, tab control, toggle switch, segmented control, form field, list item, row item, menu item, radio button and more), while `designs/tokens/mapped` holds only the older, thinner set; 48 copies in the `chip` group alone. To settle in its spec: run `npm run tokens:promote -- 260617_tokens` on a branch, list every `--color-*` and layout token that changes in `css/tokens.css`, and check every component it touches in Light, Dark and a Multi-color theme, desktop and 390px, before anything merges; the chip group from 48 then comes from the promote and the copy is dropped.
@@ -506,6 +502,14 @@ To settle in its spec: the total's sign (money out as "-"), open or closed by de
 
 Built 2026-11-19. The panel draws the 3 nearest top-down in the Pending tab's order (not the newest-first layout the findings describe).
 
+
+## 74. Multi-color themes: some chips and buttons fall under 4.5:1 (done)
+
+Spec: `specs/2026-11-22-theme-contrast/` (branch `feature/theme-contrast`). Settled in its interview: raise the ink bar to 4.5 rather than move accents; primary and secondary buttons, all three chips and the segmented control; a node audit as a merge gate, not in `npm run build`.
+
+Found while building 48 (2026-11-16), measured for all 12 built-in themes in both shells. The primary chip and the primary button share one fill and ink, so both are low where the theme's accent is light: 3.31:1 in Custom 10 (Dark) and Custom 01, 3.39 in Custom 06, 3.64 in Custom 02, 3.72 in Custom 05 and Custom 04, and 4.38 in Custom 10 (Light). Custom 02 in Light also has its secondary chip at 4.03:1 and its filled tonal chip at 3.81:1 (its neutral ink on its own 5% tint). The plain UZ Bank look is fine (12.1 to 14.9:1, Dark tonal 6.2). Nothing regressed in 48; the values are the same as before. To settle in its spec: whether the engine should pick a darker accent step or a different ink when a pairing is under 4.5:1 (`primaryControlInk`, `inkOnPrimaryControl` in `scripts/theme-engine/lib/themeColors.ts`), or whether those themes' accents are changed; the same check for the other controls the engine derives (secondary and tonal buttons, segmented control); and a scripted audit of every built-in theme in both shells, so the numbers are a gate rather than a one-off.
+
+Done 2026-11-22 (`specs/2026-11-22-theme-contrast/`). `npm run audit:contrast` now passes all 12 themes in both shells.
 
 ## 75. `storybook-static` is tracked build output (done, in 77)
 

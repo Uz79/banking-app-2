@@ -1034,6 +1034,7 @@ var UZBankThemeEngine = (() => {
     };
   }
   var MIN_RAMP_CONTRAST = 3;
+  var MIN_TEXT_CONTRAST = 4.5;
   var PRIMARY_INK_ON_LIGHT = "#ffffff";
   function mapContrastIndexAcrossShells(fromIndex, fromLen, toLen, fromShell, toShell) {
     if (toLen <= 1) return 0;
@@ -1060,7 +1061,7 @@ var UZBankThemeEngine = (() => {
   function ensureReadableShellContrast(bgIndex, fgIndex, sequences, shell) {
     const bg = sequences.background[bgIndex];
     const fg = sequences.foreground[fgIndex];
-    if (bg && fg && contrastRatio(bg, fg) >= MIN_RAMP_CONTRAST) {
+    if (bg && fg && contrastRatio(bg, fg) >= MIN_TEXT_CONTRAST) {
       return { bgIndex, fgIndex };
     }
     const defaults = canonicalNeutralIndices(shell);
@@ -1070,13 +1071,13 @@ var UZBankThemeEngine = (() => {
     };
   }
   function inkOnPrimaryFill(fillHex, pageBgHex, neutralFgHex) {
-    if (contrastRatio(fillHex, PRIMARY_INK_ON_LIGHT) >= MIN_RAMP_CONTRAST) {
+    if (contrastRatio(fillHex, PRIMARY_INK_ON_LIGHT) >= MIN_TEXT_CONTRAST) {
       return PRIMARY_INK_ON_LIGHT;
     }
-    if (contrastRatio(fillHex, neutralFgHex) >= MIN_RAMP_CONTRAST) {
+    if (contrastRatio(fillHex, neutralFgHex) >= MIN_TEXT_CONTRAST) {
       return neutralFgHex;
     }
-    if (contrastRatio(fillHex, pageBgHex) >= MIN_RAMP_CONTRAST) {
+    if (contrastRatio(fillHex, pageBgHex) >= MIN_TEXT_CONTRAST) {
       return pageBgHex;
     }
     return contrastOnSwatch(fillHex).ink;
@@ -1582,6 +1583,16 @@ var UZBankThemeEngine = (() => {
     const ratio = useWhite ? rWhite : rBlack;
     return { ratio, ink: useWhite ? white : black, checks: wcagFromRatio(ratio) };
   }
+  function readableNeutralInk(inkHex, bgHex, isDark) {
+    const toward = isDark ? "#ffffff" : "#000000";
+    const passes = (ink) => contrastRatio(ink, bgHex) >= MIN_TEXT_CONTRAST && contrastRatio(ink, mixHex(bgHex, ink, 0.1)) >= MIN_TEXT_CONTRAST;
+    if (passes(inkHex)) return inkHex;
+    for (let t = 0.02; t < 1; t += 0.02) {
+      const c = mixHex(inkHex, toward, t);
+      if (passes(c)) return c;
+    }
+    return toward;
+  }
   function deriveTokens(bgHex, fgHex, neutralHex, kind = "monochrome", seeds) {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
     const bg = hexToRgb(bgHex);
@@ -1605,7 +1616,7 @@ var UZBankThemeEngine = (() => {
     const neutralRamp = buildSeedRamp(neutralSeedHex);
     const primaryRamp = buildSeedRamp(primarySeedHex);
     const neutralFgHex = isDark ? pickRampByLuminance(neutralRamp, CANONICAL_BODY_FG.dark) : relLuminance(neutralRgb) > 0.55 ? pickRampByLuminance(neutralRamp, CANONICAL_BODY_FG.light) : neutralSeedHex;
-    const selectedForegroundHex = (_i = normalizeHex(neutralHex || "")) != null ? _i : neutralFgHex;
+    const selectedForegroundHex = readableNeutralInk((_i = normalizeHex(neutralHex || "")) != null ? _i : neutralFgHex, bgHex, isDark);
     const primaryFillHex = isMulticolor ? accentHex : isDark ? "#ffffff" : accentHex;
     const primaryFillRgb = (_j = hexToRgb(primaryFillHex)) != null ? _j : accent;
     const primaryFillIsDark = relLuminance(primaryFillRgb) < 0.45;

@@ -968,6 +968,9 @@ function buildDistortionByRegionTokens(
 /** Minimum contrast between selected background + foreground ramp swatches. */
 const MIN_RAMP_CONTRAST = 3;
 
+/** BANKING (roadmap 74): text on a control, and a theme's neutral ink on its page, reach WCAG AA for body text. */
+const MIN_TEXT_CONTRAST = 4.5;
+
 const PRIMARY_INK_ON_LIGHT = "#ffffff";
 
 /** Map ramp index across Light/Dark shells (ramps run opposite semantic directions). */
@@ -1026,7 +1029,7 @@ function ensureReadableShellContrast(
 ): ShellContrast {
   const bg = sequences.background[bgIndex];
   const fg = sequences.foreground[fgIndex];
-  if (bg && fg && contrastRatio(bg, fg) >= MIN_RAMP_CONTRAST) {
+  if (bg && fg && contrastRatio(bg, fg) >= MIN_TEXT_CONTRAST) {
     return { bgIndex, fgIndex };
   }
   const defaults = canonicalNeutralIndices(shell);
@@ -1047,13 +1050,14 @@ function inkOnPrimaryFill(
   pageBgHex: string,
   neutralFgHex: string
 ): string {
-  if (contrastRatio(fillHex, PRIMARY_INK_ON_LIGHT) >= MIN_RAMP_CONTRAST) {
+  /* BANKING (roadmap 74, D1): 4.5:1, then whichever of white and near-black reads better */
+  if (contrastRatio(fillHex, PRIMARY_INK_ON_LIGHT) >= MIN_TEXT_CONTRAST) {
     return PRIMARY_INK_ON_LIGHT;
   }
-  if (contrastRatio(fillHex, neutralFgHex) >= MIN_RAMP_CONTRAST) {
+  if (contrastRatio(fillHex, neutralFgHex) >= MIN_TEXT_CONTRAST) {
     return neutralFgHex;
   }
-  if (contrastRatio(fillHex, pageBgHex) >= MIN_RAMP_CONTRAST) {
+  if (contrastRatio(fillHex, pageBgHex) >= MIN_TEXT_CONTRAST) {
     return pageBgHex;
   }
   return contrastOnSwatch(fillHex).ink;
@@ -1827,6 +1831,23 @@ export function contrastOnSwatch(fillHex: string): {
   return { ratio, ink: useWhite ? white : black, checks: wcagFromRatio(ratio) };
 }
 
+/**
+ * BANKING (roadmap 74, D2): a theme's neutral ink reaches 4.5:1 on its page and on its own 10% tint (the tonal chip
+ * and segmented track). A pair that falls short is mixed toward black (Light) or white (Dark) until it passes.
+ */
+function readableNeutralInk(inkHex: string, bgHex: string, isDark: boolean): string {
+  const toward = isDark ? "#ffffff" : "#000000";
+  const passes = (ink: string) =>
+    contrastRatio(ink, bgHex) >= MIN_TEXT_CONTRAST &&
+    contrastRatio(ink, mixHex(bgHex, ink, 0.1)) >= MIN_TEXT_CONTRAST;
+  if (passes(inkHex)) return inkHex;
+  for (let t = 0.02; t < 1; t += 0.02) {
+    const c = mixHex(inkHex, toward, t);
+    if (passes(c)) return c;
+  }
+  return toward;
+}
+
 export function deriveTokens(
   bgHex: string,
   fgHex: string,
@@ -1869,7 +1890,7 @@ export function deriveTokens(
     : relLuminance(neutralRgb) > 0.55
       ? pickRampByLuminance(neutralRamp, CANONICAL_BODY_FG.light)
       : neutralSeedHex;
-  const selectedForegroundHex = normalizeHex(neutralHex || "") ?? neutralFgHex;
+  const selectedForegroundHex = readableNeutralInk(normalizeHex(neutralHex || "") ?? neutralFgHex, bgHex, isDark);
   /* Filled / inverted controls: multicolor uses primary accent; monochrome dark uses inverse white. */
   const primaryFillHex = isMulticolor ? accentHex : isDark ? "#ffffff" : accentHex;
   const primaryFillRgb = hexToRgb(primaryFillHex) ?? accent;

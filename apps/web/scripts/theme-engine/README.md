@@ -19,6 +19,8 @@ npx esbuild scripts/theme-engine/banking.ts --bundle --format=iife \
 
 (run from `apps/web`). The UI lives in `js/theme-panel.js`.
 
+After changing the colour maths, rebuild and run `npm run audit:contrast` (from `apps/web`): it measures every control's text on its fill for each built-in theme in Light and Dark and fails under 4.5:1.
+
 ## localStorage keys
 
 | Key | What |
