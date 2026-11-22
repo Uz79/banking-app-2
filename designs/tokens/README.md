@@ -12,6 +12,8 @@
 
    Example: `npm run tokens:promote -- 260609_tokens`
 
+   The folder can be Figma's own layout (`alias/alias.json`, `brand/brand.json`, `mapped/Light.json`, `responsive/Desktop.json`, possibly inside a `tokens/` folder, as in `260617_tokens`) or the flat one. 8-digit hex colours (`#00157e33`) are converted to `rgba()`.
+
    `tokens:promote` archives the current live tokens to `designs/tokens/_archive/`, copies the export into this folder, carries forward any missing engineering tokens from the archive (see manifest), runs `tokens:build`, and rolls back on failure.
 
 3. Spot-check Overview in the app and one Live story in Storybook.  
@@ -20,6 +22,8 @@
 Commit the updated Figma JSON **and** the regenerated `apps/web/css/tokens.css` + `typography.css`.
 
 ### Engineering tokens (required-manifest.json)
+
+`required-manifest.json` has three more lists: `mapped` (mapped tokens the generator reads and an export may drop, such as the button hover backgrounds, carried forward), `keepLive` (tokens this app keeps from the live set whatever the export says: `alias.space` and `section.padding.main`, because the 260617 export re-indexes the spacing scale, roadmap 73) and `generatorRefs`.
 
 Figma may omit tokens the CSS generator needs. `required-manifest.json` lists them. `tokens:validate` reports missing tokens; `tokens:promote` merges them from the last live export when absent. Update the manifest when `generate-tokens-css.mjs` gains new hard dependencies.
 

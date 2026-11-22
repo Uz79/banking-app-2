@@ -12,11 +12,15 @@
   "optionalFiles": [
     {
       "name": "metadata.json",
-      "altNames": ["$metadata.json"]
+      "altNames": [
+        "$metadata.json"
+      ]
     },
     {
       "name": "themes.json",
-      "altNames": ["$themes.json"]
+      "altNames": [
+        "$themes.json"
+      ]
     }
   ],
   "brand": [
@@ -51,6 +55,33 @@
       "reason": "Light mode filled tonal chip background (chip.filled tonal.background in mapped/light.json)"
     }
   ],
+  "mapped": [
+    {
+      "path": "button.primary.background-hover",
+      "reason": "themeBlock: --color-btn-primary-hover (260617 drops it)"
+    },
+    {
+      "path": "button.secondary.background-hover",
+      "reason": "themeBlock: --color-btn-secondary-hover (260617 drops it)"
+    }
+  ],
+  "keepLive": [
+    {
+      "file": "alias.json",
+      "path": "space",
+      "reason": "260617 re-indexes the spacing scale one size step lower; every var(--space-N) would move (roadmap 73, D1)"
+    },
+    {
+      "file": "mapped/light.json",
+      "path": "section.padding.main",
+      "reason": "follows the re-indexed scale (roadmap 73, D5)"
+    },
+    {
+      "file": "mapped/dark.json",
+      "path": "section.padding.main",
+      "reason": "follows the re-indexed scale (roadmap 73, D5)"
+    }
+  ],
   "generatorRefs": [
     {
       "ref": "{color.primary.900-20pc}",
@@ -70,7 +101,7 @@
     }
   ],
   "engineeringDefaults": {
-    "leadingTrim": "Default true when Figma omits typography.leadingTrim — required for cap-height trim stacks.",
-    "textRowGap": "Fixed 0.5rem (8dp) — do not alias to space/N; space scale shifts break product-item and position stacks."
+    "leadingTrim": "Default true when Figma omits typography.leadingTrim \u2014 required for cap-height trim stacks.",
+    "textRowGap": "Fixed 0.5rem (8dp) \u2014 do not alias to space/N; space scale shifts break product-item and position stacks."
   }
 }

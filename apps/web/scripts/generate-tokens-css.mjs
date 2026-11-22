@@ -362,6 +362,43 @@ function mappedColor(map, dottedPath) {
   return resolveTokenString(node?.value);
 }
 
+/** Component colours from Figma's mapped sets (roadmap 73, D6): every group but the ones above is emitted as
+ *  --color-<group>-<path>, named like the chip tokens (background to bg, foreground to fg, "hover state" to hover,
+ *  "pressed state" to pressed). No stylesheet reads them yet; wiring a component is its own item. */
+const COMPONENT_SKIP = new Set(["background", "foreground", "border", "section", "chip", "marker test", "Icon Name"]);
+const COMPONENT_WORDS = { background: "bg", foreground: "fg", "hover state": "hover", "pressed state": "pressed" };
+
+function componentColorLines(map) {
+  const lines = [];
+  const seen = new Set();
+  const walk = (node, parts) => {
+    for (const [key, child] of Object.entries(node)) {
+      if (key.startsWith("$") || !child || typeof child !== "object") continue;
+      const next = parts.concat(key);
+      if (Object.prototype.hasOwnProperty.call(child, "value")) {
+        if (child.type !== "color") continue;
+        const name = next
+          .map((k, i) => (i === 0 ? k : COMPONENT_WORDS[k] ?? k))
+          .join("-")
+          .toLowerCase()
+          .replace(/\s+/g, "-");
+        const value = resolveTokenString(child.value);
+        if (/[{}]/.test(String(value))) throw new Error(`component token ${next.join(".")} is unresolved: ${child.value}`);
+        if (seen.has(name)) throw new Error(`component token name clash: --color-${name}`);
+        seen.add(name);
+        lines.push(`  --color-${name}: ${value};`);
+      } else {
+        walk(child, next);
+      }
+    }
+  };
+  for (const [group, node] of Object.entries(map)) {
+    if (group.startsWith("$") || COMPONENT_SKIP.has(group) || !node || typeof node !== "object") continue;
+    walk({ [group]: node }, []);
+  }
+  return lines.join("\n");
+}
+
 /** The same colour at another alpha: rgba(r, g, b, a) in, rgba(r, g, b, alpha) out (roadmap 63). */
 function withAlpha(color, alpha) {
   const m = /^rgba\(\s*(\d+),\s*(\d+),\s*(\d+),\s*[\d.]+\s*\)$/.exec(color);
@@ -432,8 +469,9 @@ function themeBlock(map, mode) {
   const navItemActiveBg = isLight
     ? "var(--color-bg-secondary)"
     : resolveTokenString("{color.neutral.white-10pc}");
+  /* Its own 10% ink in both modes: it was the separator's value, and the separator is now 20% (roadmap 73, D5) */
   const showAllBg = isLight
-    ? separator
+    ? resolveTokenString("{color.primary.900-10pc}")
     : resolveTokenString("{color.neutral.white-10pc}");
   const iconCircleFill = isLight ? "var(--color-fg)" : resolveTokenString("{color.neutral.white}");
 
@@ -509,6 +547,9 @@ function themeBlock(map, mode) {
   --color-chip-filled-tonal-fg: ${chipTonal.fg};
   --color-chip-filled-tonal-hover: ${chipTonal.hover};
   --color-chip-filled-tonal-pressed: ${chipTonal.pressed};
+
+  /* Component tokens from Figma (roadmap 73): emitted, not yet read by any stylesheet */
+${componentColorLines(map)}
 
   --color-icon-circle-fill: ${iconCircleFill};
   --color-overlay-scrim: ${overlayScrim};

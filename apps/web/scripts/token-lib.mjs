@@ -88,17 +88,65 @@ export function isUnresolvedRef(value) {
   return typeof value === "string" && /^\{.+}$/.test(value);
 }
 
+/** Figma's own export layout (roadmap 73): one folder per set (alias/alias.json, brand/brand.json) and capitalised
+ *  mode files (mapped/Light.json, responsive/Desktop.json). The live layout is flat and lower case. */
+function candidatePaths(rel) {
+  const dir = path.dirname(rel);
+  const base = path.basename(rel, ".json");
+  const cap = base.charAt(0).toUpperCase() + base.slice(1);
+  const out = [rel];
+  if (dir === ".") out.push(`${base}/${base}.json`);
+  else out.push(`${dir}/${cap}.json`);
+  return out;
+}
+
+function findFile(dir, rel) {
+  for (const candidate of candidatePaths(rel)) {
+    const abs = path.join(dir, candidate);
+    if (fs.existsSync(abs)) return abs;
+  }
+  return null;
+}
+
+/** 8-digit hex (#00157e33) to rgba(0, 21, 126, 0.2): the generator and the live files use rgba() (roadmap 73, D3).
+ *  Opaque colours and everything else are left as they are. */
+export function hexAlphaToRgba(value) {
+  if (typeof value !== "string") return value;
+  const m = /^#([0-9a-fA-F]{6})([0-9a-fA-F]{2})$/.exec(value.trim());
+  if (!m) return value;
+  const alpha = parseInt(m[2], 16);
+  if (alpha === 255) return `#${m[1].toLowerCase()}`;
+  const r = parseInt(m[1].slice(0, 2), 16);
+  const g = parseInt(m[1].slice(2, 4), 16);
+  const b = parseInt(m[1].slice(4, 6), 16);
+  const a = Math.round((alpha / 255) * 100) / 100;
+  return `rgba(${r}, ${g}, ${b}, ${a})`;
+}
+
+function normalizeColors(node) {
+  if (!node || typeof node !== "object") return;
+  if (isTokenLeaf(node)) {
+    node.value = hexAlphaToRgba(node.value);
+    return;
+  }
+  for (const [key, child] of Object.entries(node)) {
+    if (key.startsWith("$")) continue;
+    normalizeColors(child);
+  }
+}
+
 export function loadTokenSet(dir) {
   const files = {};
   const missing = [];
 
   for (const rel of CORE_FILES) {
-    const abs = path.join(dir, rel);
-    if (!fs.existsSync(abs)) {
+    const abs = findFile(dir, rel);
+    if (!abs) {
       missing.push(rel);
       continue;
     }
     files[rel] = readJson(abs);
+    normalizeColors(files[rel]);
   }
 
   for (const optional of manifest.optionalFiles ?? []) {
@@ -183,6 +231,11 @@ export function assertTypographyPipeline(brand, alias, mobile) {
   return errors;
 }
 
+/** The same token written differently ("12" and 12, #E3E5F1 and #e3e5f1) is not a change (roadmap 73). */
+function canonicalValue(v) {
+  return String(v).replace(/\s+/g, "").toLowerCase();
+}
+
 export function diffTokenSets(currentPaths, nextPaths) {
   const added = [];
   const removed = [];
@@ -194,7 +247,7 @@ export function diffTokenSets(currentPaths, nextPaths) {
     const next = nextPaths[p];
     if (cur === undefined) added.push({ path: p, value: next });
     else if (next === undefined) removed.push({ path: p, value: cur });
-    else if (cur !== next) changed.push({ path: p, from: cur, to: next });
+    else if (canonicalValue(cur) !== canonicalValue(next)) changed.push({ path: p, from: cur, to: next });
   }
 
   return { added, removed, changed };
@@ -203,10 +256,18 @@ export function diffTokenSets(currentPaths, nextPaths) {
 export function resolveInputDir(arg) {
   if (!arg) return null;
   const direct = path.resolve(arg);
-  if (fs.existsSync(direct) && fs.statSync(direct).isDirectory()) return direct;
+  if (fs.existsSync(direct) && fs.statSync(direct).isDirectory()) return withinExport(direct);
   const fromNew = path.join(tokensDir, "_NEW", arg);
-  if (fs.existsSync(fromNew) && fs.statSync(fromNew).isDirectory()) return fromNew;
+  if (fs.existsSync(fromNew) && fs.statSync(fromNew).isDirectory()) return withinExport(fromNew);
   return null;
+}
+
+/** A Figma export folder wraps its sets in a tokens/ folder (260617_tokens/tokens): use that (roadmap 73, D2). */
+function withinExport(dir) {
+  if (findFile(dir, "brand.json")) return dir;
+  const inner = path.join(dir, "tokens");
+  if (fs.existsSync(inner) && findFile(inner, "brand.json")) return inner;
+  return dir;
 }
 
 export function mergeEngineeringTokens(nextFiles, liveFiles) {
@@ -227,6 +288,28 @@ export function mergeEngineeringTokens(nextFiles, liveFiles) {
     if (!hasToken(alias, item.path) && hasToken(liveAlias, item.path)) {
       setTokenAtPath(alias, item.path, get(liveAlias, item.path));
       merged.push(`alias.${item.path}`);
+    }
+  }
+
+  /* Tokens this app deliberately keeps from the live set whatever the export says (roadmap 73, D1, D5) */
+  for (const item of manifest.keepLive ?? []) {
+    const next = nextFiles[item.file];
+    const live = liveFiles[item.file];
+    if (!next || !live || get(live, item.path) == null) continue;
+    setTokenAtPath(next, item.path, get(live, item.path));
+    merged.push(`${item.file.replace(/\.json$/, "")}.${item.path} (kept live)`);
+  }
+
+  /* Mapped tokens the generator reads and a newer export drops, such as the button hover backgrounds (roadmap 73, D4) */
+  for (const file of ["mapped/light.json", "mapped/dark.json"]) {
+    const next = nextFiles[file];
+    const live = liveFiles[file];
+    if (!next || !live) continue;
+    for (const item of manifest.mapped ?? []) {
+      if (!hasToken(next, item.path) && hasToken(live, item.path)) {
+        setTokenAtPath(next, item.path, get(live, item.path));
+        merged.push(`${file.replace(/\.json$/, "")}.${item.path}`);
+      }
     }
   }
 
@@ -264,6 +347,14 @@ export function validateTokenFiles(files) {
   for (const item of manifest.alias) {
     if (!hasToken(alias, item.path)) {
       errors.push(`Missing alias token: ${item.path} — ${item.reason}`);
+    }
+  }
+
+  for (const file of ["mapped/light.json", "mapped/dark.json"]) {
+    for (const item of manifest.mapped ?? []) {
+      if (!hasToken(files[file], item.path)) {
+        errors.push(`Missing ${file.replace(/\.json$/, "")} token: ${item.path} — ${item.reason}`);
+      }
     }
   }
 
