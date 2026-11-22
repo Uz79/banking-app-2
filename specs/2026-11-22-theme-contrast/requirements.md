@@ -20,6 +20,8 @@ Out: changing the built-in themes' accent colours; the plain UZ Bank look (alrea
 | D6 | Saved custom themes are recomputed by the engine when applied; nothing is stored differently, so no new storage key. The cached tokens (`uzBankWebColorTokens`) refresh on the next theme apply. | Tokens are derived, not stored data. |
 | D7 | No new page or dependency. `js/theme-engine.js` is rebuilt with the command in `scripts/theme-engine/README.md`, never edited by hand. | AGENTS.md: generated files. |
 
+| D8 | As built: D2 is a `readableNeutralInk` step in `deriveTokens` (mixes the neutral ink toward black or white until it passes on the page and its 10% tint), plus the 4.5 bar in `ensureReadableShellContrast`. | The stored neutral ink, not a ramp step, was the failing value for Custom 02 Light. |
+
 ## Context
 
 - `inkOnPrimaryFill`, `inkOnPrimaryControl`, `primaryControlInkForReport`, `primaryInkForShell`, `ensureReadableShellContrast` and `MIN_RAMP_CONTRAST = 3` are in `lib/themeColors.ts` (about 969 to 1110). `primaryControlInk` (about 1879) feeds `button-primary-foreground`, `segmented-foreground-selected` and `chip-foreground-selected`; the chip groups' `-fg` come from `btnPrimaryFg` and `neutralInk` (about 1965).
