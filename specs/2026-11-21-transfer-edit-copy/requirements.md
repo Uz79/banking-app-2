@@ -9,7 +9,7 @@ In: Edit and Copy in the booking sheet for transfers between own accounts, and w
 | Row | Edit | Copy | Delete (as now) |
 |-----|------|------|-----------------|
 | Pending transfer made in the app | yes | yes | yes |
-| Recurring transfer (the standing order) made in the app | yes | yes | no |
+| Recurring transfer (the recurring payment) made in the app | yes | yes | no |
 | Executed transfer made in the app | no | yes | no |
 | Built-in transfer (50 gave them both accounts) | no | yes | no |
 

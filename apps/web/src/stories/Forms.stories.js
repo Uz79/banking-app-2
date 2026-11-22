@@ -488,10 +488,9 @@ export const ScheduleForm = {
             </button>
           </div>
         </div>
-        <div class="segmented">
+        <div class="segmented segmented--sm">
           <button class="segmented__option segmented__option--active" type="button">Single</button>
           <button class="segmented__option" type="button">Recurring</button>
-          <button class="segmented__option" type="button">Standing order</button>
         </div>
         <div class="toggle-row">
           <span class="toggle-row__label">As soon as possible</span>

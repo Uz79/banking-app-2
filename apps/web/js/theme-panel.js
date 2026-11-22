@@ -331,8 +331,8 @@
 
     /* Kind */
     html +=
-      '<section class="tf-section" aria-labelledby="tfKindTitle">' +
-        '<h3 class="tf-section__heading tf-section__heading--field" id="tfKindTitle">Theme</h3>' +
+      '<section class="tf-section form-field form-field--no-footer" aria-labelledby="tfKindTitle">' +
+        '<h3 class="form-field__label" id="tfKindTitle">Theme</h3>' +
         '<div class="segmented segmented--sm tf-kind" role="group" aria-label="Theme type">' +
           ['monochrome', 'multicolor'].map(function (k) {
             var on = s.kind === k;

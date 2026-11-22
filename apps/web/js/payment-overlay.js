@@ -70,8 +70,8 @@
   var editingBookingId  = null;
   /** The id of the built-in row an edit replaces once committed (roadmap 42, D4). */
   var editingStaticRow  = null;
-  var editingInstance   = null; /* a standing order's next payment: { ruleId, occurrence } (roadmap 47, D10) */
-  var droppedEdits      = [];   /* dates of the edited next payments an edit of the standing order replaced (roadmap 68, D4) */
+  var editingInstance   = null; /* a recurring payment's next payment: { ruleId, occurrence } (roadmap 47, D10) */
+  var droppedEdits      = [];   /* dates of the edited next payments an edit of the recurring payment replaced (roadmap 68, D4) */
 
   /* ── DATA WIRING (added in _10) ─────────────────────────────────────
    * Each modal__step block is templated HTML. We track the "live" payment
@@ -187,16 +187,36 @@
     var f = repeatChoice().read($step('schedule'));
     return pay && pay.frequencyLabel ? pay.frequencyLabel(f).toLowerCase() : 'monthly';
   }
-  /* Repeats shows for Recurring and Standing order only (D2) */
+  /* Repeats shows for Recurring only (D2) */
   document.addEventListener('click', function (e) {
     var opt = e.target.closest && e.target.closest('.modal__step[data-step="schedule"] .segmented:not([data-repeat]) .segmented__option');
     if (!opt) return;
     var first = opt.parentElement.querySelector('.segmented__option');
     repeatChoice().show($step('schedule'), opt !== first);
+    /* The mode switch has changed its class by the time this runs; repaint the step for the new mode */
+    setTimeout(paintScheduleStep, 0);
   });
+
+  function isRecurringMode(step) {
+    var active = step.querySelector('.segmented:not([data-repeat]) .segmented__option--active');
+    var first = step.querySelector('.segmented:not([data-repeat]) .segmented__option');
+    return !!active && active !== first;
+  }
+
+  /** Recurring has no toggle: the date field alone is the first payment (roadmap 84, D4). Single keeps its
+   *  "As soon as possible" toggle and its "Execute on" field. */
+  function syncRecurringUi(step, recurring) {
+    var toggle = step.querySelector('.toggle');
+    var row = toggle && toggle.closest('.toggle-row');
+    if (row) row.hidden = recurring;
+    var dateBtn = step.querySelector('[data-execute-on]');
+    var field = dateBtn && dateBtn.closest('.form-field');
+    var label = field && field.querySelector('.form-field__label');
+    if (label) label.textContent = recurring ? 'First payment' : 'Execute on';
+  }
   if (window.UZBankPayState) repeatChoice().bind($step('schedule'));
 
-  /** What the schedule step chose: a recurring or standing order, a later payment
+  /** What the schedule step chose: a recurring payment, a later payment
    *  ("as soon as possible" off) or one that runs now. */
   function scheduleStatus() {
     var step = $step('schedule');
@@ -264,19 +284,32 @@
     var recipName = step.querySelector('.form-field .form-field__value');
     if (recipName && live.recipient) recipName.textContent = live.recipient.name;
     var toggle = step.querySelector('.toggle');
-    var isAsap = toggle ? toggle.classList.contains('toggle--active') : true;
+    var recurring = isRecurringMode(step);
     var picker = window.UZBankDatePicker;
-    if (isAsap) live.dateLabel = asapLabel();
-    else if (picker) live.dateLabel = picker.laterLabel(live.dateLabel, false);
+    var isAsap;
+    if (recurring) {
+      /* The date is the one picked, carried in or the default; the hidden toggle only follows it, so Single reopens right */
+      isAsap = live.dateLabel === asapLabel();
+      if (toggle) {
+        toggle.classList.toggle('toggle--active', isAsap);
+        var th = toggle.querySelector('.toggle__thumb');
+        if (th) th.classList.toggle('toggle__thumb--active', isAsap);
+      }
+    } else {
+      isAsap = toggle ? toggle.classList.contains('toggle--active') : true;
+      if (isAsap) live.dateLabel = asapLabel();
+      else if (picker) live.dateLabel = picker.laterLabel(live.dateLabel, false);
+    }
     if (toggle) {
       toggle.setAttribute('role', 'switch');
       toggle.setAttribute('aria-checked', isAsap ? 'true' : 'false');
       toggle.setAttribute('aria-label', 'As soon as possible');
     }
+    syncRecurringUi(step, recurring);
     var dateBtn = step.querySelector('[data-execute-on]');
     var dateValue = dateBtn && dateBtn.querySelector('.form-field__value');
     if (dateValue) dateValue.textContent = live.dateLabel;
-    if (picker) picker.syncField(dateBtn, live.dateLabel);
+    if (picker) picker.syncField(dateBtn, live.dateLabel, recurring ? 'First payment' : undefined);
   }
 
   /** Say the toggle's state and date to a screen reader (roadmap 40, D7). Called on a change, not on first paint. */
@@ -294,7 +327,8 @@
       row.insertAdjacentElement('afterend', live_);
     }
     var on = toggle.classList.contains('toggle--active');
-    live_.textContent = 'As soon as possible ' + (on ? 'on' : 'off') + ', executes on ' + live.dateLabel;
+    live_.textContent = isRecurringMode(step) ? 'First payment on ' + live.dateLabel
+      : 'As soon as possible ' + (on ? 'on' : 'off') + ', executes on ' + live.dateLabel;
   }
 
   /** Force the schedule step's "as soon as possible" toggle into the ON
@@ -309,7 +343,7 @@
   }
 
   /** Set the schedule step to an edited booking's schedule (roadmap 23, D3, D4): pending opens on Single with
-   *  "as soon as possible" off and its date, recurring on Recurring (the booking doesn't store Standing order);
+   *  "as soon as possible" off and its date, recurring on Recurring (the booking doesn't store Recurring payment);
    *  anything else on the defaults. */
   function seedScheduleFromBooking(status, executeOn, frequency) {
     var step = $step('schedule'); if (!step) return;
@@ -337,6 +371,8 @@
     var rec = fields[2] && fields[2].querySelector('.form-field__value');
     if (amt) amt.textContent = live.currency + '  ' + fmt(live.amount);
     if (date) date.textContent = live.dateLabel;
+    var dateLabel = fields[1] && fields[1].querySelector('.form-field__label');
+    if (dateLabel) dateLabel.textContent = scheduleStatus() === 'recurring' ? 'First payment' : 'Execute on';
     if (rec && live.recipient) rec.textContent = live.recipient.name;
     paintDebitAccount();
   }
@@ -351,19 +387,16 @@
     if (sum) sum.textContent = fmt(live.amount);
     if (cur) cur.textContent = live.currency;
     /* Done now, made on a later date, or recurring from a date (roadmap 15), with the date in the sentence (roadmap 41,
-     * D11). The schedule step names Recurring and Standing order apart, so the sentence does too. */
+     * D11). */
     var status = scheduleStatus();
-    var step = $step('schedule');
-    var active = step && step.querySelector('.segmented:not([data-repeat]) .segmented__option--active');
-    var mode = active ? active.textContent.trim() : 'Single';
     var to = live.recipient && live.recipient.name ? ' to ' + live.recipient.name : '';
     if (message) {
       message.textContent = status === 'executed' ? 'Your payment' + to + ' will be executed on ' + live.dateLabel + '.'
         : status === 'recurring'
-          ? (mode === 'Standing order' ? 'Your standing order' : 'Your recurring payment') + to + ' starts on ' + live.dateLabel + ', repeating ' + repeatWord() + '.'
+          ? 'Your recurring payment' + to + ' starts on ' + live.dateLabel + ', repeating ' + repeatWord() + '.'
           : 'Your payment' + to + ' will be made on ' + live.dateLabel + '.';
     }
-    /* An edit of a standing order replaces its edited next payments; say so (roadmap 68, D4) */
+    /* An edit of a recurring payment replaces its edited next payments; say so (roadmap 68, D4) */
     var note = dlg.querySelector('.confirmation-dialog__note');
     if (note) {
       var dates = droppedEdits.filter(Boolean);

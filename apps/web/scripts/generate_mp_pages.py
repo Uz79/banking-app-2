@@ -73,7 +73,7 @@ def sidebar(active: str, prefix: str = "") -> str:
 {nav('overview', 'overview.html', 'Overview', 'icon24-home.svg')}{nav('payments', 'payments.html', 'Payments', 'icon24-payments.svg')}{nav('profile', 'profile.html', 'Profile', 'icon24-user.svg')}
     </nav>
     <div class="sidebar__footer">
-      <div class="segmented segmented--theme" role="group" aria-label="Theme">
+      <div class="segmented segmented--sm segmented--theme" role="group" aria-label="Theme">
         <button type="button" class="segmented__option" data-set-theme="light">Light</button>
         <button type="button" class="segmented__option segmented__option--active" data-set-theme="dark">Dark</button>
       </div>

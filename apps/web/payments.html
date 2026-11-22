@@ -1642,7 +1642,7 @@
 
     </nav>
     <div class="sidebar__footer">
-      <div class="segmented segmented--theme" role="group" aria-label="Theme">
+      <div class="segmented segmented--sm segmented--theme" role="group" aria-label="Theme">
         <button type="button" class="segmented__option" data-set-theme="light">Light</button>
         <button type="button" class="segmented__option segmented__option--active" data-set-theme="dark">Dark</button>
       </div>
@@ -1993,14 +1993,13 @@
               </button>
             </div>
           </div>
-          <div class="segmented">
+          <div class="segmented segmented--sm">
             <button class="segmented__option segmented__option--active" type="button">Single</button>
             <button class="segmented__option" type="button">Recurring</button>
-            <button class="segmented__option" type="button">Standing order</button>
           </div>
-          <div class="repeat-choice" data-repeat-wrap hidden>
-            <span class="repeat-choice__label" id="uz-pay-repeat-label">Repeats</span>
-            <div class="segmented segmented--regular" data-repeat role="radiogroup" aria-labelledby="uz-pay-repeat-label">
+          <div class="repeat-choice form-field form-field--no-footer" data-repeat-wrap hidden>
+            <span class="form-field__label" id="uz-pay-repeat-label">Repeats</span>
+            <div class="segmented segmented--sm" data-repeat role="radiogroup" aria-labelledby="uz-pay-repeat-label">
               <button class="segmented__option" type="button" role="radio" aria-checked="false" data-frequency="weekly">Weekly</button>
               <button class="segmented__option segmented__option--active" type="button" role="radio" aria-checked="true" data-frequency="monthly">Monthly</button>
               <button class="segmented__option" type="button" role="radio" aria-checked="false" data-frequency="quarterly">Quarterly</button>
@@ -2185,9 +2184,9 @@
               <button type="button" class="segmented__option segmented__option--active" data-exec="single">Single execution</button>
               <button type="button" class="segmented__option" data-exec="recurring">Recurring execution</button>
             </div>
-            <div class="repeat-choice" data-repeat-wrap hidden>
-              <span class="repeat-choice__label" id="uz-iat-repeat-label">Repeats</span>
-              <div class="segmented segmented--regular" data-repeat role="radiogroup" aria-labelledby="uz-iat-repeat-label">
+            <div class="repeat-choice form-field form-field--no-footer" data-repeat-wrap hidden>
+              <span class="form-field__label" id="uz-iat-repeat-label">Repeats</span>
+              <div class="segmented segmented--sm" data-repeat role="radiogroup" aria-labelledby="uz-iat-repeat-label">
                 <button class="segmented__option" type="button" role="radio" aria-checked="false" data-frequency="weekly">Weekly</button>
                 <button class="segmented__option segmented__option--active" type="button" role="radio" aria-checked="true" data-frequency="monthly">Monthly</button>
                 <button class="segmented__option" type="button" role="radio" aria-checked="false" data-frequency="quarterly">Quarterly</button>

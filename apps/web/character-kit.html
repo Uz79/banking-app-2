@@ -57,8 +57,7 @@
     .profile-persona-stage.ck-stage { position: absolute; inset: 0; z-index: 0; width: auto; height: auto; margin: 0; pointer-events: none; }
     .ck-stage-hint { position: absolute; left: var(--space-4); bottom: var(--space-3); font-size: var(--fs-text-xs); color: var(--color-fg-label); pointer-events: none; }
     .ck-controls { display: flex; flex-direction: column; gap: var(--space-4); }
-    .ck-control { display: flex; flex-direction: column; gap: var(--space-2); }
-    .ck-control__label { font-size: var(--fs-text-xs); line-height: var(--lh-caption); color: var(--color-fg-label); }
+    .ck-control { display: flex; flex-direction: column; gap: var(--form-field-gap); }
     .ck-control .segmented { display: flex; width: 100%; }
     .ck-control .segmented__option { flex: 1 1 0; }
     .ck-helper { display: grid; grid-template-columns: minmax(0, 16rem) minmax(0, 1fr); gap: var(--space-5); align-items: start; }
@@ -1689,7 +1688,7 @@
 
     </nav>
     <div class="sidebar__footer">
-      <div class="segmented segmented--theme" role="group" aria-label="Theme">
+      <div class="segmented segmented--sm segmented--theme" role="group" aria-label="Theme">
         <button type="button" class="segmented__option" data-set-theme="light">Light</button>
         <button type="button" class="segmented__option segmented__option--active" data-set-theme="dark">Dark</button>
       </div>
@@ -1736,7 +1735,7 @@
       </div>
       <div class="ck-controls" data-ck-controls>
         <div class="ck-control">
-          <span class="ck-control__label">Profile</span>
+          <span class="form-field__label">Profile</span>
           <div class="ck-presets">
             <button type="button" class="uz-btn uz-btn--secondary uz-btn--sm" data-ck-preset="novice" aria-pressed="true">Beat · Newbie</button>
             <button type="button" class="uz-btn uz-btn--secondary uz-btn--sm" data-ck-preset="standard" aria-pressed="false">Lena · All-rounder</button>
@@ -1744,7 +1743,7 @@
           </div>
         </div>
         <div class="ck-control">
-          <span class="ck-control__label" id="ckHeadwear">Headwear · financial knowledge</span>
+          <span class="form-field__label" id="ckHeadwear">Headwear · financial knowledge</span>
           <div class="segmented segmented--sm" role="group" aria-labelledby="ckHeadwear" data-ck-slot="headwear">
             <button type="button" class="segmented__option" data-value="none">None</button>
             <button type="button" class="segmented__option" data-value="helmet">Helmet</button>
@@ -1752,7 +1751,7 @@
           </div>
         </div>
         <div class="ck-control">
-          <span class="ck-control__label" id="ckOutfit">Outfit · banking products</span>
+          <span class="form-field__label" id="ckOutfit">Outfit · banking products</span>
           <div class="segmented segmented--sm" role="group" aria-labelledby="ckOutfit" data-ck-slot="outfit">
             <button type="button" class="segmented__option" data-value="barbarian">Barbarian</button>
             <button type="button" class="segmented__option" data-value="ranger">Ranger</button>
@@ -1760,7 +1759,7 @@
           </div>
         </div>
         <div class="ck-control">
-          <span class="ck-control__label" id="ckBack">Back · banking products</span>
+          <span class="form-field__label" id="ckBack">Back · banking products</span>
           <div class="segmented segmented--sm" role="group" aria-labelledby="ckBack" data-ck-slot="back">
             <button type="button" class="segmented__option" data-value="none">None</button>
             <button type="button" class="segmented__option" data-value="quiver">Quiver</button>
@@ -1768,7 +1767,7 @@
           </div>
         </div>
         <div class="ck-control">
-          <span class="ck-control__label" id="ckLoop">Loop · digital affinity</span>
+          <span class="form-field__label" id="ckLoop">Loop · digital affinity</span>
           <div class="segmented segmented--sm" role="group" aria-labelledby="ckLoop" data-ck-slot="loop">
             <button type="button" class="segmented__option" data-value="Idle_A">Idle</button>
             <button type="button" class="segmented__option" data-value="Walking_A">Walk</button>
@@ -1839,7 +1838,7 @@
       </div>
       <div class="ck-controls">
         <div class="ck-control">
-          <span class="ck-control__label" id="ckStrategy">Strategy</span>
+          <span class="form-field__label" id="ckStrategy">Strategy</span>
           <div class="ck-presets" role="group" aria-labelledby="ckStrategy" data-vehicles-picker>
             <button type="button" class="uz-btn uz-btn--secondary uz-btn--sm" data-strategy="income" aria-pressed="true">Income</button>
             <button type="button" class="uz-btn uz-btn--secondary uz-btn--sm" data-strategy="conservative" aria-pressed="false">Conservative</button>

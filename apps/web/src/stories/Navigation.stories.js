@@ -24,7 +24,7 @@ export const SidebarOverviewActive = {
         </a>
       </nav>
       <div class="sidebar__footer">
-        <div class="segmented segmented--theme" role="group" aria-label="Theme">
+        <div class="segmented segmented--sm segmented--theme" role="group" aria-label="Theme">
           <button type="button" class="segmented__option">Light</button>
           <button type="button" class="segmented__option segmented__option--active">Dark</button>
         </div>
@@ -59,7 +59,7 @@ export const SidebarPaymentsActive = {
         </a>
       </nav>
       <div class="sidebar__footer">
-        <div class="segmented segmented--theme" role="group" aria-label="Theme">
+        <div class="segmented segmented--sm segmented--theme" role="group" aria-label="Theme">
           <button type="button" class="segmented__option segmented__option--active">Light</button>
           <button type="button" class="segmented__option">Dark</button>
         </div>
@@ -201,7 +201,7 @@ export const SegmentedTwoOptions = {
   name: 'Segmented — 2 options (theme toggle)',
   render: () => `
     <div style="padding:1rem;">
-      <div class="segmented segmented--theme" role="group" aria-label="Theme">
+      <div class="segmented segmented--sm segmented--theme" role="group" aria-label="Theme">
         <button type="button" class="segmented__option segmented__option--active">Light</button>
         <button type="button" class="segmented__option">Dark</button>
       </div>
@@ -216,7 +216,6 @@ export const SegmentedThreeOptions = {
       <div class="segmented" role="group">
         <button class="segmented__option segmented__option--active" type="button">Single</button>
         <button class="segmented__option" type="button">Recurring</button>
-        <button class="segmented__option" type="button">Standing order</button>
       </div>
     </div>
   `,

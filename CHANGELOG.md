@@ -23,6 +23,9 @@ All notable changes to `apps/web` are documented here. Format loosely follows [K
 - Spec: `specs/2026-11-18-inflation-tile-calculator/`.
 
 ### Changed
+- **Segmented controls and "Recurring"** (roadmap 84). The sidebar's Light / Dark switch is one small segmented control (icons only, stacked, when the sidebar is compressed). Pay's schedule step has Single and Recurring only; the "Standing order" tab is gone and "Recurring" is the one term in the UI and code (`recurringRules()` replaces `standingOrders()`). In Recurring there is no toggle: the date field is labelled "First payment". Repeats is the small size in Pay and the transfer flow, like the mode switch above it.
+- **Labels above segmented controls use the shared label row** (roadmap 84, D9). "Repeats" now has the same 24px label row, type and 4px gap as Recipient and Execute on; the Playground's settings, the theme panel's "Theme" and the Character kit's controls did not and now do.
+- Spec: `specs/2026-11-22-segmented-recurring/` (D1 to D9).
 - **The fridge result explains a zero** (roadmap 83). When one month of spending and the reserves use up the assets, the result says so and suggests lowering a reserve. The yearly line now reads "You could set aside each year" and stays at zero.
 - Spec: `specs/2026-11-18-fridge-zero-result/`.
 - **The unused risk chart is removed** (roadmap 81, with 82). `js/opening-risk-chart.js`, its CSS and `RISK_CHART` are gone; the opening looks the same.

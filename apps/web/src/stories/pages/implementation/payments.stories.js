@@ -26,7 +26,7 @@ export const StaticShell = {
           </a>
         </nav>
         <div class="sidebar__footer">
-          <div class="segmented segmented--theme" role="group" aria-label="Theme">
+          <div class="segmented segmented--sm segmented--theme" role="group" aria-label="Theme">
             <button type="button" class="segmented__option">Light</button>
             <button type="button" class="segmented__option segmented__option--active">Dark</button>
           </div>

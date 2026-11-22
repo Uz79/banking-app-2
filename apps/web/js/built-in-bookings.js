@@ -17,9 +17,9 @@
  *   today()                      → Date at midnight; ?today=YYYY-MM-DD on localhost and *.local only (D16)
  *   executed(account, today?)    → executed bookings, newest first
  *   pending(account, today?)     → pending one-offs, in date order
- *   standingOrders(account, today?) → the rules, with their next execution
+ *   recurringRules(account, today?) → the rules, with their next execution
  *   days(account, today?)        → [{ day, date, label, stored, builtIn, net, balance }], newest first
- *   nextPayments(account, today?) → each standing order's next payment still due, as Pending lists it
+ *   nextPayments(account, today?) → each recurring payment's next payment still due, as Pending lists it
  *   pendingTotal(account, today?) → what the account's Pending tab lists, in CHF
  *   nextDate(rule, today)        → { offsetDays } or { dayOfMonth } → Date
  *   dateLabel(d)                 → 'DD.MM.YYYY'; dayKey(d) → 'YYYY-MM-DD'
@@ -37,14 +37,14 @@
   var OUT = 'i-corner-up-right';
   var IN = 'i-download';
 
-  /* Standing orders: rules in Recurring, their occurrences in Executed (D3, D5, D7) */
-  var STANDING_ORDERS = [
+  /* Recurring payments: rules in Recurring, their occurrences in Executed (D3, D5, D7) */
+  var RECURRING_RULES = [
     { id: 'allb-recurring-rent', account: 'savings', name: 'Rent', amount: 1800, dayOfMonth: 1 },
     { id: 'allb-recurring-netflix', account: 'household', name: 'Netflix', amount: 19.9, dayOfMonth: 5 },
     { id: 'allb-recurring-internet', account: 'savings', name: 'Internet & Phone', amount: 59, dayOfMonth: 5 }
   ];
 
-  /* Money that comes every month and is no standing order of the customer's: no chip (D3, D6) */
+  /* Money that comes every month and is no recurring payment of the customer's: no chip (D3, D6) */
   var MONTHLY = [
     { id: 'sv-salary', account: 'savings', name: 'Salary', amount: 5000, direction: 'in', icon: IN, dayOfMonth: 25 },
     { id: 'sv-to-household', account: 'savings', name: 'Transfer to Household', amount: 1500, type: 'transfer', icon: 'i-home', from: 'savings', to: 'household', dayOfMonth: 26 },
@@ -155,7 +155,7 @@
     return toWorkingDay(dayInMonth(t.getFullYear(), t.getMonth() - monthsAgo, dayOfMonth));
   }
 
-  /* Pending: offsetDays working days after today; a standing order: its first occurrence after today (53 D12, D13) */
+  /* Pending: offsetDays working days after today; a recurring payment: its first occurrence after today (53 D12, D13) */
   function nextDate(rule, t) {
     t = t || today();
     var offset = rule.offsetDays;
@@ -204,9 +204,9 @@
       b.order = order++;
       out.push(b);
     }
-    STANDING_ORDERS.concat(MONTHLY).forEach(function (item) {
+    RECURRING_RULES.concat(MONTHLY).forEach(function (item) {
       if (item.account !== account) return;
-      var isRule = STANDING_ORDERS.indexOf(item) !== -1;
+      var isRule = RECURRING_RULES.indexOf(item) !== -1;
       for (var m = 0; m < MONTHS; m++) {
         var date = occurrence(item.dayOfMonth, t, m);
         /* The id names the occurrence's month, so each instance is its own row */
@@ -238,9 +238,9 @@
       .sort(function (a, b) { return a.date - b.date; });
   }
 
-  function standingOrders(account, t) {
+  function recurringRules(account, t) {
     t = t || today();
-    return STANDING_ORDERS.filter(function (item) { return item.account === account; })
+    return RECURRING_RULES.filter(function (item) { return item.account === account; })
       .map(function (item) {
         return booking(Object.assign({}, item, { frequency: 'monthly' }), 'recurring', nextDate(item, t), { dayOfMonth: item.dayOfMonth });
       })
@@ -310,7 +310,7 @@
   }
 
   /* ── What is pending (roadmap 47, D7 to D10; 62, D15) ─────────────────
-   * Each standing order's next payment, built-in or made in the app, unless
+   * Each recurring payment's next payment, built-in or made in the app, unless
    * a removed rule, or an edit of that payment stored with the rule's id and
    * date. Derived each time, never stored. One derivation for All bookings'
    * Pending tab and Account details' "Pending payments" line. */
@@ -332,7 +332,7 @@
     var removed = removedIds();
     var all = pay ? pay.getState().bookings || [] : [];
     var rules = [];
-    standingOrders(account, t).forEach(function (b) {
+    recurringRules(account, t).forEach(function (b) {
       if (removed.indexOf(b.id) !== -1 || !b.label) return;
       rules.push({ id: b.id, date: b.label, type: b.type, icon: b.icon, name: b.name, amount: b.amount, direction: b.direction, currency: 'CHF' });
     });
@@ -350,7 +350,7 @@
   }
 
   /* What the account's Pending tab lists, in CHF: the built-in one-offs still listed, the pending payments made in
-     the app and the standing orders' next payments; money out counts up, money in down (D15) */
+     the app and the recurring payments' next payments; money out counts up, money in down (D15) */
   function pendingTotal(account, t) {
     var removed = removedIds();
     var sum = 0;
@@ -419,7 +419,7 @@
     today: today,
     executed: executed,
     pending: pending,
-    standingOrders: standingOrders,
+    recurringRules: recurringRules,
     days: days,
     nextPayments: nextPayments,
     pendingTotal: pendingTotal,
