@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "tokens:build": "node scripts/generate-tokens-css.mjs",
+    "audit:contrast": "node scripts/audit-theme-contrast.mjs",
     "tokens:validate": "node scripts/validate-tokens.mjs",
     "tokens:promote": "node scripts/promote-tokens.mjs",
     "dev": "npm run tokens:build && vite",
