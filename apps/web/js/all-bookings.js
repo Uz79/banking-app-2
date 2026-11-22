@@ -632,7 +632,7 @@
     });
   }
 
-  /* ── A standing order's next payment (roadmap 47, D7 to D9) ─────────
+  /* ── A recurring payment's next payment (roadmap 47, D7 to D9) ─────────
    * Every rule, built-in or made in the app, yields one row in Pending on its
    * next execution, unless an edit of that payment is stored (D10). Derived
    * each time, never stored. Into the group of that date if there is one. */
@@ -794,7 +794,7 @@
       }), accountKey);
     }
 
-    [['pending', 'Execute on ', list.pending(accountKey, t)], ['recurring', 'Next on ', list.standingOrders(accountKey, t)]].forEach(function (def) {
+    [['pending', 'Execute on ', list.pending(accountKey, t)], ['recurring', 'Next on ', list.recurringRules(accountKey, t)]].forEach(function (def) {
       var panel = root.querySelector('[data-all-bookings-panel="' + def[0] + '"]');
       if (!panel) return;
       var groups = [];

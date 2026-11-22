@@ -29,7 +29,7 @@
  *   deleteBooking(id)           → removes a booking made in the app; a transfer loses both legs (roadmap 42, D11)
  *   removeBuiltIn(id)           → a built-in example row (data-builtin-id) an edit replaced or a delete removed;
  *                               it stays hidden until the reset (roadmap 42)
- *   instanceEditsOf(ruleId)     → the dates of a standing order's edited next payments (roadmap 47, D10); they go
+ *   instanceEditsOf(ruleId)     → the dates of a recurring payment's edited next payments (roadmap 47, D10); they go
  *                               when the order is edited or deleted, which also return those dates (roadmap 68)
  *   reset()                     → wipe storage, restore initial state (and the opening's session draft)
  *   formatMoney(n)              → "10'000.00" Swiss style
@@ -414,7 +414,7 @@
         if (b.quantity != null) row.quantity = b.quantity;
         if (b.ruleId) row.ruleId = b.ruleId;
         if (b.occurrence) row.occurrence = b.occurrence;
-        if (b.ranOf) row.ranOf = b.ranOf; /* an executed occurrence of a standing order (roadmap 37, D6) */
+        if (b.ranOf) row.ranOf = b.ranOf; /* an executed occurrence of a recurring payment (roadmap 37, D6) */
         return row;
       })
     };
@@ -497,7 +497,7 @@
     };
     applySchedule(booking, payment);
     applyRecipientAddress(booking, payment.recipient);
-    /* An edit of a standing order's next payment: the rule and date it stands in for (roadmap 47, D10) */
+    /* An edit of a recurring payment's next payment: the rule and date it stands in for (roadmap 47, D10) */
     if (payment.ruleId && payment.occurrence) {
       booking.ruleId = payment.ruleId;
       booking.occurrence = payment.occurrence;
@@ -509,7 +509,7 @@
     var dropped = [];
     if (payment.replacesBuiltIn) {
       markBuiltInRemoved(payment.replacesBuiltIn);
-      dropped = dropInstanceEdits(payment.replacesBuiltIn); /* a built-in standing order's edited next payments (roadmap 68, D2) */
+      dropped = dropInstanceEdits(payment.replacesBuiltIn); /* a built-in recurring payment's edited next payments (roadmap 68, D2) */
     }
     // NOTE: We deliberately do NOT decrement state.household here.
     // It is the registered balance before anything made in the app and
@@ -612,7 +612,7 @@
     return dropped;
   }
 
-  /* An edited next payment belongs to its standing order: a stored booking carrying the rule's id (roadmap 47, D10).
+  /* An edited next payment belongs to its recurring payment: a stored booking carrying the rule's id (roadmap 47, D10).
      When the order is edited or deleted its edited payments go with it, so Pending never lists one of them next to
      the new rule's payment or after the rule is gone (roadmap 68, D1, D5, D6). */
   function instanceEditsOf(ruleId) {
@@ -628,7 +628,7 @@
     return dates;
   }
 
-  /* A stored standing order: recurring, and not itself an edit of one of another order's payments */
+  /* A stored recurring payment: recurring, and not itself an edit of one of another order's payments */
   function isStoredRule(b) {
     return !!b && b.status === 'recurring' && !b.ruleId;
   }
@@ -668,7 +668,7 @@
       booking.dateISO = updates.dateISO || new Date().toISOString();
     }
     state.bookings[idx] = booking;
-    /* Editing the standing order itself: its edited next payments are replaced (roadmap 68, D2) */
+    /* Editing the recurring payment itself: its edited next payments are replaced (roadmap 68, D2) */
     var dropped = wasRule ? dropInstanceEdits(id) : [];
     dispatchChange();
     return dropped;
@@ -768,7 +768,7 @@
     state.bookings = state.bookings.filter(function (b) {
       return b.id !== id && !(suffix && transferSuffix(b.id) === suffix);
     });
-    /* A deleted standing order takes its edited next payments with it (roadmap 68, D3) */
+    /* A deleted recurring payment takes its edited next payments with it (roadmap 68, D3) */
     if (isStoredRule(rule)) dropInstanceEdits(id);
     if (state.bookings.length !== before) dispatchChange();
   }
@@ -782,7 +782,7 @@
   function removeBuiltIn(id) {
     if (!id || isBuiltInRemoved(id)) return;
     markBuiltInRemoved(id);
-    dropInstanceEdits(id); /* a built-in standing order's edited next payments go with it (roadmap 68, D3) */
+    dropInstanceEdits(id); /* a built-in recurring payment's edited next payments go with it (roadmap 68, D3) */
     dispatchChange();
   }
 
@@ -799,7 +799,7 @@
 
   /* ── Pending items run on their date (roadmap 37) ──────────────────────
    * On load and when the tab comes back, every stored pending item that is due (its date is today or earlier) is
-   * executed, dated its own day (D1, D2). A stored rule (Recurring, Standing order, Recurring transfer) books one
+   * executed, dated its own day (D1, D2). A stored rule (a Recurring payment or a recurring transfer) books one
    * executed occurrence per period that has come due, up to RUN_CAP, and moves its own date on (D4). The balance
    * is not touched: executed bookings already count (D3). */
 
@@ -880,7 +880,7 @@
     t = t || runToday();
     var changed = false;
 
-    /* One-offs, and an edited next payment of a standing order (it stands in for that occurrence) */
+    /* One-offs, and an edited next payment of a recurring payment (it stands in for that occurrence) */
     state.bookings.forEach(function (b) {
       if (b.status !== 'pending') return;
       var due = parseLabel(b.executeOn);

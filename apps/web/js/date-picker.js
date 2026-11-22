@@ -87,12 +87,12 @@
   }
 
   /* "Execute on" always opens the calendar (roadmap 40, D1) */
-  function syncField(btn, label) {
+  function syncField(btn, label, name) {
     if (!btn) return;
     btn.disabled = false;
     var d = parseLabel(label);
     var spoken = d ? d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear() : label;
-    btn.setAttribute('aria-label', 'Execute on, ' + spoken + ', change date');
+    btn.setAttribute('aria-label', (name || 'Execute on') + ', ' + spoken + ', change date');
   }
 
   function icon(id) {

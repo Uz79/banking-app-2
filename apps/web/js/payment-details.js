@@ -561,7 +561,7 @@
     return null;
   }
 
-  /* A standing order's next payment: its rule's payment or transfer, pending on its date (roadmap 47, D7, D8) */
+  /* A recurring payment's next payment: its rule's payment or transfer, pending on its date (roadmap 47, D7, D8) */
   function instanceData(row, displayName) {
     var rule = getStateBooking(row.getAttribute('data-rule-id'));
     var data = rule ? buildDataFromStateBooking(rule, row) : null;
@@ -734,7 +734,7 @@
   var fnCopyBtn   = overlay.querySelector('[data-pd-action="copy"]');
   var currentActions = { edit: false, del: false, copy: false };
 
-  /* Pending payment: Edit, Delete, Copy; executed payment out: Copy; pending transfer: Delete; a standing order's
+  /* Pending payment: Edit, Delete, Copy; executed payment out: Copy; pending transfer: Delete; a recurring payment's
      rule: Edit (all future payments) and Copy (roadmap 47, D6); trades and money in have none. A built-in row needs
      its id, so what it does lasts past a reload. */
   function bookingActions(data) {
@@ -757,7 +757,7 @@
     }
     if (/^\+/.test(String(data.amount || '').trim())) return none;
     if (status === 'executed') return { edit: false, del: false, copy: true };
-    /* A standing order's next payment: Edit (this one only) and Copy; skipping it is later (roadmap 47, D6, D10) */
+    /* A recurring payment's next payment: Edit (this one only) and Copy; skipping it is later (roadmap 47, D6, D10) */
     if (currentRow && currentRow.hasAttribute('data-rule-id')) return { edit: true, del: false, copy: true };
     var lasting = !!currentBookingId || !!(currentRow && currentRow.hasAttribute('data-builtin-id'));
     if (status === 'recurring') return { edit: lasting, del: false, copy: true };
@@ -771,7 +771,7 @@
       modal.classList.toggle('pd--has-actions', a.edit || a.del || a.copy);
       modal.classList.toggle('pd--can-edit', a.edit);
     }
-    var noun = data.type === 'internal' ? 'transfer' : data.status === 'recurring' ? 'standing order' : 'payment';
+    var noun = data.type === 'internal' ? 'transfer' : data.status === 'recurring' ? 'recurring payment' : 'payment';
     if (fnEditBtn) {
       fnEditBtn.hidden = !a.edit;
       fnEditBtn.setAttribute('aria-label', 'Edit ' + noun);
@@ -794,12 +794,12 @@
     pendingCopy = false;
     currentPaymentData = data; // remember for edit-context export
 
-    /* A recurring booking is the rule of a standing order (roadmap 47, D1, D2) */
+    /* A recurring booking is the rule of a recurring payment (roadmap 47, D1, D2) */
     var isRule = data.status === 'recurring';
 
     // Title
     if (titleEl) {
-      titleEl.textContent = isRule && data.type !== 'internal' ? 'Standing order' : (data.title || 'Payment details');
+      titleEl.textContent = isRule && data.type !== 'internal' ? 'Recurring payment' : (data.title || 'Payment details');
     }
 
     // Amount + currency
@@ -979,7 +979,7 @@
         window.__UZ_PD_EDIT_CONTEXT__ = {
           bookingId:     copy ? null : currentBookingId,       // null for static mocks and a copy
           builtInId:     copy || currentBookingId || !currentRow ? null : currentRow.getAttribute('data-builtin-id'), // replaced on commit (roadmap 42, D4)
-          ruleId:        copy || !currentRow ? null : currentRow.getAttribute('data-rule-id'),     // a standing order's next payment (roadmap 47, D10)
+          ruleId:        copy || !currentRow ? null : currentRow.getAttribute('data-rule-id'),     // a recurring payment's next payment (roadmap 47, D10)
           occurrence:    copy || !currentRow ? null : currentRow.getAttribute('data-occurrence'),
           accountKey:    rowAccountKey(currentRow), // an edit or a copy books from the row's account (roadmap 59, D4, D5)
           recipientName: recipientName,
@@ -1152,7 +1152,7 @@
     openFromRow(row);
   });
 
-  /* The row's sheet; also the standing order's own sheet from an executed instance (roadmap 44, D3) */
+  /* The row's sheet; also the recurring payment's own sheet from an executed instance (roadmap 44, D3) */
   function openFromRow(row) {
     var nameEl = row.querySelector('.booking-row__name');
     var name   = nameEl ? nameEl.textContent.trim().toLowerCase() : '';
@@ -1228,14 +1228,14 @@
       data = Object.assign({}, data, { status: 'executed' });
     }
 
-    /* An executed instance names its standing order (roadmap 44, D1, D2) */
+    /* An executed instance names its recurring payment (roadmap 44, D1, D2) */
     var made = currentBookingId ? getStateBooking(currentBookingId) : null;
     if (made && made.ranOf && made.status === 'executed') data = Object.assign({}, data, { ranOf: made.ranOf, ranFrequency: made.frequency || null });
 
     openOverlay(data);
   }
 
-  /* ── An instance's "Standing order" line opens the order's sheet (roadmap 44, D3, D4, D6) ── */
+  /* ── An instance's "Recurring payment" line opens the order's sheet (roadmap 44, D3, D4, D6) ── */
 
   function findRule(id) {
     var rule = getStateBooking(id);
@@ -1270,12 +1270,12 @@
     var rule = data.ranOf ? findRule(data.ranOf) : null;
     if (!data.ranOf || !label) { line.hidden = true; return; }
     line.hidden = false;
-    var words = 'Standing order: ' + label;
+    var words = 'Recurring payment: ' + label;
     if (rule) {
       text.hidden = true;
       btn.hidden = false;
       btn.textContent = words;
-      btn.setAttribute('aria-label', words + ', open the standing order');
+      btn.setAttribute('aria-label', words + ', open the recurring payment');
     } else {
       btn.hidden = true;
       text.hidden = false;
