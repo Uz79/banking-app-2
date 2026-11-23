@@ -10,8 +10,7 @@
   font-size: var(--fs-hero);
   font-weight: var(--fw-bold);
   line-height: var(--lh-hero);
-  --text-trim-top: var(--trim-top-hero);
-  --text-trim-bottom: var(--trim-bottom-hero);
+  text-box: trim-both cap alphabetic;
 }
 
 .type-h1 {
@@ -19,8 +18,7 @@
   font-size: var(--fs-h1);
   font-weight: var(--fw-bold);
   line-height: var(--lh-h1);
-  --text-trim-top: var(--trim-top-h1);
-  --text-trim-bottom: var(--trim-bottom-h1);
+  text-box: trim-both cap alphabetic;
 }
 
 .type-h2 {
@@ -28,8 +26,7 @@
   font-size: var(--fs-h2);
   font-weight: var(--fw-medium);
   line-height: var(--lh-h2);
-  --text-trim-top: var(--trim-top-h2);
-  --text-trim-bottom: var(--trim-bottom-h2);
+  text-box: trim-both cap alphabetic;
 }
 
 .type-h3 {
@@ -37,8 +34,7 @@
   font-size: var(--fs-h3);
   font-weight: var(--fw-medium);
   line-height: var(--lh-h3);
-  --text-trim-top: var(--trim-top-h3);
-  --text-trim-bottom: var(--trim-bottom-h3);
+  text-box: trim-both cap alphabetic;
 }
 
 .type-h4 {
@@ -46,8 +42,7 @@
   font-size: var(--fs-h4);
   font-weight: var(--fw-medium);
   line-height: var(--lh-h4);
-  --text-trim-top: var(--trim-top-h4);
-  --text-trim-bottom: var(--trim-bottom-h4);
+  text-box: trim-both cap alphabetic;
 }
 
 .type-h5 {
@@ -55,8 +50,7 @@
   font-size: var(--fs-h5);
   font-weight: var(--fw-medium);
   line-height: var(--lh-h5);
-  --text-trim-top: var(--trim-top-h5);
-  --text-trim-bottom: var(--trim-bottom-h5);
+  text-box: trim-both cap alphabetic;
 }
 
 .type-h6 {
@@ -64,8 +58,7 @@
   font-size: var(--fs-h6);
   font-weight: var(--fw-medium);
   line-height: var(--lh-h6);
-  --text-trim-top: var(--trim-top-h6);
-  --text-trim-bottom: var(--trim-bottom-h6);
+  text-box: trim-both cap alphabetic;
 }
 
 .type-lg {
@@ -73,8 +66,7 @@
   font-size: var(--fs-text-lg);
   font-weight: var(--fw-regular);
   line-height: var(--lh-text);
-  --text-trim-top: var(--trim-top-text-lg);
-  --text-trim-bottom: var(--trim-bottom-text-lg);
+  text-box: trim-both cap alphabetic;
 }
 
 .type-md {
@@ -82,8 +74,7 @@
   font-size: var(--fs-text-md);
   font-weight: var(--fw-regular);
   line-height: var(--lh-text);
-  --text-trim-top: var(--trim-top-text-md);
-  --text-trim-bottom: var(--trim-bottom-text-md);
+  text-box: trim-both cap alphabetic;
 }
 
 .type-sm {
@@ -91,8 +82,7 @@
   font-size: var(--fs-text-sm);
   font-weight: var(--fw-regular);
   line-height: var(--lh-text);
-  --text-trim-top: var(--trim-top-text-sm);
-  --text-trim-bottom: var(--trim-bottom-text-sm);
+  text-box: trim-both cap alphabetic;
 }
 
 .type-xs {
@@ -100,8 +90,7 @@
   font-size: var(--fs-text-xs);
   font-weight: var(--fw-regular);
   line-height: var(--lh-text);
-  --text-trim-top: var(--trim-top-text-xs);
-  --text-trim-bottom: var(--trim-bottom-text-xs);
+  text-box: trim-both cap alphabetic;
 }
 
 .type-caption {
@@ -109,8 +98,7 @@
   font-size: var(--fs-caption);
   font-weight: var(--fw-regular);
   line-height: var(--lh-caption);
-  --text-trim-top: var(--trim-top-caption);
-  --text-trim-bottom: var(--trim-bottom-caption);
+  text-box: trim-both cap alphabetic;
 }
 
 .type-medium {
@@ -121,32 +109,13 @@
   font-weight: var(--fw-bold);
 }
 
-/* Leading trim — apply with .type-trim on styles where leadingTrim is true in tokens */
+/* Text is trimmed natively by the type classes above (text-box, roadmap 86). .type-trim only makes the element a block,
+   which a span needs for the trim to apply. */
 .type-trim {
   display: block;
-  margin-block-start: calc(-1 * var(--text-trim-top, 0px));
-  margin-block-end: calc(-1 * var(--text-trim-bottom, 0px));
 }
 
-
-.type-hero.type-trim,
-.type-h1.type-trim,
-.type-h2.type-trim,
-.type-h3.type-trim,
-.type-h4.type-trim,
-.type-h5.type-trim,
-.type-h6.type-trim,
-.type-lg.type-trim,
-.type-md.type-trim,
-.type-sm.type-trim,
-.type-xs.type-trim,
-.type-caption.type-trim {
-  display: block;
-  margin-block-start: calc(-1 * var(--text-trim-top));
-  margin-block-end: calc(-1 * var(--text-trim-bottom));
-}
-
-/* Stacked trimmed lines — .type-stack-tight + .type-trim; row gap via trim-aware margins */
+/* Stacked trimmed lines — .type-stack-tight + .type-trim; the row gap is the clean 8dp between the trimmed boxes */
 .type-stack-tight {
   display: flex;
   flex-direction: column;
@@ -158,18 +127,16 @@
 }
 
 .type-stack-tight > .type-sm.type-trim + .type-xs.type-trim {
-  margin-block-start: calc(
-    var(--text-row-gap) - var(--trim-bottom-text-sm) - var(--trim-top-text-xs)
-  );
+  margin-block-start: var(--text-row-gap);
 }
 
-/* Horizontal amount pairs — never block-level trim margins */
+/* Horizontal amount pairs — inline, so no trim applies */
 .list-item__amount .type-trim,
 .list-item__currency.type-trim,
 .list-item__value.type-trim,
 .list-item--group-account .list-item__end .type-trim {
   display: inline;
-  margin-block: 0;
 }
 
-/* Margin-based trim only — text-box-trim caused inconsistent stack/row layout in modals and carousels. */
+/* Native trim (roadmap 86): the first attempt at text-box-trim was dropped for inconsistent stack and row layout in
+   modals and carousels; those cases are checked one by one (86 D9) instead of staying on margins. */

@@ -1352,8 +1352,7 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
   display: flex;
   align-items: center;
   /* wealth-overview-account: 56dp row = 16dp vertical inset + trimmed sm/xs stack (see list-item design) */
-  padding-block: calc(var(--space-3) + var(--trim-top-text-sm))
-    calc(var(--space-3) + var(--trim-bottom-text-xs));
+  padding-block: var(--space-3);
   padding-inline: var(--space-3);
   gap: var(--space-3);
   cursor: pointer;
@@ -1623,8 +1622,7 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
 .list-item {
   display: flex;
   align-items: center;
-  padding-block: calc(var(--space-3) + var(--trim-top-text-sm))
-    calc(var(--space-3) + var(--trim-bottom-text-xs));
+  padding-block: var(--space-3);
   padding-inline: var(--space-3);
   gap: var(--space-3);
   cursor: pointer;
@@ -1657,15 +1655,11 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
 
 /* 3-row stacks — same 8dp gap as product-item (Figma auto-layout gap: 8) */
 .type-stack-tight > .type-xs.type-trim + .type-xs.type-trim {
-  margin-block-start: calc(
-    var(--text-row-gap) - var(--trim-bottom-text-xs) - var(--trim-top-text-xs)
-  );
+  margin-block-start: var(--text-row-gap);
 }
 
 .type-stack-tight > .type-xs.type-trim + .type-sm.type-trim {
-  margin-block-start: calc(
-    var(--text-row-gap) - var(--trim-bottom-text-xs) - var(--trim-top-text-sm)
-  );
+  margin-block-start: var(--text-row-gap);
 }
 
 .list-item__title {
@@ -1709,8 +1703,7 @@ html[data-theme="light"] .view__nav .view__mode-toggle .mode-toggle__icon--sun {
  * Hug height: padding-block + content (icon / text-stack / amount). No fixed row height. */
 .list-item--group-account {
   align-items: center;
-  padding-block: calc(var(--space-3) + var(--trim-top-text-sm))
-    calc(var(--space-3) + var(--trim-bottom-text-xs)); /* 16dp vertical inset + trim compensation */
+  padding-block: var(--space-3); /* 16dp vertical inset + trim compensation */
   padding-inline: 0;
   gap: 0;
   width: 100%;
@@ -8519,8 +8512,7 @@ body.body--trade-open {
   align-items: flex-start;
   justify-content: space-between;
   margin-inline: 0;
-  padding-block: calc(var(--space-3) + var(--trim-top-text-sm))
-    calc(var(--space-3) + var(--trim-bottom-text-xs));
+  padding-block: var(--space-3);
   padding-inline: var(--space-3);
   gap: var(--space-3);
   width: 100%;
@@ -8562,9 +8554,7 @@ body.body--trade-open {
 /* Position row 3 — 8dp below trimmed xs row 2; 24dp row height (left icon defines the band). */
 .list-item--position .type-stack-tight > .type-xs.type-trim + .list-item__performance,
 .list-item--position .type-stack-tight > .list-item__quantity.type-xs.type-trim + .list-item__total {
-  margin-block-start: calc(
-    var(--text-row-gap) - var(--trim-bottom-text-xs)
-  );
+  margin-block-start: var(--text-row-gap);
 }
 
 .list-item--position .list-item__performance,
@@ -9511,7 +9501,7 @@ html[data-theme="light"] .status-message__shell {
 .status-message__text {
   display: flex;
   flex-direction: column;
-  gap: 0.125rem;
+  gap: var(--space-1);
   min-width: 0;
 }
 
@@ -9535,7 +9525,6 @@ html[data-theme="light"] .status-message__shell {
   font-size: var(--fs-text-xs);
   line-height: var(--lh-text);
   white-space: nowrap;
-  padding-top: 0.125rem;
 }
 
 .status-message__date {
@@ -14254,4 +14243,17 @@ dialog.playground-settings.playground-settings--closing[open] .playground-settin
     animation: none;
     transform: none;
   }
+}
+
+/* Native trim (roadmap 86): component text that sets its own font size is trimmed to cap height and baseline too, as the
+   type classes are, so the component's padding and gaps are the clean Figma values. Add a selector here, not a margin. */
+.status-message__title,
+.status-message__body,
+.status-message__meta,
+.date-picker__month,
+.date-picker__weekday,
+.profile-scale-card__eyebrow,
+.profile-scale-card__title,
+.profile-scale-card__meta {
+  text-box: trim-both cap alphabetic;
 }
