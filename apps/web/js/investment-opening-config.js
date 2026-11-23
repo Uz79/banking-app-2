@@ -28,6 +28,10 @@ export const SCREENS = [
     id: 'ineligible', title: 'We cannot open this online', counted: false,
     text: 'Asset management can be opened online only if you are tax resident only in Switzerland and not a US person. An advisor can open it with you.',
   },
+  /* Last in the list, so a saved draft's step numbers do not shift (9g D3). Reached only from the summary. */
+  {
+    id: 'personalise', title: 'Personalise your strategy', counted: false,
+  },
 ];
 
 /* ── Knowledge (D7) ── `profileAt`: the lowest Profile financial knowledge value (0 to 100) that preselects it. */
@@ -228,6 +232,42 @@ export const ESG = {
   missing: 'Choose how important sustainability is to you.',
 };
 
+/* ── Personalise (9g D1 to D7) ── optional preferences, no effect on the strategy. Nothing is preselected except the
+   default of `alternatives`, which is not a choice (D7). German for the later translation pass (to confirm):
+   Personalisierung (optional), Thematische Schwerpunkte, Alternative Anlagen, Regionaler Fokus. */
+export const PERSONALISE = {
+  intro: 'These choices are optional. They do not change your strategy.',
+  themes: {
+    label: 'Themes you care about',
+    options: [
+      { id: 'climate', label: 'Climate and energy' },
+      { id: 'health', label: 'Health care' },
+      { id: 'tech', label: 'Technology' },
+      { id: 'water', label: 'Water' },
+      { id: 'education', label: 'Education' },
+    ],
+  },
+  alternatives: {
+    label: 'Alternative investments',
+    options: [
+      { id: 'no', label: 'Not included' },
+      { id: 'yes', label: 'Included' },
+    ],
+    risk: 'Alternative investments, such as gold or real estate funds, can swing more in price and can be harder to sell quickly than shares and bonds.',
+  },
+  region: {
+    label: 'Regional focus',
+    options: [
+      { id: 'global', label: 'Global' },
+      { id: 'ch', label: 'Switzerland' },
+      { id: 'eu', label: 'Europe' },
+      { id: 'na', label: 'North America' },
+      { id: 'em', label: 'Emerging markets' },
+    ],
+  },
+  clear: 'Clear my choices',
+};
+
 /* ── Tax status (D14, D27) ── `eligible`: the answer that allows opening online; any other leads to the exit (D15). */
 export const TAX = {
   questions: [
@@ -285,7 +325,10 @@ export const SUMMARY = {
     { id: 'strategy', label: 'Strategy', screens: ['strategy'] },
     { id: 'amount', label: 'Amount', screens: ['amount'] },
     { id: 'answers', label: 'Your answers', screens: ['knowledge', 'purpose', 'risk', 'esg', 'tax'] },
+    { id: 'personalise', label: 'Personalise your strategy (optional)', screens: ['personalise'] },
   ],
+  /* The personalise section (9g D2, D7, D9): empty, a button; filled, one line of the chosen values and the pencil. */
+  personalise: { empty: 'Not personalised', open: 'Personalise', alternatives: 'Alternatives included', manyThemes: '{n} themes' },
   rows: { knowledge: 'Knowledge', purpose: 'Purpose', horizon: 'Horizon', risk: 'Risk profile' },
   edit: 'Edit',
   backToSummary: 'Back to summary',

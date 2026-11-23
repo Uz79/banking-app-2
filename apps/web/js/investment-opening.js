@@ -7,7 +7,7 @@
  */
 import {
   SCREENS, DRAFT_KEY, KNOWLEDGE, PURPOSE, HORIZON, AMOUNT, RISK, STRATEGIES, STRATEGY, SCORING, VEHICLE_STAGE,
-  ESG, TAX, INELIGIBLE, DOCUMENTS, SUMMARY, COMPLETE,
+  ESG, PERSONALISE, TAX, INELIGIBLE, DOCUMENTS, SUMMARY, COMPLETE,
 } from './investment-opening-config.js';
 import * as assistant from './opening-assistant.js';
 import { NUDGES, HANDOFF } from './opening-assistant-config.js';
@@ -43,12 +43,14 @@ function clearDraft() {
 }
 
 const draft = readDraft();
-let answers = draft ? draft.answers : {};
+let answers = draft && draft.answers && typeof draft.answers === 'object' ? draft.answers : {};
 const fridgeAmount = draft && Number.isFinite(draft.fridgeAmount) ? Math.max(0, Math.round(draft.fridgeAmount)) : 0;
 const from = draft && typeof draft.from === 'string' ? draft.from : 'direct';
 const keptFridge = draft && draft.fridge && typeof draft.fridge === 'object' ? draft.fridge : undefined;
-/* A resumed draft never lands on completion: that screen only follows the summary. */
+/* A resumed draft never lands on completion (that screen only follows the summary) or on the personalise screen (it is
+   entered from the summary, so a draft there resumes on the summary, 9g D3). */
 let index = draft && draft.step >= 0 && draft.step < SCREENS.length && SCREENS[draft.step].id !== 'complete' ? draft.step : 0;
+if (SCREENS[index].id === 'personalise') index = SCREENS.findIndex((x) => x.id === 'summary');
 /* The steps that have nudged in this opening, used or dismissed (9f D6, D11). */
 const nudged = draft && Array.isArray(draft.nudged) ? draft.nudged.filter((x) => typeof x === 'string') : [];
 /* A call or meeting booked through the assistant (9f D15); one whose time has passed is dropped. */
@@ -250,6 +252,21 @@ function optionGroup({ labelEl, options, get, set, disabled = () => false, conte
   const focus = () => { if (stop()) stop().focus(); };
   return { group, refresh, focus, stop };
 }
+
+/* ── Personalise (9g D8): read leniently, unknown ids dropped, a missing key means the defaults ── */
+function readPersonalise(raw) {
+  const r = raw && typeof raw === 'object' ? raw : {};
+  const ids = (list) => list.map((o) => o.id);
+  const themes = Array.isArray(r.themes) ? r.themes : [];
+  return {
+    themes: ids(PERSONALISE.themes.options).filter((id) => themes.includes(id)),
+    alternatives: ids(PERSONALISE.alternatives.options).includes(r.alternatives) ? r.alternatives : 'no',
+    region: ids(PERSONALISE.region.options).includes(r.region) ? r.region : '',
+  };
+}
+const pers = () => (answers.personalise = readPersonalise(answers.personalise));
+/* "Not included" is the default, not a choice (D7). */
+const isPersonalised = () => { const p = pers(); return p.themes.length > 0 || p.alternatives === 'yes' || !!p.region; };
 
 /* ── The recommendation (D12) ───────────────────────────────────────── */
 const rankOf = (id) => STRATEGIES.findIndex((s) => s.id === id);
@@ -795,6 +812,70 @@ const BUILD = {
     };
   },
 
+  /* Optional, nothing required (D4): three groups and a way back to no choice. */
+  personalise() {
+    /* The intro, the risk line and the summary line use the full text colour: the secondary one is 3.89:1 on the
+       default theme in Light (9g D12). */
+    const nodes = [el('p', 'opening__text opening-personalise__text', PERSONALISE.intro)];
+    const themeLab = label(PERSONALISE.themes.label);
+    const themes = el('div', 'opening-checks');
+    themes.setAttribute('role', 'group');
+    themes.setAttribute('aria-labelledby', themeLab.id);
+    const boxes = PERSONALISE.themes.options.map((o) => {
+      const row = el('label', 'opening-check');
+      const box = el('input', 'opening-check__input');
+      box.type = 'checkbox';
+      box.dataset.option = o.id;
+      box.addEventListener('change', () => {
+        const on = new Set(pers().themes);
+        if (box.checked) on.add(o.id); else on.delete(o.id);
+        answers.personalise.themes = PERSONALISE.themes.options.map((x) => x.id).filter((id) => on.has(id));
+        changed();
+      });
+      row.append(box, el('span', 'opening-check__text', o.label));
+      themes.append(row);
+      return box;
+    });
+    nodes.push(themeLab, themes);
+
+    const altLab = label(PERSONALISE.alternatives.label);
+    const alt = optionGroup({
+      labelEl: altLab,
+      options: PERSONALISE.alternatives.options,
+      get: () => pers().alternatives,
+      set: (id) => { pers().alternatives = id; changed(); },
+    });
+    alt.group.classList.add('opening-options--grid');
+    nodes.push(altLab, alt.group, el('p', 'opening__note opening-personalise__text', PERSONALISE.alternatives.risk));
+
+    const regLab = label(PERSONALISE.region.label);
+    const reg = optionGroup({
+      labelEl: regLab,
+      options: PERSONALISE.region.options,
+      get: () => pers().region,
+      set: (id) => { pers().region = id; changed(); },
+    });
+    reg.group.classList.add('opening-options--grid');
+    nodes.push(regLab, reg.group);
+
+    const clear = el('button', 'uz-btn uz-btn--secondary uz-btn--sm opening-personalise__clear');
+    clear.type = 'button';
+    clear.append(el('span', 'uz-btn__label', PERSONALISE.clear));
+    clear.addEventListener('click', () => { answers.personalise = readPersonalise(null); changed(); });
+    nodes.push(clear);
+
+    return {
+      nodes,
+      refresh() {
+        const p = pers();
+        boxes.forEach((b) => { b.checked = p.themes.includes(b.dataset.option); });
+        alt.refresh();
+        reg.refresh();
+        clear.hidden = !isPersonalised();
+      },
+    };
+  },
+
   esg() {
     const lab = label(ESG.label);
     const { group, refresh, stop } = optionGroup({
@@ -926,6 +1007,18 @@ const BUILD = {
       edit.innerHTML = '<svg class="uz-btn__icon" aria-hidden="true" focusable="false"><use href="#i-edit-2"/></svg>';
       edit.addEventListener('click', () => startEdit(section));
       head.append(title);
+      if (section.id === 'personalise' && !isPersonalised()) {
+        /* Empty: a quiet text button in place of the pencil (9g D2). */
+        const open = el('button', 'uz-btn uz-btn--secondary uz-btn--sm', null);
+        open.type = 'button';
+        open.append(el('span', 'uz-btn__label', SUMMARY.personalise.open));
+        open.setAttribute('aria-describedby', title.id);
+        open.addEventListener('click', () => startEdit(section));
+        head.append(open);
+        box.append(head, el('p', 'opening__note opening-personalise__text', SUMMARY.personalise.empty));
+        nodes.push(box);
+        return;
+      }
       if (section.id === 'amount') head.append(el('span', 'opening-summary__value', chf(answers.amount || 0)));
       head.append(edit);
       box.append(head);
@@ -947,6 +1040,7 @@ const BUILD = {
         vehicles.host = { root: card, id: () => s.id, figure: () => figure };
       }
       if (section.id === 'answers') box.append(answerList(rec));
+      if (section.id === 'personalise') box.append(personaliseList());
       nodes.push(box);
     });
     return { nodes, mounted: placeVehicles };
@@ -994,6 +1088,18 @@ function answerList(rec) {
   const list = el('dl', 'opening-summary__answers');
   rows.forEach(([k, v]) => list.append(el('dt', null, k), el('dd', null, v)));
   return list;
+}
+
+/* The chosen personalisation in one line, only what was chosen, so the summary keeps its height (9g D9). */
+function personaliseList() {
+  const p = pers();
+  const name = (list, id) => (list.find((o) => o.id === id) || {}).label || '';
+  const parts = [];
+  if (p.themes.length > 2) parts.push(fill(SUMMARY.personalise.manyThemes, { n: p.themes.length }));
+  else if (p.themes.length) parts.push(p.themes.map((id) => name(PERSONALISE.themes.options, id)).join(', '));
+  if (p.alternatives === 'yes') parts.push(SUMMARY.personalise.alternatives);
+  if (p.region) parts.push(name(PERSONALISE.region.options, p.region));
+  return el('p', 'opening__note opening-personalise__text', parts.join(' \u00b7 '));
 }
 
 /* Five steps, `n` of them filled, with the value for assistive tech. */
