@@ -199,9 +199,7 @@ function typographyTrimCss(vars) {
 
   return entries
     .map(
-      ([name, style]) => `  --trim-top-${name}: ${trimPx(style.trimTop)};
-  --trim-bottom-${name}: ${trimPx(style.trimBottom)};
-  --ps-${name}: ${pxToRem(style.paragraphSpacing)};`
+      ([name, style]) => `  --ps-${name}: ${pxToRem(style.paragraphSpacing)};`
     )
     .join("\n");
 }
@@ -663,7 +661,7 @@ ${typographySizeCss(mob, "mobile")}
   --lh-text: ${mob.lhText};
   --lh-caption: ${mob.lhCaption};
 
-  /* Leading trim — Profile Pro cap → baseline (computed from brand font-metrics) */
+  /* Paragraph spacing per style. The text itself is trimmed natively by the type classes (text-box, roadmap 86). */
 ${typographyTrimCss(mob)}
 
   /* Tight row gap for stacked trimmed labels — fixed 8dp (immune to space-scale shifts) */
@@ -713,5 +711,4 @@ fs.writeFileSync(outFile, css, "utf8");
 fs.writeFileSync(typographyOutFile, typographyClassesCss(mob), "utf8");
 console.log(`Wrote ${outFile}`);
 console.log(`Wrote ${typographyOutFile}`);
-console.log(`  --trim-top-text-sm: ${trimPx(mob.textSm.trimTop)}`);
 console.log(`  --text-row-gap: 0.5rem`);
