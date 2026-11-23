@@ -13389,6 +13389,25 @@ html.fridge--wide .fridge__ring-amount {
   outline-offset: 2px;
 }
 
+/* Personalise (9g D5): the themes as checkboxes in two columns, so the three groups stay compact. */
+.opening-checks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 var(--space-2);
+}
+
+.opening-checks .opening-check {
+  margin-top: var(--space-1);
+}
+
+.opening-personalise__text {
+  color: var(--color-fg);
+}
+
+.opening-personalise__clear {
+  align-self: flex-start;
+}
+
 /* Summary (D17, D27): grouped sections, one Edit each. */
 .opening-summary__section {
   display: flex;

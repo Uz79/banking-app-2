@@ -187,6 +187,32 @@ export const CHIPS = {
     ],
   },
 
+  /* 9g D10: optional preferences. Explain, never say what to pick; the choices do not change the strategy. */
+  personalise: {
+    chips: [
+      {
+        q: 'What does thematic focus mean?',
+        short: 'A theme is an area of the economy, such as water or health care. Ticking one tells us you would like it in your portfolio.',
+        more: 'You can tick several or none. It shapes what we look at, not how much risk your strategy takes.',
+      },
+      {
+        q: 'What are alternative investments?',
+        short: 'Investments that are not shares or bonds, such as gold or real estate funds. They can swing more in price and can be harder to sell quickly.',
+        more: 'That is why they are not included unless you choose them. Including them does not change your strategy.',
+      },
+      {
+        q: 'Does this change my strategy or my return?',
+        short: 'No. Your strategy and its risk stay as you chose them.',
+        more: 'These are preferences. They can make your portfolio differ from the market, up or down, and nothing here promises a return.',
+      },
+      {
+        q: 'Do I have to fill this in?',
+        short: 'No. You can open your asset management without it.',
+        more: 'Come back to it from the summary at any time before you confirm.',
+      },
+    ],
+  },
+
   tax: {
     advisor: true,
     chips: [
