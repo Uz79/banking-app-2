@@ -199,9 +199,7 @@ function typographyTrimCss(vars) {
 
   return entries
     .map(
-      ([name, style]) => `  --trim-top-${name}: ${trimPx(style.trimTop)};
-  --trim-bottom-${name}: ${trimPx(style.trimBottom)};
-  --ps-${name}: ${pxToRem(style.paragraphSpacing)};`
+      ([name, style]) => `  --ps-${name}: ${pxToRem(style.paragraphSpacing)};`
     )
     .join("\n");
 }
@@ -280,10 +278,8 @@ const TYPE_STYLE_DEFS = [
 function typographyClassesCss(vars) {
   const typeRules = TYPE_STYLE_DEFS.map(({ className, key, fsVar, lhVar, trimKey }) => {
     const style = vars[key];
-    const trimVars =
-      style.leadingTrim
-        ? `\n  --text-trim-top: var(--trim-top-${trimKey});\n  --text-trim-bottom: var(--trim-bottom-${trimKey});`
-        : "";
+    /* Native trim (roadmap 86): the box runs from cap height to the alphabetic baseline, from the loaded font's own metrics. */
+    const trimVars = style.leadingTrim ? "\n  text-box: trim-both cap alphabetic;" : "";
     return `.type-${className} {
   font-family: var(--font-family);
   font-size: var(${fsVar});
@@ -291,18 +287,6 @@ function typographyClassesCss(vars) {
   line-height: var(${lhVar});${trimVars}
 }`;
   }).join("\n\n");
-
-  const trimStyles = TYPE_STYLE_DEFS.filter(({ key }) => vars[key].leadingTrim)
-    .map(({ className }) => `.type-${className}.type-trim`)
-    .join(",\n");
-
-  const trimStylesBlock = trimStyles
-    ? `${trimStyles} {
-  display: block;
-  margin-block-start: calc(-1 * var(--text-trim-top));
-  margin-block-end: calc(-1 * var(--text-trim-bottom));
-}`
-    : "";
 
   return `${GENERATED_BANNER}/* Bundled semantic text styles */
 
@@ -316,15 +300,13 @@ ${typeRules}
   font-weight: var(--fw-bold);
 }
 
-/* Leading trim — apply with .type-trim on styles where leadingTrim is true in tokens */
+/* Text is trimmed natively by the type classes above (text-box, roadmap 86). .type-trim only makes the element a block,
+   which a span needs for the trim to apply. */
 .type-trim {
   display: block;
-  margin-block-start: calc(-1 * var(--text-trim-top, 0px));
-  margin-block-end: calc(-1 * var(--text-trim-bottom, 0px));
 }
 
-${trimStylesBlock ? `\n${trimStylesBlock}\n` : ""}
-/* Stacked trimmed lines — .type-stack-tight + .type-trim; row gap via trim-aware margins */
+/* Stacked trimmed lines — .type-stack-tight + .type-trim; the row gap is the clean 8dp between the trimmed boxes */
 .type-stack-tight {
   display: flex;
   flex-direction: column;
@@ -336,21 +318,19 @@ ${trimStylesBlock ? `\n${trimStylesBlock}\n` : ""}
 }
 
 .type-stack-tight > .type-sm.type-trim + .type-xs.type-trim {
-  margin-block-start: calc(
-    var(--text-row-gap) - var(--trim-bottom-text-sm) - var(--trim-top-text-xs)
-  );
+  margin-block-start: var(--text-row-gap);
 }
 
-/* Horizontal amount pairs — never block-level trim margins */
+/* Horizontal amount pairs — inline, so no trim applies */
 .list-item__amount .type-trim,
 .list-item__currency.type-trim,
 .list-item__value.type-trim,
 .list-item--group-account .list-item__end .type-trim {
   display: inline;
-  margin-block: 0;
 }
 
-/* Margin-based trim only — text-box-trim caused inconsistent stack/row layout in modals and carousels. */
+/* Native trim (roadmap 86): the first attempt at text-box-trim was dropped for inconsistent stack and row layout in
+   modals and carousels; those cases are checked one by one (86 D9) instead of staying on margins. */
 `;
 }
 
@@ -681,7 +661,7 @@ ${typographySizeCss(mob, "mobile")}
   --lh-text: ${mob.lhText};
   --lh-caption: ${mob.lhCaption};
 
-  /* Leading trim — Profile Pro cap → baseline (computed from brand font-metrics) */
+  /* Paragraph spacing per style. The text itself is trimmed natively by the type classes (text-box, roadmap 86). */
 ${typographyTrimCss(mob)}
 
   /* Tight row gap for stacked trimmed labels — fixed 8dp (immune to space-scale shifts) */
@@ -731,5 +711,4 @@ fs.writeFileSync(outFile, css, "utf8");
 fs.writeFileSync(typographyOutFile, typographyClassesCss(mob), "utf8");
 console.log(`Wrote ${outFile}`);
 console.log(`Wrote ${typographyOutFile}`);
-console.log(`  --trim-top-text-sm: ${trimPx(mob.textSm.trimTop)}`);
 console.log(`  --text-row-gap: 0.5rem`);

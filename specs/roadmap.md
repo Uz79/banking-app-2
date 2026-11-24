@@ -6,6 +6,44 @@ The order below is the order of work. Items keep their numbers (specs, commits a
 
 In order. The first is what `/feature-spec` starts.
 
+## 87. Payments: the three cards show the app's own data
+
+Found 2026-11-23. The Payments page (`payments.html`) is the one main page that is not connected. Its three cards are static HTML: Pending payments lists Rent (28.05.2026) and Healthcare (29.04.2026), both dates already past; Recurring payments and Most recent recipients list fixed names. Nothing reacts to a payment made, edited or deleted in the app, and 88 to 90 need real rows to open. Bind them first:
+
+- Pending: the nearest pending payments, grouped by execution date, from the same source as the Pending tab on All bookings (`pending`, `nextPayments` and `pendingTotal` in `js/built-in-bookings.js`, plus the app's own bookings from `js/payment-state.js`), redrawn on `uzbank:state-changed`. Show at most 3, as on Account details (72, D1).
+- Recurring: the rules from `recurringRules` (47).
+- Recent recipients: the most recent distinct recipients of executed payments, newest first, with the reference of the last payment as the subtitle (Hans Meyer shows "Rent" today). `payment-state.js` already holds the shared recipient list.
+- Empty states for each card.
+
+To settle in its spec: which account the page covers (the Pay flow books to Household, 56; All bookings is per account), and how many rows each card shows. Gate: make a payment in the app and see it on this page without a reload.
+
+## 88. Payments: pending rows open their details, and "Show all pending payments" works
+
+Found 2026-11-23. After 87. A pending row opens the booking sheet (Edit, Delete, Copy where 51 allows), the same sheet as on All bookings. "Show all pending payments" opens All bookings on its Pending tab (`?status=pending`, read since 72). Settled in the conversation: from Account details, Back returns to the last account details page; from Payments it has to return to Payments instead.
+
+To settle in its spec: how All bookings knows where it was opened from (a `from` parameter or a history step) and what its header and Back say then; All bookings is per account, so what "all pending" means for a page that spans accounts (the Pending tab of Household, or a tab for every account); what an edit does on the way back (23).
+
+## 89. Payments: recurring rows say how often and how much
+
+Found 2026-11-23. A recurring row has a title and a chevron only. It needs the frequency (Weekly, Monthly, Quarterly, Yearly, from 45), the amount and the next execution, and a look of its own so it reads differently from a pending row: a subtitle ("Monthly, next 01.12.") and the amount on the right, as pending rows have it. Tapping it opens the rule's sheet from 47 (Status "Active", Frequency, Next execution; Edit changes all future payments).
+
+To settle in its spec: whether the chevron stays beside the amount, how an ended or paused rule reads, and the same row on a phone at 390 px with Large type.
+
+## 90. Payments: a recent recipient opens the Pay form filled in
+
+Found 2026-11-23. A tap on a recent recipient starts the Pay flow with that recipient already set, at the step where the recipient and the amount are entered, so repeating a payment takes an amount and a confirmation. Today the row does nothing.
+
+To settle in its spec: which step the flow opens on (the recipient step with the amount, or the type-ahead step skipped); what is prefilled besides the name and IBAN (the reference of the last payment, the debit account); that a recipient's details typed on the recipient step survive (39); and that Back from the flow returns to Payments, not to a half-open sheet.
+
+## 91. Account details: the account carousel doesn't line up with its column
+
+Found 2026-11-23 (Klaudiusz, from two screenshots), measured in the browser at 1641 px wide on desktop. The column is 720 px; the cards of the carousel are 640 px (the column minus the 5rem peek). Two things are off:
+
+- **The last slide sits 24 px short of the right edge.** The first slide is flush left (0 px), but with the Savings account active its card ends at 1196.5 while the column ends at 1220.5, and the Household card peeks 40 px on the left instead of 64. Cause: `updateCarousel` in `js/app-mp.js` computes its slide width and offset from `trackEl.getBoundingClientRect().width` (744 px), but `.carousel__track` has 0.75rem of padding on each side (for the card shadow, `css/styles.css`, `.carousel__track`), so the slides really sit in 720 px. Offset used: 600 px; right one: 576 px. The same arithmetic should put the last slide 24 px off on a phone too (not measured).
+- **The neighbour peeks past the column.** The same padding, taken back with a negative margin, moves the clip edge 12 px outside the column, so the next account shows 12 px beyond the cards below it and ends in a hard cut (visible on the right in the first screenshot, on the left in the second).
+
+To settle in its spec: where the clip edge sits (at the column edge, keeping the shadow some other way, or as now), and whether the peek is 64 px or 80 px of visible card (today 64 px after the gap). Fix the measurement to use the slides' own width, not the padded track. Gate: the first and last card edges equal the column's edges at 390, 1024 and 1641 px, in Light and Dark; arrows, dots and a click on the neighbour still work.
+
 # Later
 
 Not scheduled, smallest first (an estimate of size, not of value).
@@ -57,6 +95,10 @@ Not part of item 9: the avatar acting in the fridge (8b). The fridge as a film (
 ## 85. Secondary text measures 3.89:1 in Light on the default theme
 
 Found during 9g (2026-11-23): in the default (green) theme in Light, `--color-fg-secondary` is the neutral at 70% and measures 3.89:1 on white, for example the opening's notes and screen texts (`.opening__note`, `.opening__text`). The 70% ink of 73 was checked on the Bank default look; this theme sets the token inline. Check every theme's secondary text in Light and Dark with the contrast audit, and fix where it falls under 4.5:1.
+
+## 92. Native trim: the components that set their own font size
+
+Found in 86 (2026-11-23). About 256 `font-size` rules in `css/styles.css` style text without a type class (buttons, chips, form fields, the booking, opening, fridge and assistant components), so their text is not trimmed and sits a few px away from where the Figma frames have it. For each: add it to the "Native trim" rule at the end of `css/styles.css`, then retune its padding and gaps to the Figma values and measure with `scripts/measure-text-offsets.js`. Needs the Figma frames (or the Design System 1.0 table) for the targets.
 
 # Parked
 
@@ -592,3 +634,23 @@ Built 2026-11-18: `buildResult()` and the announcement in `js/fridge-advisor.js`
 Klaudiusz, 2026-11-22. The sidebar's Light / Dark switch was two stacked, different elements; it is now one small segmented control. Pay's schedule step loses the "Standing order" tab (Single and Recurring only), "Recurring" is the one term in the UI, code and living docs, and in Recurring the toggle is gone and the date field is labelled "First payment" (its default and behaviour are unchanged). Repeats and the mode switch are both the small variant, in Pay and in the transfer flow. Spec: `specs/2026-11-22-segmented-recurring/` (D1 to D9). Not checked: see its `validation.md`.
 
 Left as is, for review: the transfer flow keeps "Immediately" and "Recurring execution"; the trade flow's Order duration is the only 44 px (`segmented--regular`) control, alone in its form; older dated specs and CHANGELOG entries keep "standing order".
+
+## 86. Native text trim (done)
+
+Comes before Design System 1.0's item 5 (master screens: banking), which rebuilds the pages with library instances and needs the app and the library to share one spacing model. Decided 2026-11-23 in the Design System 1.0 spec `components-born-in-code`: one model, trim everywhere. The Figma text styles are cap-trimmed (box from cap height to baseline) and every component spaces trimmed text with clean values (8, 12, 16, 24).
+
+Today `.type-trim` trims with negative margins and each component compensates in padding and gaps (`--trim-top-*`, `--trim-bottom-*`, `--text-row-gap`). Some components do not trim at all, so their text sits 5 to 8 px away from where the component has it (measured in `design-system-1-0/specs/2026-11-22-components-born-in-code/validation.md`: Status Message title 5.1 px low and body 7.2 px, Date Picker weekday row and days 8 px low, Scale Preset Card 16 plus trim where the component has 24).
+
+Replace the margin trick with `text-box: trim-both cap alphabetic` on the type classes, then retune each component's gaps and padding to the Figma values. One task group per page or flow, each browser-checked at 390 px and 1024 px:
+
+- Browser support for `text-box` first (check Safari, Chrome and Firefox) and decide the fallback.
+- The type classes and the `--trim-*` tokens in `typography.css` and `tokens.css` (remove the margin math once nothing reads it).
+- Status Message, Date Picker and Scale Preset Card (they have the measured differences).
+- One group per page or flow (Overview, Payments, Accounts, Bookings, Profile, the fridge, the opening, the assistant).
+- A group for the modal and carousel cases that broke before (the comment in `typography.css`: "text-box-trim caused inconsistent stack/row layout in modals and carousels"): check each modal, dialog and carousel.
+
+Gate: the Design System 1.0 size check (cap top and baseline from the component edge) shows 0 differences above 1 px.
+
+Spec: `specs/2026-11-23-native-text-trim/` (branch `feature/native-text-trim`). Settled in its interview: all of it in one branch, in task groups; no fallback for browsers without `text-box` (Firefox is untrimmed); the size check is a script in this repo, `scripts/measure-text-offsets.js`; the merge gate is the size check, every page and flow at 390 and 1024, and the baseline smoke test.
+
+Built 2026-11-23 on `feature/native-text-trim`. The type classes trim natively, the compensation and the `--trim-*` tokens are gone, the three measured components sit at their clean values, and the list rows are the intended 56dp (they were 67.6). What it does not do: components that set `font-size` directly are untrimmed (92), and the targets are the components' own clean values, not read from Figma.
